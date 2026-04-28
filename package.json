@@ -1,0 +1,10 @@
+{
+  "name": "shepherd-ai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint"
+  }
+}
