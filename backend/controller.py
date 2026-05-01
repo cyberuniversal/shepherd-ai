@@ -71,6 +71,10 @@ class Drone:
         self.signal_strength = 100.0
         self.rotor_speed = 100.0  # percentage
         self.home = (lat, lng)    # Remember spawn point for RTB
+        self.live_connected = False
+        self.live_address = None
+        self.live_last_telemetry_at = None
+        self.flight_mode = "simulation"
         
 class SwarmManager:
     # Riyadh geo-constants for meter-to-degree conversion
@@ -235,6 +239,10 @@ class SwarmManager:
                 "comms_status": d.comms_status,
                 "mesh_route": d.mesh_route,
                 "signal_strength": round(d.signal_strength, 1),
+                "live_connected": d.live_connected,
+                "live_address": d.live_address,
+                "live_last_telemetry_at": d.live_last_telemetry_at,
+                "flight_mode": d.flight_mode,
             }
             for d in self.fleet.values()
         ]
@@ -259,6 +267,9 @@ class SwarmManager:
                 "wind_direction_deg": round(self.wind_direction_deg, 0),
                 "gps_denied": self.gps_denied,
                 "live_mode": self.live_mode,
+                "live_connected": sum(1 for d in self.fleet.values() if d.live_connected),
+                "live_connected_drones": [d.id for d in self.fleet.values() if d.live_connected],
+                "bridge": self.bridge.status() if self.bridge else {"mavsdk_available": False, "connected_count": 0, "connected_drones": []},
                 "fleet_health": self._fleet_health_score(online_drones),
             }
         }
@@ -327,8 +338,51 @@ class SwarmManager:
         if not self.bridge:
             return {"executed": False, "mode": "live_mavlink", "reason": "bridge_unavailable"}
         result = await self.bridge.execute_program(program)
+        executed = any(item.get("executed") for item in result.values()) if isinstance(result, dict) else False
         self._think("LIVE MODE: SHEPHERD-IR program dispatched to MAVSDK/MAVLink bridge.", "decision")
-        return {"executed": True, "mode": "live_mavlink", "result": result}
+        return {"executed": executed, "mode": "live_mavlink", "result": result}
+
+    def mark_live_connected(self, drone_id: str, address: str):
+        drone = self.fleet.get(drone_id)
+        if not drone:
+            return
+        drone.live_connected = True
+        drone.live_address = address
+        drone.comms_status = "live_mavlink"
+        drone.flight_mode = "connected"
+        drone.signal_strength = 100.0
+
+    async def sync_live_telemetry(self) -> Dict:
+        if not self.live_mode or not self.bridge:
+            return {"synced": False, "reason": "live_mode_disabled"}
+
+        telemetry_by_drone = await self.bridge.get_all_telemetry()
+        synced = []
+        for drone_id, telemetry in telemetry_by_drone.items():
+            drone = self.fleet.get(drone_id)
+            if not drone:
+                continue
+
+            drone.live_connected = True
+            drone.live_address = telemetry.get("address") or drone.live_address
+            drone.live_last_telemetry_at = telemetry.get("updated_at") or drone.live_last_telemetry_at
+
+            if telemetry.get("telemetry_ok"):
+                drone.lat = telemetry.get("lat", drone.lat)
+                drone.lng = telemetry.get("lng", drone.lng)
+                drone.altitude_m = telemetry.get("alt", drone.altitude_m)
+                if telemetry.get("battery_percent") is not None:
+                    drone.battery = telemetry["battery_percent"]
+                drone.nav_state.position_source = "mavsdk_telemetry"
+                drone.nav_state.position_confidence = 1.0
+                drone.comms_status = "live_mavlink"
+                drone.flight_mode = telemetry.get("flight_mode") or "live"
+                synced.append(drone_id)
+            else:
+                drone.comms_status = "telemetry_wait"
+                drone.flight_mode = "telemetry_wait"
+
+        return {"synced": True, "drones": synced, "telemetry": telemetry_by_drone}
 
     def _perimeter_pattern(self, target_lat: float, target_lng: float, drones: List[Drone], priority: str = "medium") -> List[str]:
         """
@@ -636,6 +690,89 @@ class SwarmManager:
 
         return recalled, self.get_thinking_log(last_n=5)
 
+    def cancel_assignment(self, drone_ids: List[str], reason: str) -> List[Dict]:
+        """Clear newly assigned digital-twin routes after a pre-dispatch safety reject."""
+        cancelled = []
+        for drone_id in drone_ids:
+            drone = self.fleet.get(drone_id)
+            if not drone or drone.status not in ("assigned", "on_station"):
+                continue
+
+            drone.status = "idle"
+            drone.target = None
+            drone.waypoints = []
+            drone._waypoint_index = 0
+            drone.mission_target = None
+            drone.mission_start_time = None
+            drone.current_priority = "medium"
+            cancelled.append(drone_id)
+
+        if cancelled:
+            self._think(
+                f"SAFETY REJECT: {', '.join(d.upper() for d in cancelled)} held at base. {reason}",
+                "critical",
+            )
+        return self.get_thinking_log(last_n=5)
+
+    def handle_obstacle_event(self, drone_id: str, distance_m: float, route_validator=None, shift_m: float = 5.0) -> Dict:
+        drone = self.fleet.get(drone_id)
+        if not drone:
+            return {"status": "rejected", "reason": "drone_not_found"}
+        if drone.status not in ("assigned", "on_station", "returning") or not drone.target:
+            return {"status": "ignored", "reason": "drone_not_on_active_route"}
+        if distance_m >= 2.0:
+            return {"status": "ignored", "reason": "distance_above_interrupt_threshold", "distance_m": distance_m}
+
+        current_index = drone._waypoint_index if drone.waypoints else None
+        original = drone.waypoints[current_index] if current_index is not None and current_index < len(drone.waypoints) else drone.target
+        patched = (original[0], original[1] + (shift_m / self.METERS_PER_LNG_DEG))
+
+        safety = None
+        if route_validator:
+            safety = route_validator(drone.id, (drone.lat, drone.lng), patched, drone.altitude_m)
+            if not safety.get("passed"):
+                self._think(
+                    f"OODA REJECT: {drone.id.upper()} obstacle bypass blocked by safety sandbox: {safety.get('issues')}",
+                    "critical",
+                )
+                return {
+                    "status": "rejected",
+                    "reason": "safety_violation",
+                    "safety": safety,
+                    "original": {"lat": original[0], "lng": original[1]},
+                    "patched": {"lat": patched[0], "lng": patched[1]},
+                }
+
+        if current_index is not None and current_index < len(drone.waypoints):
+            drone.waypoints[current_index] = patched
+        drone.target = patched
+
+        events = [
+            {"phase": "Observe", "message": f"{drone.id.upper()} distance sensor reported obstacle at {distance_m:.1f}m."},
+            {"phase": "Orient", "message": "Current route leg is inside the tactical interrupt threshold."},
+            {"phase": "Decide", "message": f"Bypass waypoint shifted {shift_m:.0f}m right and checked by geometric sandbox."},
+            {"phase": "Act", "message": "Digital-twin target updated; live mode will send the patched waypoint through the MAVSDK facade."},
+        ]
+        for event in events:
+            self._think(f"OODA {event['phase'].upper()}: {event['message']}", "decision")
+
+        if self.live_mode and self.bridge:
+            try:
+                import asyncio
+                asyncio.get_running_loop().create_task(self.bridge.goto_position(drone.id, patched[0], patched[1], drone.altitude_m))
+            except RuntimeError:
+                pass
+
+        return {
+            "status": "rerouted",
+            "drone_id": drone.id,
+            "distance_m": distance_m,
+            "original": {"lat": original[0], "lng": original[1]},
+            "patched": {"lat": patched[0], "lng": patched[1]},
+            "safety": safety,
+            "events": events,
+        }
+                 
     # ─── Crash & Recovery ─────────────────────────────────────────────────────
 
     def report_drone_lost(self, drone_id: str) -> Tuple[str, List[Dict]]:
@@ -712,6 +849,10 @@ class SwarmManager:
             drone.nav_hold = False
             drone._nav_hold_logged = False
             drone._nav_rtb_logged = False
+            drone.live_connected = False
+            drone.live_address = None
+            drone.live_last_telemetry_at = None
+            drone.flight_mode = "simulation"
             self._apply_thermal_throttling()
             
             self._think(
@@ -841,6 +982,9 @@ class SwarmManager:
 
         for drone in self.fleet.values():
             self._update_navigation_state(drone)
+
+            if self.live_mode and drone.live_connected:
+                continue
 
             if drone.status == "idle" and drone.battery < 100.0:
                 if self._distance_meters(drone.lat, drone.lng, drone.home[0], drone.home[1]) < 2:

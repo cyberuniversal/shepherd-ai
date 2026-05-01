@@ -70,9 +70,15 @@ const formatDroneLabel = (id) => {
   return `${prefix}${number || ''}`;
 };
 
-const MapComponent = ({ fleet, focusedDroneId }) => {
+const MapComponent = ({ fleet, focusedDroneId, operator }) => {
   const mapRef = useRef(null);
   const [trails, setTrails] = useState({});
+
+  const operatorReady = Boolean(operator?.active && operator.operator_lat !== null && operator.operator_lon !== null);
+  const operatorLat = operatorReady ? Number(operator.operator_lat) : null;
+  const operatorLng = operatorReady ? Number(operator.operator_lon) : null;
+  const operatorHeading = Number(operator?.operator_heading ?? 0);
+  const operatorAccuracyM = Number(operator?.accuracy_m || 25);
 
   const handleMapLoad = (event) => {
     const map = event.target;
@@ -234,6 +240,18 @@ const MapComponent = ({ fleet, focusedDroneId }) => {
       })),
   };
 
+  const operatorAccuracyZone = operatorReady ? {
+    type: 'FeatureCollection',
+    features: [{
+      type: 'Feature',
+      properties: { id: 'operator-accuracy' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [buildCirclePolygon(operatorLat, operatorLng, Math.min(Math.max(operatorAccuracyM, 8), 250))],
+      },
+    }],
+  } : emptyFeatureCollection;
+
   return (
     <div className="relative h-full w-full map-scanline">
       <Map
@@ -294,6 +312,19 @@ const MapComponent = ({ fleet, focusedDroneId }) => {
         />
       </Source>
 
+      <Source id="operator-accuracy" type="geojson" data={operatorAccuracyZone}>
+        <Layer
+          id="operator-accuracy-fill"
+          type="fill"
+          paint={{ 'fill-color': '#22d3ee', 'fill-opacity': 0.08 }}
+        />
+        <Layer
+          id="operator-accuracy-outline"
+          type="line"
+          paint={{ 'line-color': '#22d3ee', 'line-width': 1.5, 'line-opacity': 0.7, 'line-dasharray': [1, 1.2] }}
+        />
+      </Source>
+
       {targetCenters.map((target) => (
         <Marker
           key={target.id}
@@ -307,6 +338,30 @@ const MapComponent = ({ fleet, focusedDroneId }) => {
             </div>
           </Marker>
       ))}
+
+      {operatorReady && (
+        <Marker longitude={operatorLng} latitude={operatorLat} anchor="center" style={{ zIndex: 80 }}>
+          <div className="relative group h-12 w-12 text-cyan-400">
+            <div className="absolute bottom-full left-1/2 mb-2 min-w-44 -translate-x-1/2 rounded border border-cyan-400/40 bg-card p-2 text-[10px] font-mono text-muted-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+              <strong className="text-cyan-400">OPERATOR</strong><br />
+              <span>Heading:</span> {Math.round(operatorHeading)}°<br />
+              <span>Accuracy:</span> {Math.round(operatorAccuracyM)}m<br />
+              <span>Source:</span> {operator.heading_source || 'device'}
+            </div>
+            <div className="absolute inset-0 rounded-full border border-cyan-400/50 bg-cyan-400/10 shadow-[0_0_18px_rgba(34,211,238,0.45)]" />
+            <div
+              className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cyan-200 bg-cyan-400/25"
+              style={{ transform: `translate(-50%, -50%) rotate(${operatorHeading}deg)` }}
+            >
+              <div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 -translate-y-2 border-x-[6px] border-b-[12px] border-x-transparent border-b-cyan-200" />
+              <div className="absolute inset-2 rounded-full bg-cyan-300" />
+            </div>
+            <div className="absolute left-1/2 top-full mt-1 -translate-x-1/2 rounded border border-cyan-400/60 bg-card/90 px-1.5 py-0.5 text-[9px] font-bold leading-none text-cyan-200 shadow-lg">
+              OP
+            </div>
+          </div>
+        </Marker>
+      )}
 
       {/* Render Landmarks */}
       {LANDMARKS.map(landmark => {
@@ -392,6 +447,7 @@ const MapComponent = ({ fleet, focusedDroneId }) => {
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-blue-500" />Returning</div>
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-muted-foreground" />Idle</div>
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-destructive" />Offline</div>
+        <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full border border-cyan-200 bg-cyan-400" />Operator</div>
       </div>
     </div>
   );

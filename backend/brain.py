@@ -6,6 +6,31 @@ import re
 # Arabic-Indic numeral mapping
 ARABIC_INDIC_MAP = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
 
+NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "واحد": 1,
+    "اثنين": 2,
+    "إثنين": 2,
+    "ثلاثة": 3,
+    "اربعة": 4,
+    "أربعة": 4,
+    "خمسة": 5,
+    "ستة": 6,
+    "سبعة": 7,
+    "ثمانية": 8,
+    "تسعة": 9,
+    "عشرة": 10,
+}
+
 class OllamaClient:
     def __init__(self, base_url: str = "http://localhost:11434"):
         self.base_url = base_url
@@ -45,9 +70,22 @@ class MissionParser:
         self.client = OllamaClient()
         self._ollama_available = None  # Cached availability check
 
+    def status(self) -> Dict[str, Any]:
+        return {
+            "model": self.model_name,
+            "ollama_available": bool(self._ollama_available),
+            "mode": "llm" if self._ollama_available else "heuristic_fallback",
+        }
+
     def _normalize_arabic_numerals(self, text: str) -> str:
         """Converts Arabic-Indic numerals (٠-٩) to Western numerals (0-9)."""
         return text.translate(ARABIC_INDIC_MAP)
+
+    def _normalize_number_words(self, text: str) -> str:
+        normalized = self._normalize_arabic_numerals(text)
+        for word, value in NUMBER_WORDS.items():
+            normalized = re.sub(rf'\b{re.escape(word.lower())}\b', str(value), normalized, flags=re.IGNORECASE)
+        return normalized
 
     def _detect_pattern(self, lower_text: str) -> str:
         if any(kw in lower_text for kw in ["scan", "sweep", "search", "مسح", "تمشيط"]):
@@ -62,7 +100,8 @@ class MissionParser:
         lower = text.lower()
         action_terms = [
             "attack", "strike", "secure", "defend", "protect", "recon", "observe", "scout", "scan",
-            "search", "sweep", "patrol", "return", "recall", " هجوم", "تأمين", "استطلاع", "مسح", "تمشيط", "عودة"
+            "search", "sweep", "patrol", "return", "recall", "bring", "rendezvous", "come to",
+            " هجوم", "تأمين", "استطلاع", "مسح", "تمشيط", "عودة"
         ]
         return any(term in lower for term in action_terms)
 
@@ -98,6 +137,7 @@ class MissionParser:
             "secure": ["secure", "defend", "protect", "تأمين", "حماية", "أمّن"],
             "recon": ["recon", "reconnaissance", "observe", "استطلاع", "مراقبة", "راقب"],
             "scout": ["scout", "scan", "search", "sweep", "patrol", "تمشيط", "بحث", "مسح", "دورية"],
+            "rendezvous": ["bring", "come to", "rendezvous", "meet", "link up"],
             "return": ["return", "recall", "come back", "rtb", "عودة", "ارجع", "رجوع"],
         }
         for act, keywords in action_keywords.items():
@@ -142,10 +182,12 @@ class MissionParser:
             You are a Saudi military AI tactical parser. Extract the intent and target from the following command.
             Map Arabic terms to actions (e.g., تمشيط = scout, استطلاع = recon, تأمين = secure, هجوم = attack).
             Detect pattern as perimeter, lawn_mower, or spiral.
+            If the target is the operator/current commander position ("me", "my location", "to me"), set target_reference to "operator" instead of inventing a place name.
             Output ONLY valid JSON in the following format:
             {{
-                "action": "scout | recon | secure | attack",
+                "action": "scout | recon | secure | attack | rendezvous | return",
                 "target_zone": "name of the area or coordinates",
+                "target_reference": "operator | none",
                 "priority": "high | medium | low",
                 "pattern": "perimeter | lawn_mower | spiral"
             }}
@@ -174,8 +216,16 @@ class MissionParser:
         # These run regardless of parser to guarantee extraction
         
         lower_input = user_input.lower()
-        normalized_input = self._normalize_arabic_numerals(lower_input)
+        normalized_input = self._normalize_number_words(lower_input)
         parsed["pattern"] = self._detect_pattern(lower_input)
+
+        operator_reference = re.search(
+            r'\b(?:to|at|near|towards)\s+(?:me|my position|my location|my current position|the operator|operator|commander)\b|(?:إلى|الى)\s+(?:موقعي|مكاني|القائد)',
+            normalized_input,
+        )
+        if operator_reference or parsed.get("target_reference") == "operator":
+            parsed["target_reference"] = "operator"
+            parsed["target_zone"] = "operator_current_position"
         
         # Extract explicit drones — includes all fleet members
         known_drones = [
@@ -190,14 +240,14 @@ class MissionParser:
 
         # Extract drone count from phrases like "send 3 drones", "deploy 4 units", "أرسل ٤ طائرات"
         count_match = re.search(
-            r'(?:send|deploy|dispatch|make|go|أرسل|وجه|ابعث)\s+(\d+)\s+(?:drone|drones|unit|units|طائر|طائرات|وحد)',
+            r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث)\s+(\d+)\s+(?:drone|drones|unit|units|طائر|طائرات|وحد)',
             normalized_input
         )
         if count_match:
             parsed["drone_count"] = int(count_match.group(1))
         else:
             verb_count = re.search(
-                r'(?:send|deploy|dispatch|make|go|أرسل|وجه|ابعث)\s+(\d+)\s+(?:to|at|near|towards|إلى|الى)',
+                r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث)\s+(\d+)\s+(?:to|at|near|towards|إلى|الى)',
                 normalized_input
             )
             bare_count = re.match(r'^(\d+)\s+(?:to|at|near|towards|إلى|الى)', normalized_input)
@@ -222,10 +272,10 @@ class MissionParser:
             parsed["target_zone"] = "coordinates"
             
         # Dynamically extract target zone using regex if parser missed it
-        if parsed.get("target_zone") in ["unknown", "", None, "undefined"]:
+        if parsed.get("target_reference") != "operator" and parsed.get("target_zone") in ["unknown", "", None, "undefined"]:
             # Try specific verb patterns first, then generic "to X" as fallback
             patterns = [
-                r'(?:go to|head to|scout|secure|attack|target|towards)\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:go to|head to|bring|move|guide|scout|secure|attack|target|towards)\s+(.+?)(?:$|\.|!| and|,)',
                 r'(?:drones?|units?)\s+to\s+(.+?)(?:$|\.|!| and|,)',
                 r'(?:إلى|الى)\s+(.+?)(?:$|\.|!| و|,)',
                 r'\bto\s+(.+?)(?:$|\.|!| and|,)',

@@ -4,3 +4,5 @@ node_modules/
 dist/
 *.pyc
 .env
+PX4-Autopilot/
+session-*.md

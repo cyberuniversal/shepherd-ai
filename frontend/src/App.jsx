@@ -75,11 +75,21 @@ function App() {
   const [activeTab, setActiveTab] = useState('logs'); // 'logs' | 'thinking' | 'program'
   const [wsFailureCount, setWsFailureCount] = useState(0);
   const [fleetAlert, setFleetAlert] = useState(false);
+  const [operatorLinkEnabled, setOperatorLinkEnabled] = useState(false);
+  const [operatorLinkStatus, setOperatorLinkStatus] = useState('offline');
+  const [operatorPosition, setOperatorPosition] = useState(null);
+  const [operatorHeading, setOperatorHeading] = useState(null);
+  const [operatorBackendState, setOperatorBackendState] = useState(null);
+  const [isConnectingSitl, setIsConnectingSitl] = useState(false);
+  const [px4StatusMessage, setPx4StatusMessage] = useState('PX4 SITL not connected.');
+  const [commandDiagnostics, setCommandDiagnostics] = useState(null);
   const logsEndRef = useRef(null);
   const thinkingEndRef = useRef(null);
   const wsDisconnectLogged = useRef(false);
   const previousFleetStatusesRef = useRef({});
   const tempCommitTimeoutRef = useRef(null);
+  const operatorPositionRef = useRef(null);
+  const operatorHeadingRef = useRef(null);
 
   const addLog = (text, type = "info") => {
     setLogs(prev => [...prev, { id: Date.now() + Math.random(), text, type }]);
@@ -105,12 +115,119 @@ function App() {
   }, []);
 
   useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs]);
+    if (!operatorLinkEnabled || typeof window === 'undefined') return undefined;
+
+    let watchId = null;
+    let pushInterval = null;
+    let disposed = false;
+
+    const appendOperatorLog = (text, type = 'info') => {
+      setLogs(prev => [...prev, { id: Date.now() + Math.random(), text, type }]);
+    };
+
+    const postOperatorState = async (active = true) => {
+      const position = operatorPositionRef.current;
+      const heading = operatorHeadingRef.current;
+      if (active && (!position || heading === null)) return;
+
+      await fetch(`${API_BASE_URL}/api/operator/state`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(active ? {
+          active: true,
+          operator_lat: position.lat,
+          operator_lon: position.lng,
+          operator_heading: heading,
+          accuracy_m: position.accuracy,
+          heading_source: position.headingSource || 'device',
+        } : { active: false }),
+      });
+    };
+
+    const updateHeading = (event) => {
+      const compassHeading = typeof event.webkitCompassHeading === 'number'
+        ? event.webkitCompassHeading
+        : typeof event.alpha === 'number'
+          ? (360 - event.alpha) % 360
+          : null;
+
+      if (compassHeading === null) return;
+      const normalized = Math.round(compassHeading) % 360;
+      operatorHeadingRef.current = normalized;
+      setOperatorHeading(normalized);
+    };
+
+    const startOperatorLink = async () => {
+      try {
+        setOperatorLinkStatus('requesting');
+
+        const OrientationEvent = window.DeviceOrientationEvent;
+        if (OrientationEvent?.requestPermission) {
+          const permission = await OrientationEvent.requestPermission();
+          if (permission !== 'granted') throw new Error('device orientation permission denied');
+        }
+        window.addEventListener('deviceorientation', updateHeading, true);
+
+        if (!navigator.geolocation) throw new Error('geolocation unavailable in this browser');
+        watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            if (disposed) return;
+            const coords = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              headingSource: 'device',
+            };
+            operatorPositionRef.current = coords;
+            if (operatorHeadingRef.current === null && typeof position.coords.heading === 'number') {
+              operatorHeadingRef.current = Math.round(position.coords.heading) % 360;
+              setOperatorHeading(operatorHeadingRef.current);
+            }
+            if (operatorHeadingRef.current === null) {
+              operatorHeadingRef.current = 0;
+              coords.headingSource = 'fallback_north';
+              setOperatorHeading(0);
+            }
+            setOperatorPosition(coords);
+            setOperatorLinkStatus('linked');
+          },
+          (error) => {
+            if (disposed) return;
+            setOperatorLinkStatus('error');
+            appendOperatorLog(`Operator Link failed: ${error.message}`, 'error');
+          },
+          { enableHighAccuracy: true, maximumAge: 500, timeout: 5000 },
+        );
+
+        pushInterval = setInterval(() => {
+          postOperatorState(true).catch(() => {
+            if (!disposed) setOperatorLinkStatus('error');
+          });
+        }, 500);
+
+        appendOperatorLog('Operator Link enabled: pushing GPS and heading to backend.', 'success');
+      } catch (error) {
+        setOperatorLinkStatus('error');
+        appendOperatorLog(`Operator Link unavailable: ${error.message}`, 'error');
+      }
+    };
+
+    startOperatorLink();
+
+    return () => {
+      disposed = true;
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      if (pushInterval) clearInterval(pushInterval);
+      window.removeEventListener('deviceorientation', updateHeading, true);
+      postOperatorState(false).catch(() => {});
+      operatorPositionRef.current = null;
+      operatorHeadingRef.current = null;
+    };
+  }, [operatorLinkEnabled]);
 
   useEffect(() => {
-    thinkingEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [thinkingLog]);
+    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [logs]);
 
   useEffect(() => {
     const previousStatuses = previousFleetStatusesRef.current;
@@ -156,6 +273,9 @@ function App() {
         }
         if (data.thinking_log) {
           setThinkingLog(data.thinking_log);
+        }
+        if (data.operator) {
+          setOperatorBackendState(data.operator);
         }
       };
       
@@ -239,6 +359,61 @@ function App() {
     }
   };
 
+  const toggleOperatorLink = () => {
+    const nextValue = !operatorLinkEnabled;
+    setOperatorLinkEnabled(nextValue);
+    if (!nextValue) {
+      setOperatorLinkStatus('offline');
+      setOperatorPosition(null);
+      setOperatorHeading(null);
+    }
+  };
+
+  const toggleLiveMode = async () => {
+    const nextValue = !stats?.live_mode;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/live-mode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: nextValue })
+      });
+      if (!res.ok) throw new Error('Live mode update failed');
+      const data = await res.json();
+      addLog(`Live mode ${data.live_mode ? 'enabled' : 'disabled'}.`, data.live_mode ? 'error' : 'info');
+    } catch (error) {
+      addLog(`Failed to toggle live mode: ${error.message}`, 'error');
+    }
+  };
+
+  const connectPx4Sitl = async () => {
+    const selectedDrone = selectedDrones[0] || 'alpha-1';
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 14000);
+    setIsConnectingSitl(true);
+    setPx4StatusMessage(`Connecting ${selectedDrone} to PX4 SITL at udp://:14540...`);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/drone/sitl/connect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ drone_id: selectedDrone, address: 'udp://:14540', enable_live: true }),
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'PX4 SITL connection failed');
+      addLog(`PX4 SITL connected: ${data.drone_id} at ${data.address}. Live mode enabled.`, 'success');
+      setPx4StatusMessage(`Connected ${data.drone_id} to ${data.address}; waiting for telemetry.`);
+    } catch (error) {
+      const message = error.name === 'AbortError'
+        ? 'Timed out waiting for PX4 SITL at udp://:14540. Start PX4 SITL first, then click PX4 SITL again.'
+        : error.message;
+      addLog(`PX4 SITL connection failed: ${message}`, 'error');
+      setPx4StatusMessage(message);
+    } finally {
+      clearTimeout(timeoutId);
+      setIsConnectingSitl(false);
+    }
+  };
+
   const handleCommand = async (command) => {
     setIsLoading(true);
     playCommandSound();
@@ -249,17 +424,42 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command, selected_drones: selectedDrones })
       });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Command rejected by backend.');
+      }
       const data = await res.json();
+      setCommandDiagnostics({
+        parserSummary: data.parser_summary,
+        targetResolution: data.target_resolution || [],
+        safetyReports: data.safety_reports || [],
+        executionResults: data.execution_results || [],
+      });
 
       const intents = data.intents || (data.intent ? [data.intent] : []);
       intents.forEach((intent, index) => {
         addLog(
-          `Intent ${index + 1}/${intents.length}: Action=${intent.action}, Target=${intent.target_zone}, Count=${intent.drone_count || 1}, Pattern=${intent.pattern || 'perimeter'}`,
+          `Intent ${index + 1}/${intents.length}: Parser=${intent.parser || 'unknown'}, Action=${intent.action}, Target=${intent.target_zone}, Count=${intent.drone_count || 1}, Pattern=${intent.pattern || 'perimeter'}`,
           "info"
         );
       });
+      if (data.parser_summary) {
+        addLog(
+          `Parser pipeline: ${data.parser_summary.modes?.join(' + ') || data.parser_summary.mode}${data.parser_summary.fallback_used ? ' (fallback active)' : ''}.`,
+          data.parser_summary.fallback_used ? 'info' : 'success'
+        );
+      }
+      (data.target_resolution || []).forEach((target, index) => {
+        addLog(
+          `Target ${index + 1}: ${target.label || 'unknown'} via ${target.source} ${formatTargetCoordinates(target)}.`,
+          'info'
+        );
+      });
+      const safetyBlocked = data.safety_reports?.some(report => !report.passed);
       if (data.assigned && data.assigned.length > 0) {
         addLog(`Tasked: ${data.assigned.join(', ')}`, "success");
+      } else if (safetyBlocked) {
+        addLog("Mission blocked by Geometric Sandbox before dispatch.", "error");
       } else {
         addLog("No drones available for assignment.", "error");
         setFleetAlert(true);
@@ -280,8 +480,15 @@ function App() {
           sandboxPassed ? "success" : "error"
         );
       }
-    } catch {
-      addLog("Failed to execute command. Backend unreachable.", "error");
+      if (data.safety_reports?.length) {
+        const safetyPassed = data.safety_reports.every(report => report.passed);
+        addLog(
+          `Geometric Sandbox: ${safetyPassed ? 'all route legs cleared' : 'mission blocked'} (${data.safety_reports.reduce((total, report) => total + (report.checked_legs || 0), 0)} legs checked).`,
+          safetyPassed ? "success" : "error"
+        );
+      }
+    } catch (error) {
+      addLog(`Failed to execute command: ${error.message}`, "error");
     } finally {
       setIsLoading(false);
       setSelectedDrones([]);
@@ -320,10 +527,22 @@ function App() {
   };
 
   const exportManifest = () => {
+    const timestamp = new Date().toISOString();
     const manifest = {
-      timestamp: new Date().toISOString(),
+      timestamp,
       ambient_temperature: ambientTemp,
       ambient_temperature_source: tempSource,
+      operator_link: {
+        enabled: operatorLinkEnabled,
+        status: operatorLinkStatus,
+        position: operatorPosition,
+        heading: operatorHeading,
+        backend_state: operatorBackendState,
+      },
+      live_mode: liveMode,
+      live_connected_drones: stats?.live_connected_drones || [],
+      command_diagnostics: commandDiagnostics,
+      px4_status_message: px4StatusMessage,
       fleet_status: fleet,
       fleet_stats: stats,
       mission_programs: missionPrograms,
@@ -335,7 +554,7 @@ function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `shepherd_manifest_${Date.now()}.json`;
+    a.download = `shepherd_manifest_${timestamp.replace(/[:.]/g, '-')}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -356,6 +575,27 @@ function App() {
   const allOffline = fleet.length > 0 && fleet.every(drone => drone.status === 'offline');
   const tempValue = ambientTemp ?? 30;
   const latestOodaEvents = actionScripts.flatMap(script => script.ooda_events || []).slice(-4);
+  const liveMode = Boolean(stats?.live_mode);
+  const liveConnected = stats?.live_connected ?? 0;
+  const bridgeAvailable = stats?.bridge?.mavsdk_available ?? false;
+  const bridgeStatus = stats?.bridge;
+  const connectedBridgeDrones = bridgeStatus?.connected_drones || [];
+  const connectionAttempts = bridgeStatus?.connection_attempts || {};
+  const latestConnectionAttempt = Object.values(connectionAttempts).at(-1);
+  const operatorBackendLinked = Boolean(operatorBackendState?.active && operatorBackendState?.operator_lat !== null && operatorBackendState?.operator_lon !== null);
+  const operatorMapState = operatorBackendLinked
+    ? operatorBackendState
+    : operatorPosition
+      ? {
+          active: operatorLinkEnabled,
+          operator_lat: operatorPosition.lat,
+          operator_lon: operatorPosition.lng,
+          operator_heading: operatorHeading,
+          accuracy_m: operatorPosition.accuracy,
+          heading_source: operatorPosition.headingSource,
+          updated_at: null,
+        }
+      : null;
 
   const formatDuration = (seconds = 0) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -367,6 +607,11 @@ function App() {
     if (confidence < 0.3) return 'text-destructive';
     if (confidence < 0.65) return 'text-amber-400';
     return 'text-primary';
+  };
+
+  const formatTargetCoordinates = (target) => {
+    if (target?.lat === undefined || target?.lng === undefined) return '(no GPS target)';
+    return `(${Number(target.lat).toFixed(5)}, ${Number(target.lng).toFixed(5)})`;
   };
 
   return (
@@ -416,11 +661,45 @@ function App() {
           <Button
             variant="outline"
             size="sm"
+            onClick={toggleLiveMode}
+            className={`text-xs ${liveMode ? 'border-destructive text-destructive bg-destructive/10' : 'text-muted-foreground'}`}
+            title="Toggle MAVSDK/MAVLink dispatch"
+          >
+            {liveMode ? 'LIVE MAVLINK' : 'SIM MODE'}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={connectPx4Sitl}
+            disabled={isConnectingSitl}
+            className={`text-xs ${liveConnected > 0 ? 'border-cyan-400 text-cyan-400 bg-cyan-400/10' : 'text-muted-foreground'}`}
+            title="Connect selected drone, or alpha-1, to PX4 SITL at udp://:14540"
+          >
+            {isConnectingSitl ? 'CONNECTING' : `PX4 SITL ${liveConnected || ''}`}
+          </Button>
+          {stats && !bridgeAvailable && (
+            <span className="text-[10px] font-mono uppercase text-amber-400">MAVSDK missing</span>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
             onClick={toggleGpsDenied}
             className={`text-xs ${gpsDenied ? 'border-destructive text-destructive bg-destructive/10' : 'text-muted-foreground'}`}
           >
             GPS {gpsDenied ? 'DENIED' : 'OK'}
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleOperatorLink}
+            className={`text-xs ${operatorLinkEnabled ? 'border-cyan-400 text-cyan-400 bg-cyan-400/10' : 'text-muted-foreground'}`}
+            title="Share operator GPS and compass heading with backend"
+          >
+            OP LINK {operatorLinkEnabled ? 'ON' : 'OFF'}
+          </Button>
+          <span className={`text-[10px] font-mono uppercase ${operatorLinkStatus === 'error' ? 'text-destructive' : operatorLinkEnabled ? 'text-cyan-400' : 'text-muted-foreground'}`}>
+            {operatorLinkEnabled ? `${operatorBackendLinked ? 'backend linked' : operatorLinkStatus} ${operatorHeading !== null ? `${operatorHeading}°` : '--'}` : 'operator offline'}
+          </span>
           <div className="flex items-center gap-2 text-primary min-w-44">
             <ThermometerSun size={16} className={tempValue > 45 ? 'text-destructive' : 'text-primary'} />
             <input
@@ -461,7 +740,7 @@ function App() {
           <div className="max-w-md rounded-xl border border-destructive/60 bg-card p-6 text-center shadow-[0_0_30px_rgba(239,68,68,0.25)]">
             <h2 className="text-lg font-bold uppercase tracking-widest text-destructive">Backend offline</h2>
             <p className="mt-3 text-sm text-muted-foreground">
-              Start the app from the project root with <code className="text-primary">npm run dev</code>. It launches both backend and frontend.
+              Start the app with <code className="text-primary">npm run dev</code> from either the project root or frontend folder. It launches both backend and frontend.
             </p>
           </div>
         </div>
@@ -496,7 +775,7 @@ function App() {
 
         {/* Map Area */}
         <div className="flex-1 relative">
-          <MapComponent fleet={fleet} focusedDroneId={focusedDroneId} />
+          <MapComponent fleet={fleet} focusedDroneId={focusedDroneId} operator={operatorMapState} />
           <DemoMode
             addLog={addLog}
             handleCommand={handleCommand}
@@ -617,6 +896,34 @@ function App() {
                 ))}
               </div>
 
+              {/* Live Bridge Status */}
+              <Card className="p-3 bg-background/40 border-cyan-400/30">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">PX4 / MAVSDK Bridge</div>
+                    <div className="mt-1 text-[10px] font-mono text-muted-foreground">
+                      {bridgeAvailable ? 'MAVSDK installed' : 'MAVSDK unavailable'} | {liveMode ? 'live dispatch armed' : 'simulation only'}
+                    </div>
+                  </div>
+                  <Badge variant={liveConnected > 0 ? 'default' : 'outline'} className="text-[9px] uppercase">
+                    {liveConnected > 0 ? `${liveConnected} linked` : 'not linked'}
+                  </Badge>
+                </div>
+                <div className="mt-2 rounded border border-border bg-card/60 p-2 text-[10px] leading-relaxed text-muted-foreground">
+                  <div><span className="text-foreground">Endpoint:</span> {bridgeStatus?.expected_sitl_endpoint || 'udp://:14540'}</div>
+                  <div><span className="text-foreground">Status:</span> {px4StatusMessage}</div>
+                  {connectedBridgeDrones.length > 0 && (
+                    <div><span className="text-foreground">Connected:</span> {connectedBridgeDrones.map(drone => `${drone.drone_id}@${drone.address}`).join(', ')}</div>
+                  )}
+                  {latestConnectionAttempt && (
+                    <div><span className="text-foreground">Last attempt:</span> {latestConnectionAttempt.state} - {latestConnectionAttempt.message}</div>
+                  )}
+                  <div className="mt-1 text-[9px] uppercase tracking-wider text-amber-400">
+                    Start PX4 SITL separately, then click PX4 SITL here.
+                  </div>
+                </div>
+              </Card>
+
               {/* Tab Toggle: Logs vs Thinking vs Program */}
               <div className="flex border-b border-border">
                 <button
@@ -695,6 +1002,49 @@ function App() {
                 <div className="flex flex-col gap-3">
                   {missionPrograms.length === 0 && actionScripts.length === 0 && (
                     <p className="text-xs text-muted-foreground italic">No mission program compiled yet. Send a command to see SHEPHERD-IR and the temporary Python action script.</p>
+                  )}
+                  {commandDiagnostics && (
+                    <Card className="p-3 bg-background/40 border-primary/40">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-xs font-bold uppercase tracking-widest text-primary">Prompt-To-Drone Proof</span>
+                        <Badge variant={commandDiagnostics.parserSummary?.fallback_used ? 'outline' : 'default'} className="text-[9px] uppercase">
+                          {commandDiagnostics.parserSummary?.modes?.join('+') || commandDiagnostics.parserSummary?.mode || 'parser'}
+                        </Badge>
+                      </div>
+                      <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] font-mono text-muted-foreground">
+                        <div className="rounded border border-border bg-card/60 p-2">
+                          <div className="text-foreground">Parser</div>
+                          <div>Model: {commandDiagnostics.parserSummary?.model || 'gemma:2b'}</div>
+                          <div>Ollama: {commandDiagnostics.parserSummary?.ollama_available ? 'online' : 'offline'}</div>
+                          <div>Fallback: {commandDiagnostics.parserSummary?.fallback_used ? 'yes' : 'no'}</div>
+                        </div>
+                        <div className="rounded border border-border bg-card/60 p-2">
+                          <div className="text-foreground">Execution</div>
+                          <div>{commandDiagnostics.executionResults.length || 0} result bundle(s)</div>
+                          <div>{commandDiagnostics.executionResults.map(result => result.mode || (result.executed ? 'executed' : 'pending')).join(', ') || 'none'}</div>
+                        </div>
+                      </div>
+                      {commandDiagnostics.targetResolution.length > 0 && (
+                        <div className="mt-2 rounded border border-border bg-card/60 p-2 text-[10px] font-mono text-muted-foreground">
+                          <div className="mb-1 text-foreground">Target Resolution</div>
+                          {commandDiagnostics.targetResolution.map((target, index) => (
+                            <div key={`${target.source}-${index}`}>
+                              {index + 1}. {target.label || 'unknown'} via {target.source} {formatTargetCoordinates(target)}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {commandDiagnostics.safetyReports.length > 0 && (
+                        <div className="mt-2 rounded border border-border bg-card/60 p-2 text-[10px] font-mono text-muted-foreground">
+                          <div className="mb-1 text-foreground">Safety</div>
+                          {commandDiagnostics.safetyReports.map((report, index) => (
+                            <div key={`safety-${index}`} className={report.passed ? 'text-primary' : 'text-destructive'}>
+                              {index + 1}. {report.passed ? 'passed' : 'blocked'} | {report.engine} | {report.checked_legs || 0} leg(s)
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </Card>
                   )}
                   {actionScripts.map((script) => (
                     <Card key={script.script_id} className="p-3 bg-background/40 border-cyan-400/40">

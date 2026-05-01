@@ -4,7 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const frontendRoot = path.join(root, 'frontend');
+const viteBin = path.join(frontendRoot, 'node_modules', 'vite', 'bin', 'vite.js');
 
 const pythonCandidates = [
   path.join(root, '.venv', 'Scripts', 'python.exe'),
@@ -14,18 +15,28 @@ const pythonCandidates = [
 
 const pythonCommand = pythonCandidates.find(candidate => candidate === 'python' || candidate === 'python3' || existsSync(candidate));
 
+if (!pythonCommand) {
+  console.error('No Python interpreter found. Create .venv or install Python first.');
+  process.exit(1);
+}
+
+if (!existsSync(viteBin)) {
+  console.error('Vite is not installed. Run npm install inside frontend first.');
+  process.exit(1);
+}
+
 const processes = [
   spawn(
     pythonCommand,
-    ['-m', 'uvicorn', 'backend.main:app', '--port', '8000', '--reload'],
+    ['-m', 'uvicorn', 'backend.main:app', '--host', '0.0.0.0', '--port', '8000', '--reload'],
     {
       cwd: root,
       stdio: 'inherit',
       env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
     }
   ),
-  spawn(npmCommand, ['--prefix', 'frontend', 'run', 'dev'], {
-    cwd: root,
+  spawn(process.execPath, [viteBin, '--host', '0.0.0.0'], {
+    cwd: frontendRoot,
     stdio: 'inherit',
   }),
 ];

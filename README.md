@@ -55,7 +55,23 @@ curl -X POST http://localhost:8000/api/live-mode \
   -d '{"enabled":true}'
 ```
 
+For the default PX4 SITL UDP endpoint, use the dashboard `PX4 SITL` button or call:
+
+```bash
+curl -X POST http://localhost:8000/api/drone/sitl/connect \
+  -H "Content-Type: application/json" \
+  -d '{"drone_id":"alpha-1","address":"udp://:14540","enable_live":true}'
+```
+
+When live mode is enabled, Shepherd-AI still compiles the mission through `SHEPHERD-IR` and the safety sandbox first. Connected drones then receive commands through the constrained MAVSDK facade, and MAVSDK telemetry updates the dashboard instead of simulated map movement.
+
 ## Quick Start
+
+Additional guides:
+
+- `PX4_SITL_SETUP.md` explains how to start PX4 SITL before clicking the dashboard `PX4 SITL` button.
+- `LLM_SETUP.md` explains how to enable Ollama-backed parsing and how to verify parser mode.
+- `JUDGE_DEMO.md` gives a concise judge presentation flow.
 
 ### One Command
 
