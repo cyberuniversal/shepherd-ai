@@ -102,7 +102,7 @@ const CommandConsole = ({ onCommand, isLoading }) => {
           disabled={!input.trim() || isLoading}
           className="h-12 px-6 font-bold tracking-widest uppercase"
         >
-          {isLoading ? 'Wait' : 'Exec'}
+          {isLoading ? 'Wait' : 'Plan'}
         </Button>
       </div>
 
@@ -130,7 +130,7 @@ const CommandConsole = ({ onCommand, isLoading }) => {
       
       <div className="flex items-center gap-2 text-xs text-muted-foreground bg-accent/10 px-3 py-2 rounded-md">
         <AlertTriangle size={14} className="text-accent" />
-        <span>NLP Engine Active. Multi-lingual intent extraction.</span>
+        <span>Plan-first mode active. Confirm before dispatch.</span>
       </div>
     </form>
   );

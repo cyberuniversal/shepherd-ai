@@ -8,13 +8,14 @@ Bridging the gap between strategic human intent and multi-agent execution.
 flowchart LR
   A[Voice or Text Command] --> B[NLP Parser]
   B --> C[Intent JSON]
-  C --> D[Swarm Allocation + Safety Checks]
-  D --> E[SHEPHERD-IR Mission Program]
-  E --> F[MAVSDK / MAVLink Commands]
-  F --> G[PX4 / ArduPilot Autopilot]
-  G --> H[Drone Motors + Telemetry]
-  D --> I[Digital Twin Simulation]
-  I --> J[Map + Thinking Log]
+  C --> D[Target Resolution + Safety Plan]
+  D --> E[Human Confirm / Cancel]
+  E --> F[SHEPHERD-IR Mission Program]
+  F --> G[MAVSDK / MAVLink Commands]
+  G --> H[PX4 / ArduPilot Autopilot]
+  H --> I[Drone Motors + Telemetry]
+  D --> J[Digital Twin Plan Preview]
+  J --> K[Map + Thinking Log]
 ```
 
 ## Prompt To Drone
@@ -23,11 +24,13 @@ Judges should see this as a compiler pipeline, not magic:
 
 1. The commander speaks or types natural language.
 2. `backend/brain.py` parses it into structured intent JSON.
-3. `backend/controller.py` allocates drones and applies battery, collision, GPS, and mesh safety checks.
-4. `backend/mission_program.py` compiles the mission into `SHEPHERD-IR/1.0`, a drone-readable step program.
-5. `backend/action_script.py` synthesizes a temporary Python action script through a restricted MAVSDK facade and validates it in a sandbox/static safety pass.
-6. In simulation mode, the digital twin executes the same validated route visually.
-7. In live mode, `backend/drone_bridge.py` maps the validated mission steps to MAVSDK/MAVLink calls like `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
+3. `POST /api/mission/plan` resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a plan preview without moving drones.
+4. The operator confirms or cancels the plan from the dashboard.
+5. `backend/controller.py` applies battery, collision, GPS, and mesh safety checks on the real fleet at confirmation time.
+6. `backend/mission_program.py` compiles the mission into `SHEPHERD-IR/1.0`, a drone-readable step program.
+7. `backend/action_script.py` synthesizes a temporary Python action script through a restricted MAVSDK facade and validates it in a sandbox/static safety pass.
+8. In simulation mode, the digital twin executes the same validated route visually.
+9. In live mode, `backend/drone_bridge.py` maps the validated mission steps to MAVSDK/MAVLink calls like `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
 
 Example `SHEPHERD-IR` step:
 
@@ -41,7 +44,7 @@ Example `SHEPHERD-IR` step:
 }
 ```
 
-The dashboard `Program` tab shows both the compiled `SHEPHERD-IR` and the generated disposable Python action script. The OODA overlay shows how synthetic sensor feedback can trigger a route recompile around an obstacle.
+The dashboard Plan Preview panel shows the pre-dispatch target marker, selected drones, safety result, and estimated execution mode. The `Program` tab shows both the compiled `SHEPHERD-IR` and the generated disposable Python action script. The OODA overlay shows how synthetic sensor feedback can trigger a route recompile around an obstacle.
 
 To connect a real PX4 SITL or MAVLink-capable drone:
 
@@ -64,6 +67,26 @@ curl -X POST http://localhost:8000/api/drone/sitl/connect \
 ```
 
 When live mode is enabled, Shepherd-AI still compiles the mission through `SHEPHERD-IR` and the safety sandbox first. Connected drones then receive commands through the constrained MAVSDK facade, and MAVSDK telemetry updates the dashboard instead of simulated map movement.
+
+## Mission Planning API
+
+Dashboard commands use the confirmation flow by default:
+
+```bash
+curl -X POST http://localhost:8000/api/mission/plan \
+  -H "Content-Type: application/json" \
+  -d '{"command":"Bring two drones to Al Nada","selected_drones":[]}'
+
+curl -X POST http://localhost:8000/api/mission/confirm \
+  -H "Content-Type: application/json" \
+  -d '{"plan_id":"plan-from-response"}'
+
+curl -X POST http://localhost:8000/api/mission/cancel \
+  -H "Content-Type: application/json" \
+  -d '{"plan_id":"plan-from-response"}'
+```
+
+The legacy `POST /api/command` path still exists for scripted demos and tests, but the judge-facing UI is plan-first.
 
 ## Quick Start
 
@@ -104,6 +127,7 @@ Open `http://localhost:5173/` in Chrome for voice input support.
 ## Features
 
 - Natural language command input in English and Arabic.
+- Plan-first mission preview with confirm/cancel before dispatch.
 - Voice input using the Web Speech API with EN/AR mode toggle.
 - 13-drone fleet across Alpha, Beta, Gamma, and Delta squadrons.
 - AI thinking log for transparent allocation decisions.
@@ -126,7 +150,7 @@ Open `http://localhost:5173/` in Chrome for voice input support.
 
 - Backend: Python 3.12, FastAPI, optional Ollama local LLM.
 - Frontend: React 19, Vite, MapLibre GL, shadcn-style UI primitives.
-- NLP: Gemma 2B via Ollama when available, deterministic heuristic fallback otherwise.
+- NLP: local Ollama (`llama3.1:8b` recommended, `gemma2:2b` low-resource option), deterministic heuristic fallback otherwise.
 - Drone I/O: optional MAVSDK bridge, disabled by default in simulation mode.
 
 ## Demo Commands

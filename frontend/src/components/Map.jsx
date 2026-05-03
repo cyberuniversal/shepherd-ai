@@ -70,7 +70,7 @@ const formatDroneLabel = (id) => {
   return `${prefix}${number || ''}`;
 };
 
-const MapComponent = ({ fleet, focusedDroneId, operator }) => {
+const MapComponent = ({ fleet, focusedDroneId, operator, planPreview }) => {
   const mapRef = useRef(null);
   const [trails, setTrails] = useState({});
 
@@ -251,6 +251,22 @@ const MapComponent = ({ fleet, focusedDroneId, operator }) => {
       },
     }],
   } : emptyFeatureCollection;
+  const planLatValue = Number(planPreview?.target?.lat);
+  const planLngValue = Number(planPreview?.target?.lng);
+  const planTargetReady = Number.isFinite(planLatValue) && Number.isFinite(planLngValue);
+  const planLat = planTargetReady ? planLatValue : null;
+  const planLng = planTargetReady ? planLngValue : null;
+  const planPreviewZone = planTargetReady ? {
+    type: 'FeatureCollection',
+    features: [{
+      type: 'Feature',
+      properties: { id: 'mission-plan-preview' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [buildCirclePolygon(planLat, planLng, 70)],
+      },
+    }],
+  } : emptyFeatureCollection;
 
   return (
     <div className="relative h-full w-full map-scanline">
@@ -325,6 +341,19 @@ const MapComponent = ({ fleet, focusedDroneId, operator }) => {
         />
       </Source>
 
+      <Source id="plan-preview-zone" type="geojson" data={planPreviewZone}>
+        <Layer
+          id="plan-preview-fill"
+          type="fill"
+          paint={{ 'fill-color': '#f59e0b', 'fill-opacity': 0.1 }}
+        />
+        <Layer
+          id="plan-preview-outline"
+          type="line"
+          paint={{ 'line-color': '#f59e0b', 'line-width': 2.5, 'line-opacity': 0.9, 'line-dasharray': [1.4, 1] }}
+        />
+      </Source>
+
       {targetCenters.map((target) => (
         <Marker
           key={target.id}
@@ -358,6 +387,20 @@ const MapComponent = ({ fleet, focusedDroneId, operator }) => {
             </div>
             <div className="absolute left-1/2 top-full mt-1 -translate-x-1/2 rounded border border-cyan-400/60 bg-card/90 px-1.5 py-0.5 text-[9px] font-bold leading-none text-cyan-200 shadow-lg">
               OP
+            </div>
+          </div>
+        </Marker>
+      )}
+
+      {planTargetReady && (
+        <Marker longitude={planLng} latitude={planLat} anchor="bottom" style={{ zIndex: 70 }}>
+          <div className="pointer-events-none flex flex-col items-center text-amber-400">
+            <div className="mb-1 rounded border border-amber-400/60 bg-card/90 px-2 py-1 text-[10px] font-bold uppercase tracking-wider shadow-lg">
+              PLAN: {planPreview.target_name || 'target'}
+            </div>
+            <div className="relative h-11 w-11">
+              <div className="absolute inset-0 rounded-full border border-amber-400/60 bg-amber-400/10 shadow-[0_0_20px_rgba(245,158,11,0.35)]" />
+              <div className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 border-amber-200 bg-amber-400" />
             </div>
           </div>
         </Marker>
@@ -448,6 +491,7 @@ const MapComponent = ({ fleet, focusedDroneId, operator }) => {
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-muted-foreground" />Idle</div>
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-destructive" />Offline</div>
         <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full border border-cyan-200 bg-cyan-400" />Operator</div>
+        <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rotate-45 border border-amber-200 bg-amber-400" />Plan Preview</div>
       </div>
     </div>
   );

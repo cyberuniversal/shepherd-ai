@@ -1,7 +1,11 @@
 import json
-import httpx
 from typing import Dict, Any, List
 import re
+
+try:
+    from backend.llm_provider import LLMProviderError, OllamaProvider
+except ImportError:
+    from llm_provider import LLMProviderError, OllamaProvider
 
 # Arabic-Indic numeral mapping
 ARABIC_INDIC_MAP = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
@@ -31,51 +35,31 @@ NUMBER_WORDS = {
     "عشرة": 10,
 }
 
-class OllamaClient:
-    def __init__(self, base_url: str = "http://localhost:11434"):
-        self.base_url = base_url
-
-    async def is_available(self) -> bool:
-        """Quick health check against the Ollama server."""
-        try:
-            async with httpx.AsyncClient() as client:
-                res = await client.get(f"{self.base_url}/api/tags", timeout=2.0)
-                return res.status_code == 200
-        except Exception:
-            return False
-
-    async def generate(self, model: str, prompt: str) -> str:
-        """Calls the local Ollama API."""
-        async with httpx.AsyncClient() as client:
-            try:
-                response = await client.post(
-                    f"{self.base_url}/api/generate",
-                    json={
-                        "model": model,
-                        "prompt": prompt,
-                        "stream": False,
-                        "format": "json" # Ollama supports strict JSON format
-                    },
-                    timeout=30.0 # 30s timeout — 2B models can be slow on CPU
-                )
-                response.raise_for_status()
-                return response.json().get("response", "{}")
-            except Exception as e:
-                print(f"Ollama generation failed: {e}")
-                return "{}"
-
 class MissionParser:
-    def __init__(self, model_name: str = "gemma:2b"):
-        self.model_name = model_name
-        self.client = OllamaClient()
-        self._ollama_available = None  # Cached availability check
+    def __init__(self, model_name: str | None = None):
+        self.provider = OllamaProvider(model_name=model_name)
+        self.model_name = self.provider.model_name
+        self._ollama_available = None  # Backward-compatible test override.
+        self._fallback_active = True
+        self._last_parser = "heuristic"
+        self._last_error = None
 
     def status(self) -> Dict[str, Any]:
+        provider_status = self.provider.status()
         return {
+            **provider_status,
             "model": self.model_name,
-            "ollama_available": bool(self._ollama_available),
-            "mode": "llm" if self._ollama_available else "heuristic_fallback",
+            "ollama_available": bool(provider_status.get("ollama_running")),
+            "llm_online": bool(provider_status.get("llm_online")),
+            "fallback_active": self._fallback_active,
+            "mode": "llm" if not self._fallback_active and provider_status.get("llm_online") else "heuristic_fallback",
+            "last_parser": self._last_parser,
+            "last_error": self._last_error or provider_status.get("last_error"),
         }
+
+    async def refresh_status(self) -> Dict[str, Any]:
+        await self.provider.refresh_status(force=True)
+        return self.status()
 
     def _normalize_arabic_numerals(self, text: str) -> str:
         """Converts Arabic-Indic numerals (٠-٩) to Western numerals (0-9)."""
@@ -157,44 +141,106 @@ class MissionParser:
         return {
             "action": action,
             "target_zone": "unknown",
+            "target_reference": None,
             "priority": priority,
             "pattern": pattern,
+            "needs_confirmation": True,
+            "confidence": 0.62,
+            "clarifying_question": None,
             "parser": "heuristic"
         }
+
+    def _coerce_llm_intent(self, parsed: Dict[str, Any]) -> Dict[str, Any]:
+        allowed_actions = {"scout", "recon", "secure", "attack", "rendezvous", "return"}
+        allowed_priorities = {"high", "medium", "low"}
+        allowed_patterns = {"perimeter", "lawn_mower", "spiral"}
+
+        action = str(parsed.get("action") or "scout").lower().strip()
+        priority = str(parsed.get("priority") or "medium").lower().strip()
+        pattern = str(parsed.get("pattern") or "perimeter").lower().strip()
+        target_reference = parsed.get("target_reference")
+        if isinstance(target_reference, str):
+            target_reference = target_reference.lower().strip()
+            if target_reference in ("none", "null", ""):
+                target_reference = None
+
+        try:
+            confidence = float(parsed.get("confidence", 0.75))
+        except (TypeError, ValueError):
+            confidence = 0.75
+
+        result = {
+            "action": action if action in allowed_actions else "scout",
+            "target_zone": parsed.get("target_zone") or "unknown",
+            "target_reference": target_reference if target_reference == "operator" else None,
+            "priority": priority if priority in allowed_priorities else "medium",
+            "pattern": pattern if pattern in allowed_patterns else "perimeter",
+            "needs_confirmation": bool(parsed.get("needs_confirmation", True)),
+            "confidence": round(max(0.0, min(confidence, 1.0)), 2),
+            "clarifying_question": parsed.get("clarifying_question"),
+        }
+
+        if parsed.get("drone_count") is not None:
+            try:
+                result["drone_count"] = max(1, int(parsed["drone_count"]))
+            except (TypeError, ValueError):
+                pass
+        if parsed.get("area_size_m") is not None:
+            try:
+                result["area_size_m"] = max(25, int(parsed["area_size_m"]))
+            except (TypeError, ValueError):
+                pass
+        if isinstance(parsed.get("target_coords"), dict):
+            try:
+                result["target_coords"] = {
+                    "lat": float(parsed["target_coords"]["lat"]),
+                    "lng": float(parsed["target_coords"]["lng"]),
+                }
+            except (KeyError, TypeError, ValueError):
+                pass
+        return result
 
     async def parse_intent(self, user_input: str) -> Dict[str, Any]:
         """
         Parses multi-lingual military jargon into a JSON structure.
         Falls back to pure heuristics if Ollama is unavailable.
         """
-        # Check Ollama availability (cache the result for the session)
-        if self._ollama_available is None:
-            self._ollama_available = await self.client.is_available()
-            if self._ollama_available:
-                print("Ollama connected - using LLM-assisted parsing")
-            else:
-                print("Ollama unavailable - using heuristic-only parsing")
-
         parsed = None
+        if self._ollama_available is False:
+            status = {"llm_online": False}
+        else:
+            status = await self.provider.refresh_status()
+            self._ollama_available = bool(status.get("ollama_running"))
         
-        if self._ollama_available:
+        if status.get("llm_online"):
             prompt = f"""
-            You are a Saudi military AI tactical parser. Extract the intent and target from the following command.
+            You are Shepherd-AI's tactical intent parser. Extract bounded mission intent from the command.
+            You do not fly drones. You only return structured JSON intent for a deterministic planner.
             Map Arabic terms to actions (e.g., تمشيط = scout, استطلاع = recon, تأمين = secure, هجوم = attack).
             Detect pattern as perimeter, lawn_mower, or spiral.
-            If the target is the operator/current commander position ("me", "my location", "to me"), set target_reference to "operator" instead of inventing a place name.
+            If the target is the operator/current commander position ("me", "my location", "to me"), set target_reference to "operator" and target_zone to "operator_current_position".
+            Do not invent coordinates. If a place name may be ambiguous, keep the place name and set needs_confirmation to true.
             Output ONLY valid JSON in the following format:
             {{
                 "action": "scout | recon | secure | attack | rendezvous | return",
-                "target_zone": "name of the area or coordinates",
-                "target_reference": "operator | none",
+                "target_zone": "name of the area, coordinates, or operator_current_position",
+                "target_reference": "operator or null",
+                "drone_count": 1,
                 "priority": "high | medium | low",
-                "pattern": "perimeter | lawn_mower | spiral"
+                "pattern": "perimeter | lawn_mower | spiral",
+                "area_size_m": 200,
+                "needs_confirmation": true,
+                "confidence": 0.86,
+                "clarifying_question": "short question or null"
             }}
             Command: {user_input}
             """
             
-            raw_response = await self.client.generate(self.model_name, prompt)
+            try:
+                raw_response = await self.provider.generate_json(prompt)
+            except LLMProviderError as exc:
+                self._last_error = str(exc)
+                raw_response = "{}"
             
             try:
                 parsed = json.loads(raw_response)
@@ -203,7 +249,11 @@ class MissionParser:
                 # If Ollama nested it in an 'intent' key, flatten it
                 if "intent" in parsed and isinstance(parsed["intent"], dict):
                     parsed = parsed["intent"]
+                parsed = self._coerce_llm_intent(parsed)
                 parsed["parser"] = "llm"
+                self._fallback_active = False
+                self._last_parser = "llm"
+                self._last_error = None
             except (json.JSONDecodeError, ValueError):
                 print("Failed to parse LLM JSON, falling back to heuristics.")
                 parsed = None
@@ -211,6 +261,8 @@ class MissionParser:
         # Use heuristic parser if LLM failed or unavailable
         if parsed is None:
             parsed = self._heuristic_parse(user_input)
+            self._fallback_active = True
+            self._last_parser = "heuristic"
             
         # ─── UNIVERSAL ENRICHMENT ─────────────────────────────────────────────
         # These run regardless of parser to guarantee extraction
@@ -275,13 +327,14 @@ class MissionParser:
         if parsed.get("target_reference") != "operator" and parsed.get("target_zone") in ["unknown", "", None, "undefined"]:
             # Try specific verb patterns first, then generic "to X" as fallback
             patterns = [
-                r'(?:go to|head to|bring|move|guide|scout|secure|attack|target|towards)\s+(.+?)(?:$|\.|!| and|,)',
-                r'(?:drones?|units?)\s+to\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:send|deploy|dispatch|bring|move|guide)\s+(?:\d+\s+)?(?:drones?|units?)?\s*(?:to|at|near|towards)\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:go to|head to|scout|secure|attack|target|towards)\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:drones?|units?)\s+(?:to|at|near|towards)\s+(.+?)(?:$|\.|!| and|,)',
                 r'(?:إلى|الى)\s+(.+?)(?:$|\.|!| و|,)',
                 r'\bto\s+(.+?)(?:$|\.|!| and|,)',
             ]
             for pattern in patterns:
-                match = re.search(pattern, lower_input)
+                match = re.search(pattern, normalized_input)
                 if match:
                     extracted = match.group(1).strip()
                     # Filter out noise words that aren't locations
@@ -308,6 +361,18 @@ class MissionParser:
         # Enforce action schema so it's never undefined
         if parsed.get("action") in ["unknown", "", None, "undefined"]:
             parsed["action"] = "scout"
+
+        parsed.setdefault("target_reference", None)
+        parsed.setdefault("needs_confirmation", True)
+        parsed.setdefault("confidence", 0.62 if parsed.get("parser") == "heuristic" else 0.75)
+        parsed.setdefault("clarifying_question", None)
+        if parsed.get("target_zone") in ["unknown", "", None, "undefined"] and parsed.get("action") != "return":
+            parsed["needs_confirmation"] = True
+            parsed["confidence"] = min(float(parsed.get("confidence", 0.5)), 0.5)
+            parsed["clarifying_question"] = "Which target zone should Shepherd-AI resolve for this mission?"
+        elif parsed.get("action") != "return" and not parsed.get("clarifying_question"):
+            target = parsed.get("target_zone") or "the selected target"
+            parsed["clarifying_question"] = f"Is {target} the correct target for this mission?"
 
         return parsed
 

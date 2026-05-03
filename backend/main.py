@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 import httpx
 import time
+import uuid
 
 try:
     from backend.action_script import synthesize_action_script
@@ -77,6 +78,9 @@ class ObstacleInput(BaseModel):
     drone_id: str
     distance_m: float
 
+class MissionPlanRef(BaseModel):
+    plan_id: str
+
 # ─── Known Locations (Riyadh landmarks) ───────────────────────────────────────
 
 KNOWN_LOCATIONS = {
@@ -113,6 +117,9 @@ OPERATOR_STATE = {
     "heading_source": None,
     "updated_at": None,
 }
+
+MISSION_PLAN_TTL_SECONDS = 10 * 60
+PENDING_MISSION_PLANS = {}
 
 # ─── Riyadh bounding box for fallback coords ─────────────────────────────────
 RIYADH_CENTER = (24.7136, 46.6753)
@@ -325,6 +332,245 @@ async def resolve_target(zone_name: str) -> tuple:
     detail = await resolve_target_detail(zone_name)
     return (detail["lat"], detail["lng"])
 
+def _clone_swarm_for_preview() -> SwarmManager:
+    preview = SwarmManager()
+    preview.live_mode = swarm.live_mode
+    preview.ambient_temp = swarm.ambient_temp
+    preview.ambient_temp_source = swarm.ambient_temp_source
+    preview.ambient_temp_updated_at = swarm.ambient_temp_updated_at
+    preview.wind_speed_ms = swarm.wind_speed_ms
+    preview.wind_direction_deg = swarm.wind_direction_deg
+    preview.gps_denied = swarm.gps_denied
+    preview._thinking_log = []
+    preview.protocol = None
+
+    for drone_id, source in swarm.fleet.items():
+        target = preview.fleet.get(drone_id)
+        if not target:
+            continue
+        target.lat = source.lat
+        target.lng = source.lng
+        target.battery = source.battery
+        target.status = source.status
+        target.target = tuple(source.target) if source.target else None
+        target.waypoints = [tuple(waypoint) for waypoint in source.waypoints]
+        target._waypoint_index = source._waypoint_index
+        target.mission_target = tuple(source.mission_target) if source.mission_target else None
+        target.altitude_m = source.altitude_m
+        target.current_priority = source.current_priority
+        target.mission_start_time = source.mission_start_time
+        target.nav_state.gps_available = source.nav_state.gps_available
+        target.nav_state.position_source = source.nav_state.position_source
+        target.nav_state.position_confidence = source.nav_state.position_confidence
+        target.nav_state.drift_accumulated_m = source.nav_state.drift_accumulated_m
+        target.nav_hold = source.nav_hold
+        target.comms_status = source.comms_status
+        target.mesh_route = list(source.mesh_route)
+        target.signal_strength = source.signal_strength
+        target.rotor_speed = source.rotor_speed
+        target.home = tuple(source.home)
+        target.live_connected = source.live_connected
+        target.live_address = source.live_address
+        target.live_last_telemetry_at = source.live_last_telemetry_at
+        target.flight_mode = source.flight_mode
+    return preview
+
+
+def _dedupe_thinking(entries: list[dict]) -> list[dict]:
+    deduped = []
+    seen = set()
+    for entry in entries:
+        key = (entry.get("time"), entry.get("message"))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(entry)
+    return deduped
+
+
+async def _resolve_intent_target(intent: dict) -> tuple[dict, dict]:
+    if "target_coords" in intent:
+        target_lat = intent["target_coords"]["lat"]
+        target_lng = intent["target_coords"]["lng"]
+        return {
+            "lat": target_lat,
+            "lng": target_lng,
+            "source": "explicit_coordinates",
+            "label": "coordinates",
+        }, {"lat": target_lat, "lng": target_lng}
+
+    if intent.get("target_reference") == "operator":
+        resolution_detail = _operator_position_target_detail()
+        return resolution_detail, {"lat": resolution_detail["lat"], "lng": resolution_detail["lng"]}
+
+    resolution_detail = await resolve_target_detail(intent.get("target_zone", ""))
+    return resolution_detail, {"lat": resolution_detail["lat"], "lng": resolution_detail["lng"]}
+
+
+async def _build_mission_from_intents(
+    command: str,
+    selected_drones: list[str],
+    intents: list[dict],
+    working_swarm: SwarmManager,
+    execute: bool,
+) -> dict:
+    all_assigned = []
+    all_thinking = []
+    target_coords = []
+    mission_programs = []
+    action_scripts = []
+    execution_results = []
+    safety_reports = []
+    target_resolution = []
+    multi_intent = len(intents) > 1
+
+    for intent in intents:
+        combined_drones = set(intent.get("explicit_drones", []))
+        if not multi_intent:
+            combined_drones.update(selected_drones)
+
+        if intent.get("action") == "return":
+            assigned_drones, thinking = working_swarm.recall_drones(
+                drone_ids=list(combined_drones) if combined_drones else None
+            )
+            all_assigned.extend(assigned_drones)
+            all_thinking.extend(thinking)
+            target_coords.append(None)
+            target_resolution.append({"source": "return_to_launch", "label": "home"})
+            drones = [working_swarm.fleet[d_id] for d_id in assigned_drones if d_id in working_swarm.fleet]
+            program = compile_mission_program(command, intent, None, drones, working_swarm.live_mode)
+            action_script = synthesize_action_script(program, use_reroute=False)
+            program_to_execute = action_script.get("rerouted_program", program)
+            safety_report = validate_mission_program(
+                program_to_execute,
+                {drone.id: (drone.lat, drone.lng) for drone in drones},
+            )
+            program_to_execute["geometric_safety"] = safety_report
+            safety_reports.append(safety_report)
+            mission_programs.append(program_to_execute)
+            action_scripts.append(action_script)
+            if execute and safety_report.get("passed"):
+                execution_results.append(await working_swarm.execute_mission_program(program_to_execute))
+            elif execute:
+                execution_results.append({"executed": False, "mode": "safety_reject", "safety": safety_report})
+            else:
+                execution_results.append({"executed": False, "mode": "pending_confirmation"})
+            continue
+
+        resolution_detail, target_coord = await _resolve_intent_target(intent)
+        target_lat = target_coord["lat"]
+        target_lng = target_coord["lng"]
+        drone_count = intent.get("drone_count", 1)
+        pattern = intent.get("pattern", "perimeter")
+        priority = intent.get("priority", "medium")
+        area_size_m = intent.get("area_size_m", 200)
+
+        assigned_drones, thinking = working_swarm.allocate_task(
+            target_lat, target_lng,
+            required_drones=drone_count,
+            specific_drones=list(combined_drones) if combined_drones else None,
+            pattern=pattern,
+            priority=priority,
+            area_size_m=area_size_m,
+        )
+        all_assigned.extend(assigned_drones)
+        all_thinking.extend(thinking)
+        target_coords.append(target_coord)
+        target_resolution.append(resolution_detail)
+        drones = [working_swarm.fleet[d_id] for d_id in assigned_drones if d_id in working_swarm.fleet]
+        program = compile_mission_program(command, intent, target_coord, drones, working_swarm.live_mode)
+        action_script = synthesize_action_script(program, use_reroute=True)
+        if action_script.get("sandbox", {}).get("passed") and execute:
+            _apply_reroute_patches_to_swarm(action_script.get("reroute_patches", []), working_swarm)
+        program_to_execute = action_script.get("rerouted_program", program)
+        safety_report = validate_mission_program(
+            program_to_execute,
+            {drone.id: (drone.lat, drone.lng) for drone in drones},
+        )
+        program_to_execute["geometric_safety"] = safety_report
+        safety_reports.append(safety_report)
+        mission_programs.append(program_to_execute)
+        action_scripts.append(action_script)
+        if execute and safety_report.get("passed"):
+            execution_results.append(await working_swarm.execute_mission_program(program_to_execute))
+        elif execute:
+            reason = "; ".join(safety_report.get("issues", [])) or "route failed geometric safety checks"
+            all_thinking.extend(working_swarm.cancel_assignment(assigned_drones, reason))
+            rejected = set(assigned_drones)
+            all_assigned = [drone_id for drone_id in all_assigned if drone_id not in rejected]
+            execution_results.append({"executed": False, "mode": "safety_reject", "safety": safety_report})
+        else:
+            execution_results.append({"executed": False, "mode": "pending_confirmation"})
+
+    all_assigned = list(dict.fromkeys(all_assigned))
+    return {
+        "intent": intents[0] if intents else {},
+        "intents": intents,
+        "assigned": all_assigned,
+        "target_coords": target_coords,
+        "target_resolution": target_resolution,
+        "mission_programs": mission_programs,
+        "action_scripts": action_scripts,
+        "execution_results": execution_results,
+        "safety_reports": safety_reports,
+        "parser_summary": {
+            **parser.status(),
+            "modes": list(dict.fromkeys(intent.get("parser", "unknown") for intent in intents)),
+            "fallback_used": any(intent.get("parser") != "llm" for intent in intents),
+        },
+        "thinking": _dedupe_thinking(all_thinking),
+    }
+
+
+def _build_plan_summary(plan_id: str, command: str, response: dict) -> dict:
+    intents = response.get("intents", [])
+    target = next((item for item in response.get("target_resolution", []) if item and item.get("lat") is not None), None)
+    safety_reports = response.get("safety_reports", [])
+    safety_passed = all(report.get("passed") for report in safety_reports) if safety_reports else True
+    safety_issues = [issue for report in safety_reports for issue in report.get("issues", [])]
+    confidence_values = []
+    for intent in intents:
+        try:
+            confidence_values.append(float(intent.get("confidence", 0.5)))
+        except (TypeError, ValueError):
+            confidence_values.append(0.5)
+    confidence = round(min(confidence_values), 2) if confidence_values else 0.0
+    patterns = list(dict.fromkeys(intent.get("pattern", "perimeter") for intent in intents if intent.get("action") != "return"))
+    primary_intent = intents[0] if intents else {}
+    programs = response.get("mission_programs") or [{}]
+    mode = programs[0].get(
+        "mode",
+        "live_mavlink" if swarm.live_mode else "digital_twin_simulation",
+    )
+    confirmable = bool(response.get("assigned")) and safety_passed
+    target_name = target.get("label") if target else "home"
+    question = primary_intent.get("clarifying_question")
+    if not question and target:
+        question = f"I found {target_name} at this location. Is this where you want the drones to go?"
+
+    return {
+        "plan_id": plan_id,
+        "command": command,
+        "target_name": target_name,
+        "target": {"lat": target["lat"], "lng": target["lng"]} if target else None,
+        "target_source": target.get("source") if target else "return_to_launch",
+        "target_reference": target.get("target_reference") if target else None,
+        "selected_drones": response.get("assigned", []),
+        "requested_drone_count": primary_intent.get("drone_count", 1),
+        "mission_pattern": " + ".join(patterns) if patterns else "return_to_launch",
+        "safety_passed": safety_passed,
+        "safety_issues": safety_issues,
+        "estimated_execution_mode": mode,
+        "needs_confirmation": True,
+        "confirmable": confirmable,
+        "confidence": confidence,
+        "clarifying_question": question,
+        "summary": (
+            f"I understand you want {primary_intent.get('drone_count', 1)} drone(s) to "
+            f"{primary_intent.get('action', 'execute')} at {target_name}."
+        ),
+    }
+
 # ─── API Endpoints ────────────────────────────────────────────────────────────
 
 @app.post("/api/operator/state")
@@ -371,143 +617,96 @@ async def report_obstacle(body: ObstacleInput):
     )
     return result
 
+@app.post("/api/mission/plan")
+async def create_mission_plan(cmd: CommandInput):
+    intents = await parser.parse_compound_intent(cmd.command)
+    preview_swarm = _clone_swarm_for_preview()
+    response = await _build_mission_from_intents(
+        cmd.command,
+        cmd.selected_drones,
+        intents,
+        preview_swarm,
+        execute=False,
+    )
+    plan_id = f"plan-{uuid.uuid4().hex[:10]}"
+    plan_summary = _build_plan_summary(plan_id, cmd.command, response)
+    status = "pending_confirmation" if plan_summary["confirmable"] else "blocked"
+    response.update({
+        "plan_id": plan_id,
+        "status": status,
+        "plan_summary": plan_summary,
+        "message": "Mission plan ready for confirmation." if plan_summary["confirmable"] else "Mission plan created but cannot be confirmed until issues are resolved.",
+    })
+    PENDING_MISSION_PLANS[plan_id] = {
+        "plan_id": plan_id,
+        "created_at": time.time(),
+        "command": cmd.command,
+        "selected_drones": list(cmd.selected_drones),
+        "intents": intents,
+        "preview": response,
+    }
+    swarm._think(
+        f"MISSION PLAN: {plan_id} {'ready for confirmation' if plan_summary['confirmable'] else 'blocked'}; "
+        f"LLM/parser output remains intent-only, deterministic safety owns dispatch.",
+        "decision" if plan_summary["confirmable"] else "critical",
+    )
+    return response
+
+
+@app.post("/api/mission/confirm")
+async def confirm_mission_plan(body: MissionPlanRef):
+    plan = PENDING_MISSION_PLANS.get(body.plan_id)
+    if not plan:
+        raise HTTPException(status_code=404, detail="Mission plan not found or already closed.")
+    if time.time() - plan["created_at"] > MISSION_PLAN_TTL_SECONDS:
+        PENDING_MISSION_PLANS.pop(body.plan_id, None)
+        raise HTTPException(status_code=410, detail="Mission plan expired. Build a fresh plan before dispatch.")
+
+    preview_summary = plan.get("preview", {}).get("plan_summary", {})
+    if not preview_summary.get("confirmable"):
+        raise HTTPException(status_code=409, detail="Mission plan is blocked and cannot be confirmed.")
+
+    response = await _build_mission_from_intents(
+        plan["command"],
+        plan["selected_drones"],
+        plan["intents"],
+        swarm,
+        execute=True,
+    )
+    plan_summary = _build_plan_summary(body.plan_id, plan["command"], response)
+    PENDING_MISSION_PLANS.pop(body.plan_id, None)
+    response.update({
+        "plan_id": body.plan_id,
+        "status": "executed" if plan_summary["safety_passed"] and response.get("assigned") else "not_executed",
+        "confirmed": True,
+        "plan_summary": plan_summary,
+        "message": f"Mission confirmed. {len(response.get('assigned', []))} drones tasked.",
+    })
+    return response
+
+
+@app.post("/api/mission/cancel")
+async def cancel_mission_plan(body: MissionPlanRef):
+    plan = PENDING_MISSION_PLANS.pop(body.plan_id, None)
+    if not plan:
+        raise HTTPException(status_code=404, detail="Mission plan not found or already closed.")
+    swarm._think(f"MISSION PLAN: {body.plan_id} cancelled by operator before dispatch.", "info")
+    return {"plan_id": body.plan_id, "cancelled": True, "message": "Mission plan cancelled before dispatch."}
+
+
 @app.post("/api/command")
 async def process_command(cmd: CommandInput):
     intents = await parser.parse_compound_intent(cmd.command)
-    all_assigned = []
-    all_thinking = []
-    target_coords = []
-    mission_programs = []
-    action_scripts = []
-    execution_results = []
-    safety_reports = []
-    target_resolution = []
-    multi_intent = len(intents) > 1
-
-    for intent in intents:
-        combined_drones = set(intent.get("explicit_drones", []))
-        if not multi_intent:
-            combined_drones.update(cmd.selected_drones)
-
-        if intent.get("action") == "return":
-            assigned_drones, thinking = swarm.recall_drones(
-                drone_ids=list(combined_drones) if combined_drones else None
-            )
-            all_assigned.extend(assigned_drones)
-            all_thinking.extend(thinking)
-            target_coords.append(None)
-            target_resolution.append({"source": "return_to_launch", "label": "home"})
-            drones = [swarm.fleet[d_id] for d_id in assigned_drones if d_id in swarm.fleet]
-            program = compile_mission_program(cmd.command, intent, None, drones, swarm.live_mode)
-            action_script = synthesize_action_script(program, use_reroute=False)
-            program_to_execute = action_script.get("rerouted_program", program)
-            safety_report = validate_mission_program(
-                program_to_execute,
-                {drone.id: (drone.lat, drone.lng) for drone in drones},
-            )
-            program_to_execute["geometric_safety"] = safety_report
-            safety_reports.append(safety_report)
-            mission_programs.append(program_to_execute)
-            action_scripts.append(action_script)
-            if safety_report.get("passed"):
-                execution_results.append(await swarm.execute_mission_program(program_to_execute))
-            else:
-                execution_results.append({"executed": False, "mode": "safety_reject", "safety": safety_report})
-            continue
-
-        if "target_coords" in intent:
-            target_lat = intent["target_coords"]["lat"]
-            target_lng = intent["target_coords"]["lng"]
-            resolution_detail = {
-                "lat": target_lat,
-                "lng": target_lng,
-                "source": "explicit_coordinates",
-                "label": "coordinates",
-            }
-        elif intent.get("target_reference") == "operator":
-            resolution_detail = _operator_position_target_detail()
-            target_lat = resolution_detail["lat"]
-            target_lng = resolution_detail["lng"]
-        else:
-            target_zone = intent.get("target_zone", "")
-            resolution_detail = await resolve_target_detail(target_zone)
-            target_lat = resolution_detail["lat"]
-            target_lng = resolution_detail["lng"]
-
-        drone_count = intent.get("drone_count", 1)
-        pattern = intent.get("pattern", "perimeter")
-        priority = intent.get("priority", "medium")
-        area_size_m = intent.get("area_size_m", 200)
-
-        assigned_drones, thinking = swarm.allocate_task(
-            target_lat, target_lng,
-            required_drones=drone_count,
-            specific_drones=list(combined_drones) if combined_drones else None,
-            pattern=pattern,
-            priority=priority,
-            area_size_m=area_size_m,
-        )
-        all_assigned.extend(assigned_drones)
-        all_thinking.extend(thinking)
-        target_coord = {"lat": target_lat, "lng": target_lng}
-        target_coords.append(target_coord)
-        target_resolution.append(resolution_detail)
-        drones = [swarm.fleet[d_id] for d_id in assigned_drones if d_id in swarm.fleet]
-        program = compile_mission_program(cmd.command, intent, target_coord, drones, swarm.live_mode)
-        action_script = synthesize_action_script(program, use_reroute=True)
-        if action_script.get("sandbox", {}).get("passed"):
-            _apply_reroute_patches_to_swarm(action_script.get("reroute_patches", []))
-        program_to_execute = action_script.get("rerouted_program", program)
-        safety_report = validate_mission_program(
-            program_to_execute,
-            {drone.id: (drone.lat, drone.lng) for drone in drones},
-        )
-        program_to_execute["geometric_safety"] = safety_report
-        safety_reports.append(safety_report)
-        mission_programs.append(program_to_execute)
-        action_scripts.append(action_script)
-        if safety_report.get("passed"):
-            execution_results.append(await swarm.execute_mission_program(program_to_execute))
-        else:
-            reason = "; ".join(safety_report.get("issues", [])) or "route failed geometric safety checks"
-            all_thinking.extend(swarm.cancel_assignment(assigned_drones, reason))
-            rejected = set(assigned_drones)
-            all_assigned = [drone_id for drone_id in all_assigned if drone_id not in rejected]
-            execution_results.append({"executed": False, "mode": "safety_reject", "safety": safety_report})
-
-    all_assigned = list(dict.fromkeys(all_assigned))
-    deduped_thinking = []
-    seen_thinking = set()
-    for entry in all_thinking:
-        key = (entry.get("time"), entry.get("message"))
-        if key in seen_thinking:
-            continue
-        seen_thinking.add(key)
-        deduped_thinking.append(entry)
-    return {
-        "intent": intents[0] if intents else {},
-        "intents": intents,
-        "assigned": all_assigned,
-        "target_coords": target_coords,
-        "target_resolution": target_resolution,
-        "mission_programs": mission_programs,
-        "action_scripts": action_scripts,
-        "execution_results": execution_results,
-        "safety_reports": safety_reports,
-        "parser_summary": {
-            **parser.status(),
-            "modes": list(dict.fromkeys(intent.get("parser", "unknown") for intent in intents)),
-            "fallback_used": any(intent.get("parser") != "llm" for intent in intents),
-        },
-        "thinking": deduped_thinking,
-        "message": f"{len(intents)} sub-command{'s' if len(intents) != 1 else ''} parsed. {len(all_assigned)} drones tasked."
-    }
+    response = await _build_mission_from_intents(cmd.command, cmd.selected_drones, intents, swarm, execute=True)
+    response["message"] = f"{len(intents)} sub-command{'s' if len(intents) != 1 else ''} parsed. {len(response.get('assigned', []))} drones tasked."
+    return response
 
 
-def _apply_reroute_patches_to_swarm(patches: list[dict]):
+def _apply_reroute_patches_to_swarm(patches: list[dict], target_swarm: SwarmManager | None = None):
+    target_swarm = target_swarm or swarm
     for patch in patches:
         drone_id = patch.get("drone_id")
-        drone = swarm.fleet.get(drone_id)
+        drone = target_swarm.fleet.get(drone_id)
         patched = patch.get("patched") or {}
         original = patch.get("original") or {}
         if not drone or not patched:
@@ -519,7 +718,7 @@ def _apply_reroute_patches_to_swarm(patches: list[dict]):
                 drone.waypoints[index] = patched_waypoint
                 if index == drone._waypoint_index:
                     drone.target = patched_waypoint
-                swarm._think(
+                target_swarm._think(
                     f"OODA ACT: {drone.id.upper()} path recompiled around synthetic obstacle; waypoint {index + 1} updated.",
                     "decision"
                 )
@@ -545,7 +744,7 @@ async def health_check():
 
 @app.get("/api/parser/status")
 async def get_parser_status():
-    return parser.status()
+    return await parser.refresh_status()
 
 @app.post("/api/gps-denied")
 async def set_gps_denied(body: GpsDeniedInput):

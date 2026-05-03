@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import MapComponent from './components/Map';
 import CommandConsole from './components/CommandConsole';
 import DemoMode from './components/DemoMode';
-import { Battery, ThermometerSun, Brain, Zap, Radio, Shield, Code2 } from 'lucide-react';
+import { Battery, ThermometerSun, Brain, Zap, Radio, Shield, Code2, MapPin, CheckCircle2, XCircle, Pencil } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -83,6 +83,8 @@ function App() {
   const [isConnectingSitl, setIsConnectingSitl] = useState(false);
   const [px4StatusMessage, setPx4StatusMessage] = useState('PX4 SITL not connected.');
   const [commandDiagnostics, setCommandDiagnostics] = useState(null);
+  const [missionPlan, setMissionPlan] = useState(null);
+  const [isConfirmingPlan, setIsConfirmingPlan] = useState(false);
   const logsEndRef = useRef(null);
   const thinkingEndRef = useRef(null);
   const wsDisconnectLogged = useRef(false);
@@ -414,12 +416,90 @@ function App() {
     }
   };
 
-  const handleCommand = async (command) => {
+  const applyMissionResponse = (data, mode = 'plan') => {
+    setCommandDiagnostics({
+      parserSummary: data.parser_summary,
+      targetResolution: data.target_resolution || [],
+      safetyReports: data.safety_reports || [],
+      executionResults: data.execution_results || [],
+    });
+
+    const intents = data.intents || (data.intent ? [data.intent] : []);
+    intents.forEach((intent, index) => {
+      addLog(
+        `Intent ${index + 1}/${intents.length}: Parser=${intent.parser || 'unknown'}, Action=${intent.action}, Target=${intent.target_zone}, Count=${intent.drone_count || 1}, Pattern=${intent.pattern || 'perimeter'}, Confidence=${Math.round((intent.confidence ?? 0) * 100)}%`,
+        "info"
+      );
+    });
+    if (data.parser_summary) {
+      const parserState = data.parser_summary.state || data.parser_summary.mode;
+      addLog(
+        `Parser pipeline: ${data.parser_summary.modes?.join(' + ') || data.parser_summary.mode}; ${parserState}${data.parser_summary.fallback_used ? ' (fallback active)' : ''}.`,
+        data.parser_summary.fallback_used ? 'info' : 'success'
+      );
+    }
+    (data.target_resolution || []).forEach((target, index) => {
+      addLog(
+        `Target ${index + 1}: ${target.label || 'unknown'} via ${target.source} ${formatTargetCoordinates(target)}.`,
+        'info'
+      );
+    });
+
+    if (data.mission_programs?.length) {
+      setMissionPrograms(data.mission_programs);
+      const droneProgramCount = data.mission_programs.reduce((total, program) => total + program.summary.drone_count, 0);
+      const stepCount = data.mission_programs.reduce((total, program) => total + program.summary.step_count, 0);
+      addLog(`Compiled ${data.mission_programs[0].language}: ${droneProgramCount} drone programs, ${stepCount} executable steps.`, "success");
+    }
+    if (data.action_scripts?.length) {
+      setActionScripts(data.action_scripts);
+      const sandboxPassed = data.action_scripts.every(script => script.sandbox?.passed);
+      addLog(
+        `Real-Time Mission Synthesis: ${data.action_scripts.length} disposable Python action script${data.action_scripts.length === 1 ? '' : 's'} generated; sandbox ${sandboxPassed ? 'passed' : 'flagged issues'}.`,
+        sandboxPassed ? "success" : "error"
+      );
+    }
+    if (data.safety_reports?.length) {
+      const safetyPassed = data.safety_reports.every(report => report.passed);
+      addLog(
+        `Geometric Sandbox: ${safetyPassed ? 'all route legs cleared' : 'mission blocked'} (${data.safety_reports.reduce((total, report) => total + (report.checked_legs || 0), 0)} legs checked).`,
+        safetyPassed ? "success" : "error"
+      );
+    }
+
+    const safetyBlocked = data.safety_reports?.some(report => !report.passed);
+    if (mode === 'plan') {
+      const summary = data.plan_summary;
+      if (summary?.confirmable) {
+        addLog(`Plan ready: ${summary.selected_drones.join(', ')} staged for ${summary.target_name}. Confirm Mission to dispatch.`, 'success');
+      } else if (safetyBlocked) {
+        addLog('Plan blocked by Geometric Sandbox before dispatch.', 'error');
+      } else {
+        addLog('Plan could not assign drones. Adjust selection or revive fleet.', 'error');
+        setFleetAlert(true);
+        setTimeout(() => setFleetAlert(false), 1200);
+      }
+      return;
+    }
+
+    if (data.assigned && data.assigned.length > 0) {
+      addLog(`Tasked: ${data.assigned.join(', ')}`, "success");
+    } else if (safetyBlocked) {
+      addLog("Mission blocked by Geometric Sandbox before dispatch.", "error");
+    } else {
+      addLog("No drones available for assignment.", "error");
+      setFleetAlert(true);
+      setTimeout(() => setFleetAlert(false), 1200);
+    }
+  };
+
+  const handleCommand = async (command, options = {}) => {
     setIsLoading(true);
     playCommandSound();
-    addLog(`> ${command} ${selectedDrones.length > 0 ? `(Targeting: ${selectedDrones.join(', ')})` : ''}`, "info");
+    const immediate = Boolean(options.immediate);
+    addLog(`> ${command} ${selectedDrones.length > 0 ? `(Targeting: ${selectedDrones.join(', ')})` : ''}${immediate ? ' [legacy immediate]' : ' [build plan]'}`, "info");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/command`, {
+      const res = await fetch(`${API_BASE_URL}${immediate ? '/api/command' : '/api/mission/plan'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command, selected_drones: selectedDrones })
@@ -429,69 +509,54 @@ function App() {
         throw new Error(errorData.detail || 'Command rejected by backend.');
       }
       const data = await res.json();
-      setCommandDiagnostics({
-        parserSummary: data.parser_summary,
-        targetResolution: data.target_resolution || [],
-        safetyReports: data.safety_reports || [],
-        executionResults: data.execution_results || [],
-      });
-
-      const intents = data.intents || (data.intent ? [data.intent] : []);
-      intents.forEach((intent, index) => {
-        addLog(
-          `Intent ${index + 1}/${intents.length}: Parser=${intent.parser || 'unknown'}, Action=${intent.action}, Target=${intent.target_zone}, Count=${intent.drone_count || 1}, Pattern=${intent.pattern || 'perimeter'}`,
-          "info"
-        );
-      });
-      if (data.parser_summary) {
-        addLog(
-          `Parser pipeline: ${data.parser_summary.modes?.join(' + ') || data.parser_summary.mode}${data.parser_summary.fallback_used ? ' (fallback active)' : ''}.`,
-          data.parser_summary.fallback_used ? 'info' : 'success'
-        );
-      }
-      (data.target_resolution || []).forEach((target, index) => {
-        addLog(
-          `Target ${index + 1}: ${target.label || 'unknown'} via ${target.source} ${formatTargetCoordinates(target)}.`,
-          'info'
-        );
-      });
-      const safetyBlocked = data.safety_reports?.some(report => !report.passed);
-      if (data.assigned && data.assigned.length > 0) {
-        addLog(`Tasked: ${data.assigned.join(', ')}`, "success");
-      } else if (safetyBlocked) {
-        addLog("Mission blocked by Geometric Sandbox before dispatch.", "error");
-      } else {
-        addLog("No drones available for assignment.", "error");
-        setFleetAlert(true);
-        setTimeout(() => setFleetAlert(false), 1200);
-      }
-
-      if (data.mission_programs?.length) {
-        setMissionPrograms(data.mission_programs);
-        const droneProgramCount = data.mission_programs.reduce((total, program) => total + program.summary.drone_count, 0);
-        const stepCount = data.mission_programs.reduce((total, program) => total + program.summary.step_count, 0);
-        addLog(`Compiled ${data.mission_programs[0].language}: ${droneProgramCount} drone programs, ${stepCount} executable steps.`, "success");
-      }
-      if (data.action_scripts?.length) {
-        setActionScripts(data.action_scripts);
-        const sandboxPassed = data.action_scripts.every(script => script.sandbox?.passed);
-        addLog(
-          `Real-Time Mission Synthesis: ${data.action_scripts.length} disposable Python action script${data.action_scripts.length === 1 ? '' : 's'} generated; sandbox ${sandboxPassed ? 'passed' : 'flagged issues'}.`,
-          sandboxPassed ? "success" : "error"
-        );
-      }
-      if (data.safety_reports?.length) {
-        const safetyPassed = data.safety_reports.every(report => report.passed);
-        addLog(
-          `Geometric Sandbox: ${safetyPassed ? 'all route legs cleared' : 'mission blocked'} (${data.safety_reports.reduce((total, report) => total + (report.checked_legs || 0), 0)} legs checked).`,
-          safetyPassed ? "success" : "error"
-        );
-      }
+      if (!immediate) setMissionPlan(data);
+      else setMissionPlan(null);
+      applyMissionResponse(data, immediate ? 'execute' : 'plan');
     } catch (error) {
-      addLog(`Failed to execute command: ${error.message}`, "error");
+      addLog(`Failed to ${immediate ? 'execute command' : 'build mission plan'}: ${error.message}`, "error");
     } finally {
       setIsLoading(false);
       setSelectedDrones([]);
+    }
+  };
+
+  const confirmMissionPlan = async () => {
+    if (!missionPlan?.plan_id) return;
+    setIsConfirmingPlan(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/mission/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: missionPlan.plan_id })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || 'Mission confirmation rejected.');
+      setMissionPlan(null);
+      applyMissionResponse(data, 'execute');
+      addLog(`Mission ${data.plan_id} confirmed and released through deterministic safety pipeline.`, 'success');
+    } catch (error) {
+      addLog(`Failed to confirm mission: ${error.message}`, 'error');
+    } finally {
+      setIsConfirmingPlan(false);
+    }
+  };
+
+  const cancelMissionPlan = async (editMode = false) => {
+    if (!missionPlan?.plan_id) return;
+    const planId = missionPlan.plan_id;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/mission/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_id: planId })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || 'Mission cancel rejected.');
+      addLog(editMode ? `Plan ${planId} cancelled. Enter an updated target command.` : data.message, 'info');
+    } catch (error) {
+      addLog(`Failed to cancel mission plan: ${error.message}`, 'error');
+    } finally {
+      setMissionPlan(null);
     }
   };
 
@@ -542,6 +607,7 @@ function App() {
       live_mode: liveMode,
       live_connected_drones: stats?.live_connected_drones || [],
       command_diagnostics: commandDiagnostics,
+      mission_plan: missionPlan,
       px4_status_message: px4StatusMessage,
       fleet_status: fleet,
       fleet_stats: stats,
@@ -596,6 +662,7 @@ function App() {
           updated_at: null,
         }
       : null;
+  const missionPlanSummary = missionPlan?.plan_summary;
 
   const formatDuration = (seconds = 0) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -775,10 +842,10 @@ function App() {
 
         {/* Map Area */}
         <div className="flex-1 relative">
-          <MapComponent fleet={fleet} focusedDroneId={focusedDroneId} operator={operatorMapState} />
+          <MapComponent fleet={fleet} focusedDroneId={focusedDroneId} operator={operatorMapState} planPreview={missionPlanSummary} />
           <DemoMode
             addLog={addLog}
-            handleCommand={handleCommand}
+            handleCommand={(command) => handleCommand(command, { immediate: true })}
             setFocusedDroneId={setFocusedDroneId}
             setTemp={setTemp}
             simulateCrash={simulateCrash}
@@ -895,6 +962,75 @@ function App() {
                   </Card>
                 ))}
               </div>
+
+              {/* Mission Plan Preview */}
+              {missionPlanSummary && (
+                <Card className={`p-3 bg-background/40 ${missionPlanSummary.confirmable ? 'border-primary/50' : 'border-destructive/60'}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin size={16} className={missionPlanSummary.confirmable ? 'text-primary' : 'text-destructive'} />
+                      <div>
+                        <div className="text-xs font-bold uppercase tracking-widest text-primary">Plan Preview</div>
+                        <div className="mt-0.5 text-[10px] font-mono text-muted-foreground">{missionPlan.plan_id}</div>
+                      </div>
+                    </div>
+                    <Badge variant={missionPlanSummary.safety_passed ? 'default' : 'destructive'} className="text-[9px] uppercase">
+                      {missionPlanSummary.safety_passed ? 'safe' : 'blocked'}
+                    </Badge>
+                  </div>
+
+                  <div className="mt-3 rounded border border-border bg-card/60 p-2 text-[11px] leading-relaxed text-muted-foreground">
+                    <div className="font-semibold text-foreground">{missionPlanSummary.clarifying_question || 'Is this where you want me to go?'}</div>
+                    <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] font-mono">
+                      <div><span className="text-foreground">Target:</span> {missionPlanSummary.target_name}</div>
+                      <div><span className="text-foreground">Source:</span> {missionPlanSummary.target_source}</div>
+                      <div><span className="text-foreground">Pattern:</span> {missionPlanSummary.mission_pattern}</div>
+                      <div><span className="text-foreground">Mode:</span> {missionPlanSummary.estimated_execution_mode}</div>
+                      <div><span className="text-foreground">Confidence:</span> {Math.round((missionPlanSummary.confidence || 0) * 100)}%</div>
+                      <div><span className="text-foreground">Drones:</span> {missionPlanSummary.selected_drones.join(', ') || 'none'}</div>
+                    </div>
+                    {missionPlanSummary.target && (
+                      <div className="mt-2 text-[10px] font-mono text-cyan-300">
+                        Coordinates: {formatTargetCoordinates(missionPlanSummary.target)}
+                      </div>
+                    )}
+                    {missionPlanSummary.safety_issues?.length > 0 && (
+                      <div className="mt-2 text-[10px] font-mono text-destructive">
+                        {missionPlanSummary.safety_issues.join('; ')}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    <Button
+                      size="sm"
+                      disabled={!missionPlanSummary.confirmable || isConfirmingPlan}
+                      onClick={confirmMissionPlan}
+                      className="h-8 text-[10px] font-bold uppercase tracking-widest"
+                    >
+                      <CheckCircle2 size={13} /> {isConfirmingPlan ? 'Sending' : 'Confirm'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={isConfirmingPlan}
+                      onClick={() => cancelMissionPlan(true)}
+                      className="h-8 text-[10px] uppercase tracking-widest"
+                    >
+                      <Pencil size={13} /> Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={isConfirmingPlan}
+                      onClick={() => cancelMissionPlan(false)}
+                      className="h-8 border-destructive/60 text-[10px] uppercase tracking-widest text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <XCircle size={13} /> Cancel
+                    </Button>
+                  </div>
+                </Card>
+              )}
 
               {/* Live Bridge Status */}
               <Card className="p-3 bg-background/40 border-cyan-400/30">
@@ -1014,9 +1150,10 @@ function App() {
                       <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] font-mono text-muted-foreground">
                         <div className="rounded border border-border bg-card/60 p-2">
                           <div className="text-foreground">Parser</div>
-                          <div>Model: {commandDiagnostics.parserSummary?.model || 'gemma:2b'}</div>
-                          <div>Ollama: {commandDiagnostics.parserSummary?.ollama_available ? 'online' : 'offline'}</div>
-                          <div>Fallback: {commandDiagnostics.parserSummary?.fallback_used ? 'yes' : 'no'}</div>
+                          <div>Model: {commandDiagnostics.parserSummary?.model || 'llama3.1:8b'}</div>
+                          <div>LLM: {commandDiagnostics.parserSummary?.llm_online ? 'online' : commandDiagnostics.parserSummary?.model_missing ? 'model missing' : 'offline'}</div>
+                          <div>Ollama: {commandDiagnostics.parserSummary?.ollama_available ? 'running' : 'not running'}</div>
+                          <div>Fallback: {commandDiagnostics.parserSummary?.fallback_used || commandDiagnostics.parserSummary?.fallback_active ? 'yes' : 'no'}</div>
                         </div>
                         <div className="rounded border border-border bg-card/60 p-2">
                           <div className="text-foreground">Execution</div>

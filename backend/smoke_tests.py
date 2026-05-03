@@ -155,6 +155,31 @@ async def test_operator_reference_command_parse():
     assert intent["target_zone"] == "operator_current_position"
     assert intent["action"] == "rendezvous"
 
+    al_nada_intent = await parser.parse_intent("Bring two drones to Al Nada")
+    assert al_nada_intent["drone_count"] == 2
+    assert al_nada_intent["target_zone"] == "al nada"
+
+
+async def test_mission_plan_preview_does_not_move_real_swarm():
+    from backend import main as backend_main
+
+    backend_main.parser._ollama_available = False
+    backend_main.PENDING_MISSION_PLANS.clear()
+    real_statuses = {drone_id: drone.status for drone_id, drone in backend_main.swarm.fleet.items()}
+
+    response = await backend_main.create_mission_plan(
+        backend_main.CommandInput(command="Send two drones to Al Nada", selected_drones=[])
+    )
+
+    assert response["plan_id"] in backend_main.PENDING_MISSION_PLANS
+    assert response["status"] == "pending_confirmation"
+    assert response["plan_summary"]["confirmable"]
+    assert response["execution_results"][0]["mode"] == "pending_confirmation"
+    assert {drone_id: drone.status for drone_id, drone in backend_main.swarm.fleet.items()} == real_statuses
+
+    cancelled = await backend_main.cancel_mission_plan(backend_main.MissionPlanRef(plan_id=response["plan_id"]))
+    assert cancelled["cancelled"]
+
 
 def main():
     test_relative_target_resolution()
@@ -163,6 +188,7 @@ def main():
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())
+    asyncio.run(test_mission_plan_preview_does_not_move_real_swarm())
     print("backend smoke tests passed")
 
 
