@@ -1,8 +1,12 @@
 import hashlib
-import json
 import time
 import uuid
 from typing import Dict, List, Optional, Tuple
+
+try:
+    from backend.signing import default_signature_manager, digest_payload
+except ImportError:
+    from signing import default_signature_manager, digest_payload
 
 
 MISSION_LANGUAGE = "SHEPHERD-IR/2.0"
@@ -20,11 +24,6 @@ SAFETY_MONITORS = [
 
 def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-
-def _mission_digest(bundle: Dict) -> str:
-    encoded = json.dumps(bundle, sort_keys=True, separators=(",", ":"), default=str)
-    return _sha256_text(encoded)
 
 
 def _confidence(intent: Dict) -> float:
@@ -180,7 +179,6 @@ def compile_mission_program(
                 "transport": "mavsdk_facade_v1",
             },
             "release_digest": "local-dev",
-            "signature": None,
         },
         "compiler_pipeline": [
             "natural_language_prompt",
@@ -206,5 +204,9 @@ def compile_mission_program(
             "confirmation_required": confirmation_required,
         },
     }
-    bundle["mission_digest"] = _mission_digest(bundle)
+    bundle["mission_digest"] = digest_payload(bundle, recursive_signature_fields=True)
+    bundle["provenance"]["signature"] = default_signature_manager.sign_digest(
+        bundle["mission_digest"],
+        payload_type="shepherd_ir_bundle",
+    )
     return bundle

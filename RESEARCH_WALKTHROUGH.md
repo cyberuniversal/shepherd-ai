@@ -36,7 +36,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Geometric safety sandbox.
 - `SHEPHERD-IR/2.0` mission bundle compilation with constraints, assurance monitors, allocation, and provenance.
 - Live preflight readiness checks before MAVSDK dispatch.
-- Confirmed-mission evidence records containing the IR bundle, digest, parser provenance, safety report, preflight result, execution result, selected drones, timestamps, and operator confirmation state.
+- Confirmed-mission evidence records containing the IR bundle, signed digest, parser provenance, safety report, preflight result, execution result, selected drones, timestamps, and operator confirmation state.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 
@@ -45,7 +45,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Keep upgrading `SHEPHERD-IR` as the main typed contract between learned intent parsing and deterministic execution.
 - Add stronger runtime assurance: geofence, reserve-energy, separation, localization quality, link health, and fallback policies.
 - Keep deterministic allocation as the production baseline; add CBBA/auction fallback and learned rankers only as optional candidate scoring modules.
-- Add signatures to mission bundles, expand release evidence logs, and build replayable validation scenarios.
+- Expand replayable validation scenarios that can load signed evidence records, verify digests, and re-run safety checks.
 - Treat perception and voice as gated cueing inputs, never as direct actuation paths.
 
 ## Hardware Path

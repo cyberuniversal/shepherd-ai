@@ -809,6 +809,13 @@ async def get_evidence_record(evidence_id: str):
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Evidence record not found.")
 
+@app.get("/api/evidence/{evidence_id}/verify")
+async def verify_evidence_record(evidence_id: str):
+    try:
+        return evidence_logger.verify_record(evidence_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Evidence record not found.")
+
 # ─── WebSocket for real-time fleet state ──────────────────────────────────────
 
 @app.websocket("/ws/fleet")

@@ -105,15 +105,17 @@ The legacy `POST /api/command` path remains for internal scripted checks, but re
 Every confirmed mission writes a replayable JSON record under `evidence/` by default. The record includes:
 
 - `SHEPHERD-IR/2.0` mission bundles and mission digests.
+- HMAC signatures for the mission bundle digest and the evidence record digest.
 - Parser/model provenance and bounded intent JSON.
 - Target resolution, selected drones, safety reports, preflight results, execution results, and confirmation state.
 - Action-script sandbox summaries without treating the generated script as an authority path.
 
-Use `SHEPHERD_EVIDENCE_DIR` to write records somewhere else.
+Use `SHEPHERD_EVIDENCE_DIR` to write records somewhere else. Set `SHEPHERD_SIGNING_KEY` or `SHEPHERD_SIGNING_KEY_FILE` to keep a stable signing key across machines; otherwise Shepherd-AI creates a local ignored key at `.shepherd/signing.key`.
 
 ```bash
 curl http://localhost:8000/api/evidence
 curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response
+curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response/verify
 ```
 
 ## Quick Start
@@ -165,7 +167,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Constrained MAVSDK facade for allowed high-level operations only: `ARM`, `TAKEOFF`, `GOTO`, `HOLD`, `RTL`, `LAND`.
 - `SHEPHERD-IR/2.0` mission program panel showing the exact validated command bundle, including constraints, assurance monitors, allocation, and provenance.
 - Live preflight readiness gate for connected vehicle, battery reserve, navigation quality, and facade operation whitelist checks.
-- Confirmed-mission evidence logs for replay, audit, and research evaluation.
+- Signed confirmed-mission evidence logs for replay, audit, tamper detection, and research evaluation.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

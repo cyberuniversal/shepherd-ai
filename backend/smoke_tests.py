@@ -7,6 +7,7 @@ from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
+from backend.signing import SignatureManager, digest_payload
 from backend.spatial import resolve_relative_target
 from hardware_bridge.facade import FacadeCommandRejected, MAVSDKFacade
 
@@ -158,6 +159,9 @@ def test_shepherd_ir_v2_contract_fields():
     assert program["allocation"]["selected_vehicles"] == assigned
     assert program["provenance"]["model_versions"]["intent"] == "heuristic"
     assert program["mission_digest"]
+    assert digest_payload(program, recursive_signature_fields=True) == program["mission_digest"]
+    assert program["provenance"]["signature"]["algorithm"] == "HMAC-SHA256"
+    assert program["provenance"]["signature"]["payload_digest"] == program["mission_digest"]
 
 
 def test_action_script_has_no_artificial_route_events():
@@ -308,7 +312,7 @@ async def test_confirmed_mission_writes_evidence_log():
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             backend_main.swarm = SwarmManager()
-            backend_main.evidence_logger = EvidenceLogger(tmpdir)
+            backend_main.evidence_logger = EvidenceLogger(tmpdir, signer=SignatureManager(key="test-evidence-key"))
 
             plan = await backend_main.create_mission_plan(
                 backend_main.CommandInput(command="Send one drone to Al Nada", selected_drones=[])
@@ -323,6 +327,7 @@ async def test_confirmed_mission_writes_evidence_log():
             assert evidence["recorded"]
             assert evidence["evidence_id"].startswith("evidence-")
             assert evidence["mission_digests"]
+            assert evidence["record_signature"]["algorithm"] == "HMAC-SHA256"
 
             record = backend_main.evidence_logger.read_record(evidence["evidence_id"])
             assert record["record_type"] == "confirmed_mission"
@@ -335,9 +340,24 @@ async def test_confirmed_mission_writes_evidence_log():
             assert record["mission_programs"][0]["mission_digest"] == record["mission_digests"][0]
             assert record["safety_reports"]
             assert record["execution_results"]
+            assert record["record_signature"]["payload_digest"] == record["evidence_digest"]
+            assert record["verification"]["digest_valid"]
+            assert record["verification"]["signature_valid"]
+
+            verify_result = await backend_main.verify_evidence_record(evidence["evidence_id"])
+            assert verify_result["digest_valid"]
+            assert verify_result["signature_valid"]
+
+            tampered = dict(record)
+            tampered["command"] = "tampered command"
+            tampered.pop("verification", None)
+            tamper_check = backend_main.evidence_logger.verify_record(tampered)
+            assert not tamper_check["digest_valid"]
+            assert tamper_check["signature_valid"]
 
             listed = backend_main.evidence_logger.list_records()
             assert listed[0]["evidence_id"] == evidence["evidence_id"]
+            assert listed[0]["verified"]
         finally:
             backend_main.swarm = old_swarm
             backend_main.evidence_logger = old_logger

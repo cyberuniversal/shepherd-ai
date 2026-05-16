@@ -7,3 +7,4 @@ dist/
 PX4-Autopilot/
 session-*.md
 evidence/
+.shepherd/

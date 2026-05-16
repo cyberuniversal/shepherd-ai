@@ -5,13 +5,19 @@ import uuid
 from pathlib import Path
 from typing import Dict, List
 
+try:
+    from backend.signing import SignatureManager, default_signature_manager
+except ImportError:
+    from signing import SignatureManager, default_signature_manager
+
 
 DEFAULT_EVIDENCE_DIR = "evidence"
 
 
 class EvidenceLogger:
-    def __init__(self, root_dir: str | Path | None = None):
+    def __init__(self, root_dir: str | Path | None = None, signer: SignatureManager | None = None):
         self.root_dir = Path(root_dir or os.environ.get("SHEPHERD_EVIDENCE_DIR", DEFAULT_EVIDENCE_DIR))
+        self.signer = signer or default_signature_manager
 
     def _ensure_root(self):
         self.root_dir.mkdir(parents=True, exist_ok=True)
@@ -73,6 +79,12 @@ class EvidenceLogger:
             "status": response.get("status"),
             "message": response.get("message"),
         }
+        record = self.signer.sign_payload(
+            record,
+            payload_type="mission_evidence_record",
+            digest_field="evidence_digest",
+            signature_field="record_signature",
+        )
 
         path = self._record_path(evidence_id)
         tmp_path = path.with_suffix(".tmp")
@@ -87,12 +99,25 @@ class EvidenceLogger:
             "path": str(path),
             "mission_digests": mission_digests,
             "recorded_at": now,
+            "evidence_digest": record["evidence_digest"],
+            "record_signature": record["record_signature"],
         }
 
     def read_record(self, evidence_id: str) -> Dict:
         path = self._record_path(evidence_id)
         with path.open("r", encoding="utf-8") as handle:
-            return json.load(handle)
+            record = json.load(handle)
+        record["verification"] = self.verify_record(record)
+        return record
+
+    def verify_record(self, record_or_id: Dict | str) -> Dict:
+        if isinstance(record_or_id, str):
+            path = self._record_path(record_or_id)
+            with path.open("r", encoding="utf-8") as handle:
+                record = json.load(handle)
+        else:
+            record = record_or_id
+        return self.signer.verify_payload(record, "evidence_digest", "record_signature")
 
     def list_records(self, limit: int = 25) -> List[Dict]:
         self._ensure_root()
@@ -103,6 +128,7 @@ class EvidenceLogger:
                     record = json.load(handle)
             except (OSError, json.JSONDecodeError):
                 continue
+            verification = self.verify_record(record)
             records.append({
                 "evidence_id": record.get("evidence_id"),
                 "recorded_at": record.get("recorded_at"),
@@ -110,6 +136,10 @@ class EvidenceLogger:
                 "command": record.get("command"),
                 "selected_drones": record.get("selected_drones", []),
                 "mission_digests": record.get("mission_digests", []),
+                "evidence_digest": record.get("evidence_digest"),
+                "digest_valid": verification.get("digest_valid"),
+                "signature_valid": verification.get("signature_valid"),
+                "verified": bool(verification.get("digest_valid") and verification.get("signature_valid")),
                 "status": record.get("status"),
             })
             if len(records) >= limit:
