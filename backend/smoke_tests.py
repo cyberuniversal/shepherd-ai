@@ -60,6 +60,27 @@ class FakeBridge:
             }
         }
 
+    async def execute_program(self, program):
+        return {
+            drone_program["drone_id"]: {
+                "executed": True,
+                "facade": "MAVSDKFacade",
+            }
+            for drone_program in program.get("drone_programs", [])
+        }
+
+
+class FakeDisconnectedBridge:
+    def status(self):
+        return {
+            "mavsdk_available": True,
+            "connected_count": 0,
+            "connected_drones": [],
+        }
+
+    async def execute_program(self, program):
+        raise AssertionError("preflight should block before bridge execution")
+
 
 def test_relative_target_resolution():
     target = resolve_relative_target(
@@ -103,6 +124,40 @@ def test_mission_program_safety_passes_normal_riyadh_route():
     assert safety["passed"], safety["issues"]
 
 
+def test_shepherd_ir_v2_contract_fields():
+    swarm = SwarmManager()
+    assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1)
+    drones = [swarm.fleet[drone_id] for drone_id in assigned]
+    intent = {
+        "action": "scout",
+        "target_zone": "kafd",
+        "pattern": "perimeter",
+        "confidence": 0.83,
+        "needs_confirmation": True,
+        "parser": "heuristic",
+    }
+    program = compile_mission_program(
+        "send one drone to kafd",
+        intent,
+        {"lat": 24.7610, "lng": 46.6402},
+        drones,
+        live_mode=True,
+    )
+
+    assert program["language"] == "SHEPHERD-IR/2.0"
+    assert program["schema_version"] == "2.0"
+    assert program["source"]["modality"] == "text"
+    assert program["source"]["utterance_hash"] != "send one drone to kafd"
+    assert program["intent_contract"]["confidence"] == 0.83
+    assert program["constraints"]["confirmation_required"]
+    assert program["constraints"]["live_dispatch_requested"]
+    assert "facade_ops_whitelisted" in program["assurance"]["preconditions"]
+    assert "link_health_monitor" in program["assurance"]["monitors"]
+    assert program["allocation"]["selected_vehicles"] == assigned
+    assert program["provenance"]["model_versions"]["intent"] == "heuristic"
+    assert program["mission_digest"]
+
+
 def test_action_script_has_no_artificial_route_events():
     swarm = SwarmManager()
     assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1)
@@ -119,6 +174,46 @@ def test_action_script_has_no_artificial_route_events():
     assert script["route_patches"] == []
     assert "ooda_events" not in script
     assert "reroute" not in script["script"].lower()
+
+
+async def test_live_preflight_blocks_unconnected_drone():
+    swarm = SwarmManager()
+    swarm.live_mode = True
+    swarm.bridge = FakeDisconnectedBridge()
+    assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1, specific_drones=["alpha-1"])
+    drones = [swarm.fleet[drone_id] for drone_id in assigned]
+    program = compile_mission_program(
+        "send alpha-1 to kafd",
+        {"action": "scout", "target_zone": "kafd", "pattern": "perimeter"},
+        {"lat": 24.7610, "lng": 46.6402},
+        drones,
+        live_mode=True,
+    )
+
+    result = await swarm.execute_mission_program(program)
+    assert not result["executed"]
+    assert result["reason"] == "preflight_failed"
+    assert "alpha-1: no live MAVLink connection" in result["preflight"]["issues"]
+
+
+async def test_live_preflight_allows_connected_drone():
+    swarm = SwarmManager()
+    swarm.live_mode = True
+    swarm.bridge = FakeBridge()
+    swarm.mark_live_connected("alpha-1", "udp://:14540")
+    assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1, specific_drones=["alpha-1"])
+    drones = [swarm.fleet[drone_id] for drone_id in assigned]
+    program = compile_mission_program(
+        "send alpha-1 to kafd",
+        {"action": "scout", "target_zone": "kafd", "pattern": "perimeter"},
+        {"lat": 24.7610, "lng": 46.6402},
+        drones,
+        live_mode=True,
+    )
+
+    result = await swarm.execute_mission_program(program)
+    assert result["executed"]
+    assert result["preflight"]["passed"]
 
 
 async def test_facade_allows_only_safe_ops():
@@ -204,7 +299,10 @@ def main():
     test_relative_target_resolution()
     test_geometric_sandbox_blocks_forbidden_polygon()
     test_mission_program_safety_passes_normal_riyadh_route()
+    test_shepherd_ir_v2_contract_fields()
     test_action_script_has_no_artificial_route_events()
+    asyncio.run(test_live_preflight_blocks_unconnected_drone())
+    asyncio.run(test_live_preflight_allows_connected_drone())
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())

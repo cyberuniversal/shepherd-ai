@@ -6,7 +6,7 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 
 - The LLM must never directly control drones.
 - The LLM/parser may only output bounded intent JSON.
-- Deterministic backend code owns target resolution, swarm allocation, safety checks, human confirmation, SHEPHERD-IR compilation, and MAVSDK/MAVLink dispatch.
+- Deterministic backend code owns target resolution, swarm allocation, safety checks, human confirmation, SHEPHERD-IR compilation, live preflight readiness checks, and MAVSDK/MAVLink dispatch.
 - Real drone dispatch goes through the constrained MAVSDK facade only.
 - Keep allowed high-level facade operations limited to `ARM`, `TAKEOFF`, `GOTO`, `HOLD`, `RTL`, and `LAND` unless a safety review explicitly expands the set.
 

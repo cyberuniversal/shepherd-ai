@@ -31,12 +31,12 @@ flowchart LR
 3. `POST /api/mission/plan` resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a non-mutating plan preview.
 4. The operator confirms or cancels the plan.
 5. `backend/controller.py` re-applies fleet, battery, collision, GPS, and mesh checks on the real fleet at confirmation time.
-6. `backend/mission_program.py` compiles the mission into `SHEPHERD-IR/1.0`.
+6. `backend/mission_program.py` compiles the mission into a `SHEPHERD-IR/2.0` mission bundle with source metadata, constraints, allocation, assurance, and provenance.
 7. `backend/action_script.py` generates a disposable validation script through the restricted MAVSDK facade surface and runs static safety checks.
-8. With live dispatch enabled, `backend/drone_bridge.py` maps validated mission steps to MAVSDK/MAVLink calls such as `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
+8. With live dispatch enabled, `backend/controller.py` runs live preflight readiness checks before `backend/drone_bridge.py` maps validated mission steps to MAVSDK/MAVLink calls such as `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
 9. Without hardware attached, the digital twin can execute the same validated route as a local validation harness.
 
-Example `SHEPHERD-IR` step:
+Example `SHEPHERD-IR` step inside the bundle:
 
 ```json
 {
@@ -147,7 +147,8 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Fleet assignment, energy checks, altitude deconfliction, GPS-denied test mode, and mesh/link modeling.
 - Geometric safety sandbox with Shapely fallback.
 - Constrained MAVSDK facade for allowed high-level operations only: `ARM`, `TAKEOFF`, `GOTO`, `HOLD`, `RTL`, `LAND`.
-- SHEPHERD-IR mission program panel showing the exact validated command bundle.
+- `SHEPHERD-IR/2.0` mission program panel showing the exact validated command bundle, including constraints, assurance monitors, allocation, and provenance.
+- Live preflight readiness gate for connected vehicle, battery reserve, navigation quality, and facade operation whitelist checks.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

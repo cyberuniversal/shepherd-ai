@@ -197,7 +197,7 @@ class SwarmManager:
         self.gps_denied = enabled
         if enabled:
             self._think(
-                "GPS-DENIED simulation enabled. Swarm switching to inertial dead-reckoning fallback.",
+                "GPS-DENIED test mode enabled. Swarm switching to inertial dead-reckoning fallback.",
                 "warning"
             )
         else:
@@ -332,15 +332,93 @@ class SwarmManager:
         except RuntimeError:
             self._think(f"LIVE MODE: no running event loop; {drone.id.upper()} command queued only in digital twin.", "warning")
 
+    def validate_live_preflight(self, program: Dict) -> Dict:
+        constraints = program.get("constraints", {})
+        allowed_ops = set(constraints.get("allowed_facade_ops") or ["ARM", "TAKEOFF", "GOTO", "HOLD", "RTL", "LAND"])
+        battery_min = float(constraints.get("battery_reserve_pct", self.BATTERY_MIN_FOR_ASSIGNMENT))
+        nav_mode = constraints.get("nav_mode", "gnss")
+        issues = []
+        checks = [
+            "live mode enabled",
+            "MAVSDK bridge available",
+            "selected vehicles exist",
+            "selected vehicles connected",
+            "battery reserve above constraint",
+            "navigation quality meets constraint",
+            "facade operations whitelisted",
+        ]
+
+        if not self.live_mode:
+            issues.append("live mode is disabled")
+        if not self.bridge:
+            issues.append("MAVSDK bridge unavailable")
+
+        bridge_status = self.bridge.status() if self.bridge else {}
+        if self.bridge and not bridge_status.get("mavsdk_available", False):
+            issues.append("MAVSDK package unavailable")
+
+        connected = {
+            item.get("drone_id")
+            for item in bridge_status.get("connected_drones", [])
+            if isinstance(item, dict)
+        }
+        if nav_mode == "gnss" and self.gps_denied:
+            issues.append("mission requires GNSS but GPS-denied mode is active")
+
+        for drone_program in program.get("drone_programs", []):
+            drone_id = drone_program.get("drone_id")
+            drone = self.fleet.get(drone_id)
+            if not drone:
+                issues.append(f"{drone_id}: not in fleet registry")
+                continue
+            if drone.status == "offline":
+                issues.append(f"{drone_id}: drone is offline")
+            if not drone.live_connected and drone_id not in connected:
+                issues.append(f"{drone_id}: no live MAVLink connection")
+            if drone.battery < battery_min:
+                issues.append(f"{drone_id}: battery {drone.battery:.1f}% below {battery_min:.1f}% reserve")
+            if nav_mode == "gnss" and not drone.nav_state.gps_available:
+                issues.append(f"{drone_id}: GNSS unavailable")
+            if drone.nav_state.position_confidence < 0.5:
+                issues.append(f"{drone_id}: navigation confidence below live-dispatch threshold")
+
+            for step in drone_program.get("steps", []):
+                op = step.get("op")
+                if op not in allowed_ops:
+                    issues.append(f"{drone_id}: operation {op} not allowed by mission constraints")
+
+        return {
+            "passed": len(issues) == 0,
+            "safe": len(issues) == 0,
+            "issues": issues,
+            "checks": checks,
+            "mission_id": program.get("mission_id"),
+            "language": program.get("language"),
+            "connected_drones": sorted(connected),
+            "constraints": constraints,
+        }
+
     async def execute_mission_program(self, program: Dict) -> Dict:
         if not self.live_mode:
             return {"executed": False, "mode": "digital_twin_simulation"}
         if not self.bridge:
             return {"executed": False, "mode": "live_mavlink", "reason": "bridge_unavailable"}
+        preflight = self.validate_live_preflight(program)
+        if not preflight["passed"]:
+            self._think(
+                f"LIVE MODE BLOCKED: preflight rejected {program.get('mission_id')} ({'; '.join(preflight['issues'])}).",
+                "critical",
+            )
+            return {
+                "executed": False,
+                "mode": "live_mavlink",
+                "reason": "preflight_failed",
+                "preflight": preflight,
+            }
         result = await self.bridge.execute_program(program)
         executed = any(item.get("executed") for item in result.values()) if isinstance(result, dict) else False
-        self._think("LIVE MODE: SHEPHERD-IR program dispatched to MAVSDK/MAVLink bridge.", "decision")
-        return {"executed": executed, "mode": "live_mavlink", "result": result}
+        self._think("LIVE MODE: SHEPHERD-IR program passed preflight and dispatched to MAVSDK/MAVLink bridge.", "decision")
+        return {"executed": executed, "mode": "live_mavlink", "preflight": preflight, "result": result}
 
     def mark_live_connected(self, drone_id: str, address: str):
         drone = self.fleet.get(drone_id)

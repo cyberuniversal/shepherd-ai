@@ -14,7 +14,8 @@ human prompt
 -> deterministic target resolution
 -> swarm allocation
 -> safety and confirmation gate
--> SHEPHERD-IR mission program
+-> SHEPHERD-IR v2 mission bundle
+-> live preflight readiness gate
 -> constrained MAVSDK facade
 -> MAVLink
 -> PX4/ArduPilot autopilot
@@ -23,7 +24,7 @@ human prompt
 
 ## Key Research Claim
 
-The LLM/parser does not fly the drone. It only proposes structured intent. Shepherd-AI then applies deterministic target resolution, allocation, safety checks, and human confirmation before compiling or dispatching `SHEPHERD-IR`. Only safe high-level operations pass through the MAVSDK facade.
+The LLM/parser does not fly the drone. It only proposes structured intent. Shepherd-AI then applies deterministic target resolution, allocation, safety checks, human confirmation, and live preflight readiness checks before compiling or dispatching `SHEPHERD-IR`. Only safe high-level operations pass through the MAVSDK facade.
 
 ## What Exists Now
 
@@ -33,13 +34,14 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Deterministic target resolution for landmarks, coordinates, operator location, and front/left/right references.
 - Fleet assignment, energy checks, altitude deconfliction, GPS-denied test mode, and mesh/link modeling.
 - Geometric safety sandbox.
-- `SHEPHERD-IR` mission compilation.
+- `SHEPHERD-IR/2.0` mission bundle compilation with constraints, assurance monitors, allocation, and provenance.
+- Live preflight readiness checks before MAVSDK dispatch.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 
 ## Research Direction
 
-- Upgrade `SHEPHERD-IR` into the main typed contract between learned intent parsing and deterministic execution.
+- Keep upgrading `SHEPHERD-IR` as the main typed contract between learned intent parsing and deterministic execution.
 - Add stronger runtime assurance: geofence, reserve-energy, separation, localization quality, link health, and fallback policies.
 - Keep deterministic allocation as the production baseline; add CBBA/auction fallback and learned rankers only as optional candidate scoring modules.
 - Add signed mission bundles, release evidence logs, model/version provenance, and replayable validation scenarios.
