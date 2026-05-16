@@ -12,14 +12,14 @@ try:
     from backend.brain import MissionParser
     from backend.controller import SwarmManager
     from backend.mission_program import compile_mission_program
-    from backend.safety import validate_mission_program, validate_route_leg
+    from backend.safety import validate_mission_program
     from backend.spatial import detect_relative_direction, resolve_relative_target
 except ImportError:
     from action_script import synthesize_action_script
     from brain import MissionParser
     from controller import SwarmManager
     from mission_program import compile_mission_program
-    from safety import validate_mission_program, validate_route_leg
+    from safety import validate_mission_program
     from spatial import detect_relative_direction, resolve_relative_target
 
 app = FastAPI(
@@ -73,10 +73,6 @@ class OperatorStateInput(BaseModel):
     accuracy_m: float | None = None
     heading_source: str = "device"
     active: bool = True
-
-class ObstacleInput(BaseModel):
-    drone_id: str
-    distance_m: float
 
 class MissionPlanRef(BaseModel):
     plan_id: str
@@ -439,8 +435,8 @@ async def _build_mission_from_intents(
             target_resolution.append({"source": "return_to_launch", "label": "home"})
             drones = [working_swarm.fleet[d_id] for d_id in assigned_drones if d_id in working_swarm.fleet]
             program = compile_mission_program(command, intent, None, drones, working_swarm.live_mode)
-            action_script = synthesize_action_script(program, use_reroute=False)
-            program_to_execute = action_script.get("rerouted_program", program)
+            action_script = synthesize_action_script(program)
+            program_to_execute = action_script.get("compiled_program", program)
             safety_report = validate_mission_program(
                 program_to_execute,
                 {drone.id: (drone.lat, drone.lng) for drone in drones},
@@ -479,10 +475,8 @@ async def _build_mission_from_intents(
         target_resolution.append(resolution_detail)
         drones = [working_swarm.fleet[d_id] for d_id in assigned_drones if d_id in working_swarm.fleet]
         program = compile_mission_program(command, intent, target_coord, drones, working_swarm.live_mode)
-        action_script = synthesize_action_script(program, use_reroute=True)
-        if action_script.get("sandbox", {}).get("passed") and execute:
-            _apply_reroute_patches_to_swarm(action_script.get("reroute_patches", []), working_swarm)
-        program_to_execute = action_script.get("rerouted_program", program)
+        action_script = synthesize_action_script(program)
+        program_to_execute = action_script.get("compiled_program", program)
         safety_report = validate_mission_program(
             program_to_execute,
             {drone.id: (drone.lat, drone.lng) for drone in drones},
@@ -605,18 +599,6 @@ async def set_operator_state(body: OperatorStateInput):
 async def get_operator_state():
     return {"operator": OPERATOR_STATE, "ready": _operator_state_ready()}
 
-@app.post("/api/obstacle")
-async def report_obstacle(body: ObstacleInput):
-    def validate_obstacle_reroute(drone_id: str, start: tuple, end: tuple, altitude_m: float) -> dict:
-        return validate_route_leg(drone_id, start, end, altitude_m)
-
-    result = swarm.handle_obstacle_event(
-        body.drone_id,
-        body.distance_m,
-        route_validator=validate_obstacle_reroute,
-    )
-    return result
-
 @app.post("/api/mission/plan")
 async def create_mission_plan(cmd: CommandInput):
     intents = await parser.parse_compound_intent(cmd.command)
@@ -700,29 +682,6 @@ async def process_command(cmd: CommandInput):
     response = await _build_mission_from_intents(cmd.command, cmd.selected_drones, intents, swarm, execute=True)
     response["message"] = f"{len(intents)} sub-command{'s' if len(intents) != 1 else ''} parsed. {len(response.get('assigned', []))} drones tasked."
     return response
-
-
-def _apply_reroute_patches_to_swarm(patches: list[dict], target_swarm: SwarmManager | None = None):
-    target_swarm = target_swarm or swarm
-    for patch in patches:
-        drone_id = patch.get("drone_id")
-        drone = target_swarm.fleet.get(drone_id)
-        patched = patch.get("patched") or {}
-        original = patch.get("original") or {}
-        if not drone or not patched:
-            continue
-
-        patched_waypoint = (patched["lat"], patched["lng"])
-        for index, waypoint in enumerate(drone.waypoints):
-            if abs(waypoint[0] - original.get("lat", waypoint[0])) < 0.000001 and abs(waypoint[1] - original.get("lng", waypoint[1])) < 0.000001:
-                drone.waypoints[index] = patched_waypoint
-                if index == drone._waypoint_index:
-                    drone.target = patched_waypoint
-                target_swarm._think(
-                    f"OODA ACT: {drone.id.upper()} path recompiled around synthetic obstacle; waypoint {index + 1} updated.",
-                    "decision"
-                )
-                break
 
 @app.post("/api/environment")
 async def set_environment(body: TemperatureInput):

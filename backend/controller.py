@@ -714,65 +714,6 @@ class SwarmManager:
             )
         return self.get_thinking_log(last_n=5)
 
-    def handle_obstacle_event(self, drone_id: str, distance_m: float, route_validator=None, shift_m: float = 5.0) -> Dict:
-        drone = self.fleet.get(drone_id)
-        if not drone:
-            return {"status": "rejected", "reason": "drone_not_found"}
-        if drone.status not in ("assigned", "on_station", "returning") or not drone.target:
-            return {"status": "ignored", "reason": "drone_not_on_active_route"}
-        if distance_m >= 2.0:
-            return {"status": "ignored", "reason": "distance_above_interrupt_threshold", "distance_m": distance_m}
-
-        current_index = drone._waypoint_index if drone.waypoints else None
-        original = drone.waypoints[current_index] if current_index is not None and current_index < len(drone.waypoints) else drone.target
-        patched = (original[0], original[1] + (shift_m / self.METERS_PER_LNG_DEG))
-
-        safety = None
-        if route_validator:
-            safety = route_validator(drone.id, (drone.lat, drone.lng), patched, drone.altitude_m)
-            if not safety.get("passed"):
-                self._think(
-                    f"OODA REJECT: {drone.id.upper()} obstacle bypass blocked by safety sandbox: {safety.get('issues')}",
-                    "critical",
-                )
-                return {
-                    "status": "rejected",
-                    "reason": "safety_violation",
-                    "safety": safety,
-                    "original": {"lat": original[0], "lng": original[1]},
-                    "patched": {"lat": patched[0], "lng": patched[1]},
-                }
-
-        if current_index is not None and current_index < len(drone.waypoints):
-            drone.waypoints[current_index] = patched
-        drone.target = patched
-
-        events = [
-            {"phase": "Observe", "message": f"{drone.id.upper()} distance sensor reported obstacle at {distance_m:.1f}m."},
-            {"phase": "Orient", "message": "Current route leg is inside the tactical interrupt threshold."},
-            {"phase": "Decide", "message": f"Bypass waypoint shifted {shift_m:.0f}m right and checked by geometric sandbox."},
-            {"phase": "Act", "message": "Digital-twin target updated; live mode will send the patched waypoint through the MAVSDK facade."},
-        ]
-        for event in events:
-            self._think(f"OODA {event['phase'].upper()}: {event['message']}", "decision")
-
-        if self.live_mode and self.bridge:
-            try:
-                import asyncio
-                asyncio.get_running_loop().create_task(self.bridge.goto_position(drone.id, patched[0], patched[1], drone.altitude_m))
-            except RuntimeError:
-                pass
-
-        return {
-            "status": "rerouted",
-            "drone_id": drone.id,
-            "distance_m": distance_m,
-            "original": {"lat": original[0], "lng": original[1]},
-            "patched": {"lat": patched[0], "lng": patched[1]},
-            "safety": safety,
-            "events": events,
-        }
-                 
     # ─── Crash & Recovery ─────────────────────────────────────────────────────
 
     def report_drone_lost(self, drone_id: str) -> Tuple[str, List[Dict]]:

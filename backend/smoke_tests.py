@@ -1,6 +1,7 @@
 import asyncio
 
 from backend.controller import SwarmManager
+from backend.action_script import synthesize_action_script
 from backend.brain import MissionParser
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
@@ -102,6 +103,24 @@ def test_mission_program_safety_passes_normal_riyadh_route():
     assert safety["passed"], safety["issues"]
 
 
+def test_action_script_has_no_artificial_route_events():
+    swarm = SwarmManager()
+    assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1)
+    drones = [swarm.fleet[drone_id] for drone_id in assigned]
+    program = compile_mission_program(
+        "send one drone to kafd",
+        {"action": "scout", "target_zone": "kafd", "pattern": "perimeter"},
+        {"lat": 24.7610, "lng": 46.6402},
+        drones,
+        live_mode=False,
+    )
+    script = synthesize_action_script(program)
+    assert script["sensor_events"] == []
+    assert script["route_patches"] == []
+    assert "ooda_events" not in script
+    assert "reroute" not in script["script"].lower()
+
+
 async def test_facade_allows_only_safe_ops():
     system = FakeSystem()
     facade = MAVSDKFacade({"alpha-1": system})
@@ -185,6 +204,7 @@ def main():
     test_relative_target_resolution()
     test_geometric_sandbox_blocks_forbidden_polygon()
     test_mission_program_safety_passes_normal_riyadh_route()
+    test_action_script_has_no_artificial_route_events()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())

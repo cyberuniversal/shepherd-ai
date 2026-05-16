@@ -1,6 +1,6 @@
 # PX4 SITL Setup
 
-PX4 SITL is the simulated drone autopilot. Shepherd-AI does not start PX4 for you; it connects to an already-running PX4 simulator through MAVSDK/MAVLink.
+PX4 SITL is the software autopilot target used for validation without hardware. Shepherd-AI does not start PX4 for you; it connects to an already-running PX4 endpoint through MAVSDK/MAVLink.
 
 ## Recommended Location
 

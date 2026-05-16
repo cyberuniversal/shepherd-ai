@@ -184,8 +184,8 @@ class DroneBridge:
         if drone_id in self.systems:
             await self.systems[drone_id].action.kill()
 
-    async def listen_distance_sensor(self, drone_id: str, on_obstacle, threshold_m: float = 2.0):
-        """Monitor MAVSDK distance telemetry and report close obstacles."""
+    async def listen_distance_sensor(self, drone_id: str, on_distance_alert, threshold_m: float = 2.0):
+        """Monitor MAVSDK distance telemetry and report threshold crossings."""
         if drone_id not in self.systems:
             return {"listening": False, "reason": "not_connected"}
 
@@ -193,7 +193,7 @@ class DroneBridge:
         async for reading in telemetry.distance_sensor():
             distance_m = getattr(reading, "current_distance_m", None)
             if distance_m is not None and distance_m < threshold_m:
-                await on_obstacle({"drone_id": drone_id, "distance_m": distance_m})
+                await on_distance_alert({"drone_id": drone_id, "distance_m": distance_m})
                 await asyncio.sleep(0.5)
 
         return {"listening": True}

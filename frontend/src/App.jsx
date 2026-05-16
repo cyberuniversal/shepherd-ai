@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import MapComponent from './components/Map';
 import CommandConsole from './components/CommandConsole';
-import DemoMode from './components/DemoMode';
 import { Battery, ThermometerSun, Brain, Zap, Radio, Shield, Code2, MapPin, CheckCircle2, XCircle, Pencil } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -357,7 +356,7 @@ function App() {
       addLog(data.message, nextValue ? "error" : "info");
     } catch {
       setGpsDenied(!nextValue);
-      addLog("Failed to toggle GPS-denied simulation.", "error");
+      addLog("Failed to toggle GPS-denied test mode.", "error");
     }
   };
 
@@ -640,7 +639,6 @@ function App() {
 
   const allOffline = fleet.length > 0 && fleet.every(drone => drone.status === 'offline');
   const tempValue = ambientTemp ?? 30;
-  const latestOodaEvents = actionScripts.flatMap(script => script.ooda_events || []).slice(-4);
   const liveMode = Boolean(stats?.live_mode);
   const liveConnected = stats?.live_connected ?? 0;
   const bridgeAvailable = stats?.bridge?.mavsdk_available ?? false;
@@ -827,30 +825,9 @@ function App() {
           </div>
         )}
 
-        {latestOodaEvents.length > 0 && (
-          <div className="absolute right-[440px] top-4 z-40 w-80 rounded-xl border border-cyan-400/50 bg-card/90 p-3 shadow-[0_0_24px_rgba(34,211,238,0.18)] backdrop-blur-sm">
-            <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">OODA Decision Tree</div>
-            <div className="mt-2 flex flex-col gap-1.5">
-              {latestOodaEvents.map((event, index) => (
-                <div key={`${event.phase}-${index}`} className="rounded border border-border bg-background/40 px-2 py-1 text-[10px] font-mono text-muted-foreground">
-                  <span className="text-cyan-400">{event.phase}:</span> {event.message}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Map Area */}
         <div className="flex-1 relative">
           <MapComponent fleet={fleet} focusedDroneId={focusedDroneId} operator={operatorMapState} planPreview={missionPlanSummary} />
-          <DemoMode
-            addLog={addLog}
-            handleCommand={(command) => handleCommand(command, { immediate: true })}
-            setFocusedDroneId={setFocusedDroneId}
-            setTemp={setTemp}
-            simulateCrash={simulateCrash}
-            reviveDrone={reviveDrone}
-          />
         </div>
         
         {/* Side Panel */}
@@ -1038,7 +1015,7 @@ function App() {
                   <div>
                     <div className="text-xs font-bold uppercase tracking-widest text-cyan-400">PX4 / MAVSDK Bridge</div>
                     <div className="mt-1 text-[10px] font-mono text-muted-foreground">
-                      {bridgeAvailable ? 'MAVSDK installed' : 'MAVSDK unavailable'} | {liveMode ? 'live dispatch armed' : 'simulation only'}
+                      {bridgeAvailable ? 'MAVSDK installed' : 'MAVSDK unavailable'} | {liveMode ? 'live dispatch armed' : 'live dispatch off'}
                     </div>
                   </div>
                   <Badge variant={liveConnected > 0 ? 'default' : 'outline'} className="text-[9px] uppercase">
@@ -1194,15 +1171,6 @@ function App() {
                       <div className="mt-2 text-[10px] font-mono text-muted-foreground">
                         {script.language} | {script.sandbox?.runtime_ms}ms validation | {script.sandbox?.checks?.length || 0} safety checks
                       </div>
-                      {script.ooda_events?.length > 0 && (
-                        <div className="mt-3 grid grid-cols-2 gap-1.5">
-                          {script.ooda_events.map((event, index) => (
-                            <div key={`${script.script_id}-${index}`} className="rounded border border-border bg-card/60 p-2 text-[10px] leading-relaxed text-muted-foreground">
-                              <span className="font-bold text-cyan-400">{event.phase}</span><br />{event.message}
-                            </div>
-                          ))}
-                        </div>
-                      )}
                       <div className="mt-3 max-h-80 overflow-auto rounded border border-border bg-black/40 p-2">
                         <pre className="whitespace-pre-wrap text-[10px] leading-relaxed text-cyan-100">
                           {script.script}

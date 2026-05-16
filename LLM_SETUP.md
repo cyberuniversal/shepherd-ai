@@ -15,7 +15,7 @@ Install Ollama from:
 https://ollama.com/download
 ```
 
-Then pull the recommended demo model used by Shepherd-AI:
+Then pull the recommended local model used by Shepherd-AI:
 
 ```bash
 ollama pull llama3.1:8b

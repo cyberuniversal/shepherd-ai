@@ -1,36 +1,40 @@
-# Shepherd-AI (Al-Ra'i)
+# Shepherd-AI
 
-Bridging the gap between strategic human intent and multi-agent execution.
+Offline-first autonomy orchestration for real drone swarms.
+
+Shepherd-AI is a research project for turning natural-language operator intent into typed, reviewable, safety-gated MAVSDK/MAVLink missions for PX4/ArduPilot aircraft. The LLM never flies drones directly. It only proposes structured intent JSON; deterministic backend systems own target resolution, swarm allocation, safety checks, human confirmation, SHEPHERD-IR compilation, and MAVSDK/MAVLink dispatch.
+
+Simulation and PX4 SITL are validation harnesses. The product direction is a local/edge command layer for real MAVLink-connected aircraft.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-  A[Voice or Text Command] --> B[NLP Parser]
-  B --> C[Intent JSON]
-  C --> D[Target Resolution + Safety Plan]
-  D --> E[Human Confirm / Cancel]
-  E --> F[SHEPHERD-IR Mission Program]
-  F --> G[MAVSDK / MAVLink Commands]
-  G --> H[PX4 / ArduPilot Autopilot]
-  H --> I[Drone Motors + Telemetry]
-  D --> J[Digital Twin Plan Preview]
-  J --> K[Map + Thinking Log]
+  A[Operator Text or Voice] --> B[Local Intent Parser]
+  B --> C[Bounded Intent JSON]
+  C --> D[Target Resolution]
+  D --> E[Swarm Allocation]
+  E --> F[Safety + Confirmation Gate]
+  F --> G[SHEPHERD-IR Mission Program]
+  G --> H[Constrained MAVSDK Facade]
+  H --> I[MAVLink]
+  I --> J[PX4 or ArduPilot]
+  J --> K[Vehicle Telemetry]
+  K --> L[Dashboard + Evidence Logs]
+  F --> M[Digital Twin Validation Harness]
 ```
 
-## Prompt To Drone
+## Prompt-To-Drone Pipeline
 
-Judges should see this as a compiler pipeline, not magic:
-
-1. The commander speaks or types natural language.
-2. `backend/brain.py` parses it into structured intent JSON.
-3. `POST /api/mission/plan` resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a plan preview without moving drones.
-4. The operator confirms or cancels the plan from the dashboard.
-5. `backend/controller.py` applies battery, collision, GPS, and mesh safety checks on the real fleet at confirmation time.
-6. `backend/mission_program.py` compiles the mission into `SHEPHERD-IR/1.0`, a drone-readable step program.
-7. `backend/action_script.py` synthesizes a temporary Python action script through a restricted MAVSDK facade and validates it in a sandbox/static safety pass.
-8. In simulation mode, the digital twin executes the same validated route visually.
-9. In live mode, `backend/drone_bridge.py` maps the validated mission steps to MAVSDK/MAVLink calls like `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
+1. The operator types or speaks a mission request.
+2. `backend/brain.py` parses the request into structured intent JSON with confidence and confirmation fields.
+3. `POST /api/mission/plan` resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a non-mutating plan preview.
+4. The operator confirms or cancels the plan.
+5. `backend/controller.py` re-applies fleet, battery, collision, GPS, and mesh checks on the real fleet at confirmation time.
+6. `backend/mission_program.py` compiles the mission into `SHEPHERD-IR/1.0`.
+7. `backend/action_script.py` generates a disposable validation script through the restricted MAVSDK facade surface and runs static safety checks.
+8. With live dispatch enabled, `backend/drone_bridge.py` maps validated mission steps to MAVSDK/MAVLink calls such as `arm`, `takeoff`, `goto_location`, and `return_to_launch`.
+9. Without hardware attached, the digital twin can execute the same validated route as a local validation harness.
 
 Example `SHEPHERD-IR` step:
 
@@ -44,9 +48,17 @@ Example `SHEPHERD-IR` step:
 }
 ```
 
-The dashboard Plan Preview panel shows the pre-dispatch target marker, selected drones, safety result, and estimated execution mode. The `Program` tab shows both the compiled `SHEPHERD-IR` and the generated disposable Python action script. The OODA overlay shows how synthetic sensor feedback can trigger a route recompile around an obstacle.
+## Real Drone Link
 
-To connect a real PX4 SITL or MAVLink-capable drone:
+Any PX4/ArduPilot aircraft exposing MAVLink can be connected through MAVSDK. Typical endpoints:
+
+```text
+PX4 SITL:              udp://:14540
+Wi-Fi MAVLink:         udp://192.168.x.x:14550
+Telemetry radio/USB:   serial:///dev/ttyUSB0:57600
+```
+
+Connect a live MAVLink target:
 
 ```bash
 curl -X POST http://localhost:8000/api/drone/connect \
@@ -58,7 +70,7 @@ curl -X POST http://localhost:8000/api/live-mode \
   -d '{"enabled":true}'
 ```
 
-For the default PX4 SITL UDP endpoint, use the dashboard `PX4 SITL` button or call:
+For the default PX4 SITL validation endpoint, start PX4 separately, then use the dashboard `PX4 SITL` button or call:
 
 ```bash
 curl -X POST http://localhost:8000/api/drone/sitl/connect \
@@ -66,7 +78,7 @@ curl -X POST http://localhost:8000/api/drone/sitl/connect \
   -d '{"drone_id":"alpha-1","address":"udp://:14540","enable_live":true}'
 ```
 
-When live mode is enabled, Shepherd-AI still compiles the mission through `SHEPHERD-IR` and the safety sandbox first. Connected drones then receive commands through the constrained MAVSDK facade, and MAVSDK telemetry updates the dashboard instead of simulated map movement.
+The `PX4 SITL` button only connects to an already-running PX4 endpoint. It does not start PX4.
 
 ## Mission Planning API
 
@@ -86,15 +98,15 @@ curl -X POST http://localhost:8000/api/mission/cancel \
   -d '{"plan_id":"plan-from-response"}'
 ```
 
-The legacy `POST /api/command` path still exists for scripted demos and tests, but the judge-facing UI is plan-first.
+The legacy `POST /api/command` path remains for internal scripted checks, but research and field workflows should use plan-first execution.
 
 ## Quick Start
 
 Additional guides:
 
-- `PX4_SITL_SETUP.md` explains how to start PX4 SITL before clicking the dashboard `PX4 SITL` button.
-- `LLM_SETUP.md` explains how to enable Ollama-backed parsing and how to verify parser mode.
-- `JUDGE_DEMO.md` gives a concise judge presentation flow.
+- `PX4_SITL_SETUP.md` explains how to start PX4 SITL before connecting Shepherd-AI.
+- `LLM_SETUP.md` explains local/remote Ollama-backed parsing and parser status checks.
+- `RESEARCH_WALKTHROUGH.md` gives a concise system walkthrough.
 
 ### One Command
 
@@ -105,6 +117,8 @@ npm run dev
 This starts the FastAPI backend on `http://localhost:8000` and the Vite frontend on `http://localhost:5173`.
 
 ### Backend
+
+Use the project virtual environment for backend commands:
 
 ```powershell
 cd shepherd-ai
@@ -122,44 +136,38 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173/` in Chrome for voice input support.
+Open `http://localhost:5173/` in Chrome for browser voice input support.
 
-## Features
+## Current Research Surface
 
-- Natural language command input in English and Arabic.
+- Offline-first text command input with optional local/remote Ollama parser.
 - Plan-first mission preview with confirm/cancel before dispatch.
-- Voice input using the Web Speech API with EN/AR mode toggle.
-- 13-drone fleet across Alpha, Beta, Gamma, and Delta squadrons.
-- AI thinking log for transparent allocation decisions.
-- Dynamic re-tasking on drone failure.
-- Live Riyadh temperature sync plus thermal throttling simulation for high-temperature Saudi conditions.
-- Search patterns: perimeter, lawn-mower, and spiral.
-- Compound commands, e.g. `make 3 drones go to kafd and 4 to al nada`.
-- Flight path lines, waypoint paths, target zones, and drone trails on the map.
-- 3D map building extrusions at close zoom levels.
-- GPS-denied navigation confidence, drift, hold, and autonomous RTB behavior.
-- Mesh routing simulation, collision avoidance, altitude deconfliction, and battery-aware energy checks.
-- Optional MAVSDK bridge scaffolding for PX4/ArduPilot SITL or real autopilots.
-- SHEPHERD-IR mission program panel showing exactly what commands are sent to drones.
-- Real-Time Mission Synthesis panel showing temporary Python action scripts, sandbox results, and OODA reroutes.
-- Temperature slider, squadron selection, and mission manifest export.
-- GPS-denied fallback simulation with dead-reckoning status banner.
-- Demo Mode scripted showcase for live presentations.
+- Operator position/heading link for commands such as `Bring two drones to me`.
+- Deterministic target resolution for landmarks, coordinates, operator location, and relative references.
+- Fleet assignment, energy checks, altitude deconfliction, GPS-denied test mode, and mesh/link modeling.
+- Geometric safety sandbox with Shapely fallback.
+- Constrained MAVSDK facade for allowed high-level operations only: `ARM`, `TAKEOFF`, `GOTO`, `HOLD`, `RTL`, `LAND`.
+- SHEPHERD-IR mission program panel showing the exact validated command bundle.
+- PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
+- Digital twin validation harness for local development without hardware.
 
-## Tech Stack
+## Verification
 
-- Backend: Python 3.12, FastAPI, optional Ollama local LLM.
-- Frontend: React 19, Vite, MapLibre GL, shadcn-style UI primitives.
-- NLP: local Ollama (`llama3.1:8b` recommended, `gemma2:2b` low-resource option), deterministic heuristic fallback otherwise.
-- Drone I/O: optional MAVSDK bridge, disabled by default in simulation mode.
+```powershell
+.\.venv\Scripts\python.exe -m backend.smoke_tests
+npm --prefix frontend run lint
+npm --prefix frontend run build
+```
 
-## Demo Commands
+The Vite build may warn that the MapLibre chunk is larger than 500 KB; that warning is not a build failure.
+
+## Example Commands
 
 ```text
 deploy 5 drones to scan KAFD
 make 3 drones go to kafd and 4 to al nada
 spiral into the stadium
 send beta-1 to secure the airport
+bring two drones to me
 recall all drones
-أرسل ٥ طائرات إلى المطار
 ```
