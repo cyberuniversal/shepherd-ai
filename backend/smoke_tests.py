@@ -8,6 +8,7 @@ from backend.assurance import evaluate_runtime_assurance
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
+from backend.mission_dataset import export_training_rows, validate_dataset
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_regression import ScenarioRegressionRunner
@@ -254,6 +255,17 @@ def test_runtime_assurance_reports_live_link_without_dispatch():
     assert swarm.fleet["alpha-1"].live_connected is False
 
 
+def test_mission_command_dataset_seed_validates():
+    result = validate_dataset()
+    assert result["valid"], result["errors"]
+    assert result["summary"]["language_counts"]["en"] >= 1
+    assert result["summary"]["language_counts"]["ar"] >= 1
+
+    rows = export_training_rows()
+    assert rows
+    assert all("input" in row and "target_json" in row for row in rows)
+
+
 async def test_facade_allows_only_safe_ops():
     system = FakeSystem()
     facade = MAVSDKFacade({"alpha-1": system})
@@ -439,6 +451,7 @@ def main():
     asyncio.run(test_live_preflight_blocks_unconnected_drone())
     asyncio.run(test_live_preflight_allows_connected_drone())
     test_runtime_assurance_reports_live_link_without_dispatch()
+    test_mission_command_dataset_seed_validates()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())

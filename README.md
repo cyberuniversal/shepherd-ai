@@ -130,6 +130,13 @@ Run signed evidence records as a backend regression suite:
 curl http://localhost:8000/api/research/scenario-regression
 ```
 
+Validate or export the early bilingual mission-command dataset for future parser training:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate
+.\.venv\Scripts\python.exe -m backend.mission_dataset export
+```
+
 ## Quick Start
 
 Additional guides:
@@ -183,6 +190,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Evidence replay harness that verifies signatures, checks mission digests, re-runs safety validation, and compares recorded mission consistency.
 - Scenario regression runner that replays signed evidence records across backend changes and fails on integrity, consistency, or safety regressions.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
+- Bilingual mission-command dataset scaffold for future intent-parser training and evaluation.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 
