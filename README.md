@@ -121,6 +121,13 @@ curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response/replay
 .\.venv\Scripts\python.exe -m backend.evidence_replay evidence-id-from-confirm-response
 ```
 
+Run signed evidence records as a backend regression suite:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.scenario_regression
+curl http://localhost:8000/api/research/scenario-regression
+```
+
 ## Quick Start
 
 Additional guides:
@@ -172,6 +179,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Live preflight readiness gate for connected vehicle, battery reserve, navigation quality, and facade operation whitelist checks.
 - Signed confirmed-mission evidence logs for replay, audit, tamper detection, and research evaluation.
 - Evidence replay harness that verifies signatures, checks mission digests, re-runs safety validation, and compares recorded mission consistency.
+- Scenario regression runner that replays signed evidence records across backend changes and fails on integrity, consistency, or safety regressions.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

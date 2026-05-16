@@ -1,4 +1,5 @@
 import asyncio
+import json
 import tempfile
 
 from backend.controller import SwarmManager
@@ -8,6 +9,7 @@ from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
+from backend.scenario_regression import ScenarioRegressionRunner
 from backend.signing import digest_payload
 from backend.spatial import resolve_relative_target
 from hardware_bridge.facade import FacadeCommandRejected, MAVSDKFacade
@@ -369,6 +371,28 @@ async def test_confirmed_mission_writes_evidence_log():
             listed = backend_main.evidence_logger.list_records()
             assert listed[0]["evidence_id"] == evidence["evidence_id"]
             assert listed[0]["verified"]
+
+            regression = ScenarioRegressionRunner(backend_main.evidence_logger).run()
+            assert regression["passed"]
+            assert regression["summary"]["total"] == 1
+            assert regression["cases"][0]["status"] == "passed"
+
+            api_regression = await backend_main.run_research_scenario_regression()
+            assert api_regression["passed"]
+            assert api_regression["summary"]["passed"] == 1
+
+            evidence_path = backend_main.evidence_logger._record_path(evidence["evidence_id"])
+            tampered_record = dict(record)
+            tampered_record.pop("verification", None)
+            tampered_record["command"] = "tampered command from regression test"
+            with evidence_path.open("w", encoding="utf-8") as handle:
+                json.dump(tampered_record, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+
+            failed_regression = ScenarioRegressionRunner(backend_main.evidence_logger).run()
+            assert not failed_regression["passed"]
+            assert failed_regression["summary"]["failed"] == 1
+            assert "evidence_integrity_failed" in failed_regression["cases"][0]["failure_reasons"]
         finally:
             backend_main.swarm = old_swarm
             backend_main.evidence_logger = old_logger

@@ -38,6 +38,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Live preflight readiness checks before MAVSDK dispatch.
 - Confirmed-mission evidence records containing the IR bundle, signed digest, parser provenance, safety report, preflight result, execution result, selected drones, fleet snapshot, timestamps, and operator confirmation state.
 - Evidence replay verifies record signatures, mission digests, selected-drone consistency, and current deterministic safety results against the recorded mission.
+- Scenario regression turns signed evidence records into release checks so backend changes can prove they did not silently change mission safety behavior.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 
@@ -46,7 +47,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Keep upgrading `SHEPHERD-IR` as the main typed contract between learned intent parsing and deterministic execution.
 - Add stronger runtime assurance: geofence, reserve-energy, separation, localization quality, link health, and fallback policies.
 - Keep deterministic allocation as the production baseline; add CBBA/auction fallback and learned rankers only as optional candidate scoring modules.
-- Expand replayable validation scenarios into regression suites that load signed evidence records, verify digests, and re-run safety checks across backend versions.
+- Expand scenario regression coverage with more off-nominal records, assurance events, and release-level pass/fail reports.
 - Treat perception and voice as gated cueing inputs, never as direct actuation paths.
 
 ## Hardware Path

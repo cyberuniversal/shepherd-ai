@@ -15,6 +15,7 @@ try:
     from backend.evidence_replay import EvidenceReplayHarness
     from backend.mission_program import compile_mission_program
     from backend.safety import validate_mission_program
+    from backend.scenario_regression import ScenarioRegressionRunner
     from backend.spatial import detect_relative_direction, resolve_relative_target
 except ImportError:
     from action_script import synthesize_action_script
@@ -24,6 +25,7 @@ except ImportError:
     from evidence_replay import EvidenceReplayHarness
     from mission_program import compile_mission_program
     from safety import validate_mission_program
+    from scenario_regression import ScenarioRegressionRunner
     from spatial import detect_relative_direction, resolve_relative_target
 
 app = FastAPI(
@@ -823,6 +825,10 @@ async def replay_evidence_record(evidence_id: str):
         return EvidenceReplayHarness(evidence_logger).replay(evidence_id)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Evidence record not found.")
+
+@app.get("/api/research/scenario-regression")
+async def run_research_scenario_regression(limit: int = 100):
+    return ScenarioRegressionRunner(evidence_logger).run(limit=max(1, min(int(limit), 1000)))
 
 # ─── WebSocket for real-time fleet state ──────────────────────────────────────
 
