@@ -28,5 +28,6 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - PX4 SITL controls should only connect to an already-running PX4 endpoint; never start PX4 from the dashboard.
 - Do not add unvalidated perception-driven reroutes or UI/docs that imply perception capabilities without real telemetry and validation.
 - Confirmed missions should write signed evidence records. Runtime evidence JSON belongs under `evidence/` by default and should not be committed.
+- Evidence replay should verify signatures, mission digests, recorded fleet snapshots, selected-drone consistency, and current deterministic safety checks.
 - Local signing keys belong in `.shepherd/` or an environment variable. Never commit signing keys.
 - When adding learned modules, keep them behind typed contracts and deterministic safety gates.

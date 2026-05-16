@@ -80,6 +80,39 @@ class SignatureManager:
             "signed_at": time.time(),
         }
 
+    def verify_digest_signature(self, signature: Dict, payload_digest: str | None, payload_type: str | None = None) -> Dict:
+        recorded_signature = signature.get("signature") if isinstance(signature, dict) else None
+        recorded_digest = signature.get("payload_digest") if isinstance(signature, dict) else None
+        expected_signature = None
+        if payload_digest:
+            expected_signature = hmac.new(
+                self._load_key(),
+                str(payload_digest).encode("utf-8"),
+                hashlib.sha256,
+            ).hexdigest()
+
+        digest_valid = bool(payload_digest and recorded_digest) and hmac.compare_digest(
+            str(recorded_digest),
+            str(payload_digest),
+        )
+        signature_valid = bool(recorded_signature and expected_signature) and hmac.compare_digest(
+            str(recorded_signature),
+            expected_signature,
+        )
+        payload_type_valid = True if payload_type is None else (
+            isinstance(signature, dict) and signature.get("payload_type") == payload_type
+        )
+
+        return {
+            "digest_valid": digest_valid,
+            "signature_valid": signature_valid,
+            "payload_type_valid": payload_type_valid,
+            "expected_digest": payload_digest,
+            "recorded_digest": recorded_digest,
+            "key_id": signature.get("key_id") if isinstance(signature, dict) else None,
+            "algorithm": signature.get("algorithm") if isinstance(signature, dict) else None,
+        }
+
     def sign_payload(
         self,
         payload: Dict,

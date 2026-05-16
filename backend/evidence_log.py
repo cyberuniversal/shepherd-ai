@@ -27,7 +27,13 @@ class EvidenceLogger:
             raise FileNotFoundError(evidence_id)
         return self.root_dir / f"{evidence_id}.json"
 
-    def record_confirmed_mission(self, plan: Dict, response: Dict, operator_state: Dict | None = None) -> Dict:
+    def record_confirmed_mission(
+        self,
+        plan: Dict,
+        response: Dict,
+        operator_state: Dict | None = None,
+        fleet_snapshot: Dict | None = None,
+    ) -> Dict:
         self._ensure_root()
         now = time.time()
         evidence_id = f"evidence-{uuid.uuid4().hex[:12]}"
@@ -59,6 +65,7 @@ class EvidenceLogger:
             "intents": response.get("intents", []),
             "target_resolution": response.get("target_resolution", []),
             "parser_summary": response.get("parser_summary", {}),
+            "fleet_snapshot_at_confirmation": fleet_snapshot or {},
             "mission_digests": mission_digests,
             "mission_programs": mission_programs,
             "safety_reports": response.get("safety_reports", []),

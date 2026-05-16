@@ -12,6 +12,7 @@ try:
     from backend.brain import MissionParser
     from backend.controller import SwarmManager
     from backend.evidence_log import EvidenceLogger
+    from backend.evidence_replay import EvidenceReplayHarness
     from backend.mission_program import compile_mission_program
     from backend.safety import validate_mission_program
     from backend.spatial import detect_relative_direction, resolve_relative_target
@@ -20,6 +21,7 @@ except ImportError:
     from brain import MissionParser
     from controller import SwarmManager
     from evidence_log import EvidenceLogger
+    from evidence_replay import EvidenceReplayHarness
     from mission_program import compile_mission_program
     from safety import validate_mission_program
     from spatial import detect_relative_direction, resolve_relative_target
@@ -444,7 +446,6 @@ async def _build_mission_from_intents(
                 program_to_execute,
                 {drone.id: (drone.lat, drone.lng) for drone in drones},
             )
-            program_to_execute["geometric_safety"] = safety_report
             safety_reports.append(safety_report)
             mission_programs.append(program_to_execute)
             action_scripts.append(action_script)
@@ -484,7 +485,6 @@ async def _build_mission_from_intents(
             program_to_execute,
             {drone.id: (drone.lat, drone.lng) for drone in drones},
         )
-        program_to_execute["geometric_safety"] = safety_report
         safety_reports.append(safety_report)
         mission_programs.append(program_to_execute)
         action_scripts.append(action_script)
@@ -672,6 +672,7 @@ async def confirm_mission_plan(body: MissionPlanRef):
             {**plan, "plan_id": body.plan_id},
             response,
             operator_state=OPERATOR_STATE.copy(),
+            fleet_snapshot=swarm.get_fleet_state(),
         )
         swarm._think(
             f"EVIDENCE LOG: {response['evidence']['evidence_id']} persisted for confirmed mission {body.plan_id}.",
@@ -813,6 +814,13 @@ async def get_evidence_record(evidence_id: str):
 async def verify_evidence_record(evidence_id: str):
     try:
         return evidence_logger.verify_record(evidence_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Evidence record not found.")
+
+@app.get("/api/evidence/{evidence_id}/replay")
+async def replay_evidence_record(evidence_id: str):
+    try:
+        return EvidenceReplayHarness(evidence_logger).replay(evidence_id)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Evidence record not found.")
 

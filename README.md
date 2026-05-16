@@ -108,6 +108,7 @@ Every confirmed mission writes a replayable JSON record under `evidence/` by def
 - HMAC signatures for the mission bundle digest and the evidence record digest.
 - Parser/model provenance and bounded intent JSON.
 - Target resolution, selected drones, safety reports, preflight results, execution results, and confirmation state.
+- Fleet snapshot at confirmation time for deterministic replay.
 - Action-script sandbox summaries without treating the generated script as an authority path.
 
 Use `SHEPHERD_EVIDENCE_DIR` to write records somewhere else. Set `SHEPHERD_SIGNING_KEY` or `SHEPHERD_SIGNING_KEY_FILE` to keep a stable signing key across machines; otherwise Shepherd-AI creates a local ignored key at `.shepherd/signing.key`.
@@ -116,6 +117,8 @@ Use `SHEPHERD_EVIDENCE_DIR` to write records somewhere else. Set `SHEPHERD_SIGNI
 curl http://localhost:8000/api/evidence
 curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response
 curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response/verify
+curl http://localhost:8000/api/evidence/evidence-id-from-confirm-response/replay
+.\.venv\Scripts\python.exe -m backend.evidence_replay evidence-id-from-confirm-response
 ```
 
 ## Quick Start
@@ -168,6 +171,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - `SHEPHERD-IR/2.0` mission program panel showing the exact validated command bundle, including constraints, assurance monitors, allocation, and provenance.
 - Live preflight readiness gate for connected vehicle, battery reserve, navigation quality, and facade operation whitelist checks.
 - Signed confirmed-mission evidence logs for replay, audit, tamper detection, and research evaluation.
+- Evidence replay harness that verifies signatures, checks mission digests, re-runs safety validation, and compares recorded mission consistency.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

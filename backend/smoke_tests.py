@@ -5,9 +5,10 @@ from backend.controller import SwarmManager
 from backend.action_script import synthesize_action_script
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
+from backend.evidence_replay import EvidenceReplayHarness
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
-from backend.signing import SignatureManager, digest_payload
+from backend.signing import digest_payload
 from backend.spatial import resolve_relative_target
 from hardware_bridge.facade import FacadeCommandRejected, MAVSDKFacade
 
@@ -312,7 +313,7 @@ async def test_confirmed_mission_writes_evidence_log():
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             backend_main.swarm = SwarmManager()
-            backend_main.evidence_logger = EvidenceLogger(tmpdir, signer=SignatureManager(key="test-evidence-key"))
+            backend_main.evidence_logger = EvidenceLogger(tmpdir)
 
             plan = await backend_main.create_mission_plan(
                 backend_main.CommandInput(command="Send one drone to Al Nada", selected_drones=[])
@@ -334,6 +335,7 @@ async def test_confirmed_mission_writes_evidence_log():
             assert record["plan_id"] == plan["plan_id"]
             assert record["confirmation"]["confirmed"]
             assert "operator_state" in record["confirmation"]
+            assert record["fleet_snapshot_at_confirmation"]["drones"]
             assert record["selected_drones"] == response["assigned"]
             assert record["parser_summary"]["fallback_used"]
             assert record["mission_programs"][0]["language"] == "SHEPHERD-IR/2.0"
@@ -347,6 +349,15 @@ async def test_confirmed_mission_writes_evidence_log():
             verify_result = await backend_main.verify_evidence_record(evidence["evidence_id"])
             assert verify_result["digest_valid"]
             assert verify_result["signature_valid"]
+
+            replay_result = await backend_main.replay_evidence_record(evidence["evidence_id"])
+            assert replay_result["status"] == "verified"
+            assert replay_result["summary"]["verified"]
+            assert replay_result["summary"]["replayed_safety_passed"]
+            assert replay_result["record_consistency"]["selected_drones_match_programs"]
+
+            direct_replay = EvidenceReplayHarness(backend_main.evidence_logger).replay_record(record)
+            assert direct_replay["summary"]["mission_digests_ok"]
 
             tampered = dict(record)
             tampered["command"] = "tampered command"
