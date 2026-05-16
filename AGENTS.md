@@ -27,4 +27,5 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - Treat `/api/command` as legacy/internal scripted execution.
 - PX4 SITL controls should only connect to an already-running PX4 endpoint; never start PX4 from the dashboard.
 - Do not add unvalidated perception-driven reroutes or UI/docs that imply perception capabilities without real telemetry and validation.
+- Confirmed missions should write evidence records. Runtime evidence JSON belongs under `evidence/` by default and should not be committed.
 - When adding learned modules, keep them behind typed contracts and deterministic safety gates.

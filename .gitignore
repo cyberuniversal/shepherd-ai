@@ -6,3 +6,4 @@ dist/
 .env
 PX4-Autopilot/
 session-*.md
+evidence/

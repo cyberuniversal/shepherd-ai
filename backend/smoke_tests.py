@@ -1,8 +1,10 @@
 import asyncio
+import tempfile
 
 from backend.controller import SwarmManager
 from backend.action_script import synthesize_action_script
 from backend.brain import MissionParser
+from backend.evidence_log import EvidenceLogger
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.spatial import resolve_relative_target
@@ -295,6 +297,53 @@ async def test_mission_plan_preview_does_not_move_real_swarm():
     assert cancelled["cancelled"]
 
 
+async def test_confirmed_mission_writes_evidence_log():
+    from backend import main as backend_main
+
+    old_swarm = backend_main.swarm
+    old_logger = backend_main.evidence_logger
+    backend_main.parser._ollama_available = False
+    backend_main.PENDING_MISSION_PLANS.clear()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            backend_main.swarm = SwarmManager()
+            backend_main.evidence_logger = EvidenceLogger(tmpdir)
+
+            plan = await backend_main.create_mission_plan(
+                backend_main.CommandInput(command="Send one drone to Al Nada", selected_drones=[])
+            )
+            assert backend_main.evidence_logger.list_records() == []
+
+            response = await backend_main.confirm_mission_plan(
+                backend_main.MissionPlanRef(plan_id=plan["plan_id"])
+            )
+
+            evidence = response["evidence"]
+            assert evidence["recorded"]
+            assert evidence["evidence_id"].startswith("evidence-")
+            assert evidence["mission_digests"]
+
+            record = backend_main.evidence_logger.read_record(evidence["evidence_id"])
+            assert record["record_type"] == "confirmed_mission"
+            assert record["plan_id"] == plan["plan_id"]
+            assert record["confirmation"]["confirmed"]
+            assert "operator_state" in record["confirmation"]
+            assert record["selected_drones"] == response["assigned"]
+            assert record["parser_summary"]["fallback_used"]
+            assert record["mission_programs"][0]["language"] == "SHEPHERD-IR/2.0"
+            assert record["mission_programs"][0]["mission_digest"] == record["mission_digests"][0]
+            assert record["safety_reports"]
+            assert record["execution_results"]
+
+            listed = backend_main.evidence_logger.list_records()
+            assert listed[0]["evidence_id"] == evidence["evidence_id"]
+        finally:
+            backend_main.swarm = old_swarm
+            backend_main.evidence_logger = old_logger
+            backend_main.PENDING_MISSION_PLANS.clear()
+
+
 def main():
     test_relative_target_resolution()
     test_geometric_sandbox_blocks_forbidden_polygon()
@@ -307,6 +356,7 @@ def main():
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())
     asyncio.run(test_mission_plan_preview_does_not_move_real_swarm())
+    asyncio.run(test_confirmed_mission_writes_evidence_log())
     print("backend smoke tests passed")
 
 

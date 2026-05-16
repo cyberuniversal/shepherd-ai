@@ -11,6 +11,7 @@ try:
     from backend.action_script import synthesize_action_script
     from backend.brain import MissionParser
     from backend.controller import SwarmManager
+    from backend.evidence_log import EvidenceLogger
     from backend.mission_program import compile_mission_program
     from backend.safety import validate_mission_program
     from backend.spatial import detect_relative_direction, resolve_relative_target
@@ -18,6 +19,7 @@ except ImportError:
     from action_script import synthesize_action_script
     from brain import MissionParser
     from controller import SwarmManager
+    from evidence_log import EvidenceLogger
     from mission_program import compile_mission_program
     from safety import validate_mission_program
     from spatial import detect_relative_direction, resolve_relative_target
@@ -38,6 +40,7 @@ app.add_middleware(
 
 parser = MissionParser()
 swarm = SwarmManager()
+evidence_logger = EvidenceLogger()
 
 # ─── Request Models ───────────────────────────────────────────────────────────
 
@@ -664,6 +667,19 @@ async def confirm_mission_plan(body: MissionPlanRef):
         "plan_summary": plan_summary,
         "message": f"Mission confirmed. {len(response.get('assigned', []))} drones tasked.",
     })
+    try:
+        response["evidence"] = evidence_logger.record_confirmed_mission(
+            {**plan, "plan_id": body.plan_id},
+            response,
+            operator_state=OPERATOR_STATE.copy(),
+        )
+        swarm._think(
+            f"EVIDENCE LOG: {response['evidence']['evidence_id']} persisted for confirmed mission {body.plan_id}.",
+            "decision",
+        )
+    except Exception as exc:
+        response["evidence"] = {"recorded": False, "error": str(exc)}
+        swarm._think(f"EVIDENCE LOG FAILED: {exc}", "critical")
     return response
 
 
@@ -781,6 +797,17 @@ async def revive_drone(body: DroneIdInput):
 @app.get("/api/thinking")
 async def get_thinking_log():
     return {"thinking_log": swarm.get_thinking_log()}
+
+@app.get("/api/evidence")
+async def list_evidence(limit: int = 25):
+    return {"records": evidence_logger.list_records(limit=max(1, min(int(limit), 100)))}
+
+@app.get("/api/evidence/{evidence_id}")
+async def get_evidence_record(evidence_id: str):
+    try:
+        return evidence_logger.read_record(evidence_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Evidence record not found.")
 
 # ─── WebSocket for real-time fleet state ──────────────────────────────────────
 
