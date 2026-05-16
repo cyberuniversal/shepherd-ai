@@ -4,6 +4,7 @@ import tempfile
 
 from backend.controller import SwarmManager
 from backend.action_script import synthesize_action_script
+from backend.assurance import evaluate_runtime_assurance
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
@@ -225,6 +226,34 @@ async def test_live_preflight_allows_connected_drone():
     assert result["preflight"]["passed"]
 
 
+def test_runtime_assurance_reports_live_link_without_dispatch():
+    swarm = SwarmManager()
+    assigned, _ = swarm.allocate_task(24.7610, 46.6402, required_drones=1, specific_drones=["alpha-1"])
+    drones = [swarm.fleet[drone_id] for drone_id in assigned]
+    program = compile_mission_program(
+        "send alpha-1 to kafd",
+        {"action": "scout", "target_zone": "kafd", "pattern": "perimeter"},
+        {"lat": 24.7610, "lng": 46.6402},
+        drones,
+        live_mode=True,
+    )
+
+    assurance = evaluate_runtime_assurance(
+        {
+            "assigned": assigned,
+            "mission_programs": [program],
+            "safety_reports": [{"passed": True, "issues": []}],
+        },
+        swarm.get_fleet_state(),
+    )
+
+    assert assurance["summary"]["report_only"]
+    assert assurance["summary"]["critical_count"] == 1
+    assert assurance["events"][0]["monitor"] == "link_health"
+    assert assurance["events"][0]["report_only"]
+    assert swarm.fleet["alpha-1"].live_connected is False
+
+
 async def test_facade_allows_only_safe_ops():
     system = FakeSystem()
     facade = MAVSDKFacade({"alpha-1": system})
@@ -343,6 +372,8 @@ async def test_confirmed_mission_writes_evidence_log():
             assert record["mission_programs"][0]["language"] == "SHEPHERD-IR/2.0"
             assert record["mission_programs"][0]["mission_digest"] == record["mission_digests"][0]
             assert record["safety_reports"]
+            assert "assurance_events" in record
+            assert record["assurance_summary"]["report_only"]
             assert record["execution_results"]
             assert record["record_signature"]["payload_digest"] == record["evidence_digest"]
             assert record["verification"]["digest_valid"]
@@ -407,6 +438,7 @@ def main():
     test_action_script_has_no_artificial_route_events()
     asyncio.run(test_live_preflight_blocks_unconnected_drone())
     asyncio.run(test_live_preflight_allows_connected_drone())
+    test_runtime_assurance_reports_live_link_without_dispatch()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())

@@ -9,6 +9,7 @@ import uuid
 
 try:
     from backend.action_script import synthesize_action_script
+    from backend.assurance import evaluate_runtime_assurance
     from backend.brain import MissionParser
     from backend.controller import SwarmManager
     from backend.evidence_log import EvidenceLogger
@@ -19,6 +20,7 @@ try:
     from backend.spatial import detect_relative_direction, resolve_relative_target
 except ImportError:
     from action_script import synthesize_action_script
+    from assurance import evaluate_runtime_assurance
     from brain import MissionParser
     from controller import SwarmManager
     from evidence_log import EvidenceLogger
@@ -669,12 +671,16 @@ async def confirm_mission_plan(body: MissionPlanRef):
         "plan_summary": plan_summary,
         "message": f"Mission confirmed. {len(response.get('assigned', []))} drones tasked.",
     })
+    fleet_snapshot = swarm.get_fleet_state()
+    assurance = evaluate_runtime_assurance(response, fleet_snapshot)
+    response["assurance_events"] = assurance["events"]
+    response["assurance_summary"] = assurance["summary"]
     try:
         response["evidence"] = evidence_logger.record_confirmed_mission(
             {**plan, "plan_id": body.plan_id},
             response,
             operator_state=OPERATOR_STATE.copy(),
-            fleet_snapshot=swarm.get_fleet_state(),
+            fleet_snapshot=fleet_snapshot,
         )
         swarm._think(
             f"EVIDENCE LOG: {response['evidence']['evidence_id']} persisted for confirmed mission {body.plan_id}.",

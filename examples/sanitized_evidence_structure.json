@@ -1,0 +1,127 @@
+{
+  "note": "Sanitized structural example only. Do not use this as trusted signed evidence.",
+  "evidence_id": "evidence-example0000",
+  "record_type": "confirmed_mission",
+  "recorded_at": 0,
+  "plan_id": "plan-example",
+  "command": "Send one drone to the inspection zone",
+  "confirmation": {
+    "confirmed": true,
+    "confirmed_at": 0,
+    "preview_created_at": 0,
+    "operator_state": {}
+  },
+  "selected_drones": [
+    "alpha-1"
+  ],
+  "intents": [
+    {
+      "action": "scout",
+      "target_zone": "inspection zone",
+      "drone_count": 1,
+      "pattern": "perimeter",
+      "confidence": 0.91,
+      "needs_confirmation": true
+    }
+  ],
+  "target_resolution": [
+    {
+      "lat": 24.761,
+      "lng": 46.6402,
+      "source": "known_location",
+      "label": "inspection zone"
+    }
+  ],
+  "parser_summary": {
+    "fallback_used": false
+  },
+  "fleet_snapshot_at_confirmation": {
+    "drones": [
+      {
+        "id": "alpha-1",
+        "lat": 24.7136,
+        "lng": 46.6753,
+        "battery": 100,
+        "nav_confidence": 1,
+        "live_connected": false
+      }
+    ]
+  },
+  "mission_digests": [
+    "example-mission-digest"
+  ],
+  "mission_programs": [
+    {
+      "language": "SHEPHERD-IR/2.0",
+      "mission_id": "mission-example",
+      "mission_digest": "example-mission-digest",
+      "constraints": {
+        "battery_reserve_pct": 15,
+        "min_altitude_m": 1,
+        "max_altitude_m": 120,
+        "live_dispatch_requested": false
+      },
+      "allocation": {
+        "selected_vehicles": [
+          "alpha-1"
+        ]
+      },
+      "drone_programs": [
+        {
+          "drone_id": "alpha-1",
+          "steps": [
+            {
+              "op": "ARM"
+            },
+            {
+              "op": "TAKEOFF",
+              "altitude_m": 10
+            },
+            {
+              "op": "GOTO",
+              "lat": 24.761,
+              "lng": 46.6402,
+              "altitude_m": 10
+            }
+          ]
+        }
+      ],
+      "provenance": {
+        "signature": {
+          "algorithm": "HMAC-SHA256",
+          "payload_type": "shepherd_ir_bundle",
+          "payload_digest": "example-mission-digest",
+          "signature": "not-a-real-signature"
+        }
+      }
+    }
+  ],
+  "safety_reports": [
+    {
+      "passed": true,
+      "issues": []
+    }
+  ],
+  "assurance_events": [],
+  "assurance_summary": {
+    "report_only": true,
+    "event_count": 0,
+    "critical_count": 0,
+    "warning_count": 0,
+    "passed": true
+  },
+  "preflight_results": [],
+  "execution_results": [
+    {
+      "executed": false,
+      "mode": "digital_twin_simulation"
+    }
+  ],
+  "evidence_digest": "example-evidence-digest",
+  "record_signature": {
+    "algorithm": "HMAC-SHA256",
+    "payload_type": "mission_evidence_record",
+    "payload_digest": "example-evidence-digest",
+    "signature": "not-a-real-signature"
+  }
+}

@@ -69,6 +69,8 @@ class EvidenceLogger:
             "mission_digests": mission_digests,
             "mission_programs": mission_programs,
             "safety_reports": response.get("safety_reports", []),
+            "assurance_events": response.get("assurance_events", []),
+            "assurance_summary": response.get("assurance_summary", {}),
             "preflight_results": preflight_results,
             "execution_results": response.get("execution_results", []),
             "action_script_summaries": [

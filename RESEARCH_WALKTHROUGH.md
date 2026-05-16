@@ -39,6 +39,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Confirmed-mission evidence records containing the IR bundle, signed digest, parser provenance, safety report, preflight result, execution result, selected drones, fleet snapshot, timestamps, and operator confirmation state.
 - Evidence replay verifies record signatures, mission digests, selected-drone consistency, and current deterministic safety results against the recorded mission.
 - Scenario regression turns signed evidence records into release checks so backend changes can prove they did not silently change mission safety behavior.
+- Runtime assurance currently emits report-only monitor events and fallback recommendations; it does not automatically trigger HOLD, RTL, or live vehicle commands.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 

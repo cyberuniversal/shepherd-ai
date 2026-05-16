@@ -109,9 +109,11 @@ Every confirmed mission writes a replayable JSON record under `evidence/` by def
 - Parser/model provenance and bounded intent JSON.
 - Target resolution, selected drones, safety reports, preflight results, execution results, and confirmation state.
 - Fleet snapshot at confirmation time for deterministic replay.
+- Report-only runtime assurance events and summaries for monitor findings.
 - Action-script sandbox summaries without treating the generated script as an authority path.
 
 Use `SHEPHERD_EVIDENCE_DIR` to write records somewhere else. Set `SHEPHERD_SIGNING_KEY` or `SHEPHERD_SIGNING_KEY_FILE` to keep a stable signing key across machines; otherwise Shepherd-AI creates a local ignored key at `.shepherd/signing.key`.
+See `examples/sanitized_evidence_structure.json` for the evidence shape. It is a structural example only and is not trusted signed evidence.
 
 ```bash
 curl http://localhost:8000/api/evidence
@@ -180,6 +182,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Signed confirmed-mission evidence logs for replay, audit, tamper detection, and research evaluation.
 - Evidence replay harness that verifies signatures, checks mission digests, re-runs safety validation, and compares recorded mission consistency.
 - Scenario regression runner that replays signed evidence records across backend changes and fails on integrity, consistency, or safety regressions.
+- Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 
