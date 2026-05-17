@@ -157,6 +157,15 @@ curl "http://localhost:8000/api/research/parser-shadow-report?include_records=fa
 
 The parser shadow report reads evidence records produced with `SHEPHERD_SHADOW_LEARNED_PARSER=1` and summarizes active-vs-learned parser matches, mismatches, parser counts, and mismatch fields. It does not switch parsers or dispatch vehicles.
 
+Export reviewable dataset-improvement candidates from shadow disagreements:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_candidates --output .tmp_scenarios\parser-shadow-candidates.jsonl --summary-only
+curl "http://localhost:8000/api/research/parser-shadow-candidates"
+```
+
+Shadow candidates are not training rows. They preserve the command, active intent, shadow intent, mismatch fields, evidence id, and `ready_for_training=false` so a human can choose or correct the expected intent before adding anything to `targeted_augmentation.jsonl`.
+
 Generate ignored off-nominal scenario records for local regression work:
 
 ```powershell
@@ -271,6 +280,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Parser shadow audit report generator that summarizes active-vs-learned parser disagreements from signed evidence without changing parser behavior.
+- Parser shadow candidate exporter that turns disagreement evidence into review-required augmentation candidates, not automatic training rows.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
 - Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, optional promotion-validated runtime loading, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.

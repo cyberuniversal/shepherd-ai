@@ -16,6 +16,7 @@ try:
     from backend.evidence_log import EvidenceLogger
     from backend.evidence_replay import EvidenceReplayHarness
     from backend.mission_program import compile_mission_program
+    from backend.parser_shadow_candidates import generate_parser_shadow_candidates
     from backend.parser_shadow_report import generate_parser_shadow_report
     from backend.safety import validate_mission_program
     from backend.scenario_regression import ScenarioRegressionRunner, run_scenario_regression
@@ -29,6 +30,7 @@ except ImportError:
     from evidence_log import EvidenceLogger
     from evidence_replay import EvidenceReplayHarness
     from mission_program import compile_mission_program
+    from parser_shadow_candidates import generate_parser_shadow_candidates
     from parser_shadow_report import generate_parser_shadow_report
     from safety import validate_mission_program
     from scenario_regression import ScenarioRegressionRunner, run_scenario_regression
@@ -858,6 +860,15 @@ async def run_research_parser_shadow_report(limit: int = 100, include_records: b
     return generate_parser_shadow_report(
         limit=max(1, min(int(limit), 1000)),
         include_records=include_records,
+        evidence_logger=evidence_logger,
+    )
+
+
+@app.get("/api/research/parser-shadow-candidates")
+async def run_research_parser_shadow_candidates(limit: int = 100, include_matches: bool = False):
+    return generate_parser_shadow_candidates(
+        limit=max(1, min(int(limit), 1000)),
+        include_matches=include_matches,
         evidence_logger=evidence_logger,
     )
 

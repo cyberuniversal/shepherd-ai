@@ -32,6 +32,7 @@ from backend.parser_failure_analysis import analyze_report, write_analysis, writ
 from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
 from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV, SHADOW_ENV
+from backend.parser_shadow_candidates import generate_parser_shadow_candidates, write_candidates_jsonl
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
@@ -730,6 +731,26 @@ async def test_parser_shadow_report_summarizes_signed_evidence():
             with open(report_path, "r", encoding="utf-8") as handle:
                 persisted = json.load(handle)
             assert persisted["summary"]["mismatch_count"] == 1
+
+            candidates = generate_parser_shadow_candidates(evidence_logger=backend_main.evidence_logger)
+            assert candidates["schema"] == "shepherd-parser-shadow-candidates/1.0"
+            assert candidates["review_required"]
+            assert not candidates["ready_for_training"]
+            assert candidates["summary"]["candidate_count"] == 1
+            assert candidates["summary"]["mismatch_field_counts"]["pattern"] == 1
+            assert candidates["candidates"][0]["ready_for_training"] is False
+            assert candidates["candidates"][0]["expected_intent_status"] == "unreviewed"
+            assert candidates["candidates"][0]["expected_intent_options"]["active"]["pattern"] == "perimeter"
+            assert candidates["candidates"][0]["expected_intent_options"]["shadow"]["pattern"] == "direct"
+
+            api_candidates = await backend_main.run_research_parser_shadow_candidates()
+            assert api_candidates["summary"]["candidate_count"] == 1
+
+            candidates_path = write_candidates_jsonl(candidates, f"{tmpdir}/parser-shadow-candidates.jsonl")
+            with open(candidates_path, "r", encoding="utf-8") as handle:
+                candidate_lines = [json.loads(line) for line in handle if line.strip()]
+            assert len(candidate_lines) == 1
+            assert candidate_lines[0]["mismatch_fields"] == ["pattern"]
         finally:
             backend_main.evidence_logger = old_logger
 

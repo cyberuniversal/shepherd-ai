@@ -85,6 +85,15 @@ Summarize shadow comparisons from signed evidence:
 curl "http://localhost:8000/api/research/parser-shadow-report?include_records=false"
 ```
 
+Export review-required augmentation candidates from disagreements:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_candidates --output .tmp_scenarios\parser-shadow-candidates.jsonl --summary-only
+curl "http://localhost:8000/api/research/parser-shadow-candidates"
+```
+
+These candidates are not training data. They set `ready_for_training=false` and preserve both active and shadow intent options so the expected intent can be manually selected or corrected before any row is added to `data/mission_commands/targeted_augmentation.jsonl`.
+
 If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
 
 ## Failure Analysis
