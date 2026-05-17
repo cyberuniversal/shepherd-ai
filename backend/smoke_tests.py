@@ -275,7 +275,12 @@ def test_mission_command_dataset_seed_validates():
     evaluation = asyncio.run(evaluate_dataset())
     assert evaluation["valid"], evaluation["errors"]
     assert evaluation["summary"]["evaluated"] == result["summary"]["total"]
-    assert "field_metrics" in evaluation["summary"]
+    metrics = evaluation["summary"]["field_metrics"]
+    assert metrics["action"]["accuracy"] >= 0.95
+    assert metrics["drone_count"]["accuracy"] >= 0.9
+    assert metrics["target_zone"]["accuracy"] >= 0.9
+    assert metrics["pattern"]["accuracy"] >= 0.9
+    assert evaluation["summary"]["subset_matches"] >= 30
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():

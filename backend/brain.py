@@ -11,6 +11,8 @@ except ImportError:
 ARABIC_INDIC_MAP = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
 
 NUMBER_WORDS = {
+    "a": 1,
+    "an": 1,
     "one": 1,
     "two": 2,
     "three": 3,
@@ -22,18 +24,61 @@ NUMBER_WORDS = {
     "nine": 9,
     "ten": 10,
     "واحد": 1,
+    "واحدة": 1,
     "اثنين": 2,
     "إثنين": 2,
+    "اثنتين": 2,
+    "إثنتين": 2,
+    "طائرتين": 2,
+    "بطائرتين": 2,
+    "طائرتان": 2,
     "ثلاثة": 3,
+    "ثلاث": 3,
+    "بثلاث": 3,
     "اربعة": 4,
     "أربعة": 4,
+    "اربع": 4,
+    "أربع": 4,
+    "بأربع": 4,
     "خمسة": 5,
+    "خمس": 5,
+    "بخمس": 5,
     "ستة": 6,
     "سبعة": 7,
     "ثمانية": 8,
     "تسعة": 9,
     "عشرة": 10,
 }
+
+FLEET_SIZE = 13
+KNOWN_TARGET_ALIASES = [
+    ("ministry of defense", "ministry of defense"),
+    ("the airport", "the airport"),
+    ("national museum", "national museum"),
+    ("wadi hanifah", "wadi hanifah"),
+    ("king saud university", "king saud university"),
+    ("imam university", "imam university"),
+    ("kingdom centre", "kingdom centre"),
+    ("kingdom center", "kingdom center"),
+    ("al faisaliyah", "al faisaliyah"),
+    ("al nada", "al nada"),
+    ("stadium", "stadium"),
+    ("airport", "airport"),
+    ("boulevard", "boulevard"),
+    ("diriyah", "diriyah"),
+    ("masmak", "masmak"),
+    ("kafd", "kafd"),
+    ("وزارة الدفاع", "وزارة الدفاع"),
+    ("المتحف الوطني", "المتحف الوطني"),
+    ("المركز المالي", "المركز المالي"),
+    ("وادي حنيفة", "وادي حنيفة"),
+    ("حي الندى", "حي الندى"),
+    ("الدرعية", "الدرعية"),
+    ("المطار", "المطار"),
+    ("الملعب", "الملعب"),
+    ("جامعة الامام", "جامعة الامام"),
+]
+AMBIGUOUS_TARGETS = {"there", "over there", "هناك", "هنالك"}
 
 class MissionParser:
     def __init__(self, model_name: str | None = None):
@@ -72,20 +117,67 @@ class MissionParser:
         return normalized
 
     def _detect_pattern(self, lower_text: str) -> str:
-        if any(kw in lower_text for kw in ["scan", "sweep", "search", "مسح", "تمشيط"]):
-            return "lawn_mower"
         if any(kw in lower_text for kw in ["spiral", "close in", "converge", "حلزوني"]):
             return "spiral"
         if any(kw in lower_text for kw in ["secure", "surround", "perimeter", "تأمين", "محيط"]):
             return "perimeter"
+        if any(kw in lower_text for kw in ["scan", "sweep", "search", "مسح", "تمشيط", "مشط"]):
+            return "lawn_mower"
         return "perimeter"
+
+    def _known_target(self, lower_text: str) -> str | None:
+        for needle, canonical in sorted(KNOWN_TARGET_ALIASES, key=lambda item: len(item[0]), reverse=True):
+            if needle in lower_text:
+                return canonical
+        return None
+
+    def _clean_target_zone(self, target_zone: str | None, lower_text: str) -> str:
+        if not target_zone:
+            return "unknown"
+        target = target_zone.strip().strip(" .،,!")
+        known = self._known_target(lower_text)
+        if known and (known in target or target in known or known in lower_text):
+            return known
+
+        target = re.sub(r'\s+(?:for|with|using)\s+.+$', '', target, flags=re.IGNORECASE)
+        target = re.sub(r'\s+(?:لمسح|ب|بـ)\s*.+$', '', target)
+        target = re.sub(r'^(?:the\s+)?base$', 'unknown', target, flags=re.IGNORECASE)
+        if target.lower() in AMBIGUOUS_TARGETS:
+            return "unknown"
+        return target or "unknown"
+
+    def _extract_drone_count(self, normalized_input: str, lower_input: str, explicit_drones: List[str]) -> int | None:
+        if re.search(r'(?:ب|بـ)?طائرت(?:ين|ان)\b', lower_input):
+            return 2
+        if re.search(r'(?:ب|بـ)?طائرة\b', lower_input):
+            return 1
+
+        count_patterns = [
+            r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث|أحضر|ارسل)\s+(\d+)\s+(?:drone|drones|unit|units|طائرة|طائرات|طائر|وحدة|وحدات)',
+            r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث|أحضر|ارسل)\s+(?:drone|drones|unit|units|طائرة|طائرات|طائر|وحدة|وحدات)\s+(\d+)',
+            r'(?:with|using|ب|بـ)\s*(\d+)\s+(?:drone|drones|unit|units|طائرة|طائرات|طائر|وحدة|وحدات)',
+            r'(?:drone|drones|unit|units|طائرة|طائرات|طائر|وحدة|وحدات)\s+(\d+)',
+            r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث|أحضر|ارسل)\s+(\d+)\s+(?:to|at|near|towards|إلى|الى)',
+            r'^(\d+)\s+(?:to|at|near|towards|إلى|الى)',
+            r'\b(\d+)\s+(?:drone|drones|unit|units|طائرة|طائرات|طائر|وحدة|وحدات)\b',
+        ]
+        for pattern in count_patterns:
+            match = re.search(pattern, normalized_input)
+            if match:
+                return int(match.group(1))
+
+        if explicit_drones:
+            return len(explicit_drones)
+        if "all" in lower_input or "الكل" in lower_input or "جميع" in lower_input:
+            return FLEET_SIZE
+        return None
 
     def _fragment_has_action(self, text: str) -> bool:
         lower = text.lower()
         action_terms = [
             "attack", "strike", "secure", "defend", "protect", "recon", "observe", "scout", "scan",
             "search", "sweep", "patrol", "return", "recall", "bring", "rendezvous", "come to",
-            " هجوم", "تأمين", "استطلاع", "مسح", "تمشيط", "عودة"
+            " هجوم", "تأمين", "استطلاع", "استطلع", "مسح", "تمشيط", "مشط", "عودة", "أحضر", "أعد"
         ]
         return any(term in lower for term in action_terms)
 
@@ -119,10 +211,10 @@ class MissionParser:
         action_keywords = {
             "attack": ["attack", "strike", "هجوم", "اضرب", "ضرب"],
             "secure": ["secure", "defend", "protect", "تأمين", "حماية", "أمّن"],
-            "recon": ["recon", "reconnaissance", "observe", "استطلاع", "مراقبة", "راقب"],
-            "scout": ["scout", "scan", "search", "sweep", "patrol", "تمشيط", "بحث", "مسح", "دورية"],
-            "rendezvous": ["bring", "come to", "rendezvous", "meet", "link up"],
-            "return": ["return", "recall", "come back", "rtb", "عودة", "ارجع", "رجوع"],
+            "recon": ["recon", "reconnaissance", "observe", "استطلاع", "استطلع", "مراقبة", "راقب"],
+            "scout": ["scout", "scan", "search", "sweep", "patrol", "تمشيط", "مشط", "بحث", "مسح", "دورية"],
+            "rendezvous": ["bring", "come to", "rendezvous", "meet", "link up", "أحضر"],
+            "return": ["return", "recall", "come back", "rtb", "عودة", "ارجع", "رجوع", "أعد"],
         }
         for act, keywords in action_keywords.items():
             if any(kw in lower for kw in keywords):
@@ -290,26 +382,9 @@ class MissionParser:
         if explicit_drones:
             parsed["explicit_drones"] = explicit_drones
 
-        # Extract drone count from phrases like "send 3 drones", "deploy 4 units", "أرسل ٤ طائرات"
-        count_match = re.search(
-            r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث)\s+(\d+)\s+(?:drone|drones|unit|units|طائر|طائرات|وحد)',
-            normalized_input
-        )
-        if count_match:
-            parsed["drone_count"] = int(count_match.group(1))
-        else:
-            verb_count = re.search(
-                r'(?:send|deploy|dispatch|make|go|bring|move|guide|أرسل|وجه|ابعث)\s+(\d+)\s+(?:to|at|near|towards|إلى|الى)',
-                normalized_input
-            )
-            bare_count = re.match(r'^(\d+)\s+(?:to|at|near|towards|إلى|الى)', normalized_input)
-            if verb_count:
-                parsed["drone_count"] = int(verb_count.group(1))
-            elif bare_count:
-                parsed["drone_count"] = int(bare_count.group(1))
-
-        if "drone_count" not in parsed and ("all" in lower_input or "الكل" in lower_input or "جميع" in lower_input):
-            parsed["drone_count"] = 99  # Sentinel for "all available"
+        drone_count = self._extract_drone_count(normalized_input, lower_input, explicit_drones)
+        if drone_count is not None:
+            parsed["drone_count"] = drone_count
 
         area_match = re.search(r'(\d+)\s*(?:m|meters?|meter|متر)', normalized_input)
         if area_match:
@@ -325,38 +400,41 @@ class MissionParser:
             
         # Dynamically extract target zone using regex if parser missed it
         if parsed.get("target_reference") != "operator" and parsed.get("target_zone") in ["unknown", "", None, "undefined"]:
+            known_target = self._known_target(lower_input)
+            if known_target:
+                parsed["target_zone"] = known_target
+
             # Try specific verb patterns first, then generic "to X" as fallback
             patterns = [
                 r'(?:send|deploy|dispatch|bring|move|guide)\s+(?:\d+\s+)?(?:drones?|units?)?\s*(?:to|at|near|towards)\s+(.+?)(?:$|\.|!| and|,)',
                 r'(?:go to|head to|scout|secure|attack|target|towards)\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:recon|observe|secure|search)\s+(?:the\s+)?(.+?)(?:\s+with\s+\d+\s+drones?|$|\.|!| and|,)',
                 r'(?:drones?|units?)\s+(?:to|at|near|towards)\s+(.+?)(?:$|\.|!| and|,)',
+                r'(?:استطلع|راقب|أمّن|امن|مشط|نفذ)\s+(.+?)(?:\s+(?:ب|بـ)\s*\d+\s+طائرات|$|\.|!| و|،)',
+                r'(?:حول)\s+(.+?)(?:\s+(?:ب|بـ)\s*\d+\s+طائرات|$|\.|!| و|،)',
                 r'(?:إلى|الى)\s+(.+?)(?:$|\.|!| و|,)',
                 r'\bto\s+(.+?)(?:$|\.|!| and|,)',
             ]
-            for pattern in patterns:
-                match = re.search(pattern, normalized_input)
-                if match:
-                    extracted = match.group(1).strip()
-                    # Filter out noise words that aren't locations
-                    if extracted and extracted not in ["the", "a", "an", "my", "base"]:
-                        parsed["target_zone"] = extracted
-                        break
-            
-            # Final fallback: scan raw text for any known location name
             if parsed.get("target_zone") in ["unknown", "", None, "undefined"]:
-                known_locations = [
-                    "kafd", "airport", "imam university", "wadi hanifah", "kingdom centre",
-                    "kingdom center", "al faisaliyah", "boulevard", "diriyah", "masmak",
-                    "stadium", "king saud university", "national museum", "ministry of defense", "al nada",
-                    "المطار", "جامعة الامام", "المركز المالي", "وادي حنيفة"
-                ]
-                # Check longest names first to avoid partial matches
-                for loc in sorted(known_locations, key=len, reverse=True):
-                    if loc in lower_input:
-                        parsed["target_zone"] = loc
-                        break
-                else:
-                    parsed["target_zone"] = "unknown"
+                for pattern in patterns:
+                    match = re.search(pattern, normalized_input)
+                    if match:
+                        extracted = self._clean_target_zone(match.group(1), lower_input)
+                        if extracted not in ["the", "a", "an", "my", "base", "unknown"]:
+                            parsed["target_zone"] = extracted
+                            break
+
+        if parsed.get("target_reference") != "operator":
+            parsed["target_zone"] = self._clean_target_zone(parsed.get("target_zone"), lower_input)
+
+        if parsed.get("action") == "return":
+            parsed["target_zone"] = "home"
+            parsed["pattern"] = "return_to_launch"
+            parsed["priority"] = "high"
+            if "drone_count" not in parsed:
+                parsed["drone_count"] = FLEET_SIZE
+        elif "drone_count" not in parsed:
+            parsed["drone_count"] = 1
                 
         # Enforce action schema so it's never undefined
         if parsed.get("action") in ["unknown", "", None, "undefined"]:

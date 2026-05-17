@@ -31,4 +31,4 @@ Evaluate the current offline parser baseline against the dataset:
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --summary-only
 ```
 
-This is an evaluation scaffold, not model training.
+This is an evaluation scaffold, not model training. The current seed benchmark is also used by smoke tests to guard deterministic parser regressions before the dataset grows into a larger train/eval/holdout suite.

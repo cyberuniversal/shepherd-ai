@@ -220,6 +220,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with train/eval/holdout splits and offline parser evaluation tooling.
+- Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 
