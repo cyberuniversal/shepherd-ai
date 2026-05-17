@@ -162,6 +162,7 @@ Validate or export the early bilingual mission-command dataset for future parser
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate
 .\.venv\Scripts\python.exe -m backend.mission_dataset export
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --summary-only
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\targeted_augmentation.jsonl
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --report .tmp_scenarios\parser-eval.json --markdown-report .tmp_scenarios\parser-eval.md
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\adversarial_holdout.jsonl --report .tmp_scenarios\adversarial-eval.json --markdown-report .tmp_scenarios\adversarial-eval.md
 ```
@@ -170,6 +171,7 @@ Train and evaluate the first learned-parser research baseline:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
+.\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --augmentation data\mission_commands\targeted_augmentation.jsonl --output .tmp_models\learned_parser_augmented.json --report .tmp_models\learned_parser_augmented_report.json
 .\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
 .\.venv\Scripts\python.exe -m backend.learned_parser predict "Send two drones to KAFD" --artifact .tmp_models\learned_parser_baseline.json
 .\.venv\Scripts\python.exe -m backend.parser_promotion --artifact .tmp_models\learned_parser_baseline.json --report .tmp_models\parser_promotion_gate.json --allow-failure
@@ -181,6 +183,7 @@ Prepare the optional PyTorch/transformer parser corpus and check training depend
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_augmented\corpus
 .\.venv\Scripts\python.exe -m backend.transformer_parser status
 ```
 
@@ -240,9 +243,9 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Ignored off-nominal scenario fixture generator for local evidence replay coverage.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
-- Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
+- Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, and grouped failure-analysis reports.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, and grouped failure-analysis reports.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

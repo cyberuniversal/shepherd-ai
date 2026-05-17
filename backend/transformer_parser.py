@@ -12,10 +12,10 @@ try:
         coerce_bounded_intent,
         load_frozen_splits,
     )
-    from backend.mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_BENCHMARK_PATH
+    from backend.mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH
 except ImportError:
     from learned_parser import BOUNDED_OUTPUT_FIELDS, coerce_bounded_intent, load_frozen_splits
-    from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_BENCHMARK_PATH
+    from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH
 
 
 TRANSFORMER_CORPUS_SCHEMA = "shepherd-transformer-parser-corpus/1.0"
@@ -31,9 +31,10 @@ def write_training_corpus(
     output_dir: str | Path = DEFAULT_TRANSFORMER_CORPUS_DIR,
     *,
     dataset_path: str | Path = DEFAULT_BENCHMARK_PATH,
+    augmentation_path: str | Path | None = None,
     adversarial_path: str | Path | None = DEFAULT_ADVERSARIAL_PATH,
 ) -> Dict:
-    splits = load_frozen_splits(dataset_path, adversarial_path=adversarial_path)
+    splits = load_frozen_splits(dataset_path, augmentation_path=augmentation_path, adversarial_path=adversarial_path)
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
@@ -46,7 +47,7 @@ def write_training_corpus(
         split_files[split_name] = str(file_path)
         split_summaries[split_name] = {
             "count": len(records),
-            "used_for_training": split_name == "train",
+            "used_for_training": split_name == "train" or (split_name == "augmentation" and bool(records)),
             "languages": _language_counts(records),
             "source_ids": [record["id"] for record in records],
         }
@@ -56,6 +57,7 @@ def write_training_corpus(
         "created_at": datetime.now(timezone.utc).isoformat(),
         "dataset": {
             "path": str(Path(dataset_path)),
+            "augmentation_path": str(Path(augmentation_path)) if augmentation_path else None,
             "adversarial_path": str(Path(adversarial_path)) if adversarial_path else None,
         },
         "contract": {
@@ -212,20 +214,23 @@ def train_transformer_model(
         "corpus_digest": manifest.get("corpus_digest"),
         "dataset": {
             "path": manifest.get("dataset", {}).get("path"),
+            "augmentation_path": manifest.get("dataset", {}).get("augmentation_path"),
             "adversarial_path": manifest.get("dataset", {}).get("adversarial_path"),
             "train_ids": manifest.get("splits", {}).get("train", {}).get("source_ids", []),
+            "augmentation_ids": manifest.get("splits", {}).get("augmentation", {}).get("source_ids", []),
             "eval_ids": manifest.get("splits", {}).get("eval", {}).get("source_ids", []),
             "holdout_ids": manifest.get("splits", {}).get("holdout", {}).get("source_ids", []),
             "adversarial_ids": manifest.get("splits", {}).get("adversarial", {}).get("source_ids", []),
         },
-        "train_rows": len(train_rows),
-        "eval_rows": len(eval_rows),
         "contract": manifest["contract"],
         "bounded_output_fields": sorted(BOUNDED_OUTPUT_FIELDS),
         "training": {
             "epochs": epochs,
             "batch_size": batch_size,
             "learning_rate": learning_rate,
+            "train_rows": len(train_rows),
+            "eval_rows": len(eval_rows),
+            "augmentation_rows": len(manifest.get("splits", {}).get("augmentation", {}).get("source_ids", [])),
             "train_loss": getattr(train_output, "training_loss", None),
         },
     }
@@ -352,6 +357,7 @@ def main() -> int:
 
     prepare_parser = subparsers.add_parser("prepare", help="Write frozen transformer training/evaluation corpora.")
     prepare_parser.add_argument("--dataset", default=str(DEFAULT_BENCHMARK_PATH), help="Benchmark JSONL dataset path.")
+    prepare_parser.add_argument("--augmentation", default=None, help="Optional train-only augmentation JSONL path.")
     prepare_parser.add_argument("--adversarial", default=str(DEFAULT_ADVERSARIAL_PATH), help="Adversarial holdout JSONL path.")
     prepare_parser.add_argument("--output-dir", default=str(DEFAULT_TRANSFORMER_CORPUS_DIR), help="Corpus output directory.")
 
@@ -377,6 +383,7 @@ def main() -> int:
         result = write_training_corpus(
             args.output_dir,
             dataset_path=args.dataset,
+            augmentation_path=args.augmentation,
             adversarial_path=args.adversarial,
         )
         print(json.dumps(_manifest_summary(result), ensure_ascii=False, indent=2, sort_keys=True))

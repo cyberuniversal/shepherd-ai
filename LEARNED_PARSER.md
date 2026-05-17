@@ -4,14 +4,17 @@ This is the first training scaffold for Shepherd-AI intent parsing. It is not co
 
 ## Current Baseline
 
-The current baseline is `nearest_ngram_intent`, a dependency-light offline model that stores train-split examples from `data/mission_commands/benchmark.jsonl` and predicts by nearest text features. It exists to prove the training/evaluation pipeline, artifact format, split handling, and strict output adapter before heavier PyTorch or transformer work.
+The current baseline is `nearest_ngram_intent`, a dependency-light offline model that stores train-split examples from `data/mission_commands/benchmark.jsonl` and predicts by nearest text features. It exists to prove the training/evaluation pipeline, artifact format, split handling, augmentation handling, and strict output adapter before heavier PyTorch or transformer work.
 
 The adversarial holdout file is evaluation-only. It is loaded into reports, but its rows are not stored in the trained artifact.
+
+`data/mission_commands/targeted_augmentation.jsonl` is train-only failure-analysis data. It may be appended to the train split with `--augmentation`, but it is not a promotion gate and must not be mixed into eval, holdout, or adversarial rows.
 
 ## Train
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
+.\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --augmentation data\mission_commands\targeted_augmentation.jsonl --output .tmp_models\learned_parser_augmented.json --report .tmp_models\learned_parser_augmented_report.json
 ```
 
 Outputs under `.tmp_models/` are local research artifacts and are ignored by git.
@@ -23,6 +26,8 @@ Outputs under `.tmp_models/` are local research artifacts and are ignored by git
 ```
 
 The report includes train, eval, benchmark holdout, and adversarial holdout metrics. `adversarial_used_for_training` must remain `false`.
+
+When `--augmentation` is used, the report also includes `augmentation_count` and an `augmentation` split report for traceability. Training still happens through the train split; the extra report section only proves which failure-analysis rows were added.
 
 ## Promotion Gate
 
@@ -100,6 +105,7 @@ Prepare frozen corpora for PyTorch/transformer training:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_augmented\corpus
 ```
 
 Check optional training dependencies:

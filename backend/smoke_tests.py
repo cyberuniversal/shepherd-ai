@@ -11,6 +11,7 @@ from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
 from backend.mission_dataset import (
     DEFAULT_ADVERSARIAL_PATH,
+    DEFAULT_AUGMENTATION_PATH,
     DEFAULT_BENCHMARK_PATH,
     evaluate_dataset,
     export_training_rows,
@@ -327,6 +328,15 @@ def test_mission_command_dataset_seed_validates():
     assert adversarial["summary"]["language_counts"]["ar"] >= 30
     assert adversarial["summary"]["split_counts"]["holdout"] >= 60
 
+    augmentation = validate_dataset(DEFAULT_AUGMENTATION_PATH)
+    assert augmentation["valid"], augmentation["errors"]
+    assert augmentation["summary"]["total"] >= 48
+    assert augmentation["summary"]["language_counts"]["en"] >= 24
+    assert augmentation["summary"]["language_counts"]["ar"] >= 24
+    assert augmentation["summary"]["split_counts"]["train"] == augmentation["summary"]["total"]
+    assert augmentation["summary"]["split_counts"]["eval"] == 0
+    assert augmentation["summary"]["split_counts"]["holdout"] == 0
+
     adversarial_evaluation = asyncio.run(evaluate_dataset(DEFAULT_ADVERSARIAL_PATH))
     assert adversarial_evaluation["valid"], adversarial_evaluation["errors"]
     assert adversarial_evaluation["summary"]["evaluated"] == adversarial["summary"]["total"]
@@ -378,6 +388,31 @@ def test_learned_parser_baseline_scaffold_keeps_frozen_splits():
         assert prediction["needs_confirmation"] is True
         assert prediction["model_digest"] == loaded["artifact_digest"]
         assert "dispatch" not in prediction
+
+
+def test_targeted_augmentation_stays_train_only():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        artifact_path = f"{tmpdir}/learned-parser-augmented.json"
+        report_path = f"{tmpdir}/learned-parser-augmented-report.json"
+        result = train_baseline_model(
+            augmentation_path=DEFAULT_AUGMENTATION_PATH,
+            artifact_path=artifact_path,
+            report_path=report_path,
+        )
+
+        artifact = result["artifact"]
+        report = result["report"]
+        train_ids = set(artifact["dataset"]["train_ids"])
+        augmentation_ids = set(artifact["dataset"]["augmentation_ids"])
+        adversarial_ids = set(artifact["dataset"]["adversarial_ids"])
+        assert artifact["dataset"]["augmentation_path"] == str(DEFAULT_AUGMENTATION_PATH)
+        assert len(augmentation_ids) >= 48
+        assert augmentation_ids.issubset(train_ids)
+        assert train_ids.isdisjoint(adversarial_ids)
+        assert report["summary"]["augmentation_count"] == len(augmentation_ids)
+        assert report["summary"]["adversarial_used_for_training"] is False
+        assert report["split_reports"]["augmentation"]["total"] == len(augmentation_ids)
+        assert report["split_reports"]["adversarial"]["total"] == len(adversarial_ids)
 
 
 def test_parser_promotion_gate_blocks_weak_candidate():
@@ -494,24 +529,34 @@ def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
 
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = write_training_corpus(tmpdir)
+        base_result = write_training_corpus(f"{tmpdir}/base")
+        base_manifest = base_result["manifest"]
+        base_train_count = base_manifest["splits"]["train"]["count"]
+
+        result = write_training_corpus(f"{tmpdir}/augmented", augmentation_path=DEFAULT_AUGMENTATION_PATH)
         manifest = result["manifest"]
         assert manifest["schema"] == TRANSFORMER_CORPUS_SCHEMA
         assert manifest["contract"]["dispatch_authority"] is False
         assert manifest["contract"]["confirmation_required"] is True
-        assert manifest["splits"]["train"]["count"] >= 100
+        assert manifest["dataset"]["augmentation_path"] == str(DEFAULT_AUGMENTATION_PATH)
+        assert manifest["splits"]["train"]["count"] >= base_train_count + 48
+        assert manifest["splits"]["augmentation"]["count"] >= 48
         assert manifest["splits"]["eval"]["count"] >= 40
         assert manifest["splits"]["holdout"]["count"] >= 20
         assert manifest["splits"]["adversarial"]["count"] >= 60
         assert manifest["splits"]["train"]["used_for_training"] is True
+        assert manifest["splits"]["augmentation"]["used_for_training"] is True
         assert manifest["splits"]["adversarial"]["used_for_training"] is False
         assert set(manifest["splits"]["train"]["source_ids"]).isdisjoint(
             set(manifest["splits"]["adversarial"]["source_ids"])
         )
 
         train_rows = load_corpus_records(manifest["files"]["train"])
+        augmentation_rows = load_corpus_records(manifest["files"]["augmentation"])
         adversarial_rows = load_corpus_records(manifest["files"]["adversarial"])
         assert len(train_rows) == manifest["splits"]["train"]["count"]
+        assert len(augmentation_rows) == manifest["splits"]["augmentation"]["count"]
+        assert {row["id"] for row in augmentation_rows}.issubset({row["id"] for row in train_rows})
         assert len(adversarial_rows) == manifest["splits"]["adversarial"]["count"]
         target = json.loads(train_rows[0]["target_json"])
         assert "intent" in target
@@ -773,6 +818,7 @@ def main():
     test_runtime_assurance_reports_live_link_without_dispatch()
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
+    test_targeted_augmentation_stays_train_only()
     test_parser_promotion_gate_blocks_weak_candidate()
     test_parser_failure_analysis_reports_grouped_failures()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()

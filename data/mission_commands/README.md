@@ -8,6 +8,7 @@ Files:
 
 - `seed.jsonl`: compact smoke-test gate for known parser behavior.
 - `benchmark.jsonl`: larger English/Arabic train/eval/holdout benchmark for parser evaluation and future model training.
+- `targeted_augmentation.jsonl`: train-only English/Arabic examples added from parser failure-analysis categories. These rows may expand training corpora, but they are not an evaluation gate.
 - `adversarial_holdout.jsonl`: hard English/Arabic holdout commands for evaluation only. Do not tune the heuristic parser directly against this file; use it to measure whether parser changes generalize to ambiguous, contradictory, mixed, and under-specified commands.
 
 Each row includes:
@@ -24,6 +25,7 @@ Validate the seed set:
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\benchmark.jsonl
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\targeted_augmentation.jsonl
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\adversarial_holdout.jsonl
 ```
 
@@ -48,13 +50,17 @@ The learned-parser scaffold in `backend.learned_parser` trains only from benchma
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
+.\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --augmentation data\mission_commands\targeted_augmentation.jsonl --output .tmp_models\learned_parser_augmented.json --report .tmp_models\learned_parser_augmented_report.json
 .\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
 ```
+
+Use `--augmentation` only for train-only rows. The loader appends those rows into the train split and keeps a separate `augmentation` report section for auditability; it does not move rows into eval, holdout, or adversarial gates.
 
 The optional transformer scaffold prepares the same frozen splits for PyTorch/transformer experiments:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_augmented\corpus
 .\.venv\Scripts\python.exe -m backend.transformer_parser status
 ```
 

@@ -11,6 +11,7 @@ from typing import Dict, Iterable, List, Tuple
 
 try:
     from backend.mission_dataset import (
+        DEFAULT_AUGMENTATION_PATH,
         DEFAULT_ADVERSARIAL_PATH,
         DEFAULT_BENCHMARK_PATH,
         EVALUATED_INTENT_FIELDS,
@@ -19,6 +20,7 @@ try:
     )
 except ImportError:
     from mission_dataset import (
+        DEFAULT_AUGMENTATION_PATH,
         DEFAULT_ADVERSARIAL_PATH,
         DEFAULT_BENCHMARK_PATH,
         EVALUATED_INTENT_FIELDS,
@@ -166,11 +168,12 @@ def coerce_bounded_intent(
 def train_baseline_model(
     dataset_path: str | Path = DEFAULT_BENCHMARK_PATH,
     *,
+    augmentation_path: str | Path | None = None,
     adversarial_path: str | Path | None = DEFAULT_ADVERSARIAL_PATH,
     artifact_path: str | Path | None = DEFAULT_ARTIFACT_PATH,
     report_path: str | Path | None = DEFAULT_REPORT_PATH,
 ) -> Dict:
-    splits = load_frozen_splits(dataset_path, adversarial_path=adversarial_path)
+    splits = load_frozen_splits(dataset_path, augmentation_path=augmentation_path, adversarial_path=adversarial_path)
     training_examples = [_artifact_example(example) for example in splits["train"]]
     artifact = {
         "schema": ARTIFACT_SCHEMA,
@@ -189,8 +192,10 @@ def train_baseline_model(
         },
         "dataset": {
             "path": str(Path(dataset_path)),
+            "augmentation_path": str(Path(augmentation_path)) if augmentation_path else None,
             "adversarial_path": str(Path(adversarial_path)) if adversarial_path else None,
             "train_ids": [example["id"] for example in splits["train"]],
+            "augmentation_ids": [example["id"] for example in splits.get("augmentation", [])],
             "eval_ids": [example["id"] for example in splits["eval"]],
             "holdout_ids": [example["id"] for example in splits["holdout"]],
             "adversarial_ids": [example["id"] for example in splits["adversarial"]],
@@ -216,15 +221,26 @@ def train_baseline_model(
 def load_frozen_splits(
     dataset_path: str | Path = DEFAULT_BENCHMARK_PATH,
     *,
+    augmentation_path: str | Path | None = None,
     adversarial_path: str | Path | None = DEFAULT_ADVERSARIAL_PATH,
 ) -> Dict[str, List[Dict]]:
     validation = validate_dataset(dataset_path)
     if not validation["valid"]:
         raise ValueError(f"Dataset validation failed: {validation['errors']}")
 
-    splits = {"train": [], "eval": [], "holdout": [], "adversarial": []}
+    splits = {"train": [], "eval": [], "holdout": [], "adversarial": [], "augmentation": []}
     for example in load_examples(dataset_path):
         splits[example["split"]].append(example)
+
+    if augmentation_path:
+        augmentation_validation = validate_dataset(augmentation_path)
+        if not augmentation_validation["valid"]:
+            raise ValueError(f"Augmentation validation failed: {augmentation_validation['errors']}")
+        for example in load_examples(augmentation_path):
+            if example["split"] != "train":
+                raise ValueError(f"{example['id']}: augmentation rows must keep split=train")
+            splits["augmentation"].append(example)
+            splits["train"].append(example)
 
     if adversarial_path:
         adversarial_validation = validate_dataset(adversarial_path)
@@ -253,6 +269,7 @@ def evaluate_artifact_on_splits(artifact: Dict, splits: Dict[str, List[Dict]]) -
         "split_reports": split_reports,
         "summary": {
             "train_count": len(splits["train"]),
+            "augmentation_count": len(splits.get("augmentation", [])),
             "eval_count": len(splits["eval"]),
             "holdout_count": len(splits["holdout"]),
             "adversarial_count": len(splits["adversarial"]),
@@ -409,6 +426,7 @@ def main() -> int:
 
     train_parser = subparsers.add_parser("train-baseline", help="Train the nearest-ngram intent baseline.")
     train_parser.add_argument("--dataset", default=str(DEFAULT_BENCHMARK_PATH), help="Benchmark JSONL dataset path.")
+    train_parser.add_argument("--augmentation", default=None, help="Optional train-only augmentation JSONL path.")
     train_parser.add_argument("--adversarial", default=str(DEFAULT_ADVERSARIAL_PATH), help="Adversarial holdout JSONL path.")
     train_parser.add_argument("--output", default=str(DEFAULT_ARTIFACT_PATH), help="Output artifact path.")
     train_parser.add_argument("--report", default=str(DEFAULT_REPORT_PATH), help="Output JSON report path.")
@@ -416,6 +434,7 @@ def main() -> int:
     evaluate_parser = subparsers.add_parser("evaluate", help="Evaluate a learned parser artifact.")
     evaluate_parser.add_argument("--artifact", default=str(DEFAULT_ARTIFACT_PATH), help="Learned parser artifact path.")
     evaluate_parser.add_argument("--dataset", default=str(DEFAULT_BENCHMARK_PATH), help="Benchmark JSONL dataset path.")
+    evaluate_parser.add_argument("--augmentation", default=None, help="Optional train-only augmentation JSONL path.")
     evaluate_parser.add_argument("--adversarial", default=str(DEFAULT_ADVERSARIAL_PATH), help="Adversarial holdout JSONL path.")
     evaluate_parser.add_argument("--report", default=None, help="Optional output JSON report path.")
     evaluate_parser.add_argument("--summary-only", action="store_true", help="Omit per-row evaluation results.")
@@ -430,6 +449,7 @@ def main() -> int:
     if command == "train-baseline":
         result = train_baseline_model(
             args.dataset,
+            augmentation_path=args.augmentation,
             adversarial_path=args.adversarial,
             artifact_path=args.output,
             report_path=args.report,
@@ -439,7 +459,7 @@ def main() -> int:
 
     if command == "evaluate":
         artifact = load_artifact(args.artifact)
-        splits = load_frozen_splits(args.dataset, adversarial_path=args.adversarial)
+        splits = load_frozen_splits(args.dataset, augmentation_path=args.augmentation, adversarial_path=args.adversarial)
         report = evaluate_artifact_on_splits(artifact, splits)
         if args.report:
             report["report_path"] = _write_json(report, args.report)
@@ -461,7 +481,7 @@ def _without_training_examples(result: Dict) -> Dict:
     clone = json.loads(json.dumps(result))
     clone["artifact"]["training_examples"] = f"{len(result['artifact'].get('training_examples', []))} rows omitted"
     dataset = clone.get("artifact", {}).get("dataset", {})
-    for key in ("train_ids", "eval_ids", "holdout_ids", "adversarial_ids"):
+    for key in ("train_ids", "augmentation_ids", "eval_ids", "holdout_ids", "adversarial_ids"):
         if key in dataset:
             dataset[key] = f"{len(result['artifact']['dataset'].get(key, []))} ids omitted"
     for split_report in clone.get("report", {}).get("split_reports", {}).values():
