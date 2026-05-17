@@ -174,6 +174,13 @@ Train and evaluate the first learned-parser research baseline:
 .\.venv\Scripts\python.exe -m backend.learned_parser predict "Send two drones to KAFD" --artifact .tmp_models\learned_parser_baseline.json
 ```
 
+Prepare the optional PyTorch/transformer parser corpus and check training dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser status
+```
+
 ## Quick Start
 
 Additional guides:
@@ -232,7 +239,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, frozen train/eval/holdout handling, adversarial evaluation, and a strict bounded-intent adapter.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, adversarial evaluation, and strict bounded-intent adapters.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

@@ -45,9 +45,43 @@ It never returns MAVSDK commands, vehicle actuation calls, or dispatch authority
 
 ## Next Research Step
 
-The next model step can add a PyTorch or transformer trainer behind the same artifact/report contract:
+The next model step can run the optional transformer trainer behind the same artifact/report contract:
 
 1. Train only on benchmark `train` rows.
 2. Tune only against benchmark `eval` rows.
 3. Report benchmark `holdout` and `adversarial_holdout.jsonl` separately.
 4. Keep the strict adapter as the production-facing boundary.
+
+## Transformer Scaffold
+
+Prepare frozen corpora for PyTorch/transformer training:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+```
+
+Check optional training dependencies:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser status
+```
+
+Install optional training dependencies only on a machine intended for model work:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements-train.txt
+```
+
+Train a local seq2seq transformer experiment:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser\corpus --output-dir .tmp_models\transformer_parser\model --base-model google/mt5-small --epochs 3 --batch-size 2
+```
+
+Run bounded prediction from the trained model:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser predict "Send two drones to KAFD" --model-dir .tmp_models\transformer_parser\model
+```
+
+The transformer adapter parses generated JSON, coerces it through the bounded intent contract, marks `needs_confirmation=true`, and never returns dispatch commands.

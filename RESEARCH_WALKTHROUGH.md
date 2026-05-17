@@ -44,7 +44,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Runtime assurance currently emits report-only monitor events and fallback recommendations; it does not automatically trigger HOLD, RTL, or live vehicle commands.
 - Assurance reports aggregate signed evidence into monitor counts, critical findings, replay status, signature status, and fallback recommendations without calling MAVSDK.
 - Mission-command dataset scaffolding provides English/Arabic seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and parser baseline reports before any model training starts.
-- Learned-parser research scaffolding can train a local nearest-ngram baseline artifact, evaluate frozen splits, and serve predictions through a strict bounded-intent adapter without live dispatch authority.
+- Learned-parser research scaffolding can train a local nearest-ngram baseline artifact, prepare an optional PyTorch/transformer corpus, evaluate frozen splits, and serve predictions through strict bounded-intent adapters without live dispatch authority.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 
@@ -56,7 +56,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Expand scenario regression coverage with more off-nominal records, assurance events, and release-level pass/fail reports.
 - Treat perception and voice as gated cueing inputs, never as direct actuation paths.
 - Grow the mission-command dataset before fine-tuning parser models; training should be measured against held-out command-to-intent examples, including the adversarial holdout that is not used for parser tuning.
-- Replace the nearest-ngram learned-parser baseline with a PyTorch or transformer trainer only after the artifact, report, and strict adapter contracts remain stable.
+- Run the optional transformer trainer on a capable local/edge machine after the artifact, corpus, report, and strict adapter contracts remain stable.
 
 ## Hardware Path
 

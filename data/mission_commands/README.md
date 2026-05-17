@@ -50,3 +50,10 @@ The learned-parser scaffold in `backend.learned_parser` trains only from benchma
 .\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
 .\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
 ```
+
+The optional transformer scaffold prepares the same frozen splits for PyTorch/transformer experiments:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser status
+```

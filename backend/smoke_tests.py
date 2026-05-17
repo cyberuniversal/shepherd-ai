@@ -24,6 +24,13 @@ from backend.learned_parser import (
     load_artifact,
     train_baseline_model,
 )
+from backend.transformer_parser import (
+    TRANSFORMER_CORPUS_SCHEMA,
+    coerce_generated_text,
+    dependency_status,
+    load_corpus_records,
+    write_training_corpus,
+)
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_fixtures import generate_scenario_records
@@ -369,6 +376,49 @@ def test_learned_parser_baseline_scaffold_keeps_frozen_splits():
         assert "dispatch" not in prediction
 
 
+def test_transformer_parser_scaffold_prepares_frozen_corpus():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = write_training_corpus(tmpdir)
+        manifest = result["manifest"]
+        assert manifest["schema"] == TRANSFORMER_CORPUS_SCHEMA
+        assert manifest["contract"]["dispatch_authority"] is False
+        assert manifest["contract"]["confirmation_required"] is True
+        assert manifest["splits"]["train"]["count"] >= 100
+        assert manifest["splits"]["eval"]["count"] >= 40
+        assert manifest["splits"]["holdout"]["count"] >= 20
+        assert manifest["splits"]["adversarial"]["count"] >= 60
+        assert manifest["splits"]["train"]["used_for_training"] is True
+        assert manifest["splits"]["adversarial"]["used_for_training"] is False
+        assert set(manifest["splits"]["train"]["source_ids"]).isdisjoint(
+            set(manifest["splits"]["adversarial"]["source_ids"])
+        )
+
+        train_rows = load_corpus_records(manifest["files"]["train"])
+        adversarial_rows = load_corpus_records(manifest["files"]["adversarial"])
+        assert len(train_rows) == manifest["splits"]["train"]["count"]
+        assert len(adversarial_rows) == manifest["splits"]["adversarial"]["count"]
+        target = json.loads(train_rows[0]["target_json"])
+        assert "intent" in target
+        assert "constraints" in target
+        assert target["constraints"]["confirmation_required"] is True
+
+    deps = dependency_status()
+    assert "ready" in deps
+    assert "torch" in deps["packages"]
+    assert "transformers" in deps["packages"]
+
+    bounded = coerce_generated_text(
+        '{"intent":{"action":"scout","target_zone":"kafd","drone_count":2,"pattern":"perimeter"}}',
+        model_id="test-transformer",
+        model_digest="digest",
+    )
+    assert set(bounded).issubset(BOUNDED_OUTPUT_FIELDS)
+    assert bounded["needs_confirmation"] is True
+    assert bounded["model_id"] == "test-transformer"
+    assert bounded["target_zone"] == "kafd"
+    assert "dispatch" not in bounded
+
+
 def test_scenario_fixture_generator_creates_manifest_and_records():
     with tempfile.TemporaryDirectory() as tmpdir:
         signer = SignatureManager(key="scenario-fixture-test-key")
@@ -607,6 +657,7 @@ def main():
     test_runtime_assurance_reports_live_link_without_dispatch()
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
+    test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())

@@ -35,5 +35,6 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - Assurance reports must remain read-only over evidence records and must not dispatch MAVSDK commands.
 - Mission-command datasets are for parser training/evaluation only; trained models still output bounded intent JSON and never dispatch. Dataset rows should preserve train/eval/holdout split labels and clarification expectations. Keep `seed.jsonl` as the compact smoke-test gate and `benchmark.jsonl` as the larger evaluation/training benchmark. Treat `adversarial_holdout.jsonl` as evaluation-only data; do not tune deterministic parser behavior directly against it unless a row is deliberately promoted into seed or benchmark data.
 - Learned-parser artifacts and reports belong under `.tmp_models/` by default and should not be committed. Learned parser adapters must preserve bounded intent JSON and `dispatch_authority=false`.
+- PyTorch/transformer training dependencies belong in `backend/requirements-train.txt` and are optional; do not add heavyweight ML packages to the core backend requirements unless runtime use explicitly needs them.
 - Local signing keys belong in `.shepherd/` or an environment variable. Never commit signing keys.
 - When adding learned modules, keep them behind typed contracts and deterministic safety gates.
