@@ -44,7 +44,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Runtime assurance currently emits report-only monitor events and fallback recommendations; it does not automatically trigger HOLD, RTL, or live vehicle commands.
 - Assurance reports aggregate signed evidence into monitor counts, critical findings, replay status, signature status, and fallback recommendations without calling MAVSDK.
 - Mission-command dataset scaffolding provides English/Arabic seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and parser baseline reports before any model training starts.
-- Learned-parser research scaffolding can train a local nearest-ngram baseline artifact, prepare an optional PyTorch/transformer corpus, evaluate frozen splits, gate model promotion, and serve predictions through strict bounded-intent adapters without live dispatch authority.
+- Learned-parser research scaffolding can train a local nearest-ngram baseline artifact, prepare an optional PyTorch/transformer corpus, evaluate frozen splits, gate learned-artifact or transformer-model promotion, and serve predictions through strict bounded-intent adapters without live dispatch authority.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 

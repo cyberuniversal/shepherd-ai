@@ -173,6 +173,7 @@ Train and evaluate the first learned-parser research baseline:
 .\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
 .\.venv\Scripts\python.exe -m backend.learned_parser predict "Send two drones to KAFD" --artifact .tmp_models\learned_parser_baseline.json
 .\.venv\Scripts\python.exe -m backend.parser_promotion --artifact .tmp_models\learned_parser_baseline.json --report .tmp_models\parser_promotion_gate.json --allow-failure
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser\model --report .tmp_models\transformer_parser\promotion_gate.json
 ```
 
 Prepare the optional PyTorch/transformer parser corpus and check training dependencies:
@@ -240,7 +241,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, adversarial evaluation, strict bounded-intent adapters, and parser promotion gate.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, adversarial evaluation, strict bounded-intent adapters, and parser promotion gate for both learned artifacts and trained transformer model directories.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

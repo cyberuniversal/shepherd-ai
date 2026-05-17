@@ -40,6 +40,14 @@ The command exits nonzero when the artifact fails threshold or contract checks. 
 
 The current nearest-ngram baseline is expected to fail promotion. It exists to prove the scaffold, not to replace the bounded heuristic or LLM parser.
 
+After training a transformer model, evaluate that model directory with the same gate:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser\model --report .tmp_models\transformer_parser\promotion_gate.json
+```
+
+Transformer promotion requires the trained model directory to contain `shepherd_model_contract.json`, optional training dependencies to be installed, all predictions to pass through the bounded-intent adapter, and split provenance proving the adversarial holdout was not used for training.
+
 ## Predict
 
 ```powershell

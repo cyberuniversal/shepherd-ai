@@ -61,6 +61,7 @@ def write_training_corpus(
         "contract": {
             "input": "operator_command_text",
             "target": "bounded_intent_and_constraints_json",
+            "output": "bounded_intent_json_only",
             "dispatch_authority": False,
             "confirmation_required": True,
             "deterministic_backend_required": True,
@@ -209,6 +210,14 @@ def train_transformer_model(
         "base_model": base_model,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "corpus_digest": manifest.get("corpus_digest"),
+        "dataset": {
+            "path": manifest.get("dataset", {}).get("path"),
+            "adversarial_path": manifest.get("dataset", {}).get("adversarial_path"),
+            "train_ids": manifest.get("splits", {}).get("train", {}).get("source_ids", []),
+            "eval_ids": manifest.get("splits", {}).get("eval", {}).get("source_ids", []),
+            "holdout_ids": manifest.get("splits", {}).get("holdout", {}).get("source_ids", []),
+            "adversarial_ids": manifest.get("splits", {}).get("adversarial", {}).get("source_ids", []),
+        },
         "train_rows": len(train_rows),
         "eval_rows": len(eval_rows),
         "contract": manifest["contract"],

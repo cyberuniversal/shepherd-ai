@@ -21,10 +21,12 @@ from backend.mission_dataset import (
 from backend.learned_parser import (
     BOUNDED_OUTPUT_FIELDS,
     StrictIntentAdapter,
+    coerce_bounded_intent,
     load_artifact,
+    load_frozen_splits,
     train_baseline_model,
 )
-from backend.parser_promotion import run_promotion_gate
+from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -406,6 +408,62 @@ def test_parser_promotion_gate_blocks_weak_candidate():
         assert permissive_report["promoted"]
 
 
+def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
+    class PerfectTransformerAdapter:
+        def __init__(self, examples, model_id, model_digest):
+            self.model_id = model_id
+            self.model_digest = model_digest
+            self.expected_by_command = {
+                example["command"]: example["expected_intent"]
+                for example in examples
+            }
+
+        def predict(self, command):
+            return coerce_bounded_intent(
+                self.expected_by_command[command],
+                confidence=0.99,
+                model_id=self.model_id,
+                model_digest=self.model_digest,
+            )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        splits = load_frozen_splits()
+        all_examples = [example for rows in splits.values() for example in rows]
+        model_id = "test-transformer-adapter"
+        model_digest = "test-transformer-digest"
+        metadata = {
+            "candidate_type": TRANSFORMER_MODEL_CANDIDATE,
+            "candidate_path": f"{tmpdir}/model",
+            "model_id": model_id,
+            "artifact_digest": model_digest,
+            "contract": {
+                "output": "bounded_intent_json_only",
+                "dispatch_authority": False,
+                "confirmation_required": True,
+                "deterministic_backend_required": True,
+            },
+            "dataset": {
+                "train_ids": [example["id"] for example in splits["train"]],
+                "eval_ids": [example["id"] for example in splits["eval"]],
+                "holdout_ids": [example["id"] for example in splits["holdout"]],
+                "adversarial_ids": [example["id"] for example in splits["adversarial"]],
+            },
+        }
+        report = run_adapter_promotion_gate(
+            PerfectTransformerAdapter(all_examples, model_id, model_digest),
+            metadata,
+            splits,
+            report_path=f"{tmpdir}/transformer-promotion-gate.json",
+        )
+        assert report["promoted"]
+        assert report["candidate_type"] == TRANSFORMER_MODEL_CANDIDATE
+        assert report["contract_checks"]["passed"]
+        assert report["summary"]["adversarial_used_for_training"] is False
+        assert report["split_checks"]["eval"]["passed"]
+        assert report["split_checks"]["holdout"]["passed"]
+        assert report["split_checks"]["adversarial"]["passed"]
+
+
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
         result = write_training_corpus(tmpdir)
@@ -688,6 +746,7 @@ def main():
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
     test_parser_promotion_gate_blocks_weak_candidate()
+    test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())
