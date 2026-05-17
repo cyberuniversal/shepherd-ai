@@ -1,5 +1,6 @@
 import argparse
 import json
+import inspect
 import sys
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -193,14 +194,19 @@ def train_transformer_model(
         save_total_limit=2,
         report_to=[],
     )
-    trainer = Seq2SeqTrainer(
-        model=model,
-        args=training_args,
-        train_dataset=IntentDataset(train_rows),
-        eval_dataset=IntentDataset(eval_rows),
-        tokenizer=tokenizer,
-        data_collator=DataCollatorForSeq2Seq(tokenizer, model=model),
-    )
+    trainer_kwargs = {
+        "model": model,
+        "args": training_args,
+        "train_dataset": IntentDataset(train_rows),
+        "eval_dataset": IntentDataset(eval_rows),
+        "data_collator": DataCollatorForSeq2Seq(tokenizer, model=model),
+    }
+    trainer_params = inspect.signature(Seq2SeqTrainer.__init__).parameters
+    if "processing_class" in trainer_params:
+        trainer_kwargs["processing_class"] = tokenizer
+    else:
+        trainer_kwargs["tokenizer"] = tokenizer
+    trainer = Seq2SeqTrainer(**trainer_kwargs)
     train_output = trainer.train()
     trainer.save_model(str(output_path))
     tokenizer.save_pretrained(str(output_path))

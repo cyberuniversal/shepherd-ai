@@ -196,3 +196,15 @@ Run bounded prediction from the trained model:
 ```
 
 The transformer adapter parses generated JSON, coerces it through the bounded intent contract, marks `needs_confirmation=true`, and never returns dispatch commands.
+
+## First Transformer Training Probe
+
+The first end-to-end PyTorch/transformer probe was run on CPU with the augmented corpus:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_augmented\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_augmented\corpus --output-dir .tmp_models\transformer_parser_augmented\model_cpu_probe --base-model "google/mt5-small" --epochs 0.1 --batch-size 1
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser_augmented\model_cpu_probe --report .tmp_models\transformer_parser_augmented\promotion_gate_cpu_probe.json --allow-failure
+```
+
+Result: the training path, model contract, bounded adapter, and promotion gate all ran successfully. The short CPU probe is not promoted: eval subset accuracy was `0.0`, holdout subset accuracy was `0.0`, and adversarial subset accuracy was `0.1`. Treat it as infrastructure proof, not as a usable parser. A real candidate needs a longer GPU-backed run and should still pass the same promotion gate before runtime use.
