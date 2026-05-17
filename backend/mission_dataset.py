@@ -7,6 +7,7 @@ from typing import Dict, List
 
 
 DEFAULT_DATASET_PATH = Path("data/mission_commands/seed.jsonl")
+DEFAULT_BENCHMARK_PATH = Path("data/mission_commands/benchmark.jsonl")
 SUPPORTED_LANGUAGES = {"en", "ar"}
 SUPPORTED_SPLITS = {"train", "eval", "holdout"}
 REQUIRED_FIELDS = {
@@ -106,6 +107,7 @@ async def evaluate_dataset(path: str | Path = DEFAULT_DATASET_PATH) -> Dict:
     field_totals = {field: 0 for field in EVALUATED_INTENT_FIELDS}
     field_matches = {field: 0 for field in EVALUATED_INTENT_FIELDS}
     clarify_matches = 0
+    action_confusion = {}
 
     for example in examples:
         parsed = await parser.parse_intent(example["command"])
@@ -130,6 +132,10 @@ async def evaluate_dataset(path: str | Path = DEFAULT_DATASET_PATH) -> Dict:
         parsed_clarify = _parsed_should_clarify(parsed)
         if expected_clarify == parsed_clarify:
             clarify_matches += 1
+        expected_action = str(expected.get("action"))
+        parsed_action = str(parsed.get("action"))
+        action_confusion.setdefault(expected_action, {})
+        action_confusion[expected_action][parsed_action] = action_confusion[expected_action].get(parsed_action, 0) + 1
 
         results.append({
             "id": example["id"],
@@ -164,10 +170,72 @@ async def evaluate_dataset(path: str | Path = DEFAULT_DATASET_PATH) -> Dict:
             "subset_matches": len([result for result in results if result["subset_match"]]),
             "clarification_matches": clarify_matches,
             "field_metrics": field_metrics,
+            "language_metrics": _group_metrics(results, "language"),
+            "split_metrics": _group_metrics(results, "split"),
+            "action_confusion": action_confusion,
+            "failed_example_count": len([result for result in results if not result["subset_match"]]),
         },
         "errors": [],
         "results": results,
     }
+
+
+def write_json_report(result: Dict, report_path: str | Path) -> str:
+    path = Path(report_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(result, handle, ensure_ascii=False, indent=2, sort_keys=True)
+        handle.write("\n")
+    return str(path)
+
+
+def write_markdown_report(result: Dict, report_path: str | Path) -> str:
+    path = Path(report_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    summary = result.get("summary", {})
+    lines = [
+        "# Shepherd-AI Parser Evaluation Report",
+        "",
+        f"- Dataset: `{result.get('dataset')}`",
+        f"- Valid: `{result.get('valid')}`",
+        f"- Total rows: `{summary.get('total', 0)}`",
+        f"- Subset matches: `{summary.get('subset_matches', 0)}`",
+        f"- Failed examples: `{summary.get('failed_example_count', 0)}`",
+        f"- Clarification matches: `{summary.get('clarification_matches', 0)}`",
+        "",
+        "## Field Metrics",
+        "",
+        "| Field | Matched | Total | Accuracy |",
+        "| --- | ---: | ---: | ---: |",
+    ]
+    for field, metric in (summary.get("field_metrics") or {}).items():
+        lines.append(f"| {field} | {metric.get('matched')} | {metric.get('total')} | {metric.get('accuracy')} |")
+
+    lines.extend(["", "## Language Metrics", "", "| Language | Subset Matches | Total | Accuracy |", "| --- | ---: | ---: | ---: |"])
+    for language, metric in (summary.get("language_metrics") or {}).items():
+        lines.append(f"| {language} | {metric.get('subset_matches')} | {metric.get('total')} | {metric.get('subset_accuracy')} |")
+
+    lines.extend(["", "## Split Metrics", "", "| Split | Subset Matches | Total | Accuracy |", "| --- | ---: | ---: | ---: |"])
+    for split, metric in (summary.get("split_metrics") or {}).items():
+        lines.append(f"| {split} | {metric.get('subset_matches')} | {metric.get('total')} | {metric.get('subset_accuracy')} |")
+
+    lines.extend(["", "## Action Confusion", ""])
+    for expected, parsed_counts in (summary.get("action_confusion") or {}).items():
+        rendered = ", ".join(f"{parsed}: {count}" for parsed, count in sorted(parsed_counts.items()))
+        lines.append(f"- `{expected}` -> {rendered}")
+
+    failures = [item for item in result.get("results", []) if not item.get("subset_match")]
+    if failures:
+        lines.extend(["", "## Failed Examples", ""])
+        for failure in failures[:25]:
+            failed_fields = [
+                field
+                for field, field_result in failure.get("field_results", {}).items()
+                if not field_result.get("matched")
+            ]
+            lines.append(f"- `{failure.get('id')}` ({failure.get('language')}/{failure.get('split')}): {', '.join(failed_fields)}")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return str(path)
 
 
 def _validate_example(
@@ -250,6 +318,23 @@ def _parsed_should_clarify(parsed: Dict) -> bool:
     return bool(parsed.get("clarifying_question")) and confidence <= 0.5
 
 
+def _group_metrics(results: List[Dict], group_key: str) -> Dict:
+    groups = {}
+    for result in results:
+        group = result.get(group_key, "unknown")
+        groups.setdefault(group, {"total": 0, "subset_matches": 0, "clarification_matches": 0})
+        groups[group]["total"] += 1
+        if result.get("subset_match"):
+            groups[group]["subset_matches"] += 1
+        if result.get("should_clarify", {}).get("matched"):
+            groups[group]["clarification_matches"] += 1
+    for metric in groups.values():
+        total = metric["total"]
+        metric["subset_accuracy"] = round(metric["subset_matches"] / total, 3) if total else None
+        metric["clarification_accuracy"] = round(metric["clarification_matches"] / total, 3) if total else None
+    return groups
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -266,6 +351,8 @@ def main() -> int:
     evaluate_parser = subparsers.add_parser("evaluate", help="Evaluate the offline heuristic parser against the dataset.")
     evaluate_parser.add_argument("--path", default=str(DEFAULT_DATASET_PATH), help="JSONL dataset path.")
     evaluate_parser.add_argument("--summary-only", action="store_true", help="Omit per-row parser results.")
+    evaluate_parser.add_argument("--report", default=None, help="Optional path for a full JSON evaluation report.")
+    evaluate_parser.add_argument("--markdown-report", default=None, help="Optional path for a Markdown evaluation report.")
 
     args = parser.parse_args()
     command = args.command or "validate"
@@ -274,6 +361,10 @@ def main() -> int:
         return 0
     if command == "evaluate":
         result = asyncio.run(evaluate_dataset(args.path))
+        if args.report:
+            result["report_path"] = write_json_report(result, args.report)
+        if args.markdown_report:
+            result["markdown_report_path"] = write_markdown_report(result, args.markdown_report)
         if args.summary_only:
             result = {key: value for key, value in result.items() if key != "results"}
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))

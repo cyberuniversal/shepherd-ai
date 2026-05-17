@@ -31,18 +31,22 @@ NUMBER_WORDS = {
     "إثنتين": 2,
     "طائرتين": 2,
     "بطائرتين": 2,
+    "بـطائرتين": 2,
     "طائرتان": 2,
     "ثلاثة": 3,
     "ثلاث": 3,
     "بثلاث": 3,
+    "بـثلاث": 3,
     "اربعة": 4,
     "أربعة": 4,
     "اربع": 4,
     "أربع": 4,
     "بأربع": 4,
+    "بـأربع": 4,
     "خمسة": 5,
     "خمس": 5,
     "بخمس": 5,
+    "بـخمس": 5,
     "ستة": 6,
     "سبعة": 7,
     "ثمانية": 8,
@@ -78,7 +82,24 @@ KNOWN_TARGET_ALIASES = [
     ("الملعب", "الملعب"),
     ("جامعة الامام", "جامعة الامام"),
 ]
-AMBIGUOUS_TARGETS = {"there", "over there", "هناك", "هنالك"}
+AMBIGUOUS_TARGETS = {
+    "there",
+    "over there",
+    "that place",
+    "the area",
+    "the target",
+    "it",
+    "somewhere nearby",
+    "somewhere",
+    "nearby",
+    "هناك",
+    "هنالك",
+    "ذلك المكان",
+    "المنطقة",
+    "الهدف",
+    "قربه",
+    "مكان قريب",
+}
 
 class MissionParser:
     def __init__(self, model_name: str | None = None):
@@ -223,10 +244,10 @@ class MissionParser:
 
         # Priority detection
         priority = "medium"
-        if any(w in lower for w in ["urgent", "critical", "emergency", "عاجل", "طوارئ", "حرج"]):
-            priority = "high"
-        elif any(w in lower for w in ["low priority", "when possible", "غير عاجل"]):
+        if any(w in lower for w in ["low priority", "when possible", "غير عاجل"]):
             priority = "low"
+        elif any(w in lower for w in ["urgent", "critical", "emergency", "عاجل", "طوارئ", "حرج"]):
+            priority = "high"
 
         pattern = self._detect_pattern(lower)
         
@@ -364,7 +385,7 @@ class MissionParser:
         parsed["pattern"] = self._detect_pattern(lower_input)
 
         operator_reference = re.search(
-            r'\b(?:to|at|near|towards)\s+(?:me|my position|my location|my current position|the operator|operator|commander)\b|(?:إلى|الى)\s+(?:موقعي|مكاني|القائد)',
+            r'\b(?:to|at|near|towards)\s+(?:me|my position|my location|my current position|the operator|operator|commander|the commander)\b|(?:إلى|الى)\s+(?:موقعي|مكاني|القائد|موقع القائد)',
             normalized_input,
         )
         if operator_reference or parsed.get("target_reference") == "operator":
@@ -433,6 +454,14 @@ class MissionParser:
             parsed["priority"] = "high"
             if "drone_count" not in parsed:
                 parsed["drone_count"] = FLEET_SIZE
+        elif (
+            parsed.get("drone_count") == FLEET_SIZE
+            and any(term in lower_input for term in ["home", "back", "base", "القاعدة", "المنزل", "الانطلاق"])
+        ):
+            parsed["action"] = "return"
+            parsed["target_zone"] = "home"
+            parsed["pattern"] = "return_to_launch"
+            parsed["priority"] = "high"
         elif "drone_count" not in parsed:
             parsed["drone_count"] = 1
                 

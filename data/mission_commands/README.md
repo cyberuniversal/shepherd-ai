@@ -1,8 +1,13 @@
 # Mission Command Dataset
 
-This directory contains early bilingual seed examples for future Shepherd-AI intent-parser training and evaluation.
+This directory contains bilingual examples for future Shepherd-AI intent-parser training and evaluation.
 
 The JSONL rows are research data, not an operational authority path. A model trained from this data may only produce bounded intent JSON; deterministic backend code still owns target resolution, allocation, safety, confirmation, SHEPHERD-IR compilation, and dispatch.
+
+Files:
+
+- `seed.jsonl`: compact smoke-test gate for known parser behavior.
+- `benchmark.jsonl`: larger English/Arabic train/eval/holdout benchmark for parser evaluation and future model training.
 
 Each row includes:
 
@@ -17,6 +22,7 @@ Validate the seed set:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\benchmark.jsonl
 ```
 
 Export input/target rows for parser fine-tuning experiments:
@@ -29,6 +35,8 @@ Evaluate the current offline parser baseline against the dataset:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --summary-only
+.\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --summary-only
+.\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --report .tmp_scenarios\parser-eval.json --markdown-report .tmp_scenarios\parser-eval.md
 ```
 
-This is an evaluation scaffold, not model training. The current seed benchmark is also used by smoke tests to guard deterministic parser regressions before the dataset grows into a larger train/eval/holdout suite.
+This is an evaluation scaffold, not model training. The current seed set and benchmark are also used by smoke tests to guard deterministic parser regressions before training any learned parser.

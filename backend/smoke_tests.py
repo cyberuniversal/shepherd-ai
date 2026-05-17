@@ -9,7 +9,14 @@ from backend.assurance_report import generate_assurance_report, write_assurance_
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
-from backend.mission_dataset import evaluate_dataset, export_training_rows, validate_dataset
+from backend.mission_dataset import (
+    DEFAULT_BENCHMARK_PATH,
+    evaluate_dataset,
+    export_training_rows,
+    validate_dataset,
+    write_json_report,
+    write_markdown_report,
+)
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_fixtures import generate_scenario_records
@@ -281,6 +288,24 @@ def test_mission_command_dataset_seed_validates():
     assert metrics["target_zone"]["accuracy"] >= 0.9
     assert metrics["pattern"]["accuracy"] >= 0.9
     assert evaluation["summary"]["subset_matches"] >= 30
+    assert "language_metrics" in evaluation["summary"]
+    assert "action_confusion" in evaluation["summary"]
+
+    benchmark = validate_dataset(DEFAULT_BENCHMARK_PATH)
+    assert benchmark["valid"], benchmark["errors"]
+    assert benchmark["summary"]["total"] >= 200
+    assert benchmark["summary"]["language_counts"]["en"] >= 100
+    assert benchmark["summary"]["language_counts"]["ar"] >= 90
+
+    benchmark_evaluation = asyncio.run(evaluate_dataset(DEFAULT_BENCHMARK_PATH))
+    assert benchmark_evaluation["valid"], benchmark_evaluation["errors"]
+    assert benchmark_evaluation["summary"]["evaluated"] == benchmark["summary"]["total"]
+    assert benchmark_evaluation["summary"]["field_metrics"]["target_zone"]["accuracy"] >= 0.9
+    with tempfile.TemporaryDirectory() as tmpdir:
+        json_report = write_json_report(benchmark_evaluation, f"{tmpdir}/parser-report.json")
+        markdown_report = write_markdown_report(benchmark_evaluation, f"{tmpdir}/parser-report.md")
+        assert json_report.endswith(".json")
+        assert markdown_report.endswith(".md")
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():
