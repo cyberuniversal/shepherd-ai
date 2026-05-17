@@ -10,6 +10,7 @@ from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
 from backend.mission_dataset import (
+    DEFAULT_ADVERSARIAL_PATH,
     DEFAULT_BENCHMARK_PATH,
     evaluate_dataset,
     export_training_rows,
@@ -301,11 +302,33 @@ def test_mission_command_dataset_seed_validates():
     assert benchmark_evaluation["valid"], benchmark_evaluation["errors"]
     assert benchmark_evaluation["summary"]["evaluated"] == benchmark["summary"]["total"]
     assert benchmark_evaluation["summary"]["field_metrics"]["target_zone"]["accuracy"] >= 0.9
+
+    adversarial = validate_dataset(DEFAULT_ADVERSARIAL_PATH)
+    assert adversarial["valid"], adversarial["errors"]
+    assert adversarial["summary"]["total"] >= 60
+    assert adversarial["summary"]["language_counts"]["en"] >= 30
+    assert adversarial["summary"]["language_counts"]["ar"] >= 30
+    assert adversarial["summary"]["split_counts"]["holdout"] >= 60
+
+    adversarial_evaluation = asyncio.run(evaluate_dataset(DEFAULT_ADVERSARIAL_PATH))
+    assert adversarial_evaluation["valid"], adversarial_evaluation["errors"]
+    assert adversarial_evaluation["summary"]["evaluated"] == adversarial["summary"]["total"]
+    assert "language_metrics" in adversarial_evaluation["summary"]
+    assert "action_confusion" in adversarial_evaluation["summary"]
+    assert "failed_example_count" in adversarial_evaluation["summary"]
+
     with tempfile.TemporaryDirectory() as tmpdir:
         json_report = write_json_report(benchmark_evaluation, f"{tmpdir}/parser-report.json")
         markdown_report = write_markdown_report(benchmark_evaluation, f"{tmpdir}/parser-report.md")
+        adversarial_json = write_json_report(adversarial_evaluation, f"{tmpdir}/adversarial-parser-report.json")
+        adversarial_markdown = write_markdown_report(
+            adversarial_evaluation,
+            f"{tmpdir}/adversarial-parser-report.md",
+        )
         assert json_report.endswith(".json")
         assert markdown_report.endswith(".md")
+        assert adversarial_json.endswith(".json")
+        assert adversarial_markdown.endswith(".md")
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():

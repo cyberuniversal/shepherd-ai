@@ -8,6 +8,7 @@ from typing import Dict, List
 
 DEFAULT_DATASET_PATH = Path("data/mission_commands/seed.jsonl")
 DEFAULT_BENCHMARK_PATH = Path("data/mission_commands/benchmark.jsonl")
+DEFAULT_ADVERSARIAL_PATH = Path("data/mission_commands/adversarial_holdout.jsonl")
 SUPPORTED_LANGUAGES = {"en", "ar"}
 SUPPORTED_SPLITS = {"train", "eval", "holdout"}
 REQUIRED_FIELDS = {

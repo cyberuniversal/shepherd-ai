@@ -33,6 +33,6 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - Generated off-nominal scenario evidence belongs under `.tmp_scenarios/` or another ignored path and should not be committed.
 - Runtime assurance events are report-only unless a future safety review explicitly authorizes blocking or automatic fallback behavior.
 - Assurance reports must remain read-only over evidence records and must not dispatch MAVSDK commands.
-- Mission-command datasets are for parser training/evaluation only; trained models still output bounded intent JSON and never dispatch. Dataset rows should preserve train/eval/holdout split labels and clarification expectations. Keep `seed.jsonl` as the compact smoke-test gate and `benchmark.jsonl` as the larger evaluation/training benchmark.
+- Mission-command datasets are for parser training/evaluation only; trained models still output bounded intent JSON and never dispatch. Dataset rows should preserve train/eval/holdout split labels and clarification expectations. Keep `seed.jsonl` as the compact smoke-test gate and `benchmark.jsonl` as the larger evaluation/training benchmark. Treat `adversarial_holdout.jsonl` as evaluation-only data; do not tune deterministic parser behavior directly against it unless a row is deliberately promoted into seed or benchmark data.
 - Local signing keys belong in `.shepherd/` or an environment variable. Never commit signing keys.
 - When adding learned modules, keep them behind typed contracts and deterministic safety gates.

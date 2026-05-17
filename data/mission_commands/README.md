@@ -8,6 +8,7 @@ Files:
 
 - `seed.jsonl`: compact smoke-test gate for known parser behavior.
 - `benchmark.jsonl`: larger English/Arabic train/eval/holdout benchmark for parser evaluation and future model training.
+- `adversarial_holdout.jsonl`: hard English/Arabic holdout commands for evaluation only. Do not tune the heuristic parser directly against this file; use it to measure whether parser changes generalize to ambiguous, contradictory, mixed, and under-specified commands.
 
 Each row includes:
 
@@ -23,6 +24,7 @@ Validate the seed set:
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\benchmark.jsonl
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate --path data\mission_commands\adversarial_holdout.jsonl
 ```
 
 Export input/target rows for parser fine-tuning experiments:
@@ -37,6 +39,7 @@ Evaluate the current offline parser baseline against the dataset:
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --summary-only
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --summary-only
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --report .tmp_scenarios\parser-eval.json --markdown-report .tmp_scenarios\parser-eval.md
+.\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\adversarial_holdout.jsonl --report .tmp_scenarios\adversarial-eval.json --markdown-report .tmp_scenarios\adversarial-eval.md
 ```
 
-This is an evaluation scaffold, not model training. The current seed set and benchmark are also used by smoke tests to guard deterministic parser regressions before training any learned parser.
+This is an evaluation scaffold, not model training. The current seed set and benchmark are also used by smoke tests to guard deterministic parser regressions before training any learned parser. The adversarial holdout is validated and evaluated by smoke tests without accuracy thresholds so it remains an honest pressure test.

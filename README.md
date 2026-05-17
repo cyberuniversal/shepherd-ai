@@ -163,6 +163,7 @@ Validate or export the early bilingual mission-command dataset for future parser
 .\.venv\Scripts\python.exe -m backend.mission_dataset export
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --summary-only
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\benchmark.jsonl --report .tmp_scenarios\parser-eval.json --markdown-report .tmp_scenarios\parser-eval.md
+.\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\adversarial_holdout.jsonl --report .tmp_scenarios\adversarial-eval.json --markdown-report .tmp_scenarios\adversarial-eval.md
 ```
 
 ## Quick Start
@@ -220,7 +221,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Ignored off-nominal scenario fixture generator for local evidence replay coverage.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
-- Bilingual mission-command dataset scaffold with seed and 200+ row benchmark files, train/eval/holdout splits, and offline parser evaluation reports.
+- Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
