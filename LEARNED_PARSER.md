@@ -69,6 +69,16 @@ Or evaluate and analyze a learned artifact in one step:
 
 The report groups misses by split, language, failed field, confusion pair, command category, and highest-risk examples. Use it to decide which dataset rows to add next.
 
+## Baseline Comparison
+
+After adding train-only augmentation, compare the original and augmented artifacts against the same held-out rows:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_comparison --baseline-artifact .tmp_models\learned_parser_baseline.json --candidate-artifact .tmp_models\learned_parser_augmented.json --output .tmp_models\parser_comparison.json --markdown .tmp_models\parser_comparison.md --summary-only
+```
+
+The comparison scope defaults to `eval`, `holdout`, and `adversarial`. It reports subset-accuracy deltas, field deltas, language deltas, held-out improvements, and regressions. It intentionally excludes the augmentation split from the default comparison because those rows are training evidence, not an evaluation gate.
+
 ## Predict
 
 ```powershell
@@ -97,7 +107,7 @@ The next model step can run the optional transformer trainer behind the same art
 3. Report benchmark `holdout` and `adversarial_holdout.jsonl` separately.
 4. Keep the strict adapter as the production-facing boundary.
 5. Pass the parser promotion gate before any runtime integration is considered.
-6. Use failure analysis to drive dataset growth rather than tuning against the adversarial holdout directly.
+6. Use failure analysis and baseline-vs-augmented comparisons to drive dataset growth rather than tuning against the adversarial holdout directly.
 
 ## Transformer Scaffold
 

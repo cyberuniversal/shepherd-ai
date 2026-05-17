@@ -28,6 +28,7 @@ from backend.learned_parser import (
     train_baseline_model,
 )
 from backend.parser_failure_analysis import analyze_report, write_analysis, write_markdown_analysis
+from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
@@ -471,6 +472,41 @@ def test_parser_failure_analysis_reports_grouped_failures():
         assert markdown_path.endswith(".md")
 
 
+def test_parser_comparison_reports_augmented_delta():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        baseline = train_baseline_model(
+            artifact_path=f"{tmpdir}/learned-parser-baseline.json",
+            report_path=f"{tmpdir}/learned-parser-report.json",
+        )
+        augmented = train_baseline_model(
+            augmentation_path=DEFAULT_AUGMENTATION_PATH,
+            artifact_path=f"{tmpdir}/learned-parser-augmented.json",
+            report_path=f"{tmpdir}/learned-parser-augmented-report.json",
+        )
+
+        comparison = compare_reports(baseline["report"], augmented["report"])
+        assert comparison["schema"] == "shepherd-parser-comparison/1.0"
+        assert comparison["scope"]["splits"] == ["eval", "holdout", "adversarial"]
+        assert comparison["summary"]["compared_examples"] >= 120
+        assert comparison["sources"]["candidate"]["summary"]["augmentation_count"] >= 48
+        assert comparison["sources"]["candidate"]["summary"]["adversarial_used_for_training"] is False
+        assert "augmentation" not in comparison["split_deltas"]
+        assert "target_zone" in comparison["field_deltas"]
+        assert comparison["recommendations"]
+
+        artifact_comparison = compare_artifacts(
+            f"{tmpdir}/learned-parser-baseline.json",
+            f"{tmpdir}/learned-parser-augmented.json",
+        )
+        assert artifact_comparison["sources"]["candidate"]["artifact_training"]["augmentation_count"] >= 48
+        assert artifact_comparison["sources"]["candidate"]["artifact_training"]["adversarial_used_for_training"] is False
+
+        json_path = write_comparison(comparison, f"{tmpdir}/parser-comparison.json")
+        markdown_path = write_markdown_comparison(comparison, f"{tmpdir}/parser-comparison.md")
+        assert json_path.endswith(".json")
+        assert markdown_path.endswith(".md")
+
+
 def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
     class PerfectTransformerAdapter:
         def __init__(self, examples, model_id, model_digest):
@@ -821,6 +857,7 @@ def main():
     test_targeted_augmentation_stays_train_only()
     test_parser_promotion_gate_blocks_weak_candidate()
     test_parser_failure_analysis_reports_grouped_failures()
+    test_parser_comparison_reports_augmented_delta()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()

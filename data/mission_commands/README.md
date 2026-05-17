@@ -56,6 +56,14 @@ The learned-parser scaffold in `backend.learned_parser` trains only from benchma
 
 Use `--augmentation` only for train-only rows. The loader appends those rows into the train split and keeps a separate `augmentation` report section for auditability; it does not move rows into eval, holdout, or adversarial gates.
 
+Compare held-out behavior before and after augmentation:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_comparison --baseline-artifact .tmp_models\learned_parser_baseline.json --candidate-artifact .tmp_models\learned_parser_augmented.json --output .tmp_models\parser_comparison.json --markdown .tmp_models\parser_comparison.md --summary-only
+```
+
+The default comparison scope is `eval`, `holdout`, and `adversarial`; train-only augmentation rows are excluded from the decision metric.
+
 The optional transformer scaffold prepares the same frozen splits for PyTorch/transformer experiments:
 
 ```powershell
