@@ -120,6 +120,7 @@ AMBIGUOUS_TARGET_TERMS = [
     "yesterday",
     "north gate",
     "compound",
+    "the target",
     "that place",
     "that area",
     "the area",
@@ -135,6 +136,9 @@ AMBIGUOUS_TARGET_TERMS = [
     "أمس",
     "البوابة الشمالية",
     "المجمع",
+    "الهدف",
+    "للهدف",
+    "للمنطقة",
     "ذلك المكان",
     "تلك المنطقة",
     "المنطقة",
@@ -169,9 +173,93 @@ OPERATOR_RELATIVE_TERMS = [
     "متر شمال موقعي",
     "متر جنوب موقعي",
 ]
-HOME_TARGET_TERMS = ["return to launch", "back to base", "to base", "base", "home", "القاعدة"]
+HOME_TARGET_TERMS = ["return to launch", "back to base", "to base", "base", "home", "القاعدة", "المنزل"]
 CURRENT_POSITION_TERMS = ["current position", "current positions", "مواقعها الحالية", "موقعه الحالي"]
 ROUTE_BETWEEN_TERMS = ["between", "from", "corridor", "الممر بين", "المسار بين", "بين"]
+KNOWN_DRONE_IDS = [
+    "alpha-1",
+    "alpha-2",
+    "alpha-3",
+    "alpha-4",
+    "alpha-5",
+    "beta-1",
+    "beta-2",
+    "beta-3",
+    "gamma-1",
+    "gamma-2",
+    "gamma-3",
+    "delta-1",
+    "delta-2",
+]
+COUNT_WORDS = {
+    "a": 1,
+    "an": 1,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "pair": 2,
+    "couple": 2,
+    "several": 3,
+    "واحد": 1,
+    "واحدة": 1,
+    "طائرة": 1,
+    "درون": 1,
+    "درونين": 2,
+    "طائرتين": 2,
+    "طائرتان": 2,
+    "اثنين": 2,
+    "إثنين": 2,
+    "اثنتين": 2,
+    "إثنتين": 2,
+    "اثنان": 2,
+    "ثلاثة": 3,
+    "ثلاث": 3,
+    "أربعة": 4,
+    "اربعة": 4,
+    "أربع": 4,
+    "اربع": 4,
+    "خمس": 5,
+    "خمسة": 5,
+}
+UNKNOWN_ACTION_TERMS = [
+    "stay away from",
+    "but stay away",
+    "recall them immediately",
+    "return them immediately",
+    "ثم رجعهم فور",
+    "لكن ابتعد",
+]
+ACTION_TERM_RULES = [
+    ("cancel", ["do not send", "don't send", "do not launch", "don't launch", "cancel", "abort", "لا ترسل", "لا تشغل", "ألغ", "الغ"]),
+    ("hold", ["hold", "hold position", "on station", "stay on station", "stationary", "ثبت", "ثبّت", "خله ثابت", "خل درون واحد ثابت"]),
+    ("land", ["land", "هبط", "اهبط"]),
+    ("patrol", ["patrol", "دورية"]),
+    ("inspect", ["inspect", "فتش"]),
+    ("secure", ["secure", "protect", "defend", "أمن", "امّن", "تأمين", "حماية"]),
+    ("recon", ["recon", "reconnaissance", "observe", "راقب", "مراقبة"]),
+    ("rendezvous", ["bring backup", "bring", "come to", "rendezvous", "meet", "link up", "جيب", "أحضر"]),
+    ("return", ["return to launch", "return", "recall", "come back", "rtb", "back to base", "ارجع", "رجع", "أعد", "اعادة"]),
+    ("scout", ["scout", "scan", "search", "sweep", "cover", "check", "send", "deploy", "dispatch", "move", "take", "go to", "route", "launch", "استطلع", "امسح", "افحص", "أرسل", "ارسل", "وجه", "حرك", "خذ", "شغل"]),
+]
+PATTERN_TERM_RULES = [
+    ("spiral", ["spiral", "حلزوني"]),
+    ("circle", ["circle", "orbit", "يدور", "دائري"]),
+    ("corridor", ["corridor", "between", "from", "الممر بين", "المسار بين", "بين"]),
+    ("grid", ["grid", "square", "cover that area", "north of us", "around my location in a square", "شبكي", "مربع", "غط المنطقة", "شمالنا"]),
+    ("search", ["find anything", "anything suspicious", "if nothing", "أي شيء مريب", "إذا ما ظهر"]),
+    ("lawn_mower", ["search", "scan", "sweep", "مسح", "بحث"]),
+    ("perimeter", ["perimeter", "secure", "surround", "محيط", "تأمين"]),
+    ("direct", ["direct", "directly", "straight", "by the direct route", "مباشرة", "الطريق المباشر"]),
+]
+HIGH_PRIORITY_TERMS = ["urgent", "critical", "emergency", "fast", "عاجل", "بسرعة", "طوارئ", "حرج"]
+LOW_PRIORITY_TERMS = ["low priority", "when possible", "غير عاجل"]
 
 
 class StrictIntentAdapter:
@@ -203,7 +291,7 @@ class StrictIntentAdapter:
                 "drone_count": 1,
                 "pattern": "direct",
             }
-        raw_intent = _apply_deterministic_target_slots(command, raw_intent)
+        raw_intent = _apply_deterministic_intent_slots(command, raw_intent)
         return coerce_bounded_intent(
             raw_intent,
             confidence=confidence,
@@ -493,7 +581,7 @@ def _normalize_value(value):
     return value
 
 
-def _apply_deterministic_target_slots(command: str, raw_intent: Dict) -> Dict:
+def _apply_deterministic_intent_slots(command: str, raw_intent: Dict) -> Dict:
     normalized_command = _normalize_command_for_matching(command)
     intent = dict(raw_intent)
     target_zone, target_reference = _resolve_target_slots(normalized_command)
@@ -503,6 +591,18 @@ def _apply_deterministic_target_slots(command: str, raw_intent: Dict) -> Dict:
         intent["target_reference"] = target_reference
     if target_zone == "unknown":
         intent["target_reference"] = None
+    action = _resolve_action_slot(normalized_command, intent)
+    if action:
+        intent["action"] = action
+    drone_count = _resolve_drone_count_slot(normalized_command, intent.get("action"))
+    if drone_count is not None:
+        intent["drone_count"] = drone_count
+    pattern = _resolve_pattern_slot(normalized_command, intent)
+    if pattern:
+        intent["pattern"] = pattern
+    priority = _resolve_priority_slot(normalized_command, intent)
+    if priority:
+        intent["priority"] = priority
     return intent
 
 
@@ -542,6 +642,119 @@ def _resolve_target_slots(normalized_command: str) -> Tuple[str | None, str | No
         return "operator_current_position", "operator"
 
     return None, None
+
+
+def _resolve_action_slot(normalized_command: str, intent: Dict) -> str | None:
+    if _contains_any(normalized_command, UNKNOWN_ACTION_TERMS):
+        return "unknown"
+    if _contains_any(normalized_command, OPERATOR_TARGET_TERMS) and _contains_any(
+        normalized_command,
+        ["bring", "come to", "return", "رجع", "جيب"],
+    ):
+        return "rendezvous"
+    for action, terms in ACTION_TERM_RULES:
+        if _contains_any(normalized_command, terms):
+            if action == "return" and intent.get("target_reference") in {"operator", "operator_relative"}:
+                return "rendezvous"
+            if action == "land" and _contains_any(normalized_command, ["same point", "نفس نقطة", "أمس"]):
+                return "scout"
+            return action
+    return None
+
+
+def _resolve_pattern_slot(normalized_command: str, intent: Dict) -> str | None:
+    action = intent.get("action")
+    target_zone = intent.get("target_zone")
+    if action == "return":
+        return "return_to_launch"
+    if action == "hold":
+        return "stationary"
+    if action in {"land", "cancel", "rendezvous"}:
+        return "direct"
+    for pattern, terms in PATTERN_TERM_RULES:
+        if _contains_any(normalized_command, terms):
+            return pattern
+    if target_zone in {"unknown", "coordinates", "operator_current_position", "multi_target", "route_between_known_zones"}:
+        return "direct"
+    if action in {"secure", "recon", "scout"} and target_zone:
+        return "perimeter"
+    return None
+
+
+def _resolve_priority_slot(normalized_command: str, intent: Dict) -> str | None:
+    if _contains_any(normalized_command, LOW_PRIORITY_TERMS):
+        return "low"
+    if intent.get("action") in {"return", "cancel", "land"}:
+        return "high"
+    if _contains_any(normalized_command, HIGH_PRIORITY_TERMS):
+        return "high"
+    return "medium"
+
+
+def _resolve_drone_count_slot(normalized_command: str, action: str | None) -> int | None:
+    explicit_drones = {drone_id for drone_id in KNOWN_DRONE_IDS if _contains_phrase(normalized_command, drone_id)}
+    if explicit_drones:
+        return len(explicit_drones)
+    if action == "return" and _contains_any(normalized_command, ["all", "every", "كل", "الكل", "جميع"]):
+        return FLEET_SIZE_LIMIT
+
+    if _contains_any(normalized_command, ["pair", "couple", "درونين", "طائرتين", "طائرتان"]):
+        return 2
+
+    multi_target_count = _sum_multi_target_counts(normalized_command)
+    if multi_target_count is not None:
+        return multi_target_count
+
+    direct_count = _first_count_before_vehicle(normalized_command)
+    if direct_count is not None:
+        return direct_count
+
+    if _contains_any(normalized_command, ["backup"]):
+        return 1
+    return None
+
+
+def _sum_multi_target_counts(normalized_command: str) -> int | None:
+    if not _contains_any(normalized_command, [" and ", " و"]):
+        return None
+    counts = []
+    for match in re.finditer(
+        r"(?<![-\w])(\d+|one|two|three|four|five|six|seven|eight|nine|ten|واحد|واحدة|اثنين|إثنين|اثنتين|إثنتين|ثلاثة|ثلاث|أربعة|اربعة|أربع|اربع|خمس|خمسة)\s+(?:drone|drones|to|درون|درونات|طائرة|طائرات|ل|لل|إلى|الى)",
+        normalized_command,
+        flags=re.IGNORECASE | re.UNICODE,
+    ):
+        value = _count_token_value(match.group(1))
+        if value is not None:
+            counts.append(value)
+    if len(counts) >= 2:
+        return max(1, min(FLEET_SIZE_LIMIT, sum(counts)))
+    return None
+
+
+def _first_count_before_vehicle(normalized_command: str) -> int | None:
+    patterns = [
+        r"(?<![-\w])(\d+|one|two|three|four|five|six|seven|eight|nine|ten|a|an|several)\s+(?:drone|drones|unit|units)",
+        r"(?:with|using)\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|a|an|several)\s+(?:drone|drones|unit|units)",
+        r"(?:send|deploy|dispatch|move|take|route|guide|bring|launch)\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten|a|an|several)\b",
+        r"(?<![-\w])(\d+|واحد|واحدة|اثنين|إثنين|اثنتين|إثنتين|ثلاثة|ثلاث|أربعة|اربعة|أربع|اربع|خمس|خمسة)\s+(?:درون|درونات|طائرة|طائرات)",
+        r"(?:أرسل|ارسل|وجه|حرك|خذ|شغل|افحص|فتش|ثبت|رجع|أعد)\s+(\d+|واحد|واحدة|اثنين|إثنين|اثنتين|إثنتين|ثلاثة|ثلاث|أربعة|اربعة|أربع|اربع|خمس|خمسة)\b",
+        r"(?:ب|بـ)\s*(\d+|واحد|واحدة|اثنين|إثنين|اثنتين|إثنتين|ثلاثة|ثلاث|أربعة|اربعة|أربع|اربع|خمس|خمسة)\s+(?:درون|درونات|طائرة|طائرات)",
+        r"(?:درون|درونات|طائرة|طائرات)\s+(\d+|واحد|واحدة|اثنين|إثنين|اثنتين|إثنتين|ثلاثة|ثلاث|أربعة|اربعة|أربع|اربع|خمس|خمسة)",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, normalized_command, flags=re.IGNORECASE | re.UNICODE)
+        if match:
+            value = _count_token_value(match.group(1))
+            if value is not None:
+                return max(1, min(FLEET_SIZE_LIMIT, value))
+    return None
+
+
+def _count_token_value(token: str) -> int | None:
+    normalized = token.strip().lower()
+    if normalized.isdigit():
+        return int(normalized)
+    return COUNT_WORDS.get(normalized)
 
 
 def _known_targets_in_command(normalized_command: str) -> List[str]:

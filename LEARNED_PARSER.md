@@ -98,7 +98,7 @@ The strict adapter returns only bounded intent fields:
 
 It never returns MAVSDK commands, vehicle actuation calls, or dispatch authority.
 
-The adapter also applies deterministic target-slot normalization before final coercion. Known landmark aliases, coordinates, home/current-position commands, operator-relative phrasing, and unresolved deictic targets are normalized into bounded `target_zone` and `target_reference` fields. This is not learned dispatch logic; it is a conservative parser-side guard that keeps obvious target extraction from depending on nearest-neighbor text similarity.
+The adapter also applies deterministic intent-slot normalization before final coercion. Known landmark aliases, coordinates, home/current-position commands, operator-relative phrasing, unresolved deictic targets, explicit action verbs, mission patterns, priority words, and explicit drone counts are normalized into bounded intent fields. This is not learned dispatch logic; it is a conservative parser-side guard that keeps obvious command slots from depending on nearest-neighbor text similarity.
 
 ## Next Research Step
 

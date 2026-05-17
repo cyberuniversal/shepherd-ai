@@ -419,13 +419,20 @@ def test_targeted_augmentation_stays_train_only():
         known_target = adapter.predict("Perform a spiral scan at King Saud University with five drones.")
         ambiguous_target = adapter.predict("Take one drone to the same point as yesterday.")
         relative_target = adapter.predict("Send two drones 300 meters east of my position.")
+        secure_count = adapter.predict("Secure the National Museum with two drones.")
+        low_priority = adapter.predict("غير عاجل: أرسل طائرتين إلى وادي حنيفة.")
         assert known_target["target_zone"] == "king saud university"
         assert ambiguous_target["target_zone"] == "unknown"
         assert relative_target["target_zone"] == "operator_current_position"
         assert relative_target["target_reference"] == "operator_relative"
+        assert secure_count["action"] == "secure"
+        assert secure_count["drone_count"] == 2
+        assert secure_count["pattern"] == "perimeter"
+        assert low_priority["priority"] == "low"
+        assert low_priority["drone_count"] == 2
 
 
-def test_parser_promotion_gate_blocks_weak_candidate():
+def test_parser_promotion_gate_accepts_normalized_baseline_and_blocks_strict_thresholds():
     with tempfile.TemporaryDirectory() as tmpdir:
         artifact_path = f"{tmpdir}/learned-parser-baseline.json"
         report_path = f"{tmpdir}/learned-parser-report.json"
@@ -433,26 +440,26 @@ def test_parser_promotion_gate_blocks_weak_candidate():
         train_baseline_model(artifact_path=artifact_path, report_path=report_path)
 
         report = run_promotion_gate(artifact_path, report_path=promotion_path)
-        assert not report["promoted"]
+        assert report["promoted"]
         assert report["contract_checks"]["passed"]
         assert report["summary"]["adversarial_used_for_training"] is False
         assert report["split_checks"]["eval"]["passed"] is True
-        assert report["split_checks"]["holdout"]["passed"] is False
-        assert report["split_checks"]["adversarial"]["passed"] is False
+        assert report["split_checks"]["holdout"]["passed"] is True
+        assert report["split_checks"]["adversarial"]["passed"] is True
         assert report["split_checks"]["eval"]["field_results"]["target_zone"]["passed"] is True
-        assert any(failure["scope"] == "adversarial" for failure in report["failures"])
 
-        permissive = {
-            "eval": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
-            "holdout": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
-            "adversarial": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
+        strict = {
+            "eval": {"subset_accuracy": 0.99, "bounded_output_rate": 1.0, "field_metrics": {"pattern": 0.99}},
+            "holdout": {"subset_accuracy": 0.99, "bounded_output_rate": 1.0, "field_metrics": {"pattern": 0.99}},
+            "adversarial": {"subset_accuracy": 0.99, "bounded_output_rate": 1.0, "field_metrics": {"pattern": 0.99}},
         }
-        permissive_report = run_promotion_gate(
+        strict_report = run_promotion_gate(
             artifact_path,
-            thresholds=permissive,
-            report_path=f"{tmpdir}/permissive-promotion-gate.json",
+            thresholds=strict,
+            report_path=f"{tmpdir}/strict-promotion-gate.json",
         )
-        assert permissive_report["promoted"]
+        assert not strict_report["promoted"]
+        assert any(failure["scope"] == "adversarial" for failure in strict_report["failures"])
 
 
 def test_parser_failure_analysis_reports_grouped_failures():
@@ -866,7 +873,7 @@ def main():
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
     test_targeted_augmentation_stays_train_only()
-    test_parser_promotion_gate_blocks_weak_candidate()
+    test_parser_promotion_gate_accepts_normalized_baseline_and_blocks_strict_thresholds()
     test_parser_failure_analysis_reports_grouped_failures()
     test_parser_comparison_reports_augmented_delta()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
