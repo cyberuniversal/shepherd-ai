@@ -37,6 +37,7 @@ from backend.parser_shadow_candidates import generate_parser_shadow_candidates, 
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.parser_shadow_review import promote_reviewed_candidates
 from backend.transformer_parser import (
+    TASK_PREFIX,
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
     dependency_status,
@@ -846,6 +847,9 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
         assert len(augmentation_rows) == manifest["splits"]["augmentation"]["count"]
         assert {row["id"] for row in augmentation_rows}.issubset({row["id"] for row in train_rows})
         assert len(adversarial_rows) == manifest["splits"]["adversarial"]["count"]
+        assert train_rows[0]["input"].startswith(TASK_PREFIX)
+        assert train_rows[0]["raw_command"]
+        assert train_rows[0]["input"].endswith(train_rows[0]["raw_command"])
         target = json.loads(train_rows[0]["target_json"])
         assert "intent" in target
         assert "constraints" in target
@@ -863,6 +867,7 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
     )
     assert set(bounded).issubset(BOUNDED_OUTPUT_FIELDS)
     assert bounded["needs_confirmation"] is True
+    assert bounded["parser"] == "transformer_seq2seq"
     assert bounded["model_id"] == "test-transformer"
     assert bounded["target_zone"] == "kafd"
     assert "dispatch" not in bounded

@@ -316,6 +316,7 @@ def coerce_bounded_intent(
     confidence: float,
     model_id: str | None,
     model_digest: str | None,
+    parser_name: str = "learned_baseline",
 ) -> Dict:
     action = _coerce_string(raw_intent.get("action"), "scout")
     pattern = _coerce_string(raw_intent.get("pattern"), "direct")
@@ -342,7 +343,7 @@ def coerce_bounded_intent(
         "needs_confirmation": True,
         "confidence": round(max(0.0, min(float(confidence), 1.0)), 3),
         "clarifying_question": raw_intent.get("clarifying_question"),
-        "parser": "learned_baseline",
+        "parser": parser_name,
         "model_id": model_id,
         "model_digest": model_digest,
     }

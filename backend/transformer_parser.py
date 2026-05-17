@@ -26,6 +26,7 @@ DEFAULT_TRANSFORMER_MODEL_DIR = Path(".tmp_models/transformer_parser/model")
 DEFAULT_BASE_MODEL = "google/mt5-small"
 DEFAULT_MAX_SOURCE_LENGTH = 160
 DEFAULT_MAX_TARGET_LENGTH = 320
+TASK_PREFIX = "Extract Shepherd-AI bounded intent JSON from command: "
 
 
 def write_training_corpus(
@@ -122,6 +123,7 @@ def train_transformer_model(
     epochs: float = 3.0,
     batch_size: int = 2,
     learning_rate: float = 2e-5,
+    save_checkpoints: bool = False,
     max_source_length: int = DEFAULT_MAX_SOURCE_LENGTH,
     max_target_length: int = DEFAULT_MAX_TARGET_LENGTH,
 ) -> Dict:
@@ -188,10 +190,10 @@ def train_transformer_model(
         learning_rate=learning_rate,
         predict_with_generate=True,
         eval_strategy="epoch",
-        save_strategy="epoch",
+        save_strategy="epoch" if save_checkpoints else "no",
         logging_strategy="steps",
         logging_steps=10,
-        save_total_limit=2,
+        save_total_limit=1,
         report_to=[],
     )
     trainer_kwargs = {
@@ -234,6 +236,7 @@ def train_transformer_model(
             "epochs": epochs,
             "batch_size": batch_size,
             "learning_rate": learning_rate,
+            "save_checkpoints": save_checkpoints,
             "train_rows": len(train_rows),
             "eval_rows": len(eval_rows),
             "augmentation_rows": len(manifest.get("splits", {}).get("augmentation", {}).get("source_ids", [])),
@@ -270,7 +273,12 @@ class TransformerIntentAdapter:
     def predict(self, command: str) -> Dict:
         import torch
 
-        inputs = self.tokenizer(command, return_tensors="pt", truncation=True, max_length=DEFAULT_MAX_SOURCE_LENGTH)
+        inputs = self.tokenizer(
+            _format_model_input(command),
+            return_tensors="pt",
+            truncation=True,
+            max_length=DEFAULT_MAX_SOURCE_LENGTH,
+        )
         with torch.no_grad():
             generated = self.model.generate(**inputs, max_new_tokens=DEFAULT_MAX_TARGET_LENGTH)
         decoded = self.tokenizer.decode(generated[0], skip_special_tokens=True)
@@ -301,6 +309,7 @@ def coerce_generated_text(generated_text: str, *, model_id: str | None, model_di
         confidence=0.72 if parsed else 0.0,
         model_id=model_id,
         model_digest=model_digest,
+        parser_name="transformer_seq2seq",
     )
 
 
@@ -314,7 +323,8 @@ def _training_record(example: Dict, split_name: str) -> Dict:
         "id": example["id"],
         "language": example["language"],
         "split": split_name,
-        "input": example["command"],
+        "input": _format_model_input(example["command"]),
+        "raw_command": example["command"],
         "target_json": json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
         "target_digest": sha256(
             json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -328,6 +338,10 @@ def _language_counts(records: Iterable[Dict]) -> Dict[str, int]:
         language = record.get("language", "unknown")
         counts[language] = counts.get(language, 0) + 1
     return counts
+
+
+def _format_model_input(command: str) -> str:
+    return f"{TASK_PREFIX}{command}"
 
 
 def _write_jsonl(records: Iterable[Dict], path: str | Path) -> str:
@@ -377,6 +391,11 @@ def main() -> int:
     train_parser.add_argument("--epochs", type=float, default=3.0, help="Training epochs.")
     train_parser.add_argument("--batch-size", type=int, default=2, help="Per-device batch size.")
     train_parser.add_argument("--learning-rate", type=float, default=2e-5, help="Learning rate.")
+    train_parser.add_argument(
+        "--save-checkpoints",
+        action="store_true",
+        help="Save epoch checkpoints. Disabled by default to avoid duplicate multi-GB local artifacts.",
+    )
 
     predict_parser = subparsers.add_parser("predict", help="Predict bounded intent from a trained transformer model.")
     predict_parser.add_argument("command_text", help="Operator command to parse.")
@@ -407,6 +426,7 @@ def main() -> int:
             epochs=args.epochs,
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,
+            save_checkpoints=args.save_checkpoints,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0

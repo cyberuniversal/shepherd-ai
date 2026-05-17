@@ -189,6 +189,8 @@ Train a local seq2seq transformer experiment:
 .\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser\corpus --output-dir .tmp_models\transformer_parser\model --base-model google/mt5-small --epochs 3 --batch-size 2
 ```
 
+Training examples are prefixed with an explicit extraction instruction before tokenization. The raw operator command is still preserved in the corpus as `raw_command`. The trainer saves only the final local candidate by default because checkpoint copies can consume multiple gigabytes; add `--save-checkpoints` only when checkpoint inspection is required.
+
 Run bounded prediction from the trained model:
 
 ```powershell
@@ -196,6 +198,7 @@ Run bounded prediction from the trained model:
 ```
 
 The transformer adapter parses generated JSON, coerces it through the bounded intent contract, marks `needs_confirmation=true`, and never returns dispatch commands.
+Transformer outputs are labeled with `parser=transformer_seq2seq` after bounded coercion so shadow reports and promotion reports can distinguish them from the nearest-ngram baseline.
 
 ## First Transformer Training Probe
 
@@ -208,3 +211,15 @@ The first end-to-end PyTorch/transformer probe was run on CPU with the augmented
 ```
 
 Result: the training path, model contract, bounded adapter, and promotion gate all ran successfully. The short CPU probe is not promoted: eval subset accuracy was `0.0`, holdout subset accuracy was `0.0`, and adversarial subset accuracy was `0.1`. Treat it as infrastructure proof, not as a usable parser. A real candidate needs a longer GPU-backed run and should still pass the same promotion gate before runtime use.
+
+## CPU 1-Epoch Transformer Candidate
+
+A one-epoch CPU run with the explicit task prefix and train-only targeted augmentation completed successfully:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_prefixed\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --output-dir .tmp_models\transformer_parser_prefixed\model_cpu_1epoch --base-model "google/mt5-small" --epochs 1 --batch-size 1
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser_prefixed\model_cpu_1epoch --report .tmp_models\transformer_parser_prefixed\promotion_gate_cpu_1epoch.json --allow-failure
+```
+
+Result: the candidate is contract-valid and produced `100%` bounded outputs, but it is not promoted. Eval subset accuracy is `0.0`, holdout subset accuracy is `0.0`, and adversarial subset accuracy is `0.1`. Field-level metrics show partial learning on action extraction (`0.905` eval action accuracy), but target, pattern, and drone-count extraction remain too weak for runtime use. Keep this as a training milestone and failure-analysis input, not a deployed parser.
