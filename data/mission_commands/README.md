@@ -57,3 +57,9 @@ The optional transformer scaffold prepares the same frozen splits for PyTorch/tr
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
 .\.venv\Scripts\python.exe -m backend.transformer_parser status
 ```
+
+Analyze parser failures before adding new rows:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_failure_analysis --report .tmp_models\learned_parser_report.json --output .tmp_models\parser_failure_analysis.json --markdown .tmp_models\parser_failure_analysis.md
+```

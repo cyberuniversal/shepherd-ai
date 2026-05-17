@@ -37,5 +37,6 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - Learned-parser artifacts and reports belong under `.tmp_models/` by default and should not be committed. Learned parser adapters must preserve bounded intent JSON and `dispatch_authority=false`.
 - PyTorch/transformer training dependencies belong in `backend/requirements-train.txt` and are optional; do not add heavyweight ML packages to the core backend requirements unless runtime use explicitly needs them.
 - Learned parser candidates must pass `backend.parser_promotion` threshold and contract checks before any runtime integration work. Use `--candidate-type transformer-model --model-dir ...` for trained transformer directories.
+- Use `backend.parser_failure_analysis` reports to guide dataset expansion; do not tune directly against adversarial holdout rows.
 - Local signing keys belong in `.shepherd/` or an environment variable. Never commit signing keys.
 - When adding learned modules, keep them behind typed contracts and deterministic safety gates.

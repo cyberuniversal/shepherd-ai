@@ -26,6 +26,7 @@ from backend.learned_parser import (
     load_frozen_splits,
     train_baseline_model,
 )
+from backend.parser_failure_analysis import analyze_report, write_analysis, write_markdown_analysis
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
@@ -408,6 +409,33 @@ def test_parser_promotion_gate_blocks_weak_candidate():
         assert permissive_report["promoted"]
 
 
+def test_parser_failure_analysis_reports_grouped_failures():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        artifact_path = f"{tmpdir}/learned-parser-baseline.json"
+        report_path = f"{tmpdir}/learned-parser-report.json"
+        result = train_baseline_model(artifact_path=artifact_path, report_path=report_path)
+
+        analysis = analyze_report(result["report"])
+        assert analysis["schema"] == "shepherd-parser-failure-analysis/1.0"
+        assert analysis["summary"]["total_examples"] >= 200
+        assert analysis["summary"]["failed_examples"] > 0
+        assert analysis["summary"]["field_failure_counts"]["target_zone"] > 0
+        assert "eval" in analysis["by_split"]
+        assert "adversarial" in analysis["by_split"]
+        assert "en" in analysis["by_language"]
+        assert "ar" in analysis["by_language"]
+        assert "target_zone" in analysis["field_details"]
+        assert analysis["field_details"]["target_zone"]["top_confusions"]
+        assert analysis["highest_risk_examples"]
+        assert any(example["command"] for example in analysis["highest_risk_examples"])
+        assert analysis["recommendations"]
+
+        json_path = write_analysis(analysis, f"{tmpdir}/failure-analysis.json")
+        markdown_path = write_markdown_analysis(analysis, f"{tmpdir}/failure-analysis.md")
+        assert json_path.endswith(".json")
+        assert markdown_path.endswith(".md")
+
+
 def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
     class PerfectTransformerAdapter:
         def __init__(self, examples, model_id, model_digest):
@@ -746,6 +774,7 @@ def main():
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
     test_parser_promotion_gate_blocks_weak_candidate()
+    test_parser_failure_analysis_reports_grouped_failures()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()

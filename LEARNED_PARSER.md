@@ -48,6 +48,22 @@ After training a transformer model, evaluate that model directory with the same 
 
 Transformer promotion requires the trained model directory to contain `shepherd_model_contract.json`, optional training dependencies to be installed, all predictions to pass through the bounded-intent adapter, and split provenance proving the adversarial holdout was not used for training.
 
+## Failure Analysis
+
+Generate a grouped failure analysis after any full evaluation report:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_failure_analysis --report .tmp_models\learned_parser_report.json --output .tmp_models\parser_failure_analysis.json --markdown .tmp_models\parser_failure_analysis.md
+```
+
+Or evaluate and analyze a learned artifact in one step:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_failure_analysis --artifact .tmp_models\learned_parser_baseline.json --output .tmp_models\parser_failure_analysis.json --markdown .tmp_models\parser_failure_analysis.md
+```
+
+The report groups misses by split, language, failed field, confusion pair, command category, and highest-risk examples. Use it to decide which dataset rows to add next.
+
 ## Predict
 
 ```powershell
@@ -76,6 +92,7 @@ The next model step can run the optional transformer trainer behind the same art
 3. Report benchmark `holdout` and `adversarial_holdout.jsonl` separately.
 4. Keep the strict adapter as the production-facing boundary.
 5. Pass the parser promotion gate before any runtime integration is considered.
+6. Use failure analysis to drive dataset growth rather than tuning against the adversarial holdout directly.
 
 ## Transformer Scaffold
 
