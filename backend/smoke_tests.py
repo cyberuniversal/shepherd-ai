@@ -9,7 +9,7 @@ from backend.assurance_report import generate_assurance_report, write_assurance_
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
-from backend.mission_dataset import export_training_rows, validate_dataset
+from backend.mission_dataset import evaluate_dataset, export_training_rows, validate_dataset
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_fixtures import generate_scenario_records
@@ -261,12 +261,21 @@ def test_runtime_assurance_reports_live_link_without_dispatch():
 def test_mission_command_dataset_seed_validates():
     result = validate_dataset()
     assert result["valid"], result["errors"]
-    assert result["summary"]["language_counts"]["en"] >= 1
-    assert result["summary"]["language_counts"]["ar"] >= 1
+    assert result["summary"]["total"] >= 30
+    assert result["summary"]["language_counts"]["en"] >= 15
+    assert result["summary"]["language_counts"]["ar"] >= 15
+    assert result["summary"]["split_counts"]["train"] >= 20
+    assert result["summary"]["split_counts"]["eval"] >= 6
+    assert result["summary"]["split_counts"]["holdout"] >= 4
 
     rows = export_training_rows()
     assert rows
-    assert all("input" in row and "target_json" in row for row in rows)
+    assert all("input" in row and "target_json" in row and "split" in row for row in rows)
+
+    evaluation = asyncio.run(evaluate_dataset())
+    assert evaluation["valid"], evaluation["errors"]
+    assert evaluation["summary"]["evaluated"] == result["summary"]["total"]
+    assert "field_metrics" in evaluation["summary"]
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():

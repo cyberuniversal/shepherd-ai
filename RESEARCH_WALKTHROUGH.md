@@ -43,7 +43,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Manifest-aware scenario regression reports expected failures separately from unexpected regressions and can write a JSON release-gate report.
 - Runtime assurance currently emits report-only monitor events and fallback recommendations; it does not automatically trigger HOLD, RTL, or live vehicle commands.
 - Assurance reports aggregate signed evidence into monitor counts, critical findings, replay status, signature status, and fallback recommendations without calling MAVSDK.
-- Mission-command dataset scaffolding provides English/Arabic seed rows for future parser evaluation before any model training starts.
+- Mission-command dataset scaffolding provides English/Arabic train/eval/holdout seed rows and parser baseline evaluation before any model training starts.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
 - Live telemetry sync into the dashboard when MAVSDK is connected.
 
