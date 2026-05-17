@@ -24,6 +24,22 @@ Outputs under `.tmp_models/` are local research artifacts and are ignored by git
 
 The report includes train, eval, benchmark holdout, and adversarial holdout metrics. `adversarial_used_for_training` must remain `false`.
 
+## Promotion Gate
+
+Run the parser promotion gate before treating any learned artifact as a candidate for runtime integration:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_promotion --artifact .tmp_models\learned_parser_baseline.json --report .tmp_models\parser_promotion_gate.json
+```
+
+The command exits nonzero when the artifact fails threshold or contract checks. For research reporting without failing the shell command:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_promotion --artifact .tmp_models\learned_parser_baseline.json --report .tmp_models\parser_promotion_gate.json --allow-failure
+```
+
+The current nearest-ngram baseline is expected to fail promotion. It exists to prove the scaffold, not to replace the bounded heuristic or LLM parser.
+
 ## Predict
 
 ```powershell
@@ -51,6 +67,7 @@ The next model step can run the optional transformer trainer behind the same art
 2. Tune only against benchmark `eval` rows.
 3. Report benchmark `holdout` and `adversarial_holdout.jsonl` separately.
 4. Keep the strict adapter as the production-facing boundary.
+5. Pass the parser promotion gate before any runtime integration is considered.
 
 ## Transformer Scaffold
 

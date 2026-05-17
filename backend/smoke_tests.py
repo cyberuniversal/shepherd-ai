@@ -24,6 +24,7 @@ from backend.learned_parser import (
     load_artifact,
     train_baseline_model,
 )
+from backend.parser_promotion import run_promotion_gate
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -376,6 +377,35 @@ def test_learned_parser_baseline_scaffold_keeps_frozen_splits():
         assert "dispatch" not in prediction
 
 
+def test_parser_promotion_gate_blocks_weak_candidate():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        artifact_path = f"{tmpdir}/learned-parser-baseline.json"
+        report_path = f"{tmpdir}/learned-parser-report.json"
+        promotion_path = f"{tmpdir}/promotion-gate.json"
+        train_baseline_model(artifact_path=artifact_path, report_path=report_path)
+
+        report = run_promotion_gate(artifact_path, report_path=promotion_path)
+        assert not report["promoted"]
+        assert report["contract_checks"]["passed"]
+        assert report["summary"]["adversarial_used_for_training"] is False
+        assert report["split_checks"]["eval"]["passed"] is False
+        assert report["split_checks"]["holdout"]["passed"] is False
+        assert report["split_checks"]["adversarial"]["passed"] is False
+        assert any(failure["scope"] == "adversarial" for failure in report["failures"])
+
+        permissive = {
+            "eval": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
+            "holdout": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
+            "adversarial": {"subset_accuracy": 0.0, "bounded_output_rate": 1.0, "field_metrics": {}},
+        }
+        permissive_report = run_promotion_gate(
+            artifact_path,
+            thresholds=permissive,
+            report_path=f"{tmpdir}/permissive-promotion-gate.json",
+        )
+        assert permissive_report["promoted"]
+
+
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
         result = write_training_corpus(tmpdir)
@@ -657,6 +687,7 @@ def main():
     test_runtime_assurance_reports_live_link_without_dispatch()
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
+    test_parser_promotion_gate_blocks_weak_candidate()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())
