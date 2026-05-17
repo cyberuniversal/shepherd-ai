@@ -43,3 +43,10 @@ Evaluate the current offline parser baseline against the dataset:
 ```
 
 This is an evaluation scaffold, not model training. The current seed set and benchmark are also used by smoke tests to guard deterministic parser regressions before training any learned parser. The adversarial holdout is validated and evaluated by smoke tests without accuracy thresholds so it remains an honest pressure test.
+
+The learned-parser scaffold in `backend.learned_parser` trains only from benchmark `train` rows and evaluates `eval`, benchmark `holdout`, and `adversarial_holdout.jsonl` separately:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
+.\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
+```

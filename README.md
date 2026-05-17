@@ -166,6 +166,14 @@ Validate or export the early bilingual mission-command dataset for future parser
 .\.venv\Scripts\python.exe -m backend.mission_dataset evaluate --path data\mission_commands\adversarial_holdout.jsonl --report .tmp_scenarios\adversarial-eval.json --markdown-report .tmp_scenarios\adversarial-eval.md
 ```
 
+Train and evaluate the first learned-parser research baseline:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.learned_parser train-baseline --output .tmp_models\learned_parser_baseline.json --report .tmp_models\learned_parser_report.json
+.\.venv\Scripts\python.exe -m backend.learned_parser evaluate --artifact .tmp_models\learned_parser_baseline.json --summary-only
+.\.venv\Scripts\python.exe -m backend.learned_parser predict "Send two drones to KAFD" --artifact .tmp_models\learned_parser_baseline.json
+```
+
 ## Quick Start
 
 Additional guides:
@@ -173,6 +181,7 @@ Additional guides:
 - `PX4_SITL_SETUP.md` explains how to start PX4 SITL before connecting Shepherd-AI.
 - `LLM_SETUP.md` explains local/remote Ollama-backed parsing and parser status checks.
 - `RESEARCH_WALKTHROUGH.md` gives a concise system walkthrough.
+- `LEARNED_PARSER.md` explains the training scaffold, frozen splits, and strict bounded-intent adapter.
 
 ### One Command
 
@@ -223,6 +232,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, frozen train/eval/holdout handling, adversarial evaluation, and a strict bounded-intent adapter.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

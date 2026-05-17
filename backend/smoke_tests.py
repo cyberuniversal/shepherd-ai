@@ -18,6 +18,12 @@ from backend.mission_dataset import (
     write_json_report,
     write_markdown_report,
 )
+from backend.learned_parser import (
+    BOUNDED_OUTPUT_FIELDS,
+    StrictIntentAdapter,
+    load_artifact,
+    train_baseline_model,
+)
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_fixtures import generate_scenario_records
@@ -331,6 +337,38 @@ def test_mission_command_dataset_seed_validates():
         assert adversarial_markdown.endswith(".md")
 
 
+def test_learned_parser_baseline_scaffold_keeps_frozen_splits():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        artifact_path = f"{tmpdir}/learned-parser-baseline.json"
+        report_path = f"{tmpdir}/learned-parser-report.json"
+        result = train_baseline_model(artifact_path=artifact_path, report_path=report_path)
+
+        artifact = result["artifact"]
+        report = result["report"]
+        train_ids = set(artifact["dataset"]["train_ids"])
+        adversarial_ids = set(artifact["dataset"]["adversarial_ids"])
+        assert artifact["schema"] == "shepherd-learned-parser-baseline/1.0"
+        assert artifact["contract"]["output"] == "bounded_intent_json_only"
+        assert artifact["contract"]["dispatch_authority"] is False
+        assert len(train_ids) >= 100
+        assert len(adversarial_ids) >= 60
+        assert train_ids.isdisjoint(adversarial_ids)
+        assert report["summary"]["adversarial_used_for_training"] is False
+        assert report["summary"]["train_count"] == len(train_ids)
+        assert report["summary"]["adversarial_count"] == len(adversarial_ids)
+        assert report["split_reports"]["eval"]["bounded_output_count"] == report["split_reports"]["eval"]["total"]
+        assert report["split_reports"]["adversarial"]["bounded_output_count"] == report["split_reports"]["adversarial"]["total"]
+
+        loaded = load_artifact(artifact_path)
+        adapter = StrictIntentAdapter(loaded)
+        prediction = adapter.predict("Send two drones to KAFD")
+        assert set(prediction).issubset(BOUNDED_OUTPUT_FIELDS)
+        assert prediction["parser"] == "learned_baseline"
+        assert prediction["needs_confirmation"] is True
+        assert prediction["model_digest"] == loaded["artifact_digest"]
+        assert "dispatch" not in prediction
+
+
 def test_scenario_fixture_generator_creates_manifest_and_records():
     with tempfile.TemporaryDirectory() as tmpdir:
         signer = SignatureManager(key="scenario-fixture-test-key")
@@ -568,6 +606,7 @@ def main():
     asyncio.run(test_live_preflight_allows_connected_drone())
     test_runtime_assurance_reports_live_link_without_dispatch()
     test_mission_command_dataset_seed_validates()
+    test_learned_parser_baseline_scaffold_keeps_frozen_splits()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
