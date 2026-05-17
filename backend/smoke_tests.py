@@ -31,7 +31,7 @@ from backend.learned_parser import (
 from backend.parser_failure_analysis import analyze_report, write_analysis, write_markdown_analysis
 from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
-from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV
+from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV, SHADOW_ENV
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -592,7 +592,7 @@ def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
 
 
 async def test_promoted_learned_parser_runtime_is_feature_flagged():
-    env_keys = [ENABLE_ENV, RUNTIME_ENV, ARTIFACT_ENV, PROMOTION_REPORT_ENV]
+    env_keys = [ENABLE_ENV, RUNTIME_ENV, SHADOW_ENV, ARTIFACT_ENV, PROMOTION_REPORT_ENV]
     previous_env = {key: os.environ.get(key) for key in env_keys}
     backend_main = None
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -632,6 +632,24 @@ async def test_promoted_learned_parser_runtime_is_feature_flagged():
             api_status = await backend_main.get_parser_status()
             assert api_status["learned_parser"]["ready"]
             assert api_status["learned_parser"]["artifact_digest"] == promotion["artifact_digest"]
+
+            os.environ.pop(ENABLE_ENV, None)
+            os.environ[SHADOW_ENV] = "1"
+            parser = MissionParser()
+            parser._ollama_available = False
+            status = await parser.refresh_status()
+            assert status["mode"] == "heuristic_fallback"
+            assert not status["learned_parser"]["enabled"]
+            assert status["learned_parser"]["shadow_enabled"]
+            assert status["learned_parser"]["ready"]
+            shadowed_intent = await parser.parse_intent("Secure the National Museum with two drones")
+            assert shadowed_intent["parser"] == "heuristic"
+            audits = parser.shadow_audits()
+            assert len(audits) == 1
+            assert audits[0]["status"] == "compared"
+            assert audits[0]["active_parser"] == "heuristic"
+            assert audits[0]["shadow_parser"] == "learned_baseline"
+            assert audits[0]["shadow_intent"]["target_zone"] == "national museum"
 
             with open(promotion_report_path, "r", encoding="utf-8") as handle:
                 tampered_report = json.load(handle)

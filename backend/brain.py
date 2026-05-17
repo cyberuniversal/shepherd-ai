@@ -57,6 +57,15 @@ NUMBER_WORDS = {
 }
 
 FLEET_SIZE = 13
+SHADOW_COMPARE_FIELDS = [
+    "action",
+    "target_zone",
+    "target_reference",
+    "drone_count",
+    "priority",
+    "pattern",
+    "needs_confirmation",
+]
 KNOWN_TARGET_ALIASES = [
     ("ministry of defense", "ministry of defense"),
     ("the airport", "the airport"),
@@ -112,11 +121,12 @@ class MissionParser:
         self._fallback_active = True
         self._last_parser = "heuristic"
         self._last_error = None
+        self._last_shadow_audits = []
 
     def status(self) -> Dict[str, Any]:
         provider_status = self.provider.status()
         learned_status = self.learned_runtime.status()
-        if learned_status.get("ready"):
+        if learned_status.get("enabled") and learned_status.get("ready"):
             mode = "learned_parser"
         elif not self._fallback_active and provider_status.get("llm_online"):
             mode = "llm"
@@ -132,12 +142,54 @@ class MissionParser:
             "last_parser": self._last_parser,
             "last_error": self._last_error or learned_status.get("error") or provider_status.get("last_error"),
             "learned_parser": learned_status,
+            "parser_shadow_audits": self.shadow_audits(),
         }
 
     async def refresh_status(self) -> Dict[str, Any]:
         self.learned_runtime.refresh()
         await self.provider.refresh_status(force=True)
         return self.status()
+
+    def shadow_audits(self) -> List[Dict[str, Any]]:
+        return list(self._last_shadow_audits)
+
+    def _build_shadow_audit(self, user_input: str, active_intent: Dict[str, Any]) -> Dict[str, Any] | None:
+        if active_intent.get("parser") == "learned_baseline" or not self.learned_runtime.shadow_ready():
+            return None
+        try:
+            shadow_intent = self.learned_runtime.predict_shadow(user_input)
+        except Exception as exc:
+            return {
+                "enabled": True,
+                "status": "failed",
+                "active_parser": active_intent.get("parser", "unknown"),
+                "shadow_parser": "learned_baseline",
+                "error": str(exc),
+            }
+
+        mismatches = []
+        for field in SHADOW_COMPARE_FIELDS:
+            active_value = active_intent.get(field)
+            shadow_value = shadow_intent.get(field)
+            if active_value != shadow_value:
+                mismatches.append({
+                    "field": field,
+                    "active": active_value,
+                    "shadow": shadow_value,
+                })
+
+        return {
+            "enabled": True,
+            "status": "compared",
+            "active_parser": active_intent.get("parser", "unknown"),
+            "shadow_parser": shadow_intent.get("parser", "learned_baseline"),
+            "model_id": shadow_intent.get("model_id"),
+            "model_digest": shadow_intent.get("model_digest"),
+            "matches_active": not mismatches,
+            "mismatches": mismatches,
+            "active_intent": {field: active_intent.get(field) for field in SHADOW_COMPARE_FIELDS},
+            "shadow_intent": {field: shadow_intent.get(field) for field in SHADOW_COMPARE_FIELDS},
+        }
 
     def _normalize_arabic_numerals(self, text: str) -> str:
         """Converts Arabic-Indic numerals (٠-٩) to Western numerals (0-9)."""
@@ -507,9 +559,14 @@ class MissionParser:
             target = parsed.get("target_zone") or "the selected target"
             parsed["clarifying_question"] = f"Is {target} the correct target for this mission?"
 
+        shadow_audit = self._build_shadow_audit(user_input, parsed)
+        if shadow_audit:
+            self._last_shadow_audits.append(shadow_audit)
+
         return parsed
 
     async def parse_compound_intent(self, user_input: str) -> List[Dict[str, Any]]:
+        self._last_shadow_audits = []
         fragments = self._split_compound_fragments(user_input)
         intents = []
         inherited_action = None

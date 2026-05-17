@@ -35,6 +35,7 @@ except ImportError:
 
 ENABLE_ENV = "SHEPHERD_ENABLE_LEARNED_PARSER"
 RUNTIME_ENV = "SHEPHERD_PARSER_RUNTIME"
+SHADOW_ENV = "SHEPHERD_SHADOW_LEARNED_PARSER"
 ARTIFACT_ENV = "SHEPHERD_LEARNED_PARSER_ARTIFACT"
 PROMOTION_REPORT_ENV = "SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT"
 TRUE_VALUES = {"1", "true", "yes", "on", "enabled"}
@@ -44,6 +45,7 @@ LEARNED_RUNTIME_VALUES = {"learned", "promoted_learned", "learned_parser"}
 @dataclass
 class PromotedParserStatus:
     enabled: bool
+    shadow_enabled: bool
     ready: bool
     artifact_path: str
     promotion_report_path: str
@@ -56,6 +58,8 @@ class PromotedParserStatus:
     def as_dict(self) -> Dict[str, Any]:
         return {
             "enabled": self.enabled,
+            "active": self.enabled,
+            "shadow_enabled": self.shadow_enabled,
             "ready": self.ready,
             "artifact_path": self.artifact_path,
             "promotion_report_path": self.promotion_report_path,
@@ -80,6 +84,7 @@ class PromotedLearnedParserRuntime:
         self.adapter: StrictIntentAdapter | None = None
         self._status = PromotedParserStatus(
             enabled=self.enabled,
+            shadow_enabled=self._shadow_enabled_from_env(),
             ready=False,
             artifact_path=str(self.artifact_path),
             promotion_report_path=str(self.promotion_report_path),
@@ -91,20 +96,25 @@ class PromotedLearnedParserRuntime:
             return True
         return self.env.get(RUNTIME_ENV, "").strip().lower() in LEARNED_RUNTIME_VALUES
 
+    def _shadow_enabled_from_env(self) -> bool:
+        return self.env.get(SHADOW_ENV, "").strip().lower() in TRUE_VALUES
+
     def refresh(self) -> Dict[str, Any]:
         self.adapter = None
         self.enabled = self._enabled_from_env()
+        shadow_enabled = self._shadow_enabled_from_env()
         self.artifact_path = Path(self.env.get(ARTIFACT_ENV, str(DEFAULT_ARTIFACT_PATH)))
         self.promotion_report_path = Path(
             self.env.get(PROMOTION_REPORT_ENV, str(DEFAULT_PROMOTION_REPORT_PATH))
         )
         self._status = PromotedParserStatus(
             enabled=self.enabled,
+            shadow_enabled=shadow_enabled,
             ready=False,
             artifact_path=str(self.artifact_path),
             promotion_report_path=str(self.promotion_report_path),
         )
-        if not self.enabled:
+        if not self.enabled and not shadow_enabled:
             return self.status()
 
         try:
@@ -115,7 +125,8 @@ class PromotedLearnedParserRuntime:
             self._validate_promotion_report(promotion_report, digest)
             self.adapter = StrictIntentAdapter(artifact)
             self._status = PromotedParserStatus(
-                enabled=True,
+                enabled=self.enabled,
+                shadow_enabled=shadow_enabled,
                 ready=True,
                 artifact_path=str(self.artifact_path),
                 promotion_report_path=str(self.promotion_report_path),
@@ -131,12 +142,23 @@ class PromotedLearnedParserRuntime:
     def ready(self) -> bool:
         return self.enabled and self.adapter is not None and self._status.ready
 
+    def shadow_ready(self) -> bool:
+        return self._status.shadow_enabled and self.adapter is not None and self._status.ready
+
     def status(self) -> Dict[str, Any]:
         return self._status.as_dict()
 
     def predict(self, command: str) -> Dict[str, Any]:
         if not self.ready() or self.adapter is None:
             raise RuntimeError(self._status.error or "Promoted learned parser is not ready")
+        return self._predict_with_adapter(command)
+
+    def predict_shadow(self, command: str) -> Dict[str, Any]:
+        if not self.shadow_ready() or self.adapter is None:
+            raise RuntimeError(self._status.error or "Promoted learned parser shadow mode is not ready")
+        return self._predict_with_adapter(command)
+
+    def _predict_with_adapter(self, command: str) -> Dict[str, Any]:
         intent = self.adapter.predict(command)
         extras = sorted(set(intent) - BOUNDED_OUTPUT_FIELDS)
         if extras:

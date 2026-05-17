@@ -70,6 +70,14 @@ Equivalent selector:
 $env:SHEPHERD_PARSER_RUNTIME="learned"
 ```
 
+To audit a promoted learned parser without making it the active parser:
+
+```powershell
+$env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
+```
+
+Shadow mode loads the same promotion-validated artifact, keeps the existing parser active, and records field-level active-vs-shadow comparisons in parser status and mission parser summaries.
+
 If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
 
 ## Failure Analysis

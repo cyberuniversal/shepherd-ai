@@ -189,6 +189,12 @@ $env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\parser_promotion_augm
 curl http://localhost:8000/api/parser/status
 ```
 
+Use report-only shadow mode when you want to compare the promoted learned parser against the active parser before switching runtime behavior:
+
+```powershell
+$env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
+```
+
 The promoted learned parser still returns bounded intent JSON only; all planning, confirmation, safety, SHEPHERD-IR, assurance, and MAVSDK/MAVLink dispatch remain deterministic backend code.
 
 Prepare the optional PyTorch/transformer parser corpus and check training dependencies:
