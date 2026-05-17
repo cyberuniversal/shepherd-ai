@@ -166,6 +166,15 @@ curl "http://localhost:8000/api/research/parser-shadow-candidates"
 
 Shadow candidates are not training rows. They preserve the command, active intent, shadow intent, mismatch fields, evidence id, and `ready_for_training=false` so a human can choose or correct the expected intent before adding anything to `targeted_augmentation.jsonl`.
 
+Promote manually reviewed candidates into dataset-compatible train rows:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_review --input .tmp_scenarios\parser-shadow-candidates.reviewed.jsonl --output .tmp_scenarios\reviewed-shadow-augmentation.jsonl
+.\.venv\Scripts\python.exe -m backend.mission_dataset validate --path .tmp_scenarios\reviewed-shadow-augmentation.jsonl
+```
+
+The review file must explicitly mark each promoted row with `expected_intent_status` as `approved_active`, `approved_shadow`, or `manual_corrected`. Unreviewed rows are skipped, and invalid reviewed rows fail the command.
+
 Generate ignored off-nominal scenario records for local regression work:
 
 ```powershell

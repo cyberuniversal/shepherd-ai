@@ -16,6 +16,7 @@ from backend.mission_dataset import (
     DEFAULT_BENCHMARK_PATH,
     evaluate_dataset,
     export_training_rows,
+    load_examples,
     validate_dataset,
     write_json_report,
     write_markdown_report,
@@ -34,6 +35,7 @@ from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_pr
 from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV, SHADOW_ENV
 from backend.parser_shadow_candidates import generate_parser_shadow_candidates, write_candidates_jsonl
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
+from backend.parser_shadow_review import promote_reviewed_candidates
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -755,6 +757,64 @@ async def test_parser_shadow_report_summarizes_signed_evidence():
             backend_main.evidence_logger = old_logger
 
 
+def test_reviewed_shadow_candidates_promote_to_dataset_rows():
+    unreviewed = {
+        "candidate_id": "shadow_unreviewed_001",
+        "command": "Send two drones to KAFD",
+        "expected_intent_status": "unreviewed",
+        "expected_intent_options": {
+            "active": {"action": "scout", "target_zone": "kafd", "drone_count": 2, "pattern": "perimeter"},
+            "shadow": {"action": "scout", "target_zone": "kafd", "drone_count": 2, "pattern": "direct"},
+        },
+    }
+    approved = {
+        "candidate_id": "shadow_reviewed_001",
+        "evidence_id": "evidence-reviewed",
+        "command": "Send two drones directly to KAFD",
+        "expected_intent_status": "approved_shadow",
+        "mismatch_fields": ["pattern"],
+        "expected_intent_options": {
+            "active": {
+                "action": "scout",
+                "target_zone": "kafd",
+                "drone_count": 2,
+                "pattern": "perimeter",
+                "priority": "medium",
+            },
+            "shadow": {
+                "action": "scout",
+                "target_zone": "kafd",
+                "drone_count": 2,
+                "pattern": "direct",
+                "priority": "medium",
+            },
+        },
+    }
+    with tempfile.TemporaryDirectory() as tmpdir:
+        input_path = f"{tmpdir}/reviewed-candidates.jsonl"
+        output_path = f"{tmpdir}/reviewed-augmentation.jsonl"
+        with open(input_path, "w", encoding="utf-8") as handle:
+            for candidate in (unreviewed, approved):
+                handle.write(json.dumps(candidate, ensure_ascii=False, sort_keys=True))
+                handle.write("\n")
+
+        result = promote_reviewed_candidates(input_path, output_path)
+        assert result["valid"]
+        assert result["ready_for_training"]
+        assert result["summary"]["input_count"] == 2
+        assert result["summary"]["approved_count"] == 1
+        assert result["summary"]["skipped_count"] == 1
+        assert result["validation"]["valid"]
+
+        rows = load_examples(output_path)
+        assert len(rows) == 1
+        assert rows[0]["id"] == "reviewed_shadow_shadow_reviewed_001"
+        assert rows[0]["split"] == "train"
+        assert rows[0]["expected_intent"]["pattern"] == "direct"
+        assert rows[0]["expected_constraints"]["confirmation_required"] is True
+        assert "Reviewed parser-shadow candidate" in rows[0]["notes"]
+
+
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
         base_result = write_training_corpus(f"{tmpdir}/base")
@@ -1053,6 +1113,7 @@ def main():
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     asyncio.run(test_promoted_learned_parser_runtime_is_feature_flagged())
     asyncio.run(test_parser_shadow_report_summarizes_signed_evidence())
+    test_reviewed_shadow_candidates_promote_to_dataset_rows()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())

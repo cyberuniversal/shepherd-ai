@@ -94,6 +94,14 @@ curl "http://localhost:8000/api/research/parser-shadow-candidates"
 
 These candidates are not training data. They set `ready_for_training=false` and preserve both active and shadow intent options so the expected intent can be manually selected or corrected before any row is added to `data/mission_commands/targeted_augmentation.jsonl`.
 
+After review, convert approved candidates into dataset-compatible train rows:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_review --input .tmp_scenarios\parser-shadow-candidates.reviewed.jsonl --output .tmp_scenarios\reviewed-shadow-augmentation.jsonl
+```
+
+Approved statuses are `approved_active`, `approved_shadow`, and `manual_corrected`. Unreviewed candidates are skipped. `manual_corrected` rows must include an explicit `expected_intent` object.
+
 If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
 
 ## Failure Analysis
