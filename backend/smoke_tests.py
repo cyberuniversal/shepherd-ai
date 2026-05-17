@@ -415,6 +415,15 @@ def test_targeted_augmentation_stays_train_only():
         assert report["split_reports"]["augmentation"]["total"] == len(augmentation_ids)
         assert report["split_reports"]["adversarial"]["total"] == len(adversarial_ids)
 
+        adapter = StrictIntentAdapter(load_artifact(artifact_path))
+        known_target = adapter.predict("Perform a spiral scan at King Saud University with five drones.")
+        ambiguous_target = adapter.predict("Take one drone to the same point as yesterday.")
+        relative_target = adapter.predict("Send two drones 300 meters east of my position.")
+        assert known_target["target_zone"] == "king saud university"
+        assert ambiguous_target["target_zone"] == "unknown"
+        assert relative_target["target_zone"] == "operator_current_position"
+        assert relative_target["target_reference"] == "operator_relative"
+
 
 def test_parser_promotion_gate_blocks_weak_candidate():
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -427,9 +436,10 @@ def test_parser_promotion_gate_blocks_weak_candidate():
         assert not report["promoted"]
         assert report["contract_checks"]["passed"]
         assert report["summary"]["adversarial_used_for_training"] is False
-        assert report["split_checks"]["eval"]["passed"] is False
+        assert report["split_checks"]["eval"]["passed"] is True
         assert report["split_checks"]["holdout"]["passed"] is False
         assert report["split_checks"]["adversarial"]["passed"] is False
+        assert report["split_checks"]["eval"]["field_results"]["target_zone"]["passed"] is True
         assert any(failure["scope"] == "adversarial" for failure in report["failures"])
 
         permissive = {
@@ -492,6 +502,7 @@ def test_parser_comparison_reports_augmented_delta():
         assert comparison["sources"]["candidate"]["summary"]["adversarial_used_for_training"] is False
         assert "augmentation" not in comparison["split_deltas"]
         assert "target_zone" in comparison["field_deltas"]
+        assert comparison["field_deltas"]["target_zone"]["candidate_accuracy"] >= 0.85
         assert comparison["recommendations"]
 
         artifact_comparison = compare_artifacts(

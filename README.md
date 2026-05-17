@@ -246,7 +246,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic target-slot normalization, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

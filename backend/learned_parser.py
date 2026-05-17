@@ -75,6 +75,103 @@ BOUNDED_OUTPUT_FIELDS = {
     "model_id",
     "model_digest",
 }
+KNOWN_TARGET_ALIASES = [
+    ("king saud university", "king saud university"),
+    ("ministry of defense", "ministry of defense"),
+    ("riyadh boulevard", "boulevard"),
+    ("national museum", "national museum"),
+    ("wadi hanifah", "wadi hanifah"),
+    ("masmak fort", "masmak"),
+    ("al faisaliyah", "al faisaliyah"),
+    ("the airport", "the airport"),
+    ("al nada", "al nada"),
+    ("boulevard", "boulevard"),
+    ("stadium", "stadium"),
+    ("diriyah", "diriyah"),
+    ("masmak", "masmak"),
+    ("airport", "the airport"),
+    ("kafd", "kafd"),
+    ("كافد", "kafd"),
+    ("المركز المالي", "المركز المالي"),
+    ("وزارة الدفاع", "وزارة الدفاع"),
+    ("المتحف الوطني", "المتحف الوطني"),
+    ("وادي حنيفة", "وادي حنيفة"),
+    ("حي الندى", "حي الندى"),
+    ("للندى", "حي الندى"),
+    ("الندى", "حي الندى"),
+    ("الدرعية", "الدرعية"),
+    ("المطار", "المطار"),
+    ("الملعب", "الملعب"),
+    ("جامعة الامام", "جامعة الامام"),
+    ("جامعة الإمام", "جامعة الامام"),
+    ("المصمك", "masmak"),
+    ("قصر المصمك", "masmak"),
+]
+AMBIGUOUS_TARGET_TERMS = [
+    "anything suspicious",
+    "pin i just dropped",
+    "gps pin",
+    "smoke plume",
+    "red zone",
+    "below the bridge",
+    "under the bridge",
+    "last place",
+    "same point",
+    "yesterday",
+    "north gate",
+    "compound",
+    "that place",
+    "that area",
+    "the area",
+    "somewhere",
+    "أي شيء",
+    "دبوس الخريطة",
+    "عمود الدخان",
+    "المنطقة الحمراء",
+    "تحت الجسر",
+    "آخر مكان",
+    "نفس نقطة",
+    "نقطة أمس",
+    "أمس",
+    "البوابة الشمالية",
+    "المجمع",
+    "ذلك المكان",
+    "تلك المنطقة",
+    "المنطقة",
+]
+OPERATOR_TARGET_TERMS = [
+    "my current location",
+    "my location",
+    "my position",
+    "near me",
+    "to me",
+    "around here",
+    "here",
+    "موقعي الحالي",
+    "موقعي",
+    "عندي",
+    "قريب مني",
+    "حولي",
+    "لي أنا",
+]
+OPERATOR_RELATIVE_TERMS = [
+    "east of my position",
+    "west of my position",
+    "north of my position",
+    "south of my position",
+    "meters from me",
+    "meters east",
+    "meters west",
+    "meters north",
+    "meters south",
+    "متر شرق موقعي",
+    "متر غرب موقعي",
+    "متر شمال موقعي",
+    "متر جنوب موقعي",
+]
+HOME_TARGET_TERMS = ["return to launch", "back to base", "to base", "base", "home", "القاعدة"]
+CURRENT_POSITION_TERMS = ["current position", "current positions", "مواقعها الحالية", "موقعه الحالي"]
+ROUTE_BETWEEN_TERMS = ["between", "from", "corridor", "الممر بين", "المسار بين", "بين"]
 
 
 class StrictIntentAdapter:
@@ -106,6 +203,7 @@ class StrictIntentAdapter:
                 "drone_count": 1,
                 "pattern": "direct",
             }
+        raw_intent = _apply_deterministic_target_slots(command, raw_intent)
         return coerce_bounded_intent(
             raw_intent,
             confidence=confidence,
@@ -393,6 +491,97 @@ def _normalize_value(value):
     if isinstance(value, str):
         return " ".join(value.lower().strip().split())
     return value
+
+
+def _apply_deterministic_target_slots(command: str, raw_intent: Dict) -> Dict:
+    normalized_command = _normalize_command_for_matching(command)
+    intent = dict(raw_intent)
+    target_zone, target_reference = _resolve_target_slots(normalized_command)
+    if target_zone:
+        intent["target_zone"] = target_zone
+    if target_reference is not None or target_zone == "operator_current_position":
+        intent["target_reference"] = target_reference
+    if target_zone == "unknown":
+        intent["target_reference"] = None
+    return intent
+
+
+def _resolve_target_slots(normalized_command: str) -> Tuple[str | None, str | None]:
+    if _has_coordinates(normalized_command):
+        return "coordinates", None
+
+    if _contains_any(normalized_command, CURRENT_POSITION_TERMS):
+        return "current_position", None
+
+    if _contains_any(normalized_command, HOME_TARGET_TERMS):
+        return "home", None
+
+    known_targets = _known_targets_in_command(normalized_command)
+    distinct_targets = []
+    for target in known_targets:
+        if target not in distinct_targets:
+            distinct_targets.append(target)
+
+    if len(distinct_targets) >= 2:
+        if _contains_any(normalized_command, ROUTE_BETWEEN_TERMS):
+            return "route_between_known_zones", None
+        if " then " not in normalized_command and " ثم " not in normalized_command:
+            return "multi_target", None
+        return distinct_targets[0], None
+
+    if distinct_targets:
+        return distinct_targets[0], None
+
+    if _contains_any(normalized_command, AMBIGUOUS_TARGET_TERMS):
+        return "unknown", None
+
+    if _contains_any(normalized_command, OPERATOR_RELATIVE_TERMS):
+        return "operator_current_position", "operator_relative"
+
+    if _contains_any(normalized_command, OPERATOR_TARGET_TERMS):
+        return "operator_current_position", "operator"
+
+    return None, None
+
+
+def _known_targets_in_command(normalized_command: str) -> List[str]:
+    matches = []
+    for alias, canonical in sorted(KNOWN_TARGET_ALIASES, key=lambda item: len(item[0]), reverse=True):
+        normalized_alias = _normalize_command_for_matching(alias)
+        if _contains_phrase(normalized_command, normalized_alias):
+            matches.append(canonical)
+    return matches
+
+
+def _contains_any(normalized_command: str, terms: List[str]) -> bool:
+    return any(_contains_phrase(normalized_command, _normalize_command_for_matching(term)) for term in terms)
+
+
+def _contains_phrase(normalized_command: str, normalized_phrase: str) -> bool:
+    if not normalized_phrase:
+        return False
+    if re.search(r"[A-Za-z0-9_]", normalized_phrase):
+        return re.search(rf"(?<!\w){re.escape(normalized_phrase)}(?!\w)", normalized_command) is not None
+    return normalized_phrase in normalized_command
+
+
+def _normalize_command_for_matching(text: str) -> str:
+    normalized = text.lower()
+    normalized = normalized.replace("?", " ").replace("!", " ")
+    normalized = normalized.replace("ـ", "")
+    normalized = re.sub(r"\s+", " ", normalized, flags=re.UNICODE)
+    return normalized.strip()
+
+
+def _has_coordinates(normalized_command: str) -> bool:
+    decimal_pair = re.search(r"\b-?\d{1,2}\s*\.\s*\d+\s*(?:,|and|\s)\s*-?\d{1,3}\s*\.\s*\d+\b", normalized_command)
+    if decimal_pair:
+        return True
+    spoken_decimal_pair = re.search(
+        r"\b\d{1,2}\s+(?:point|فاصلة)\s+\d+\s+(?:and|و)\s+\d{1,3}\s+(?:point|فاصلة)\s+\d+\b",
+        normalized_command,
+    )
+    return spoken_decimal_pair is not None
 
 
 def _coerce_string(value, default: str) -> str:
