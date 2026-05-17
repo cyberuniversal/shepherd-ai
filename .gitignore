@@ -8,3 +8,4 @@ PX4-Autopilot/
 session-*.md
 evidence/
 .shepherd/
+.tmp_scenarios/

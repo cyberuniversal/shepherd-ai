@@ -30,6 +30,7 @@ Shepherd-AI is a research project for an offline-first, real-drone swarm command
 - Confirmed missions should write signed evidence records. Runtime evidence JSON belongs under `evidence/` by default and should not be committed.
 - Evidence replay should verify signatures, mission digests, recorded fleet snapshots, selected-drone consistency, and current deterministic safety checks.
 - Scenario regression should treat signed evidence as release checks and fail on integrity, consistency, or safety replay regressions.
+- Generated off-nominal scenario evidence belongs under `.tmp_scenarios/` or another ignored path and should not be committed.
 - Runtime assurance events are report-only unless a future safety review explicitly authorizes blocking or automatic fallback behavior.
 - Mission-command datasets are for parser training/evaluation only; trained models still output bounded intent JSON and never dispatch.
 - Local signing keys belong in `.shepherd/` or an environment variable. Never commit signing keys.

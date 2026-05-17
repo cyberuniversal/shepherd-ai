@@ -11,7 +11,9 @@ from backend.evidence_replay import EvidenceReplayHarness
 from backend.mission_dataset import export_training_rows, validate_dataset
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
+from backend.scenario_fixtures import generate_scenario_records
 from backend.scenario_regression import ScenarioRegressionRunner
+from backend.signing import SignatureManager
 from backend.signing import digest_payload
 from backend.spatial import resolve_relative_target
 from hardware_bridge.facade import FacadeCommandRejected, MAVSDKFacade
@@ -266,6 +268,24 @@ def test_mission_command_dataset_seed_validates():
     assert all("input" in row and "target_json" in row for row in rows)
 
 
+def test_scenario_fixture_generator_creates_manifest_and_records():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        result = generate_scenario_records(tmpdir, signer=SignatureManager(key="scenario-fixture-test-key"))
+        assert result["scenario_count"] == 8
+        manifest_path = result["manifest_path"]
+        with open(manifest_path, "r", encoding="utf-8") as handle:
+            manifest = json.load(handle)
+        assert manifest["scenario_count"] == 8
+        assert {scenario["scenario_id"] for scenario in manifest["scenarios"]} >= {
+            "nominal_kafd_scout",
+            "tampered_evidence_record",
+            "bad_altitude_envelope",
+        }
+        for scenario in manifest["scenarios"]:
+            assert scenario["evidence_id"].startswith("evidence-")
+            assert scenario["expected_pass"] in (True, False)
+
+
 async def test_facade_allows_only_safe_ops():
     system = FakeSystem()
     facade = MAVSDKFacade({"alpha-1": system})
@@ -452,6 +472,7 @@ def main():
     asyncio.run(test_live_preflight_allows_connected_drone())
     test_runtime_assurance_reports_live_link_without_dispatch()
     test_mission_command_dataset_seed_validates()
+    test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())

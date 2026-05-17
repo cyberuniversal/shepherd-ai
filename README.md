@@ -130,6 +130,14 @@ Run signed evidence records as a backend regression suite:
 curl http://localhost:8000/api/research/scenario-regression
 ```
 
+Generate ignored off-nominal scenario records for local regression work:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.scenario_fixtures --output .tmp_scenarios
+```
+
+The generated manifest includes nominal, tampered, safety-rejected, selected-drone mismatch, low-battery, live-link, altitude-envelope, and operator-relative cases. These records are development fixtures and should stay out of git.
+
 Validate or export the early bilingual mission-command dataset for future parser training:
 
 ```powershell
@@ -189,6 +197,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Signed confirmed-mission evidence logs for replay, audit, tamper detection, and research evaluation.
 - Evidence replay harness that verifies signatures, checks mission digests, re-runs safety validation, and compares recorded mission consistency.
 - Scenario regression runner that replays signed evidence records across backend changes and fails on integrity, consistency, or safety regressions.
+- Ignored off-nominal scenario fixture generator for local evidence replay coverage.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Bilingual mission-command dataset scaffold for future intent-parser training and evaluation.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
