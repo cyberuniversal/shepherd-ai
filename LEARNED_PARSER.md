@@ -78,6 +78,13 @@ $env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
 
 Shadow mode loads the same promotion-validated artifact, keeps the existing parser active, and records field-level active-vs-shadow comparisons in parser status and mission parser summaries.
 
+Summarize shadow comparisons from signed evidence:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_report --report .tmp_scenarios\parser-shadow-report.json
+curl "http://localhost:8000/api/research/parser-shadow-report?include_records=false"
+```
+
 If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
 
 ## Failure Analysis

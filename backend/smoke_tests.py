@@ -32,6 +32,7 @@ from backend.parser_failure_analysis import analyze_report, write_analysis, writ
 from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
 from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV, SHADOW_ENV
+from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -672,6 +673,67 @@ async def test_promoted_learned_parser_runtime_is_feature_flagged():
                 await backend_main.parser.refresh_status()
 
 
+async def test_parser_shadow_report_summarizes_signed_evidence():
+    from backend import main as backend_main
+
+    old_logger = backend_main.evidence_logger
+    shadow_audit = {
+        "enabled": True,
+        "status": "compared",
+        "active_parser": "heuristic",
+        "shadow_parser": "learned_baseline",
+        "model_id": "nearest-ngram-intent-baseline",
+        "model_digest": "test-digest",
+        "matches_active": False,
+        "mismatches": [
+            {"field": "pattern", "active": "perimeter", "shadow": "direct"},
+        ],
+        "active_intent": {"pattern": "perimeter"},
+        "shadow_intent": {"pattern": "direct"},
+    }
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            backend_main.evidence_logger = EvidenceLogger(tmpdir)
+            backend_main.evidence_logger.record_confirmed_mission(
+                {"plan_id": "plan-shadow", "command": "Send two drones to KAFD", "created_at": 1.0},
+                {
+                    "plan_id": "plan-shadow",
+                    "confirmed": True,
+                    "assigned": ["alpha-1"],
+                    "parser_summary": {
+                        "mode": "heuristic_fallback",
+                        "modes": ["heuristic"],
+                        "parser_shadow_audits": [shadow_audit],
+                    },
+                    "mission_programs": [],
+                    "execution_results": [],
+                    "safety_reports": [],
+                },
+            )
+
+            report = generate_parser_shadow_report(evidence_logger=backend_main.evidence_logger)
+            assert report["report"] == "parser_shadow_audit"
+            assert report["report_only"]
+            assert not report["validation_scope"]["dispatch_side_effects"]
+            assert report["summary"]["total_records"] == 1
+            assert report["summary"]["records_with_shadow_audits"] == 1
+            assert report["summary"]["audit_count"] == 1
+            assert report["summary"]["mismatch_count"] == 1
+            assert report["summary"]["mismatch_field_counts"]["pattern"] == 1
+            assert report["records"][0]["parser_shadow_audits"][0]["shadow_parser"] == "learned_baseline"
+
+            api_report = await backend_main.run_research_parser_shadow_report(include_records=False)
+            assert api_report["summary"]["audit_count"] == 1
+            assert api_report["records"] == []
+
+            report_path = write_parser_shadow_report(report, f"{tmpdir}/parser-shadow-report.json")
+            with open(report_path, "r", encoding="utf-8") as handle:
+                persisted = json.load(handle)
+            assert persisted["summary"]["mismatch_count"] == 1
+        finally:
+            backend_main.evidence_logger = old_logger
+
+
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
         base_result = write_training_corpus(f"{tmpdir}/base")
@@ -969,6 +1031,7 @@ def main():
     test_parser_comparison_reports_augmented_delta()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     asyncio.run(test_promoted_learned_parser_runtime_is_feature_flagged())
+    asyncio.run(test_parser_shadow_report_summarizes_signed_evidence())
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())

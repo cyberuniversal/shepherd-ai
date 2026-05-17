@@ -148,6 +148,15 @@ curl "http://localhost:8000/api/research/assurance-report?include_records=false"
 
 The assurance report reads existing evidence records and summarizes monitor findings, replay status, signatures, selected vehicles, and fallback recommendations. It does not call MAVSDK or trigger automatic vehicle behavior.
 
+Generate a report-only parser shadow audit summary from signed evidence:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_report --report .tmp_scenarios\parser-shadow-report.json
+curl "http://localhost:8000/api/research/parser-shadow-report?include_records=false"
+```
+
+The parser shadow report reads evidence records produced with `SHEPHERD_SHADOW_LEARNED_PARSER=1` and summarizes active-vs-learned parser matches, mismatches, parser counts, and mismatch fields. It does not switch parsers or dispatch vehicles.
+
 Generate ignored off-nominal scenario records for local regression work:
 
 ```powershell
@@ -261,6 +270,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Ignored off-nominal scenario fixture generator for local evidence replay coverage.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
+- Parser shadow audit report generator that summarizes active-vs-learned parser disagreements from signed evidence without changing parser behavior.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
 - Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, optional promotion-validated runtime loading, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.

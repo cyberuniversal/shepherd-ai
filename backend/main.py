@@ -16,6 +16,7 @@ try:
     from backend.evidence_log import EvidenceLogger
     from backend.evidence_replay import EvidenceReplayHarness
     from backend.mission_program import compile_mission_program
+    from backend.parser_shadow_report import generate_parser_shadow_report
     from backend.safety import validate_mission_program
     from backend.scenario_regression import ScenarioRegressionRunner, run_scenario_regression
     from backend.spatial import detect_relative_direction, resolve_relative_target
@@ -28,6 +29,7 @@ except ImportError:
     from evidence_log import EvidenceLogger
     from evidence_replay import EvidenceReplayHarness
     from mission_program import compile_mission_program
+    from parser_shadow_report import generate_parser_shadow_report
     from safety import validate_mission_program
     from scenario_regression import ScenarioRegressionRunner, run_scenario_regression
     from spatial import detect_relative_direction, resolve_relative_target
@@ -845,6 +847,15 @@ async def run_research_scenario_regression(limit: int = 100, include_cases: bool
 @app.get("/api/research/assurance-report")
 async def run_research_assurance_report(limit: int = 100, include_records: bool = True):
     return generate_assurance_report(
+        limit=max(1, min(int(limit), 1000)),
+        include_records=include_records,
+        evidence_logger=evidence_logger,
+    )
+
+
+@app.get("/api/research/parser-shadow-report")
+async def run_research_parser_shadow_report(limit: int = 100, include_records: bool = True):
+    return generate_parser_shadow_report(
         limit=max(1, min(int(limit), 1000)),
         include_records=include_records,
         evidence_logger=evidence_logger,
