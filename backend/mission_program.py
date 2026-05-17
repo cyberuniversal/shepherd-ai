@@ -114,6 +114,7 @@ def compile_mission_program(
     target_coords: Optional[Dict],
     drones: List,
     live_mode: bool,
+    signer=None,
 ) -> Dict:
     """Compile natural-language intent into a validated mission program bundle."""
     drone_programs = [compile_drone_program(drone, intent, source_prompt) for drone in drones]
@@ -205,7 +206,8 @@ def compile_mission_program(
         },
     }
     bundle["mission_digest"] = digest_payload(bundle, recursive_signature_fields=True)
-    bundle["provenance"]["signature"] = default_signature_manager.sign_digest(
+    signature_manager = signer or default_signature_manager
+    bundle["provenance"]["signature"] = signature_manager.sign_digest(
         bundle["mission_digest"],
         payload_type="shepherd_ir_bundle",
     )

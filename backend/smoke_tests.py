@@ -12,7 +12,7 @@ from backend.mission_dataset import export_training_rows, validate_dataset
 from backend.mission_program import compile_mission_program
 from backend.safety import ForbiddenZone, validate_mission_program, validate_route_leg
 from backend.scenario_fixtures import generate_scenario_records
-from backend.scenario_regression import ScenarioRegressionRunner
+from backend.scenario_regression import ScenarioRegressionRunner, write_regression_report
 from backend.signing import SignatureManager
 from backend.signing import digest_payload
 from backend.spatial import resolve_relative_target
@@ -270,7 +270,8 @@ def test_mission_command_dataset_seed_validates():
 
 def test_scenario_fixture_generator_creates_manifest_and_records():
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_scenario_records(tmpdir, signer=SignatureManager(key="scenario-fixture-test-key"))
+        signer = SignatureManager(key="scenario-fixture-test-key")
+        result = generate_scenario_records(tmpdir, signer=signer)
         assert result["scenario_count"] == 8
         manifest_path = result["manifest_path"]
         with open(manifest_path, "r", encoding="utf-8") as handle:
@@ -284,6 +285,24 @@ def test_scenario_fixture_generator_creates_manifest_and_records():
         for scenario in manifest["scenarios"]:
             assert scenario["evidence_id"].startswith("evidence-")
             assert scenario["expected_pass"] in (True, False)
+
+        logger = EvidenceLogger(tmpdir, signer=signer)
+        manifest_regression = ScenarioRegressionRunner(logger).run(manifest_path=manifest_path)
+        assert manifest_regression["passed"], manifest_regression["summary"]
+        assert manifest_regression["summary"]["total"] == 8
+        assert manifest_regression["summary"]["expected_failures"] >= 3
+        assert manifest_regression["summary"]["unexpected_failures"] == 0
+        assert all(case["expectation_met"] for case in manifest_regression["cases"])
+
+        report_path = write_regression_report(manifest_regression, f"{tmpdir}/regression-report.json")
+        with open(report_path, "r", encoding="utf-8") as handle:
+            report = json.load(handle)
+        assert report["passed"]
+        assert report["manifest"]["scenario_count"] == 8
+
+        plain_regression = ScenarioRegressionRunner(logger).run()
+        assert not plain_regression["passed"]
+        assert plain_regression["summary"]["failed"] >= 3
 
 
 async def test_facade_allows_only_safe_ops():

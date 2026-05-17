@@ -130,6 +130,15 @@ Run signed evidence records as a backend regression suite:
 curl http://localhost:8000/api/research/scenario-regression
 ```
 
+Use a generated manifest as a release gate when expected off-nominal failures should be distinguished from unexpected regressions:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.scenario_regression --manifest .tmp_scenarios\scenario-manifest.json --report .tmp_scenarios\regression-report.json
+curl "http://localhost:8000/api/research/scenario-regression?include_cases=false"
+```
+
+Manifest-aware regression exits successfully only when each scenario matches its expected pass/fail result, failure reasons, and assurance monitor expectations.
+
 Generate ignored off-nominal scenario records for local regression work:
 
 ```powershell

@@ -118,7 +118,7 @@ def _bad_altitude(logger: EvidenceLogger) -> Dict:
         altitude_m=130.0,
         expected_pass=False,
         expected_failure_reasons=["replayed_safety_failed"],
-        expected_assurance_critical_count=2,
+        expected_assurance_critical_count=3,
         expected_assurance_monitors=["safety_replay_status", "altitude_envelope"],
     )
 
@@ -227,7 +227,7 @@ def _record_scenario(
     drone.live_connected = live_connected
     swarm.live_mode = live_mode
 
-    program = compile_mission_program(command, intent, target, [drone], live_mode=live_mode)
+    program = compile_mission_program(command, intent, target, [drone], live_mode=live_mode, signer=logger.signer)
     safety_report = validate_mission_program(program, {drone_id: (drone.lat, drone.lng)})
     assigned = assigned_override or [drone_id]
     response = {

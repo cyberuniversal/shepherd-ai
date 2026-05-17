@@ -40,6 +40,7 @@ The LLM/parser does not fly the drone. It only proposes structured intent. Sheph
 - Evidence replay verifies record signatures, mission digests, selected-drone consistency, and current deterministic safety results against the recorded mission.
 - Scenario regression turns signed evidence records into release checks so backend changes can prove they did not silently change mission safety behavior.
 - Off-nominal scenario fixtures can generate ignored local evidence records for nominal, tampered, mismatch, low-battery, live-link, altitude-envelope, operator-relative, and safety-rejected replay coverage.
+- Manifest-aware scenario regression reports expected failures separately from unexpected regressions and can write a JSON release-gate report.
 - Runtime assurance currently emits report-only monitor events and fallback recommendations; it does not automatically trigger HOLD, RTL, or live vehicle commands.
 - Mission-command dataset scaffolding provides English/Arabic seed rows for future parser evaluation before any model training starts.
 - MAVSDK/PX4 bridge path for SITL validation or live autopilots.
