@@ -4,8 +4,10 @@ import re
 
 try:
     from backend.llm_provider import LLMProviderError, OllamaProvider
+    from backend.parser_runtime import PromotedLearnedParserRuntime
 except ImportError:
     from llm_provider import LLMProviderError, OllamaProvider
+    from parser_runtime import PromotedLearnedParserRuntime
 
 # Arabic-Indic numeral mapping
 ARABIC_INDIC_MAP = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
@@ -104,6 +106,7 @@ AMBIGUOUS_TARGETS = {
 class MissionParser:
     def __init__(self, model_name: str | None = None):
         self.provider = OllamaProvider(model_name=model_name)
+        self.learned_runtime = PromotedLearnedParserRuntime()
         self.model_name = self.provider.model_name
         self._ollama_available = None  # Backward-compatible test override.
         self._fallback_active = True
@@ -112,18 +115,27 @@ class MissionParser:
 
     def status(self) -> Dict[str, Any]:
         provider_status = self.provider.status()
+        learned_status = self.learned_runtime.status()
+        if learned_status.get("ready"):
+            mode = "learned_parser"
+        elif not self._fallback_active and provider_status.get("llm_online"):
+            mode = "llm"
+        else:
+            mode = "heuristic_fallback"
         return {
             **provider_status,
             "model": self.model_name,
             "ollama_available": bool(provider_status.get("ollama_running")),
             "llm_online": bool(provider_status.get("llm_online")),
             "fallback_active": self._fallback_active,
-            "mode": "llm" if not self._fallback_active and provider_status.get("llm_online") else "heuristic_fallback",
+            "mode": mode,
             "last_parser": self._last_parser,
-            "last_error": self._last_error or provider_status.get("last_error"),
+            "last_error": self._last_error or learned_status.get("error") or provider_status.get("last_error"),
+            "learned_parser": learned_status,
         }
 
     async def refresh_status(self) -> Dict[str, Any]:
+        self.learned_runtime.refresh()
         await self.provider.refresh_status(force=True)
         return self.status()
 
@@ -319,13 +331,26 @@ class MissionParser:
         Falls back to pure heuristics if Ollama is unavailable.
         """
         parsed = None
-        if self._ollama_available is False:
-            status = {"llm_online": False}
+        if self.learned_runtime.ready():
+            try:
+                parsed = self.learned_runtime.predict(user_input)
+                self._fallback_active = False
+                self._last_parser = parsed.get("parser", "learned_baseline")
+                self._last_error = None
+            except Exception as exc:
+                self._last_error = f"learned parser failed: {exc}"
+                parsed = None
+
+        if parsed is None:
+            if self._ollama_available is False:
+                status = {"llm_online": False}
+            else:
+                status = await self.provider.refresh_status()
+                self._ollama_available = bool(status.get("ollama_running"))
         else:
-            status = await self.provider.refresh_status()
-            self._ollama_available = bool(status.get("ollama_running"))
-        
-        if status.get("llm_online"):
+            status = {"llm_online": False}
+
+        if parsed is None and status.get("llm_online"):
             prompt = f"""
             You are Shepherd-AI's tactical intent parser. Extract bounded mission intent from the command.
             You do not fly drones. You only return structured JSON intent for a deterministic planner.
@@ -382,7 +407,8 @@ class MissionParser:
         
         lower_input = user_input.lower()
         normalized_input = self._normalize_number_words(lower_input)
-        parsed["pattern"] = self._detect_pattern(lower_input)
+        if parsed.get("parser") != "learned_baseline":
+            parsed["pattern"] = self._detect_pattern(lower_input)
 
         operator_reference = re.search(
             r'\b(?:to|at|near|towards)\s+(?:me|my position|my location|my current position|the operator|operator|commander|the commander)\b|(?:إلى|الى)\s+(?:موقعي|مكاني|القائد|موقع القائد)',

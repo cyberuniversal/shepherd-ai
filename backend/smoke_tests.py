@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import tempfile
 
 from backend.controller import SwarmManager
@@ -30,6 +31,7 @@ from backend.learned_parser import (
 from backend.parser_failure_analysis import analyze_report, write_analysis, write_markdown_analysis
 from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
 from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
+from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV
 from backend.transformer_parser import (
     TRANSFORMER_CORPUS_SCHEMA,
     coerce_generated_text,
@@ -118,6 +120,14 @@ class FakeDisconnectedBridge:
 
     async def execute_program(self, program):
         raise AssertionError("preflight should block before bridge execution")
+
+
+def _restore_env(previous):
+    for key, value in previous.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
 
 
 def test_relative_target_resolution():
@@ -581,6 +591,69 @@ def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
         assert report["split_checks"]["adversarial"]["passed"]
 
 
+async def test_promoted_learned_parser_runtime_is_feature_flagged():
+    env_keys = [ENABLE_ENV, RUNTIME_ENV, ARTIFACT_ENV, PROMOTION_REPORT_ENV]
+    previous_env = {key: os.environ.get(key) for key in env_keys}
+    backend_main = None
+    with tempfile.TemporaryDirectory() as tmpdir:
+        artifact_path = os.path.join(tmpdir, "learned_parser_augmented.json")
+        training_report_path = os.path.join(tmpdir, "learned_parser_augmented_report.json")
+        promotion_report_path = os.path.join(tmpdir, "parser_promotion_gate.json")
+        train_baseline_model(
+            augmentation_path=DEFAULT_AUGMENTATION_PATH,
+            artifact_path=artifact_path,
+            report_path=training_report_path,
+        )
+        promotion = run_promotion_gate(artifact_path, report_path=promotion_report_path)
+        assert promotion["promoted"], promotion.get("failures")
+
+        try:
+            os.environ[ENABLE_ENV] = "1"
+            os.environ[ARTIFACT_ENV] = artifact_path
+            os.environ[PROMOTION_REPORT_ENV] = promotion_report_path
+            os.environ.pop(RUNTIME_ENV, None)
+
+            parser = MissionParser()
+            status = await parser.refresh_status()
+            assert status["mode"] == "learned_parser"
+            assert status["learned_parser"]["ready"]
+            assert status["learned_parser"]["promoted"]
+            assert status["learned_parser"]["artifact_digest"] == promotion["artifact_digest"]
+
+            intent = await parser.parse_intent("Secure the National Museum with two drones")
+            assert intent["parser"] == "learned_baseline"
+            assert intent["action"] == "secure"
+            assert intent["target_zone"] == "national museum"
+            assert intent["drone_count"] == 2
+            assert intent["needs_confirmation"]
+
+            from backend import main as backend_main
+
+            api_status = await backend_main.get_parser_status()
+            assert api_status["learned_parser"]["ready"]
+            assert api_status["learned_parser"]["artifact_digest"] == promotion["artifact_digest"]
+
+            with open(promotion_report_path, "r", encoding="utf-8") as handle:
+                tampered_report = json.load(handle)
+            tampered_report["promoted"] = False
+            with open(promotion_report_path, "w", encoding="utf-8") as handle:
+                json.dump(tampered_report, handle, ensure_ascii=False, indent=2, sort_keys=True)
+                handle.write("\n")
+
+            parser = MissionParser()
+            parser._ollama_available = False
+            status = await parser.refresh_status()
+            assert not status["learned_parser"]["ready"]
+            assert "not promoted" in status["learned_parser"]["error"]
+            fallback_intent = await parser.parse_intent("Secure the National Museum with two drones")
+            assert fallback_intent["parser"] == "heuristic"
+            assert fallback_intent["action"] == "secure"
+        finally:
+            _restore_env(previous_env)
+            if backend_main is not None:
+                await backend_main.parser.refresh_status()
+
+
 def test_transformer_parser_scaffold_prepares_frozen_corpus():
     with tempfile.TemporaryDirectory() as tmpdir:
         base_result = write_training_corpus(f"{tmpdir}/base")
@@ -877,6 +950,7 @@ def main():
     test_parser_failure_analysis_reports_grouped_failures()
     test_parser_comparison_reports_augmented_delta()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
+    asyncio.run(test_promoted_learned_parser_runtime_is_feature_flagged())
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
     asyncio.run(test_facade_allows_only_safe_ops())

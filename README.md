@@ -180,6 +180,17 @@ Train and evaluate the first learned-parser research baseline:
 .\.venv\Scripts\python.exe -m backend.parser_comparison --baseline-artifact .tmp_models\learned_parser_baseline.json --candidate-artifact .tmp_models\learned_parser_augmented.json --output .tmp_models\parser_comparison.json --markdown .tmp_models\parser_comparison.md --summary-only
 ```
 
+Optionally run the backend with a promotion-validated learned parser artifact. This stays behind an explicit feature flag and falls back to the existing parser path if promotion or contract validation fails:
+
+```powershell
+$env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
+$env:SHEPHERD_LEARNED_PARSER_ARTIFACT=".tmp_models\learned_parser_augmented.json"
+$env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\parser_promotion_augmented_gate.json"
+curl http://localhost:8000/api/parser/status
+```
+
+The promoted learned parser still returns bounded intent JSON only; all planning, confirmation, safety, SHEPHERD-IR, assurance, and MAVSDK/MAVLink dispatch remain deterministic backend code.
+
 Prepare the optional PyTorch/transformer parser corpus and check training dependencies:
 
 ```powershell
@@ -246,7 +257,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, and offline parser evaluation reports.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, optional promotion-validated runtime loading, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

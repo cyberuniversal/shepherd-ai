@@ -519,7 +519,7 @@ async def _build_mission_from_intents(
         "parser_summary": {
             **parser.status(),
             "modes": list(dict.fromkeys(intent.get("parser", "unknown") for intent in intents)),
-            "fallback_used": any(intent.get("parser") != "llm" for intent in intents),
+            "fallback_used": any(intent.get("parser") == "heuristic" for intent in intents),
         },
         "thinking": _dedupe_thinking(all_thinking),
     }

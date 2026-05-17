@@ -53,6 +53,25 @@ After training a transformer model, evaluate that model directory with the same 
 
 Transformer promotion requires the trained model directory to contain `shepherd_model_contract.json`, optional training dependencies to be installed, all predictions to pass through the bounded-intent adapter, and split provenance proving the adversarial holdout was not used for training.
 
+## Optional Runtime Use
+
+The backend can optionally use a promoted learned parser artifact at runtime. This is disabled by default. Runtime loading requires both the artifact and a promotion report that says `promoted=true`, matches the artifact digest, and passes the bounded-intent contract checks.
+
+```powershell
+$env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
+$env:SHEPHERD_LEARNED_PARSER_ARTIFACT=".tmp_models\learned_parser_augmented.json"
+$env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\parser_promotion_augmented_gate.json"
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Equivalent selector:
+
+```powershell
+$env:SHEPHERD_PARSER_RUNTIME="learned"
+```
+
+If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
+
 ## Failure Analysis
 
 Generate a grouped failure analysis after any full evaluation report:
