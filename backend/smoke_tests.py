@@ -5,6 +5,7 @@ import tempfile
 from backend.controller import SwarmManager
 from backend.action_script import synthesize_action_script
 from backend.assurance import evaluate_runtime_assurance
+from backend.assurance_report import generate_assurance_report, write_assurance_report
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
@@ -299,6 +300,20 @@ def test_scenario_fixture_generator_creates_manifest_and_records():
             report = json.load(handle)
         assert report["passed"]
         assert report["manifest"]["scenario_count"] == 8
+
+        assurance_report = generate_assurance_report(evidence_logger=logger)
+        assert assurance_report["report_only"]
+        assert not assurance_report["validation_scope"]["automatic_fallback_enabled"]
+        assert not assurance_report["validation_scope"]["dispatch_side_effects"]
+        assert assurance_report["summary"]["total_records"] == 8
+        assert assurance_report["summary"]["assurance_event_count"] >= 7
+        assert assurance_report["summary"]["monitor_counts"]["battery_reserve"] >= 1
+        assert assurance_report["summary"]["monitor_counts"]["link_health"] >= 1
+        assert assurance_report["summary"]["monitor_counts"]["selected_vehicle_consistency"] >= 1
+        assurance_path = write_assurance_report(assurance_report, f"{tmpdir}/assurance-report.json")
+        with open(assurance_path, "r", encoding="utf-8") as handle:
+            persisted_assurance = json.load(handle)
+        assert persisted_assurance["summary"]["total_records"] == 8
 
         plain_regression = ScenarioRegressionRunner(logger).run()
         assert not plain_regression["passed"]

@@ -10,6 +10,7 @@ import uuid
 try:
     from backend.action_script import synthesize_action_script
     from backend.assurance import evaluate_runtime_assurance
+    from backend.assurance_report import generate_assurance_report
     from backend.brain import MissionParser
     from backend.controller import SwarmManager
     from backend.evidence_log import EvidenceLogger
@@ -21,6 +22,7 @@ try:
 except ImportError:
     from action_script import synthesize_action_script
     from assurance import evaluate_runtime_assurance
+    from assurance_report import generate_assurance_report
     from brain import MissionParser
     from controller import SwarmManager
     from evidence_log import EvidenceLogger
@@ -838,6 +840,15 @@ async def run_research_scenario_regression(limit: int = 100, include_cases: bool
     if manifest:
         return run_scenario_regression(limit=safe_limit, manifest_path=manifest, include_cases=include_cases)
     return ScenarioRegressionRunner(evidence_logger).run(limit=safe_limit, include_cases=include_cases)
+
+
+@app.get("/api/research/assurance-report")
+async def run_research_assurance_report(limit: int = 100, include_records: bool = True):
+    return generate_assurance_report(
+        limit=max(1, min(int(limit), 1000)),
+        include_records=include_records,
+        evidence_logger=evidence_logger,
+    )
 
 # ─── WebSocket for real-time fleet state ──────────────────────────────────────
 

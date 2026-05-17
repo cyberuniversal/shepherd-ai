@@ -139,6 +139,15 @@ curl "http://localhost:8000/api/research/scenario-regression?include_cases=false
 
 Manifest-aware regression exits successfully only when each scenario matches its expected pass/fail result, failure reasons, and assurance monitor expectations.
 
+Generate a report-only runtime assurance summary from signed evidence:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.assurance_report --report .tmp_scenarios\assurance-report.json
+curl "http://localhost:8000/api/research/assurance-report?include_records=false"
+```
+
+The assurance report reads existing evidence records and summarizes monitor findings, replay status, signatures, selected vehicles, and fallback recommendations. It does not call MAVSDK or trigger automatic vehicle behavior.
+
 Generate ignored off-nominal scenario records for local regression work:
 
 ```powershell
@@ -208,6 +217,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Scenario regression runner that replays signed evidence records across backend changes and fails on integrity, consistency, or safety regressions.
 - Ignored off-nominal scenario fixture generator for local evidence replay coverage.
 - Report-only runtime assurance events for battery reserve, altitude envelope, safety replay status, localization confidence, link health, and selected-vehicle consistency.
+- Assurance report generator that summarizes signed evidence without dispatch side effects.
 - Bilingual mission-command dataset scaffold for future intent-parser training and evaluation.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
