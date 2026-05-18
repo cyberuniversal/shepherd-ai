@@ -13,14 +13,20 @@ try:
         coerce_bounded_intent,
         load_frozen_splits,
     )
-    from backend.mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH
+    from backend.mission_dataset import (
+        DEFAULT_ADVERSARIAL_PATH,
+        DEFAULT_AUGMENTATION_PATH,
+        DEFAULT_BENCHMARK_PATH,
+        EVALUATED_INTENT_FIELDS,
+    )
 except ImportError:
     from learned_parser import BOUNDED_OUTPUT_FIELDS, coerce_bounded_intent, load_frozen_splits
-    from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH
+    from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH, EVALUATED_INTENT_FIELDS
 
 
 TRANSFORMER_CORPUS_SCHEMA = "shepherd-transformer-parser-corpus/1.0"
 TRANSFORMER_MODEL_CONTRACT_SCHEMA = "shepherd-transformer-parser-contract/1.0"
+TRANSFORMER_DIAGNOSTIC_SCHEMA = "shepherd-transformer-generation-diagnostics/1.0"
 DEFAULT_TRANSFORMER_CORPUS_DIR = Path(".tmp_models/transformer_parser/corpus")
 DEFAULT_TRANSFORMER_MODEL_DIR = Path(".tmp_models/transformer_parser/model")
 DEFAULT_BASE_MODEL = "google/mt5-small"
@@ -352,8 +358,9 @@ class TransformerIntentAdapter:
         self.contract = self._load_contract()
         self.tokenizer = AutoTokenizer.from_pretrained(str(self.model_dir))
         self.model = AutoModelForSeq2SeqLM.from_pretrained(str(self.model_dir))
+        self.model.eval()
 
-    def predict(self, command: str) -> Dict:
+    def generate_raw(self, command: str, *, max_new_tokens: int = DEFAULT_MAX_TARGET_LENGTH) -> str:
         import torch
 
         inputs = self.tokenizer(
@@ -362,9 +369,14 @@ class TransformerIntentAdapter:
             truncation=True,
             max_length=DEFAULT_MAX_SOURCE_LENGTH,
         )
+        model_device = next(self.model.parameters()).device
+        inputs = {key: value.to(model_device) for key, value in inputs.items()}
         with torch.no_grad():
-            generated = self.model.generate(**inputs, max_new_tokens=DEFAULT_MAX_TARGET_LENGTH)
-        decoded = self.tokenizer.decode(generated[0], skip_special_tokens=True)
+            generated = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
+        return self.tokenizer.decode(generated[0], skip_special_tokens=True)
+
+    def predict(self, command: str) -> Dict:
+        decoded = self.generate_raw(command)
         return coerce_generated_text(
             decoded,
             model_id=self.contract.get("model_id"),
@@ -376,6 +388,125 @@ class TransformerIntentAdapter:
         if not contract_path.exists():
             raise FileNotFoundError(f"Transformer model contract missing: {contract_path}")
         return json.loads(contract_path.read_text(encoding="utf-8"))
+
+
+def diagnose_transformer_model(
+    model_dir: str | Path = DEFAULT_TRANSFORMER_MODEL_DIR,
+    *,
+    corpus_dir: str | Path = DEFAULT_TRANSFORMER_CORPUS_DIR,
+    split: str = "eval",
+    limit: int | None = 20,
+    output_path: str | Path | None = None,
+    max_new_tokens: int = DEFAULT_MAX_TARGET_LENGTH,
+) -> Dict:
+    corpus_path = Path(corpus_dir)
+    records_path = corpus_path / f"{split}.jsonl"
+    if not records_path.exists():
+        raise FileNotFoundError(f"Diagnostic split not found: {records_path}")
+    rows = load_corpus_records(records_path)
+    if limit is not None and limit > 0:
+        rows = rows[:limit]
+
+    adapter = TransformerIntentAdapter(model_dir)
+    records = []
+    for row in rows:
+        command = row.get("raw_command") or _strip_task_prefix(row.get("input", ""))
+        raw_generated = adapter.generate_raw(command, max_new_tokens=max_new_tokens)
+        records.append(
+            build_generation_diagnostic_record(
+                row,
+                raw_generated,
+                model_id=adapter.contract.get("model_id"),
+                model_digest=adapter.contract.get("model_digest"),
+            )
+        )
+
+    report = {
+        "schema": TRANSFORMER_DIAGNOSTIC_SCHEMA,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "model_dir": str(Path(model_dir)),
+        "corpus_dir": str(corpus_path),
+        "split": split,
+        "limit": limit,
+        "max_new_tokens": max_new_tokens,
+        "model_id": adapter.contract.get("model_id"),
+        "model_digest": adapter.contract.get("model_digest"),
+        "summary": summarize_generation_diagnostics(records),
+        "records": records,
+    }
+    if output_path:
+        _write_json(report, output_path)
+        report["report_path"] = str(Path(output_path))
+    return report
+
+
+def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_id: str | None, model_digest: str | None) -> Dict:
+    target = json.loads(row.get("target_json") or "{}")
+    expected = target.get("intent", {})
+    bounded = coerce_generated_text(raw_generated, model_id=model_id, model_digest=model_digest)
+    raw_json_valid, raw_intent_object = _raw_generation_shape(raw_generated)
+    field_results = {}
+    for field in EVALUATED_INTENT_FIELDS:
+        if field not in expected:
+            continue
+        expected_value = expected.get(field)
+        predicted_value = bounded.get(field)
+        field_results[field] = {
+            "expected": expected_value,
+            "predicted": predicted_value,
+            "matched": _normalize_diagnostic_value(expected_value) == _normalize_diagnostic_value(predicted_value),
+        }
+    subset_match = all(result["matched"] for result in field_results.values())
+    bounded_output = set(bounded).issubset(BOUNDED_OUTPUT_FIELDS) and bounded.get("needs_confirmation") is True
+    return {
+        "id": row.get("id"),
+        "language": row.get("language"),
+        "split": row.get("split"),
+        "command": row.get("raw_command") or _strip_task_prefix(row.get("input", "")),
+        "raw_generated": raw_generated,
+        "raw_json_valid": raw_json_valid,
+        "raw_intent_object": raw_intent_object,
+        "expected_intent": expected,
+        "bounded_output": bounded,
+        "bounded_output_valid": bounded_output,
+        "subset_match": subset_match,
+        "field_results": field_results,
+    }
+
+
+def summarize_generation_diagnostics(records: Iterable[Dict]) -> Dict:
+    rows = list(records)
+    field_totals = {field: 0 for field in EVALUATED_INTENT_FIELDS}
+    field_matches = {field: 0 for field in EVALUATED_INTENT_FIELDS}
+    raw_generation_counts = {}
+    for record in rows:
+        raw_text = record.get("raw_generated", "")
+        raw_generation_counts[raw_text] = raw_generation_counts.get(raw_text, 0) + 1
+        for field, result in record.get("field_results", {}).items():
+            field_totals[field] += 1
+            if result.get("matched"):
+                field_matches[field] += 1
+    field_metrics = {
+        field: {
+            "matched": field_matches[field],
+            "total": field_totals[field],
+            "accuracy": round(field_matches[field] / field_totals[field], 3) if field_totals[field] else None,
+        }
+        for field in EVALUATED_INTENT_FIELDS
+    }
+    top_raw_generations = [
+        {"raw_generated": raw_text, "count": count}
+        for raw_text, count in sorted(raw_generation_counts.items(), key=lambda item: (-item[1], item[0]))[:10]
+    ]
+    return {
+        "total": len(rows),
+        "raw_json_valid_count": sum(1 for record in rows if record.get("raw_json_valid")),
+        "raw_intent_object_count": sum(1 for record in rows if record.get("raw_intent_object")),
+        "bounded_output_valid_count": sum(1 for record in rows if record.get("bounded_output_valid")),
+        "subset_matches": sum(1 for record in rows if record.get("subset_match")),
+        "field_metrics": field_metrics,
+        "top_raw_generations": top_raw_generations,
+    }
 
 
 def coerce_generated_text(generated_text: str, *, model_id: str | None, model_digest: str | None) -> Dict:
@@ -425,6 +556,28 @@ def _language_counts(records: Iterable[Dict]) -> Dict[str, int]:
 
 def _format_model_input(command: str) -> str:
     return f"{TASK_PREFIX}{command}"
+
+
+def _strip_task_prefix(text: str) -> str:
+    return text[len(TASK_PREFIX):] if text.startswith(TASK_PREFIX) else text
+
+
+def _raw_generation_shape(raw_generated: str) -> tuple[bool, bool]:
+    try:
+        parsed = json.loads(raw_generated)
+    except json.JSONDecodeError:
+        return False, False
+    if not isinstance(parsed, dict):
+        return True, False
+    if "intent" in parsed:
+        return True, isinstance(parsed["intent"], dict)
+    return True, True
+
+
+def _normalize_diagnostic_value(value):
+    if isinstance(value, str):
+        return value.strip().lower()
+    return value
 
 
 def _write_jsonl(records: Iterable[Dict], path: str | Path) -> str:
@@ -504,6 +657,15 @@ def main() -> int:
     predict_parser = subparsers.add_parser("predict", help="Predict bounded intent from a trained transformer model.")
     predict_parser.add_argument("command_text", help="Operator command to parse.")
     predict_parser.add_argument("--model-dir", default=str(DEFAULT_TRANSFORMER_MODEL_DIR), help="Trained model directory.")
+    predict_parser.add_argument("--show-raw", action="store_true", help="Include raw generated model text for diagnostics.")
+
+    diagnose_parser = subparsers.add_parser("diagnose", help="Capture raw transformer generations and field mismatches.")
+    diagnose_parser.add_argument("--model-dir", default=str(DEFAULT_TRANSFORMER_MODEL_DIR), help="Trained model directory.")
+    diagnose_parser.add_argument("--corpus-dir", default=str(DEFAULT_TRANSFORMER_CORPUS_DIR), help="Prepared corpus directory.")
+    diagnose_parser.add_argument("--split", default="eval", choices=["train", "augmentation", "eval", "holdout", "adversarial"], help="Corpus split to diagnose.")
+    diagnose_parser.add_argument("--limit", type=int, default=20, help="Maximum rows to diagnose. Use 0 for all rows.")
+    diagnose_parser.add_argument("--output", default=None, help="Optional JSON report output path.")
+    diagnose_parser.add_argument("--max-new-tokens", type=int, default=DEFAULT_MAX_TARGET_LENGTH, help="Generation token limit.")
 
     args = parser.parse_args()
     command = args.command or "prepare"
@@ -545,7 +707,31 @@ def main() -> int:
 
     if command == "predict":
         adapter = TransformerIntentAdapter(args.model_dir)
-        print(json.dumps(adapter.predict(args.command_text), ensure_ascii=False, indent=2, sort_keys=True))
+        if args.show_raw:
+            raw_generated = adapter.generate_raw(args.command_text)
+            prediction = {
+                "raw_generated": raw_generated,
+                "bounded_output": coerce_generated_text(
+                    raw_generated,
+                    model_id=adapter.contract.get("model_id"),
+                    model_digest=adapter.contract.get("model_digest"),
+                ),
+            }
+        else:
+            prediction = adapter.predict(args.command_text)
+        print(json.dumps(prediction, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
+    if command == "diagnose":
+        report = diagnose_transformer_model(
+            args.model_dir,
+            corpus_dir=args.corpus_dir,
+            split=args.split,
+            limit=None if args.limit == 0 else args.limit,
+            output_path=args.output,
+            max_new_tokens=args.max_new_tokens,
+        )
+        print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
 
     parser.print_help()

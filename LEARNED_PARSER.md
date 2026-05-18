@@ -215,6 +215,15 @@ Run bounded prediction from the trained model:
 The transformer adapter parses generated JSON, coerces it through the bounded intent contract, marks `needs_confirmation=true`, and never returns dispatch commands.
 Transformer outputs are labeled with `parser=transformer_seq2seq` after bounded coercion so shadow reports and promotion reports can distinguish them from the nearest-ngram baseline.
 
+Inspect raw generations before making dataset or model changes:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser predict "Send two drones to KAFD" --model-dir .tmp_models\transformer_parser\model --show-raw
+.\.venv\Scripts\python.exe -m backend.transformer_parser diagnose --model-dir .tmp_models\transformer_parser\model --corpus-dir .tmp_models\transformer_parser\corpus --split eval --limit 20 --output .tmp_models\transformer_parser\generation-diagnostics.json
+```
+
+The diagnostic report records raw generated text, raw JSON validity, bounded adapter output, expected intent, field-by-field matches, and common raw generations. It is a research report only; runtime dispatch still depends on promotion-gated bounded intent plus deterministic backend safety.
+
 ## First Transformer Training Probe
 
 The first end-to-end PyTorch/transformer probe was run on CPU with the augmented corpus:
@@ -251,3 +260,15 @@ Two 0.1-epoch GPU probes were run:
 ```
 
 Result: the FP16 probe completed without CUDA OOM but produced `eval_loss=nan`, so it should not be used as the default GTX 1650 Super profile. The FP32 probe completed without CUDA OOM and produced finite `eval_loss=12.95`; the promotion gate again confirmed `100%` bounded outputs but did not promote the candidate. The reliable local profile for this 4 GB GPU is therefore FP32 + Adafactor + gradient checkpointing + batch size `1` + gradient accumulation. The generated probe model directories were removed after reporting because they are ignored, multi-GB, and not promoted.
+
+## GPU 1-Epoch Raw Generation Finding
+
+A one-epoch GTX 1650 Super run with the stable low-VRAM profile completed in roughly two minutes:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --output-dir .tmp_models\transformer_parser_prefixed\model_gpu_fp32_1epoch --base-model "google/mt5-small" --epochs 1 --batch-size 1 --gradient-accumulation-steps 4 --gradient-checkpointing --optim adafactor --max-source-length 128 --max-target-length 192
+.\.venv\Scripts\python.exe -m backend.transformer_parser diagnose --model-dir .tmp_models\transformer_parser_prefixed\model_gpu_fp32_1epoch --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --split eval --limit 12 --output .tmp_models\transformer_parser_prefixed\diagnostics_gpu_fp32_1epoch_eval12.json
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser_prefixed\model_gpu_fp32_1epoch --report .tmp_models\transformer_parser_prefixed\promotion_gate_gpu_fp32_1epoch.json --allow-failure
+```
+
+Result: the run produced finite `eval_loss=12.12`, stayed within local GPU limits, and again passed bounded-output contract checks, but it was not promoted. Raw diagnostics showed the central model-quality failure: generations were mostly mT5 sentinel text such as `<extra_id_0>` rather than JSON. On the first 12 eval rows, raw JSON validity was `0/12`, bounded output validity was `12/12`, action accuracy was `1.0`, drone-count accuracy was `0.5`, pattern accuracy was `0.0`, and target-zone accuracy was `0.0`. The bounded adapter is therefore correctly failing closed; the next research step is to change the training objective/output format or model choice so the model learns to emit JSON before running longer or larger jobs.

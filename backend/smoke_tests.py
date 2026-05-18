@@ -39,9 +39,12 @@ from backend.parser_shadow_review import promote_reviewed_candidates
 from backend.transformer_parser import (
     TASK_PREFIX,
     TRANSFORMER_CORPUS_SCHEMA,
+    TRANSFORMER_DIAGNOSTIC_SCHEMA,
+    build_generation_diagnostic_record,
     coerce_generated_text,
     dependency_status,
     load_corpus_records,
+    summarize_generation_diagnostics,
     write_training_corpus,
 )
 from backend.mission_program import compile_mission_program
@@ -874,6 +877,41 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
     assert bounded["model_id"] == "test-transformer"
     assert bounded["target_zone"] == "kafd"
     assert "dispatch" not in bounded
+
+    diagnostic_row = {
+        "id": "diagnostic-sample-001",
+        "language": "en",
+        "split": "eval",
+        "input": f"{TASK_PREFIX}Send two drones to KAFD",
+        "raw_command": "Send two drones to KAFD",
+        "target_json": json.dumps(
+            {
+                "intent": {
+                    "action": "scout",
+                    "target_zone": "kafd",
+                    "drone_count": 2,
+                    "pattern": "perimeter",
+                },
+                "constraints": {"confirmation_required": True},
+                "should_clarify": False,
+            },
+            sort_keys=True,
+        ),
+    }
+    diagnostic = build_generation_diagnostic_record(
+        diagnostic_row,
+        '{"intent":{"action":"scout","target_zone":"kafd","drone_count":2,"pattern":"perimeter"}}',
+        model_id="test-transformer",
+        model_digest="digest",
+    )
+    assert diagnostic["raw_json_valid"]
+    assert diagnostic["raw_intent_object"]
+    assert diagnostic["bounded_output_valid"]
+    assert diagnostic["subset_match"]
+    summary = summarize_generation_diagnostics([diagnostic])
+    assert TRANSFORMER_DIAGNOSTIC_SCHEMA == "shepherd-transformer-generation-diagnostics/1.0"
+    assert summary["raw_json_valid_count"] == 1
+    assert summary["field_metrics"]["target_zone"]["accuracy"] == 1.0
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():
