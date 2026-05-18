@@ -148,6 +148,14 @@ curl "http://localhost:8000/api/research/assurance-report?include_records=false"
 
 The assurance report reads existing evidence records and summarizes monitor findings, replay status, signatures, selected vehicles, and fallback recommendations. It does not call MAVSDK or trigger automatic vehicle behavior.
 
+Capture signed parser-shadow evidence by running normal plan-first missions with a promoted transformer in shadow mode:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_capture --summary-only
+```
+
+Add `--require-disagreements` when the run should fail unless reviewable active-vs-shadow candidates are produced. The capture command auto-discovers the newest promoted transformer report under `.tmp_models/` when model paths are not provided. It writes ignored evidence and review artifacts under `.tmp_scenarios/`, forces live mode off, resets the digital twin between independent scenarios, keeps the existing parser active, and stores the promoted transformer output only as report-only shadow audits inside signed evidence.
+
 Generate a report-only parser shadow audit summary from signed evidence:
 
 ```powershell

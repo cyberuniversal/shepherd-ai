@@ -89,6 +89,14 @@ $env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
 
 Shadow mode loads the same promotion-validated candidate, keeps the existing parser active, and records field-level active-vs-shadow comparisons in parser status and mission parser summaries.
 
+Capture signed shadow evidence through the normal plan-first mission path:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.parser_shadow_capture --summary-only
+```
+
+Use `--require-disagreements` when the run should fail unless reviewable candidates are produced. The capture CLI auto-discovers the newest promoted transformer report under `.tmp_models/` unless `--model-dir` and `--promotion-report` are supplied. It writes ignored evidence and review artifacts under `.tmp_scenarios/`, forces live mode off, resets the digital twin between independent scenarios, keeps the active parser path unchanged, and records transformer output only as parser-shadow evidence.
+
 Summarize shadow comparisons from signed evidence:
 
 ```powershell

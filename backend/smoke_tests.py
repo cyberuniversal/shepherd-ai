@@ -42,6 +42,7 @@ from backend.parser_runtime import (
     SHADOW_ENV,
     PromotedLearnedParserRuntime,
 )
+from backend.parser_shadow_capture import CAPTURE_SCHEMA, capture_parser_shadow_evidence
 from backend.parser_shadow_candidates import generate_parser_shadow_candidates, write_candidates_jsonl
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.parser_shadow_review import promote_reviewed_candidates
@@ -864,6 +865,103 @@ async def test_parser_shadow_report_summarizes_signed_evidence():
             backend_main.evidence_logger = old_logger
 
 
+async def test_parser_shadow_capture_runs_normal_plan_confirm_flow():
+    from backend import main as backend_main
+
+    class FakeShadowRuntime:
+        def refresh(self):
+            return self.status()
+
+        def ready(self):
+            return False
+
+        def shadow_ready(self):
+            return True
+
+        def status(self):
+            return {
+                "enabled": False,
+                "active": False,
+                "shadow_enabled": True,
+                "ready": True,
+                "artifact_path": "fake-transformer",
+                "promotion_report_path": "fake-promotion",
+                "candidate_type": TRANSFORMER_MODEL_CANDIDATE,
+                "candidate_path": "fake-transformer",
+                "promoted": True,
+                "model_id": "fake-shadow-transformer",
+                "artifact_digest": "fake-digest",
+                "parser": "transformer_seq2seq",
+                "error": None,
+            }
+
+        def predict_shadow(self, command):
+            return coerce_bounded_intent(
+                {
+                    "action": "scout",
+                    "target_zone": "kafd",
+                    "drone_count": 2,
+                    "pattern": "direct",
+                    "priority": "medium",
+                },
+                confidence=0.91,
+                model_id="fake-shadow-transformer",
+                model_digest="fake-digest",
+                parser_name="transformer_seq2seq",
+            )
+
+    def parser_factory():
+        parser = MissionParser()
+        parser._ollama_available = False
+        parser.learned_runtime = FakeShadowRuntime()
+        return parser
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        evidence_dir = os.path.join(tmpdir, "evidence")
+        capture_path = os.path.join(tmpdir, "parser-shadow-capture.json")
+        report_path = os.path.join(tmpdir, "parser-shadow-report.json")
+        candidates_path = os.path.join(tmpdir, "parser-shadow-candidates.jsonl")
+        result = await capture_parser_shadow_evidence(
+            commands=["Secure KAFD with two drones"],
+            evidence_dir=evidence_dir,
+            capture_report_path=capture_path,
+            shadow_report_path=report_path,
+            candidates_path=candidates_path,
+            include_matches=False,
+            backend_main=backend_main,
+            parser_factory=parser_factory,
+        )
+
+        assert result["schema"] == CAPTURE_SCHEMA
+        assert result["validation_scope"]["normal_mission_planning"]
+        assert result["validation_scope"]["mission_confirmation_path"]
+        assert result["validation_scope"]["shadow_mode_report_only"]
+        assert not result["validation_scope"]["mavsdk_dispatch"]
+        assert result["summary"]["missions_confirmed"] == 1
+        assert result["summary"]["evidence_records"] == 1
+        assert result["summary"]["shadow_audits"] == 1
+        assert result["summary"]["candidate_count"] == 1
+        assert result["missions"][0]["confirmed"]
+        assert result["missions"][0]["shadow_mismatch_count"] == 1
+
+        logger = EvidenceLogger(evidence_dir)
+        record = logger.read_record(result["missions"][0]["evidence_id"])
+        assert record["verification"]["digest_valid"]
+        assert record["verification"]["signature_valid"]
+        audits = record["parser_summary"]["parser_shadow_audits"]
+        assert audits[0]["active_parser"] == "heuristic"
+        assert audits[0]["shadow_parser"] == "transformer_seq2seq"
+
+        assert os.path.exists(capture_path)
+        assert os.path.exists(report_path)
+        assert os.path.exists(candidates_path)
+        with open(candidates_path, "r", encoding="utf-8") as handle:
+            rows = [json.loads(line) for line in handle if line.strip()]
+        assert len(rows) == 1
+        assert rows[0]["source"] == "parser_shadow_audit"
+        assert rows[0]["ready_for_training"] is False
+
+
 def test_reviewed_shadow_candidates_promote_to_dataset_rows():
     unreviewed = {
         "candidate_id": "shadow_unreviewed_001",
@@ -1353,6 +1451,7 @@ def main():
     asyncio.run(test_promoted_learned_parser_runtime_is_feature_flagged())
     test_promoted_transformer_parser_runtime_is_feature_flagged()
     asyncio.run(test_parser_shadow_report_summarizes_signed_evidence())
+    asyncio.run(test_parser_shadow_capture_runs_normal_plan_confirm_flow())
     test_reviewed_shadow_candidates_promote_to_dataset_rows()
     test_transformer_parser_scaffold_prepares_frozen_corpus()
     test_scenario_fixture_generator_creates_manifest_and_records()
