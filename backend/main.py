@@ -131,6 +131,7 @@ OPERATOR_STATE = {
 
 MISSION_PLAN_TTL_SECONDS = 10 * 60
 PENDING_MISSION_PLANS = {}
+DISPATCHABLE_MISSION_ACTIONS = {"scout", "recon", "secure", "rendezvous", "patrol"}
 
 # ─── Riyadh bounding box for fallback coords ─────────────────────────────────
 RIYADH_CENTER = (24.7136, 46.6753)
@@ -436,11 +437,12 @@ async def _build_mission_from_intents(
     multi_intent = len(intents) > 1
 
     for intent in intents:
+        action = str(intent.get("action", "scout")).strip().lower()
         combined_drones = set(intent.get("explicit_drones", []))
         if not multi_intent:
             combined_drones.update(selected_drones)
 
-        if intent.get("action") == "return":
+        if action == "return":
             assigned_drones, thinking = working_swarm.recall_drones(
                 drone_ids=list(combined_drones) if combined_drones else None
             )
@@ -465,6 +467,34 @@ async def _build_mission_from_intents(
                 execution_results.append({"executed": False, "mode": "safety_reject", "safety": safety_report})
             else:
                 execution_results.append({"executed": False, "mode": "pending_confirmation"})
+            continue
+
+        if action not in DISPATCHABLE_MISSION_ACTIONS:
+            reason = (
+                f"Intent action '{action}' is not a dispatchable movement mission. "
+                "No drones allocated; deterministic backend requires an explicit handler before dispatch."
+            )
+            working_swarm._think(f"MISSION BLOCKED: {reason}", "warning")
+            all_thinking.extend(working_swarm.get_thinking_log(last_n=1))
+            target_coords.append(None)
+            target_resolution.append({
+                "source": "non_dispatchable_intent",
+                "label": intent.get("target_zone", "unknown"),
+                "action": action,
+                "reason": reason,
+            })
+            safety_reports.append({
+                "passed": False,
+                "safe": False,
+                "issues": [reason],
+                "checks": ["dispatchable intent action"],
+                "engine": "deterministic_intent_gate",
+            })
+            execution_results.append({
+                "executed": False,
+                "mode": "intent_reject" if execute else "pending_confirmation",
+                "reason": reason,
+            })
             continue
 
         resolution_detail, target_coord = await _resolve_intent_target(intent)

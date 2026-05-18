@@ -1335,6 +1335,57 @@ async def test_mission_plan_preview_does_not_move_real_swarm():
     assert cancelled["cancelled"]
 
 
+async def test_non_dispatchable_learned_action_is_blocked_before_allocation():
+    from backend import main as backend_main
+
+    class FakeCancelParser:
+        async def parse_compound_intent(self, command):
+            return [
+                {
+                    "action": "cancel",
+                    "target_zone": "kafd",
+                    "target_reference": None,
+                    "drone_count": 1,
+                    "pattern": "direct",
+                    "priority": "high",
+                    "needs_confirmation": True,
+                    "confidence": 0.9,
+                    "parser": "transformer_seq2seq",
+                    "fragment": command,
+                }
+            ]
+
+        def status(self):
+            return {
+                "mode": "learned_parser",
+                "last_parser": "transformer_seq2seq",
+                "parser_shadow_audits": [],
+            }
+
+    old_parser = backend_main.parser
+    old_swarm = backend_main.swarm
+    try:
+        backend_main.parser = FakeCancelParser()
+        backend_main.swarm = SwarmManager()
+        backend_main.PENDING_MISSION_PLANS.clear()
+        response = await backend_main.create_mission_plan(
+            backend_main.CommandInput(command="Do not send any drones to KAFD", selected_drones=[])
+        )
+        assert response["status"] == "blocked"
+        assert response["assigned"] == []
+        assert response["mission_programs"] == []
+        assert response["execution_results"][0]["executed"] is False
+        assert response["execution_results"][0]["mode"] == "pending_confirmation"
+        assert response["target_resolution"][0]["source"] == "non_dispatchable_intent"
+        assert response["safety_reports"][0]["engine"] == "deterministic_intent_gate"
+        assert "not a dispatchable movement mission" in response["safety_reports"][0]["issues"][0]
+        assert not response["plan_summary"]["confirmable"]
+    finally:
+        backend_main.parser = old_parser
+        backend_main.swarm = old_swarm
+        backend_main.PENDING_MISSION_PLANS.clear()
+
+
 async def test_confirmed_mission_writes_evidence_log():
     from backend import main as backend_main
 
@@ -1459,6 +1510,7 @@ def main():
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())
     asyncio.run(test_mission_plan_preview_does_not_move_real_swarm())
+    asyncio.run(test_non_dispatchable_learned_action_is_blocked_before_allocation())
     asyncio.run(test_confirmed_mission_writes_evidence_log())
     print("backend smoke tests passed")
 

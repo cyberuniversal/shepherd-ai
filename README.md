@@ -28,7 +28,7 @@ flowchart LR
 
 1. The operator types or speaks a mission request.
 2. `backend/brain.py` parses the request into structured intent JSON with confidence and confirmation fields.
-3. `POST /api/mission/plan` resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a non-mutating plan preview.
+3. `POST /api/mission/plan` gates the intent action, resolves targets, allocates drones on a cloned digital twin, checks safety, and returns a non-mutating plan preview. Non-dispatchable learned-parser actions are blocked until deterministic backend handlers explicitly support them.
 4. The operator confirms or cancels the plan.
 5. `backend/controller.py` re-applies fleet, battery, collision, GPS, and mesh checks on the real fleet at confirmation time.
 6. `backend/mission_program.py` compiles the mission into a `SHEPHERD-IR/2.0` mission bundle with source metadata, constraints, allocation, assurance, and provenance.
