@@ -40,6 +40,7 @@ from backend.transformer_parser import (
     TASK_PREFIX,
     TRANSFORMER_CORPUS_SCHEMA,
     TRANSFORMER_DIAGNOSTIC_SCHEMA,
+    TARGET_PROFILE_INTENT,
     build_generation_diagnostic_record,
     coerce_generated_text,
     dependency_status,
@@ -858,6 +859,20 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
         assert "constraints" in target
         assert target["constraints"]["confirmation_required"] is True
 
+        intent_result = write_training_corpus(
+            f"{tmpdir}/intent",
+            augmentation_path=DEFAULT_AUGMENTATION_PATH,
+            target_profile=TARGET_PROFILE_INTENT,
+        )
+        intent_manifest = intent_result["manifest"]
+        assert intent_manifest["contract"]["target_profile"] == TARGET_PROFILE_INTENT
+        intent_rows = load_corpus_records(intent_manifest["files"]["train"])
+        intent_target = json.loads(intent_rows[0]["target_json"])
+        assert "intent" not in intent_target
+        assert intent_target["needs_confirmation"] is True
+        assert "target_zone" in intent_target
+        assert intent_rows[0]["target_profile"] == TARGET_PROFILE_INTENT
+
     deps = dependency_status()
     assert "ready" in deps
     assert "torch" in deps["packages"]
@@ -911,7 +926,40 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
     summary = summarize_generation_diagnostics([diagnostic])
     assert TRANSFORMER_DIAGNOSTIC_SCHEMA == "shepherd-transformer-generation-diagnostics/1.0"
     assert summary["raw_json_valid_count"] == 1
+    assert summary["repaired_json_valid_count"] == 1
     assert summary["field_metrics"]["target_zone"]["accuracy"] == 1.0
+
+    intent_diagnostic_row = dict(diagnostic_row)
+    intent_diagnostic_row["target_profile"] = TARGET_PROFILE_INTENT
+    intent_diagnostic_row["target_json"] = json.dumps(
+        {
+            "action": "scout",
+            "target_zone": "kafd",
+            "target_reference": None,
+            "drone_count": 2,
+            "priority": "medium",
+            "pattern": "perimeter",
+            "needs_confirmation": True,
+        },
+        sort_keys=True,
+    )
+    intent_diagnostic = build_generation_diagnostic_record(
+        intent_diagnostic_row,
+        '{"action":"scout","target_zone":"kafd","drone_count":2,"pattern":"perimeter"}',
+        model_id="test-transformer",
+        model_digest="digest",
+    )
+    assert intent_diagnostic["target_profile"] == TARGET_PROFILE_INTENT
+    assert intent_diagnostic["subset_match"]
+
+    repaired = coerce_generated_text(
+        '"action":"scout","target_zone":"kafd","drone_count":2,"pattern":"perimeter"',
+        model_id="test-transformer",
+        model_digest="digest",
+    )
+    assert repaired["target_zone"] == "kafd"
+    assert repaired["drone_count"] == 2
+    assert repaired["pattern"] == "perimeter"
 
 
 def test_scenario_fixture_generator_creates_manifest_and_records():

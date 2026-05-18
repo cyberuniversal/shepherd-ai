@@ -169,7 +169,10 @@ Prepare frozen corpora for PyTorch/transformer training:
 ```powershell
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --output-dir .tmp_models\transformer_parser\corpus
 .\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_augmented\corpus
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_intent_json\corpus --target-profile intent-json
 ```
+
+The default target profile is `wrapped-json`, which trains the model to emit an object containing `intent`, `constraints`, and `should_clarify`. The `intent-json` profile trains the model to emit the bounded intent object directly, with `needs_confirmation=true`. The direct profile is currently the better local training target because the runtime adapter and promotion gate only need bounded intent JSON; deterministic backend code still owns target resolution, safety, confirmation, SHEPHERD-IR compilation, and dispatch.
 
 Check optional training dependencies:
 
@@ -224,6 +227,8 @@ Inspect raw generations before making dataset or model changes:
 
 The diagnostic report records raw generated text, raw JSON validity, bounded adapter output, expected intent, field-by-field matches, and common raw generations. It is a research report only; runtime dispatch still depends on promotion-gated bounded intent plus deterministic backend safety.
 
+Some small seq2seq models generate a JSON fragment without the outer braces, for example `"action":"scout","target_zone":"kafd"`. The adapter now performs a deterministic fragment repair before bounded coercion: it may wrap a colon-containing fragment in braces or extract a complete object substring, then it still passes the result through the same bounded-intent adapter. This repair is a parser-output normalization step only; it does not create dispatch commands, bypass confirmation, or bypass backend safety.
+
 ## First Transformer Training Probe
 
 The first end-to-end PyTorch/transformer probe was run on CPU with the augmented corpus:
@@ -272,3 +277,41 @@ A one-epoch GTX 1650 Super run with the stable low-VRAM profile completed in rou
 ```
 
 Result: the run produced finite `eval_loss=12.12`, stayed within local GPU limits, and again passed bounded-output contract checks, but it was not promoted. Raw diagnostics showed the central model-quality failure: generations were mostly mT5 sentinel text such as `<extra_id_0>` rather than JSON. On the first 12 eval rows, raw JSON validity was `0/12`, bounded output validity was `12/12`, action accuracy was `1.0`, drone-count accuracy was `0.5`, pattern accuracy was `0.0`, and target-zone accuracy was `0.0`. The bounded adapter is therefore correctly failing closed; the next research step is to change the training objective/output format or model choice so the model learns to emit JSON before running longer or larger jobs.
+
+## Intent-JSON FLAN-T5 GPU Candidate
+
+The next local GPU run switched from mT5 to `google/flan-t5-small` and used the direct `intent-json` target profile:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_intent_json\corpus --target-profile intent-json
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_intent_json\corpus --output-dir .tmp_models\transformer_parser_intent_json\flan_t5_small_gpu_5epoch_lr1e4 --base-model "google/flan-t5-small" --epochs 5 --batch-size 1 --gradient-accumulation-steps 4 --gradient-checkpointing --optim adafactor --learning-rate 1e-4 --max-source-length 128 --max-target-length 160
+.\.venv\Scripts\python.exe -m backend.transformer_parser diagnose --model-dir .tmp_models\transformer_parser_intent_json\flan_t5_small_gpu_5epoch_lr1e4 --corpus-dir .tmp_models\transformer_parser_intent_json\corpus --split eval --limit 0 --output .tmp_models\transformer_parser_intent_json\diagnostics_flan_t5_small_gpu_5epoch_eval_all.json
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser_intent_json\flan_t5_small_gpu_5epoch_lr1e4 --report .tmp_models\transformer_parser_intent_json\promotion_gate_flan_t5_small_gpu_5epoch_lr1e4.json --allow-failure
+```
+
+Result: this is the first useful local transformer candidate, but it is not promoted. Training completed on the GTX 1650 Super without CUDA OOM and reached `eval_loss=0.1435`. For `Send two drones to KAFD`, the raw generation was a near-JSON intent fragment:
+
+```json
+"action":"scout","drone_count":2,"needs_confirmation":true,"pattern":"perimeter","priority":"medium","target_reference":null,"target_zone":"kafd"
+```
+
+After deterministic fragment repair and bounded coercion, that becomes a valid bounded intent with `target_zone=kafd`, `drone_count=2`, `pattern=perimeter`, and `needs_confirmation=true`.
+
+Full eval diagnostics over 42 eval rows:
+
+- Raw exact JSON validity: `0/42`
+- Repaired JSON validity: `42/42`
+- Bounded output validity: `42/42`
+- Subset matches: `7/42`
+- Field accuracy: action `0.929`, drone_count `0.714`, pattern `0.667`, priority `0.690`, target_reference `1.0`, target_zone `0.429`
+
+Promotion gate result:
+
+- Contract checks: passed
+- Bounded output rate: `1.0` on eval, holdout, and adversarial splits
+- Promotion: failed, as expected
+- Eval subset accuracy: `0.167`
+- Holdout subset accuracy: `0.0`
+- Adversarial subset accuracy: `0.0`
+
+The main failures are exact JSON framing, Arabic target extraction, target-zone recall, pattern recall, and priority recall. The next training work should add stronger JSON framing constraints, more Arabic target examples, more target aliases, and a direct comparison between FLAN-T5-small, a multilingual small model, and any larger cloud-trained candidate. No learned transformer should be enabled at runtime until it passes `backend.parser_promotion`.

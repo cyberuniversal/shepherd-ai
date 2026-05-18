@@ -33,6 +33,9 @@ DEFAULT_BASE_MODEL = "google/mt5-small"
 DEFAULT_MAX_SOURCE_LENGTH = 160
 DEFAULT_MAX_TARGET_LENGTH = 320
 TASK_PREFIX = "Extract Shepherd-AI bounded intent JSON from command: "
+TARGET_PROFILE_WRAPPED = "wrapped-json"
+TARGET_PROFILE_INTENT = "intent-json"
+TARGET_PROFILES = {TARGET_PROFILE_WRAPPED, TARGET_PROFILE_INTENT}
 
 
 def write_training_corpus(
@@ -41,7 +44,10 @@ def write_training_corpus(
     dataset_path: str | Path = DEFAULT_BENCHMARK_PATH,
     augmentation_path: str | Path | None = None,
     adversarial_path: str | Path | None = DEFAULT_ADVERSARIAL_PATH,
+    target_profile: str = TARGET_PROFILE_WRAPPED,
 ) -> Dict:
+    if target_profile not in TARGET_PROFILES:
+        raise ValueError(f"Unsupported transformer target profile: {target_profile}")
     splits = load_frozen_splits(dataset_path, augmentation_path=augmentation_path, adversarial_path=adversarial_path)
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -49,7 +55,7 @@ def write_training_corpus(
     split_files = {}
     split_summaries = {}
     for split_name, examples in splits.items():
-        records = [_training_record(example, split_name) for example in examples]
+        records = [_training_record(example, split_name, target_profile=target_profile) for example in examples]
         file_path = output_path / f"{split_name}.jsonl"
         _write_jsonl(records, file_path)
         split_files[split_name] = str(file_path)
@@ -70,7 +76,8 @@ def write_training_corpus(
         },
         "contract": {
             "input": "operator_command_text",
-            "target": "bounded_intent_and_constraints_json",
+            "target": _target_contract_name(target_profile),
+            "target_profile": target_profile,
             "output": "bounded_intent_json_only",
             "dispatch_authority": False,
             "confirmation_required": True,
@@ -442,9 +449,10 @@ def diagnose_transformer_model(
 
 def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_id: str | None, model_digest: str | None) -> Dict:
     target = json.loads(row.get("target_json") or "{}")
-    expected = target.get("intent", {})
+    expected = _expected_intent_from_target(target)
     bounded = coerce_generated_text(raw_generated, model_id=model_id, model_digest=model_digest)
     raw_json_valid, raw_intent_object = _raw_generation_shape(raw_generated)
+    repaired_payload = _parse_generated_payload(raw_generated)
     field_results = {}
     for field in EVALUATED_INTENT_FIELDS:
         if field not in expected:
@@ -463,9 +471,11 @@ def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_i
         "language": row.get("language"),
         "split": row.get("split"),
         "command": row.get("raw_command") or _strip_task_prefix(row.get("input", "")),
+        "target_profile": row.get("target_profile"),
         "raw_generated": raw_generated,
         "raw_json_valid": raw_json_valid,
         "raw_intent_object": raw_intent_object,
+        "repaired_json_valid": isinstance(repaired_payload, dict),
         "expected_intent": expected,
         "bounded_output": bounded,
         "bounded_output_valid": bounded_output,
@@ -502,6 +512,7 @@ def summarize_generation_diagnostics(records: Iterable[Dict]) -> Dict:
         "total": len(rows),
         "raw_json_valid_count": sum(1 for record in rows if record.get("raw_json_valid")),
         "raw_intent_object_count": sum(1 for record in rows if record.get("raw_intent_object")),
+        "repaired_json_valid_count": sum(1 for record in rows if record.get("repaired_json_valid")),
         "bounded_output_valid_count": sum(1 for record in rows if record.get("bounded_output_valid")),
         "subset_matches": sum(1 for record in rows if record.get("subset_match")),
         "field_metrics": field_metrics,
@@ -510,10 +521,7 @@ def summarize_generation_diagnostics(records: Iterable[Dict]) -> Dict:
 
 
 def coerce_generated_text(generated_text: str, *, model_id: str | None, model_digest: str | None) -> Dict:
-    try:
-        parsed = json.loads(generated_text)
-    except json.JSONDecodeError:
-        parsed = {}
+    parsed = _parse_generated_payload(generated_text) or {}
     if "intent" in parsed and isinstance(parsed["intent"], dict):
         parsed = parsed["intent"]
     if not isinstance(parsed, dict):
@@ -527,23 +535,50 @@ def coerce_generated_text(generated_text: str, *, model_id: str | None, model_di
     )
 
 
-def _training_record(example: Dict, split_name: str) -> Dict:
-    target = {
-        "intent": example["expected_intent"],
-        "constraints": example["expected_constraints"],
-        "should_clarify": bool(example["should_clarify"]),
+def _expected_intent_from_target(target: Dict) -> Dict:
+    if "intent" in target and isinstance(target["intent"], dict):
+        return target["intent"]
+    return {
+        field: target.get(field)
+        for field in EVALUATED_INTENT_FIELDS
+        if field in target
     }
+
+
+def _training_record(example: Dict, split_name: str, *, target_profile: str = TARGET_PROFILE_WRAPPED) -> Dict:
+    target = _target_payload(example, target_profile)
     return {
         "id": example["id"],
         "language": example["language"],
         "split": split_name,
         "input": _format_model_input(example["command"]),
         "raw_command": example["command"],
+        "target_profile": target_profile,
         "target_json": json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
         "target_digest": sha256(
             json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest(),
     }
+
+
+def _target_payload(example: Dict, target_profile: str) -> Dict:
+    if target_profile == TARGET_PROFILE_INTENT:
+        intent = dict(example["expected_intent"])
+        intent["needs_confirmation"] = True
+        return intent
+    if target_profile == TARGET_PROFILE_WRAPPED:
+        return {
+            "intent": example["expected_intent"],
+            "constraints": example["expected_constraints"],
+            "should_clarify": bool(example["should_clarify"]),
+        }
+    raise ValueError(f"Unsupported transformer target profile: {target_profile}")
+
+
+def _target_contract_name(target_profile: str) -> str:
+    if target_profile == TARGET_PROFILE_INTENT:
+        return "bounded_intent_json"
+    return "bounded_intent_and_constraints_json"
 
 
 def _language_counts(records: Iterable[Dict]) -> Dict[str, int]:
@@ -572,6 +607,28 @@ def _raw_generation_shape(raw_generated: str) -> tuple[bool, bool]:
     if "intent" in parsed:
         return True, isinstance(parsed["intent"], dict)
     return True, True
+
+
+def _parse_generated_payload(generated_text: str):
+    stripped = generated_text.strip()
+    candidates = [stripped]
+    if stripped and not stripped.startswith("{") and ":" in stripped:
+        candidates.append("{" + stripped + "}")
+    if "{" in stripped and "}" in stripped:
+        start = stripped.find("{")
+        end = stripped.rfind("}") + 1
+        candidates.append(stripped[start:end])
+
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            parsed = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
 
 
 def _normalize_diagnostic_value(value):
@@ -616,6 +673,12 @@ def main() -> int:
     prepare_parser.add_argument("--augmentation", default=None, help="Optional train-only augmentation JSONL path.")
     prepare_parser.add_argument("--adversarial", default=str(DEFAULT_ADVERSARIAL_PATH), help="Adversarial holdout JSONL path.")
     prepare_parser.add_argument("--output-dir", default=str(DEFAULT_TRANSFORMER_CORPUS_DIR), help="Corpus output directory.")
+    prepare_parser.add_argument(
+        "--target-profile",
+        default=TARGET_PROFILE_WRAPPED,
+        choices=sorted(TARGET_PROFILES),
+        help="Target JSON profile to write for seq2seq training.",
+    )
 
     status_parser = subparsers.add_parser("status", help="Show optional transformer dependency status.")
     status_parser.set_defaults(_status=True)
@@ -676,6 +739,7 @@ def main() -> int:
             dataset_path=args.dataset,
             augmentation_path=args.augmentation,
             adversarial_path=args.adversarial,
+            target_profile=args.target_profile,
         )
         print(json.dumps(_manifest_summary(result), ensure_ascii=False, indent=2, sort_keys=True))
         return 0
