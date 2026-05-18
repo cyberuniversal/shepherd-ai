@@ -95,9 +95,12 @@ def load_corpus_records(path: str | Path) -> List[Dict]:
 
 def dependency_status() -> Dict:
     packages = {}
+    torch_module = None
     for package_name in ("torch", "transformers", "accelerate", "sentencepiece"):
         try:
             module = __import__(package_name)
+            if package_name == "torch":
+                torch_module = module
             packages[package_name] = {
                 "installed": True,
                 "version": getattr(module, "__version__", "unknown"),
@@ -111,8 +114,58 @@ def dependency_status() -> Dict:
     return {
         "ready": all(packages[name]["installed"] for name in required),
         "packages": packages,
+        "hardware": _torch_hardware_status(torch_module),
         "install_command": ".\\.venv\\Scripts\\python.exe -m pip install -r backend\\requirements-train.txt",
+        "cuda_install_command": (
+            ".\\.venv\\Scripts\\python.exe -m pip install --upgrade --force-reinstall torch "
+            "--index-url https://download.pytorch.org/whl/cu126"
+        ),
     }
+
+
+def _torch_hardware_status(torch_module) -> Dict:
+    status = {
+        "cuda_available": False,
+        "torch_cuda_version": None,
+        "device_count": 0,
+        "devices": [],
+        "low_vram_recommended": False,
+    }
+    if torch_module is None:
+        return status
+    try:
+        status["torch_cuda_version"] = getattr(getattr(torch_module, "version", None), "cuda", None)
+        cuda = getattr(torch_module, "cuda", None)
+        if cuda is None:
+            return status
+        status["cuda_available"] = bool(cuda.is_available())
+        status["device_count"] = int(cuda.device_count())
+        for index in range(status["device_count"]):
+            props = cuda.get_device_properties(index)
+            total_mib = round(props.total_memory / 1024 / 1024, 1)
+            free_mib = None
+            if status["cuda_available"]:
+                try:
+                    free_bytes, _total_bytes = cuda.mem_get_info(index)
+                    free_mib = round(free_bytes / 1024 / 1024, 1)
+                except Exception:
+                    free_mib = None
+            status["devices"].append(
+                {
+                    "index": index,
+                    "name": cuda.get_device_name(index),
+                    "total_memory_mib": total_mib,
+                    "free_memory_mib": free_mib,
+                    "compute_capability": f"{props.major}.{props.minor}",
+                }
+            )
+        status["low_vram_recommended"] = any(
+            device.get("total_memory_mib", 0) and device["total_memory_mib"] <= 6144
+            for device in status["devices"]
+        )
+    except Exception as exc:
+        status["error"] = str(exc)
+    return status
 
 
 def train_transformer_model(
@@ -124,6 +177,12 @@ def train_transformer_model(
     batch_size: int = 2,
     learning_rate: float = 2e-5,
     save_checkpoints: bool = False,
+    gradient_accumulation_steps: int = 1,
+    fp16: bool = False,
+    gradient_checkpointing: bool = False,
+    use_cpu: bool = False,
+    optim: str | None = None,
+    predict_with_generate: bool = False,
     max_source_length: int = DEFAULT_MAX_SOURCE_LENGTH,
     max_target_length: int = DEFAULT_MAX_TARGET_LENGTH,
 ) -> Dict:
@@ -157,6 +216,8 @@ def train_transformer_model(
 
     tokenizer = AutoTokenizer.from_pretrained(base_model)
     model = AutoModelForSeq2SeqLM.from_pretrained(base_model)
+    if gradient_checkpointing and hasattr(model.config, "use_cache"):
+        model.config.use_cache = False
 
     class IntentDataset(Dataset):
         def __init__(self, rows: List[Dict]):
@@ -182,20 +243,33 @@ def train_transformer_model(
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    training_args = Seq2SeqTrainingArguments(
-        output_dir=str(output_path),
-        num_train_epochs=epochs,
-        per_device_train_batch_size=batch_size,
-        per_device_eval_batch_size=batch_size,
-        learning_rate=learning_rate,
-        predict_with_generate=True,
-        eval_strategy="epoch",
-        save_strategy="epoch" if save_checkpoints else "no",
-        logging_strategy="steps",
-        logging_steps=10,
-        save_total_limit=1,
-        report_to=[],
-    )
+    training_kwargs = {
+        "output_dir": str(output_path),
+        "num_train_epochs": epochs,
+        "per_device_train_batch_size": batch_size,
+        "per_device_eval_batch_size": batch_size,
+        "learning_rate": learning_rate,
+        "predict_with_generate": bool(predict_with_generate),
+        "eval_strategy": "epoch",
+        "save_strategy": "epoch" if save_checkpoints else "no",
+        "logging_strategy": "steps",
+        "logging_steps": 10,
+        "save_total_limit": 1,
+        "report_to": [],
+    }
+    argument_params = inspect.signature(Seq2SeqTrainingArguments.__init__).parameters
+    optional_training_kwargs = {
+        "gradient_accumulation_steps": max(1, int(gradient_accumulation_steps)),
+        "fp16": bool(fp16),
+        "use_cpu": bool(use_cpu),
+        "gradient_checkpointing": bool(gradient_checkpointing),
+    }
+    for key, value in optional_training_kwargs.items():
+        if key in argument_params:
+            training_kwargs[key] = value
+    if optim and "optim" in argument_params:
+        training_kwargs["optim"] = optim
+    training_args = Seq2SeqTrainingArguments(**training_kwargs)
     trainer_kwargs = {
         "model": model,
         "args": training_args,
@@ -237,11 +311,20 @@ def train_transformer_model(
             "batch_size": batch_size,
             "learning_rate": learning_rate,
             "save_checkpoints": save_checkpoints,
+            "gradient_accumulation_steps": max(1, int(gradient_accumulation_steps)),
+            "fp16": bool(fp16),
+            "gradient_checkpointing": bool(gradient_checkpointing),
+            "use_cpu": bool(use_cpu),
+            "optim": optim,
+            "predict_with_generate": bool(predict_with_generate),
+            "max_source_length": max_source_length,
+            "max_target_length": max_target_length,
             "train_rows": len(train_rows),
             "eval_rows": len(eval_rows),
             "augmentation_rows": len(manifest.get("splits", {}).get("augmentation", {}).get("source_ids", [])),
             "train_loss": getattr(train_output, "training_loss", None),
         },
+        "hardware": deps.get("hardware", {}),
     }
     model_contract["model_digest"] = _digest_payload(model_contract)
     contract_path = output_path / "shepherd_model_contract.json"
@@ -391,6 +474,27 @@ def main() -> int:
     train_parser.add_argument("--epochs", type=float, default=3.0, help="Training epochs.")
     train_parser.add_argument("--batch-size", type=int, default=2, help="Per-device batch size.")
     train_parser.add_argument("--learning-rate", type=float, default=2e-5, help="Learning rate.")
+    train_parser.add_argument("--max-source-length", type=int, default=DEFAULT_MAX_SOURCE_LENGTH, help="Tokenizer source length.")
+    train_parser.add_argument("--max-target-length", type=int, default=DEFAULT_MAX_TARGET_LENGTH, help="Tokenizer target length.")
+    train_parser.add_argument(
+        "--gradient-accumulation-steps",
+        type=int,
+        default=1,
+        help="Accumulate gradients across steps to simulate a larger batch on low-VRAM GPUs.",
+    )
+    train_parser.add_argument("--fp16", action="store_true", help="Use CUDA half-precision training.")
+    train_parser.add_argument(
+        "--gradient-checkpointing",
+        action="store_true",
+        help="Reduce activation memory at the cost of extra compute.",
+    )
+    train_parser.add_argument("--use-cpu", action="store_true", help="Force CPU training even when CUDA is available.")
+    train_parser.add_argument("--optim", default=None, help="Optional Hugging Face optimizer name, such as adafactor.")
+    train_parser.add_argument(
+        "--predict-with-generate",
+        action="store_true",
+        help="Generate during eval. Disabled by default because promotion runs generation separately.",
+    )
     train_parser.add_argument(
         "--save-checkpoints",
         action="store_true",
@@ -427,6 +531,14 @@ def main() -> int:
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,
             save_checkpoints=args.save_checkpoints,
+            gradient_accumulation_steps=args.gradient_accumulation_steps,
+            fp16=args.fp16,
+            gradient_checkpointing=args.gradient_checkpointing,
+            use_cpu=args.use_cpu,
+            optim=args.optim,
+            predict_with_generate=args.predict_with_generate,
+            max_source_length=args.max_source_length,
+            max_target_length=args.max_target_length,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0

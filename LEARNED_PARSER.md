@@ -183,10 +183,25 @@ Install optional training dependencies only on a machine intended for model work
 .\.venv\Scripts\python.exe -m pip install -r backend\requirements-train.txt
 ```
 
+On Windows, `pip install torch` may install a CPU-only wheel. For NVIDIA GPU training, install the official CUDA wheel after the normal training requirements:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install --upgrade --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
+.\.venv\Scripts\python.exe -m backend.transformer_parser status
+```
+
+The status command reports `hardware.cuda_available`, CUDA runtime version, visible GPU names, total/free VRAM, and whether a low-VRAM profile is recommended.
+
 Train a local seq2seq transformer experiment:
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser\corpus --output-dir .tmp_models\transformer_parser\model --base-model google/mt5-small --epochs 3 --batch-size 2
+```
+
+For a 4 GB GPU such as a GTX 1650 Super, start with a low-VRAM probe:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --output-dir .tmp_models\transformer_parser_prefixed\model_gpu_probe --base-model "google/mt5-small" --epochs 0.1 --batch-size 1 --gradient-accumulation-steps 4 --gradient-checkpointing --optim adafactor --max-source-length 128 --max-target-length 192
 ```
 
 Training examples are prefixed with an explicit extraction instruction before tokenization. The raw operator command is still preserved in the corpus as `raw_command`. The trainer saves only the final local candidate by default because checkpoint copies can consume multiple gigabytes; add `--save-checkpoints` only when checkpoint inspection is required.
@@ -223,3 +238,16 @@ A one-epoch CPU run with the explicit task prefix and train-only targeted augmen
 ```
 
 Result: the candidate is contract-valid and produced `100%` bounded outputs, but it is not promoted. Eval subset accuracy is `0.0`, holdout subset accuracy is `0.0`, and adversarial subset accuracy is `0.1`. Field-level metrics show partial learning on action extraction (`0.905` eval action accuracy), but target, pattern, and drone-count extraction remain too weak for runtime use. Keep this as a training milestone and failure-analysis input, not a deployed parser.
+
+## GTX 1650 Super GPU Probe
+
+CUDA training was verified on a Windows GTX 1650 Super after replacing CPU-only PyTorch with `torch 2.12.0+cu126`. The status command reported CUDA available, CUDA runtime `12.6`, one `NVIDIA GeForce GTX 1650 SUPER`, and `4095.6` MiB VRAM.
+
+Two 0.1-epoch GPU probes were run:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --output-dir .tmp_models\transformer_parser_prefixed\model_gpu_probe --base-model "google/mt5-small" --epochs 0.1 --batch-size 1 --gradient-accumulation-steps 4 --fp16 --gradient-checkpointing --optim adafactor --max-source-length 128 --max-target-length 192
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_prefixed\corpus --output-dir .tmp_models\transformer_parser_prefixed\model_gpu_probe_fp32 --base-model "google/mt5-small" --epochs 0.1 --batch-size 1 --gradient-accumulation-steps 4 --gradient-checkpointing --optim adafactor --max-source-length 128 --max-target-length 192
+```
+
+Result: the FP16 probe completed without CUDA OOM but produced `eval_loss=nan`, so it should not be used as the default GTX 1650 Super profile. The FP32 probe completed without CUDA OOM and produced finite `eval_loss=12.95`; the promotion gate again confirmed `100%` bounded outputs but did not promote the candidate. The reliable local profile for this 4 GB GPU is therefore FP32 + Adafactor + gradient checkpointing + batch size `1` + gradient accumulation. The generated probe model directories were removed after reporting because they are ignored, multi-GB, and not promoted.

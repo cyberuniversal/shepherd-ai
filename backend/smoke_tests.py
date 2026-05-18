@@ -859,6 +859,9 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
     assert "ready" in deps
     assert "torch" in deps["packages"]
     assert "transformers" in deps["packages"]
+    assert "hardware" in deps
+    assert "cuda_available" in deps["hardware"]
+    assert "cuda_install_command" in deps
 
     bounded = coerce_generated_text(
         '{"intent":{"action":"scout","target_zone":"kafd","drone_count":2,"pattern":"perimeter"}}',
