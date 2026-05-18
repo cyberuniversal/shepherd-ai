@@ -55,12 +55,23 @@ Transformer promotion requires the trained model directory to contain `shepherd_
 
 ## Optional Runtime Use
 
-The backend can optionally use a promoted learned parser artifact at runtime. This is disabled by default. Runtime loading requires both the artifact and a promotion report that says `promoted=true`, matches the artifact digest, and passes the bounded-intent contract checks.
+The backend can optionally use a promoted parser candidate at runtime. This is disabled by default. Runtime loading requires a promotion report that says `promoted=true`, matches the candidate digest, matches the candidate path, and passes bounded-intent contract checks.
+
+For a promoted nearest-ngram learned artifact:
 
 ```powershell
 $env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
 $env:SHEPHERD_LEARNED_PARSER_ARTIFACT=".tmp_models\learned_parser_augmented.json"
 $env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\parser_promotion_augmented_gate.json"
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+For a promoted transformer model directory:
+
+```powershell
+$env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
+$env:SHEPHERD_LEARNED_PARSER_MODEL_DIR=".tmp_models\transformer_parser_intent_json_augmented2\flan_t5_small_gpu_5epoch_lr1e4"
+$env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\transformer_parser_intent_json_augmented2\promotion_gate_flan_t5_small_gpu_5epoch_lr1e4_normalized_v2.json"
 .\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -76,7 +87,7 @@ To audit a promoted learned parser without making it the active parser:
 $env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
 ```
 
-Shadow mode loads the same promotion-validated artifact, keeps the existing parser active, and records field-level active-vs-shadow comparisons in parser status and mission parser summaries.
+Shadow mode loads the same promotion-validated candidate, keeps the existing parser active, and records field-level active-vs-shadow comparisons in parser status and mission parser summaries.
 
 Summarize shadow comparisons from signed evidence:
 
@@ -102,7 +113,7 @@ After review, convert approved candidates into dataset-compatible train rows:
 
 Approved statuses are `approved_active`, `approved_shadow`, and `manual_corrected`. Unreviewed candidates are skipped. `manual_corrected` rows must include an explicit `expected_intent` object.
 
-If the artifact, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
+If the artifact or model directory, digest, candidate path, promotion report, or contract is invalid, Shepherd-AI fails closed to the existing Ollama/heuristic parser path. The learned parser still returns only bounded intent JSON. Plan-first confirmation, target resolution, safety checks, SHEPHERD-IR compilation, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.
 
 ## Failure Analysis
 

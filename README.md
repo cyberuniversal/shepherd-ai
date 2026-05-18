@@ -207,12 +207,23 @@ Train and evaluate the first learned-parser research baseline:
 .\.venv\Scripts\python.exe -m backend.parser_comparison --baseline-artifact .tmp_models\learned_parser_baseline.json --candidate-artifact .tmp_models\learned_parser_augmented.json --output .tmp_models\parser_comparison.json --markdown .tmp_models\parser_comparison.md --summary-only
 ```
 
-Optionally run the backend with a promotion-validated learned parser artifact. This stays behind an explicit feature flag and falls back to the existing parser path if promotion or contract validation fails:
+Optionally run the backend with a promotion-validated parser candidate. This stays behind an explicit feature flag and falls back to the existing parser path if promotion or contract validation fails.
+
+Nearest-ngram learned artifact:
 
 ```powershell
 $env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
 $env:SHEPHERD_LEARNED_PARSER_ARTIFACT=".tmp_models\learned_parser_augmented.json"
 $env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\parser_promotion_augmented_gate.json"
+curl http://localhost:8000/api/parser/status
+```
+
+Transformer model directory:
+
+```powershell
+$env:SHEPHERD_ENABLE_LEARNED_PARSER="1"
+$env:SHEPHERD_LEARNED_PARSER_MODEL_DIR=".tmp_models\transformer_parser_intent_json_augmented2\flan_t5_small_gpu_5epoch_lr1e4"
+$env:SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT=".tmp_models\transformer_parser_intent_json_augmented2\promotion_gate_flan_t5_small_gpu_5epoch_lr1e4_normalized_v2.json"
 curl http://localhost:8000/api/parser/status
 ```
 
@@ -222,7 +233,7 @@ Use report-only shadow mode when you want to compare the promoted learned parser
 $env:SHEPHERD_SHADOW_LEARNED_PARSER="1"
 ```
 
-The promoted learned parser still returns bounded intent JSON only; all planning, confirmation, safety, SHEPHERD-IR, assurance, and MAVSDK/MAVLink dispatch remain deterministic backend code.
+The promoted parser still returns bounded intent JSON only; all planning, confirmation, safety, SHEPHERD-IR, assurance, and MAVSDK/MAVLink dispatch remain deterministic backend code.
 
 Prepare the optional PyTorch/transformer parser corpus and check training dependencies:
 

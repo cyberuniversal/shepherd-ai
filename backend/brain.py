@@ -154,7 +154,7 @@ class MissionParser:
         return list(self._last_shadow_audits)
 
     def _build_shadow_audit(self, user_input: str, active_intent: Dict[str, Any]) -> Dict[str, Any] | None:
-        if active_intent.get("parser") == "learned_baseline" or not self.learned_runtime.shadow_ready():
+        if active_intent.get("parser") in {"learned_baseline", "transformer_seq2seq"} or not self.learned_runtime.shadow_ready():
             return None
         try:
             shadow_intent = self.learned_runtime.predict_shadow(user_input)
@@ -459,7 +459,7 @@ class MissionParser:
         
         lower_input = user_input.lower()
         normalized_input = self._normalize_number_words(lower_input)
-        if parsed.get("parser") != "learned_baseline":
+        if parsed.get("parser") not in {"learned_baseline", "transformer_seq2seq"}:
             parsed["pattern"] = self._detect_pattern(lower_input)
 
         operator_reference = re.search(

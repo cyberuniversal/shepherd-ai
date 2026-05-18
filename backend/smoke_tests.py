@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import tempfile
+from hashlib import sha256
 
 from backend.controller import SwarmManager
 from backend.action_script import synthesize_action_script
@@ -31,8 +32,16 @@ from backend.learned_parser import (
 )
 from backend.parser_failure_analysis import analyze_report, write_analysis, write_markdown_analysis
 from backend.parser_comparison import compare_artifacts, compare_reports, write_comparison, write_markdown_comparison
-from backend.parser_promotion import TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
-from backend.parser_runtime import ARTIFACT_ENV, ENABLE_ENV, PROMOTION_REPORT_ENV, RUNTIME_ENV, SHADOW_ENV
+from backend.parser_promotion import PROMOTION_SCHEMA, TRANSFORMER_MODEL_CANDIDATE, run_adapter_promotion_gate, run_promotion_gate
+from backend.parser_runtime import (
+    ARTIFACT_ENV,
+    ENABLE_ENV,
+    MODEL_DIR_ENV,
+    PROMOTION_REPORT_ENV,
+    RUNTIME_ENV,
+    SHADOW_ENV,
+    PromotedLearnedParserRuntime,
+)
 from backend.parser_shadow_candidates import generate_parser_shadow_candidates, write_candidates_jsonl
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.parser_shadow_review import promote_reviewed_candidates
@@ -40,6 +49,7 @@ from backend.transformer_parser import (
     TASK_PREFIX,
     TRANSFORMER_CORPUS_SCHEMA,
     TRANSFORMER_DIAGNOSTIC_SCHEMA,
+    TRANSFORMER_MODEL_CONTRACT_SCHEMA,
     TARGET_PROFILE_INTENT,
     build_generation_diagnostic_record,
     coerce_generated_text,
@@ -601,7 +611,7 @@ def test_parser_promotion_gate_accepts_transformer_adapter_candidate():
 
 
 async def test_promoted_learned_parser_runtime_is_feature_flagged():
-    env_keys = [ENABLE_ENV, RUNTIME_ENV, SHADOW_ENV, ARTIFACT_ENV, PROMOTION_REPORT_ENV]
+    env_keys = [ENABLE_ENV, RUNTIME_ENV, SHADOW_ENV, ARTIFACT_ENV, MODEL_DIR_ENV, PROMOTION_REPORT_ENV]
     previous_env = {key: os.environ.get(key) for key in env_keys}
     backend_main = None
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -679,6 +689,98 @@ async def test_promoted_learned_parser_runtime_is_feature_flagged():
             _restore_env(previous_env)
             if backend_main is not None:
                 await backend_main.parser.refresh_status()
+
+
+def test_promoted_transformer_parser_runtime_is_feature_flagged():
+    class FakeTransformerRuntimeAdapter:
+        model_id = "test-transformer-runtime"
+        model_digest = "unset"
+
+        def __init__(self, model_dir):
+            self.model_dir = model_dir
+
+        def predict(self, command):
+            return coerce_bounded_intent(
+                {
+                    "action": "scout",
+                    "target_zone": "kafd",
+                    "drone_count": 2,
+                    "pattern": "perimeter",
+                    "priority": "medium",
+                },
+                confidence=0.98,
+                model_id=self.model_id,
+                model_digest=self.model_digest,
+                parser_name="transformer_seq2seq",
+            )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        model_dir = os.path.join(tmpdir, "transformer_model")
+        os.makedirs(model_dir, exist_ok=True)
+        contract = {
+            "schema": TRANSFORMER_MODEL_CONTRACT_SCHEMA,
+            "model_id": FakeTransformerRuntimeAdapter.model_id,
+            "model_type": "seq2seq_transformer",
+            "contract": {
+                "output": "bounded_intent_json_only",
+                "dispatch_authority": False,
+                "confirmation_required": True,
+                "deterministic_backend_required": True,
+            },
+            "dataset": {
+                "train_ids": ["train-1"],
+                "eval_ids": ["eval-1"],
+                "holdout_ids": ["holdout-1"],
+                "adversarial_ids": ["adv-1"],
+            },
+            "bounded_output_fields": sorted(BOUNDED_OUTPUT_FIELDS),
+        }
+        digest = sha256(
+            json.dumps(contract, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        contract["model_digest"] = digest
+        FakeTransformerRuntimeAdapter.model_digest = digest
+        contract_path = os.path.join(model_dir, "shepherd_model_contract.json")
+        with open(contract_path, "w", encoding="utf-8") as handle:
+            json.dump(contract, handle, ensure_ascii=False, indent=2, sort_keys=True)
+            handle.write("\n")
+
+        promotion_report_path = os.path.join(tmpdir, "transformer_promotion_gate.json")
+        promotion_report = {
+            "schema": PROMOTION_SCHEMA,
+            "candidate_type": TRANSFORMER_MODEL_CANDIDATE,
+            "candidate_path": model_dir,
+            "model_id": FakeTransformerRuntimeAdapter.model_id,
+            "artifact_digest": digest,
+            "promoted": True,
+            "contract_checks": {"passed": True},
+            "split_checks": {},
+            "failures": [],
+        }
+        with open(promotion_report_path, "w", encoding="utf-8") as handle:
+            json.dump(promotion_report, handle, ensure_ascii=False, indent=2, sort_keys=True)
+            handle.write("\n")
+
+        runtime = PromotedLearnedParserRuntime(
+            {
+                ENABLE_ENV: "1",
+                MODEL_DIR_ENV: model_dir,
+                PROMOTION_REPORT_ENV: promotion_report_path,
+            },
+            transformer_adapter_cls=FakeTransformerRuntimeAdapter,
+        )
+        status = runtime.status()
+        assert status["ready"]
+        assert status["candidate_type"] == TRANSFORMER_MODEL_CANDIDATE
+        assert status["candidate_path"] == model_dir
+        assert status["artifact_digest"] == digest
+        assert status["parser"] == "transformer_seq2seq"
+
+        intent = runtime.predict("Send two drones to KAFD")
+        assert intent["parser"] == "transformer_seq2seq"
+        assert intent["target_zone"] == "kafd"
+        assert intent["drone_count"] == 2
+        assert intent["needs_confirmation"]
 
 
 async def test_parser_shadow_report_summarizes_signed_evidence():
@@ -1249,6 +1351,7 @@ def main():
     test_parser_comparison_reports_augmented_delta()
     test_parser_promotion_gate_accepts_transformer_adapter_candidate()
     asyncio.run(test_promoted_learned_parser_runtime_is_feature_flagged())
+    test_promoted_transformer_parser_runtime_is_feature_flagged()
     asyncio.run(test_parser_shadow_report_summarizes_signed_evidence())
     test_reviewed_shadow_candidates_promote_to_dataset_rows()
     test_transformer_parser_scaffold_prepares_frozen_corpus()

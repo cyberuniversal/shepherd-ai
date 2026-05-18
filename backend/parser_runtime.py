@@ -17,6 +17,12 @@ try:
         DEFAULT_PROMOTION_REPORT_PATH,
         LEARNED_ARTIFACT_CANDIDATE,
         PROMOTION_SCHEMA,
+        TRANSFORMER_MODEL_CANDIDATE,
+    )
+    from backend.transformer_parser import (
+        DEFAULT_TRANSFORMER_MODEL_DIR,
+        TRANSFORMER_MODEL_CONTRACT_SCHEMA,
+        TransformerIntentAdapter,
     )
 except ImportError:
     from learned_parser import (
@@ -30,6 +36,12 @@ except ImportError:
         DEFAULT_PROMOTION_REPORT_PATH,
         LEARNED_ARTIFACT_CANDIDATE,
         PROMOTION_SCHEMA,
+        TRANSFORMER_MODEL_CANDIDATE,
+    )
+    from transformer_parser import (
+        DEFAULT_TRANSFORMER_MODEL_DIR,
+        TRANSFORMER_MODEL_CONTRACT_SCHEMA,
+        TransformerIntentAdapter,
     )
 
 
@@ -37,6 +49,7 @@ ENABLE_ENV = "SHEPHERD_ENABLE_LEARNED_PARSER"
 RUNTIME_ENV = "SHEPHERD_PARSER_RUNTIME"
 SHADOW_ENV = "SHEPHERD_SHADOW_LEARNED_PARSER"
 ARTIFACT_ENV = "SHEPHERD_LEARNED_PARSER_ARTIFACT"
+MODEL_DIR_ENV = "SHEPHERD_LEARNED_PARSER_MODEL_DIR"
 PROMOTION_REPORT_ENV = "SHEPHERD_LEARNED_PARSER_PROMOTION_REPORT"
 TRUE_VALUES = {"1", "true", "yes", "on", "enabled"}
 LEARNED_RUNTIME_VALUES = {"learned", "promoted_learned", "learned_parser"}
@@ -49,6 +62,8 @@ class PromotedParserStatus:
     ready: bool
     artifact_path: str
     promotion_report_path: str
+    candidate_type: str | None = None
+    candidate_path: str | None = None
     promoted: bool = False
     model_id: str | None = None
     artifact_digest: str | None = None
@@ -63,6 +78,8 @@ class PromotedParserStatus:
             "ready": self.ready,
             "artifact_path": self.artifact_path,
             "promotion_report_path": self.promotion_report_path,
+            "candidate_type": self.candidate_type,
+            "candidate_path": self.candidate_path or self.artifact_path,
             "promoted": self.promoted,
             "model_id": self.model_id,
             "artifact_digest": self.artifact_digest,
@@ -72,16 +89,25 @@ class PromotedParserStatus:
 
 
 class PromotedLearnedParserRuntime:
-    """Feature-flagged runtime loader for promotion-validated learned parser artifacts."""
+    """Feature-flagged runtime loader for promotion-validated parser candidates."""
 
-    def __init__(self, env: Dict[str, str] | None = None):
+    def __init__(
+        self,
+        env: Dict[str, str] | None = None,
+        *,
+        learned_adapter_cls=StrictIntentAdapter,
+        transformer_adapter_cls=TransformerIntentAdapter,
+    ):
         self.env = env or os.environ
+        self.learned_adapter_cls = learned_adapter_cls
+        self.transformer_adapter_cls = transformer_adapter_cls
         self.artifact_path = Path(self.env.get(ARTIFACT_ENV, str(DEFAULT_ARTIFACT_PATH)))
+        self.model_dir = Path(self.env.get(MODEL_DIR_ENV, str(DEFAULT_TRANSFORMER_MODEL_DIR)))
         self.promotion_report_path = Path(
             self.env.get(PROMOTION_REPORT_ENV, str(DEFAULT_PROMOTION_REPORT_PATH))
         )
         self.enabled = self._enabled_from_env()
-        self.adapter: StrictIntentAdapter | None = None
+        self.adapter = None
         self._status = PromotedParserStatus(
             enabled=self.enabled,
             shadow_enabled=self._shadow_enabled_from_env(),
@@ -104,6 +130,7 @@ class PromotedLearnedParserRuntime:
         self.enabled = self._enabled_from_env()
         shadow_enabled = self._shadow_enabled_from_env()
         self.artifact_path = Path(self.env.get(ARTIFACT_ENV, str(DEFAULT_ARTIFACT_PATH)))
+        self.model_dir = Path(self.env.get(MODEL_DIR_ENV, str(DEFAULT_TRANSFORMER_MODEL_DIR)))
         self.promotion_report_path = Path(
             self.env.get(PROMOTION_REPORT_ENV, str(DEFAULT_PROMOTION_REPORT_PATH))
         )
@@ -118,26 +145,65 @@ class PromotedLearnedParserRuntime:
             return self.status()
 
         try:
-            artifact = load_artifact(self.artifact_path)
-            self._validate_artifact_contract(artifact)
-            digest = self._validate_artifact_digest(artifact)
             promotion_report = self._load_promotion_report()
-            self._validate_promotion_report(promotion_report, digest)
-            self.adapter = StrictIntentAdapter(artifact)
-            self._status = PromotedParserStatus(
-                enabled=self.enabled,
-                shadow_enabled=shadow_enabled,
-                ready=True,
-                artifact_path=str(self.artifact_path),
-                promotion_report_path=str(self.promotion_report_path),
-                promoted=True,
-                model_id=artifact.get("model_id"),
-                artifact_digest=digest,
-                parser="learned_baseline",
-            )
+            candidate_type = promotion_report.get("candidate_type")
+            if candidate_type == TRANSFORMER_MODEL_CANDIDATE:
+                self._load_transformer_runtime(promotion_report, shadow_enabled=shadow_enabled)
+                return self.status()
+            self._load_learned_artifact_runtime(promotion_report, shadow_enabled=shadow_enabled)
         except Exception as exc:
             self._status.error = str(exc)
         return self.status()
+
+    def _load_learned_artifact_runtime(self, promotion_report: Dict[str, Any], *, shadow_enabled: bool) -> None:
+        artifact = load_artifact(self.artifact_path)
+        self._validate_artifact_contract(artifact)
+        digest = self._validate_artifact_digest(artifact)
+        self._validate_promotion_report(
+            promotion_report,
+            digest,
+            candidate_type=LEARNED_ARTIFACT_CANDIDATE,
+            candidate_path=self.artifact_path,
+        )
+        self.adapter = self.learned_adapter_cls(artifact)
+        self._status = PromotedParserStatus(
+            enabled=self.enabled,
+            shadow_enabled=shadow_enabled,
+            ready=True,
+            artifact_path=str(self.artifact_path),
+            promotion_report_path=str(self.promotion_report_path),
+            candidate_type=LEARNED_ARTIFACT_CANDIDATE,
+            candidate_path=str(self.artifact_path),
+            promoted=True,
+            model_id=artifact.get("model_id"),
+            artifact_digest=digest,
+            parser="learned_baseline",
+        )
+
+    def _load_transformer_runtime(self, promotion_report: Dict[str, Any], *, shadow_enabled: bool) -> None:
+        model_dir = self._model_dir_from_report(promotion_report)
+        contract = self._load_transformer_contract(model_dir)
+        digest = self._validate_transformer_contract(contract)
+        self._validate_promotion_report(
+            promotion_report,
+            digest,
+            candidate_type=TRANSFORMER_MODEL_CANDIDATE,
+            candidate_path=model_dir,
+        )
+        self.adapter = self.transformer_adapter_cls(model_dir)
+        self._status = PromotedParserStatus(
+            enabled=self.enabled,
+            shadow_enabled=shadow_enabled,
+            ready=True,
+            artifact_path=str(model_dir),
+            promotion_report_path=str(self.promotion_report_path),
+            candidate_type=TRANSFORMER_MODEL_CANDIDATE,
+            candidate_path=str(model_dir),
+            promoted=True,
+            model_id=contract.get("model_id"),
+            artifact_digest=digest,
+            parser="transformer_seq2seq",
+        )
 
     def ready(self) -> bool:
         return self.enabled and self.adapter is not None and self._status.ready
@@ -172,6 +238,17 @@ class PromotedLearnedParserRuntime:
             raise ValueError("Promotion report must be a JSON object")
         return report
 
+    def _model_dir_from_report(self, report: Dict[str, Any]) -> Path:
+        configured = self.env.get(MODEL_DIR_ENV)
+        if configured:
+            return Path(configured)
+        if report.get("candidate_path"):
+            return Path(report["candidate_path"])
+        legacy_path = self.env.get(ARTIFACT_ENV)
+        if legacy_path:
+            return Path(legacy_path)
+        return DEFAULT_TRANSFORMER_MODEL_DIR
+
     def _validate_artifact_contract(self, artifact: Dict[str, Any]) -> None:
         if artifact.get("schema") != ARTIFACT_SCHEMA:
             raise ValueError(f"Unsupported learned parser artifact schema: {artifact.get('schema')}")
@@ -202,18 +279,61 @@ class PromotedLearnedParserRuntime:
             raise ValueError("Learned parser artifact digest mismatch")
         return expected
 
-    def _validate_promotion_report(self, report: Dict[str, Any], artifact_digest: str) -> None:
+    def _load_transformer_contract(self, model_dir: Path) -> Dict[str, Any]:
+        contract_path = model_dir / "shepherd_model_contract.json"
+        with contract_path.open("r", encoding="utf-8") as handle:
+            contract = json.load(handle)
+        if not isinstance(contract, dict):
+            raise ValueError("Transformer parser contract must be a JSON object")
+        return contract
+
+    def _validate_transformer_contract(self, contract: Dict[str, Any]) -> str:
+        if contract.get("schema") != TRANSFORMER_MODEL_CONTRACT_SCHEMA:
+            raise ValueError(f"Unsupported transformer parser contract schema: {contract.get('schema')}")
+        runtime_contract = contract.get("contract") or {}
+        checks = {
+            "bounded_intent_json_only": runtime_contract.get("output") == "bounded_intent_json_only",
+            "dispatch_authority_false": runtime_contract.get("dispatch_authority") is False,
+            "confirmation_required": runtime_contract.get("confirmation_required") is True,
+            "deterministic_backend_required": runtime_contract.get("deterministic_backend_required") is True,
+        }
+        failed = [name for name, passed in checks.items() if not passed]
+        if failed:
+            raise ValueError(f"Transformer parser contract failed: {', '.join(failed)}")
+        artifact_fields = set(contract.get("bounded_output_fields") or [])
+        if artifact_fields and artifact_fields != BOUNDED_OUTPUT_FIELDS:
+            raise ValueError("Transformer parser bounded output fields do not match runtime contract")
+        expected = contract.get("model_digest")
+        if not expected:
+            raise ValueError("Transformer parser contract is missing model_digest")
+        clone = dict(contract)
+        clone.pop("model_digest", None)
+        actual = sha256(
+            json.dumps(clone, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        if actual != expected:
+            raise ValueError("Transformer parser contract digest mismatch")
+        return expected
+
+    def _validate_promotion_report(
+        self,
+        report: Dict[str, Any],
+        artifact_digest: str,
+        *,
+        candidate_type: str,
+        candidate_path: str | Path,
+    ) -> None:
         if report.get("schema") != PROMOTION_SCHEMA:
             raise ValueError(f"Unsupported parser promotion schema: {report.get('schema')}")
-        if report.get("candidate_type") != LEARNED_ARTIFACT_CANDIDATE:
-            raise ValueError("Promotion report candidate is not a learned parser artifact")
+        if report.get("candidate_type") != candidate_type:
+            raise ValueError(f"Promotion report candidate is not {candidate_type}")
         if report.get("promoted") is not True:
-            raise ValueError("Learned parser promotion report is not promoted")
+            raise ValueError("Parser promotion report is not promoted")
         if report.get("artifact_digest") != artifact_digest:
-            raise ValueError("Promotion report digest does not match learned parser artifact")
-        candidate_path = report.get("candidate_path")
-        if candidate_path and not self._same_path(candidate_path, self.artifact_path):
-            raise ValueError("Promotion report candidate_path does not match learned parser artifact")
+            raise ValueError("Promotion report digest does not match parser candidate")
+        report_candidate_path = report.get("candidate_path")
+        if report_candidate_path and not self._same_path(report_candidate_path, candidate_path):
+            raise ValueError("Promotion report candidate_path does not match parser candidate")
         contract_checks = report.get("contract_checks") or {}
         if contract_checks.get("passed") is not True:
             raise ValueError("Promotion report contract checks did not pass")
