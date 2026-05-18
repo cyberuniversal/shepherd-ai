@@ -315,3 +315,38 @@ Promotion gate result:
 - Adversarial subset accuracy: `0.0`
 
 The main failures are exact JSON framing, Arabic target extraction, target-zone recall, pattern recall, and priority recall. The next training work should add stronger JSON framing constraints, more Arabic target examples, more target aliases, and a direct comparison between FLAN-T5-small, a multilingual small model, and any larger cloud-trained candidate. No learned transformer should be enabled at runtime until it passes `backend.parser_promotion`.
+
+## First Locally Promoted Transformer Candidate
+
+After the failed FLAN-T5-small candidate, `data/mission_commands/targeted_augmentation.jsonl` was expanded to 74 train-only rows focused on the observed failure categories: spiral patterns, high/low priority language, fleet return commands, ambiguous targets, Arabic named targets, Arabic spiral commands, and Arabic secure commands. No eval, benchmark holdout, or adversarial holdout rows were moved into training.
+
+The transformer adapter also now applies the shared deterministic intent-slot normalizer to the original command text after model generation and JSON-fragment repair. This is still bounded parser behavior only: it may normalize known target aliases, explicit counts, action verbs, mission patterns, priority words, home/RTB, operator references, and ambiguous targets, but it cannot emit MAVSDK commands or dispatch authority.
+
+Reproduce the promoted local candidate:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.transformer_parser prepare --augmentation data\mission_commands\targeted_augmentation.jsonl --output-dir .tmp_models\transformer_parser_intent_json_augmented2\corpus --target-profile intent-json
+.\.venv\Scripts\python.exe -m backend.transformer_parser train --corpus-dir .tmp_models\transformer_parser_intent_json_augmented2\corpus --output-dir .tmp_models\transformer_parser_intent_json_augmented2\flan_t5_small_gpu_5epoch_lr1e4 --base-model "google/flan-t5-small" --epochs 5 --batch-size 1 --gradient-accumulation-steps 4 --gradient-checkpointing --optim adafactor --learning-rate 1e-4 --max-source-length 128 --max-target-length 160
+.\.venv\Scripts\python.exe -m backend.transformer_parser diagnose --model-dir .tmp_models\transformer_parser_intent_json_augmented2\flan_t5_small_gpu_5epoch_lr1e4 --corpus-dir .tmp_models\transformer_parser_intent_json_augmented2\corpus --split eval --limit 0 --output .tmp_models\transformer_parser_intent_json_augmented2\diagnostics_flan_t5_small_gpu_5epoch_eval_all_normalized.json
+.\.venv\Scripts\python.exe -m backend.parser_promotion --candidate-type transformer-model --model-dir .tmp_models\transformer_parser_intent_json_augmented2\flan_t5_small_gpu_5epoch_lr1e4 --report .tmp_models\transformer_parser_intent_json_augmented2\promotion_gate_flan_t5_small_gpu_5epoch_lr1e4_normalized_v2.json --allow-failure
+```
+
+Result on the GTX 1650 Super:
+
+- Training completed without CUDA OOM in roughly four minutes.
+- Training rows: `214`, augmentation rows: `74`, eval rows: `42`
+- Final eval loss: `0.1164`
+- Contract checks: passed
+- Bounded output rate: `1.0` on eval, benchmark holdout, and adversarial holdout
+- Promotion: `true`
+- Eval subset accuracy: `0.857`
+- Benchmark holdout subset accuracy: `0.909`
+- Adversarial subset accuracy: `0.417`
+
+Promotion split highlights:
+
+- Eval: action `1.0`, drone_count `1.0`, pattern `0.905`, target_zone `0.952`
+- Holdout: action `1.0`, drone_count `1.0`, pattern `0.909`, target_zone `1.0`
+- Adversarial: action `0.983`, drone_count `0.817`, pattern `0.75`, target_zone `0.767`
+
+The generated model and promotion report remain ignored local research artifacts under `.tmp_models/`. Runtime use is still disabled unless the operator explicitly enables learned-parser runtime flags and points Shepherd-AI at a matching promoted artifact and report. Even then, the learned transformer remains an intent parser only; plan-first confirmation, target resolution, safety checks, SHEPHERD-IR, runtime assurance, and MAVSDK/MAVLink dispatch remain deterministic backend responsibilities.

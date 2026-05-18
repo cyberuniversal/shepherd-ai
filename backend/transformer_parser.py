@@ -10,6 +10,7 @@ from typing import Dict, Iterable, List
 try:
     from backend.learned_parser import (
         BOUNDED_OUTPUT_FIELDS,
+        apply_deterministic_intent_slots,
         coerce_bounded_intent,
         load_frozen_splits,
     )
@@ -20,7 +21,7 @@ try:
         EVALUATED_INTENT_FIELDS,
     )
 except ImportError:
-    from learned_parser import BOUNDED_OUTPUT_FIELDS, coerce_bounded_intent, load_frozen_splits
+    from learned_parser import BOUNDED_OUTPUT_FIELDS, apply_deterministic_intent_slots, coerce_bounded_intent, load_frozen_splits
     from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH, EVALUATED_INTENT_FIELDS
 
 
@@ -388,6 +389,7 @@ class TransformerIntentAdapter:
             decoded,
             model_id=self.contract.get("model_id"),
             model_digest=self.contract.get("model_digest"),
+            source_text=command,
         )
 
     def _load_contract(self) -> Dict:
@@ -450,7 +452,8 @@ def diagnose_transformer_model(
 def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_id: str | None, model_digest: str | None) -> Dict:
     target = json.loads(row.get("target_json") or "{}")
     expected = _expected_intent_from_target(target)
-    bounded = coerce_generated_text(raw_generated, model_id=model_id, model_digest=model_digest)
+    command = row.get("raw_command") or _strip_task_prefix(row.get("input", ""))
+    bounded = coerce_generated_text(raw_generated, model_id=model_id, model_digest=model_digest, source_text=command)
     raw_json_valid, raw_intent_object = _raw_generation_shape(raw_generated)
     repaired_payload = _parse_generated_payload(raw_generated)
     field_results = {}
@@ -470,7 +473,7 @@ def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_i
         "id": row.get("id"),
         "language": row.get("language"),
         "split": row.get("split"),
-        "command": row.get("raw_command") or _strip_task_prefix(row.get("input", "")),
+        "command": command,
         "target_profile": row.get("target_profile"),
         "raw_generated": raw_generated,
         "raw_json_valid": raw_json_valid,
@@ -520,12 +523,20 @@ def summarize_generation_diagnostics(records: Iterable[Dict]) -> Dict:
     }
 
 
-def coerce_generated_text(generated_text: str, *, model_id: str | None, model_digest: str | None) -> Dict:
+def coerce_generated_text(
+    generated_text: str,
+    *,
+    model_id: str | None,
+    model_digest: str | None,
+    source_text: str | None = None,
+) -> Dict:
     parsed = _parse_generated_payload(generated_text) or {}
     if "intent" in parsed and isinstance(parsed["intent"], dict):
         parsed = parsed["intent"]
     if not isinstance(parsed, dict):
         parsed = {}
+    if source_text:
+        parsed = apply_deterministic_intent_slots(source_text, parsed)
     return coerce_bounded_intent(
         parsed,
         confidence=0.72 if parsed else 0.0,

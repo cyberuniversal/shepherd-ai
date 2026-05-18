@@ -173,7 +173,7 @@ OPERATOR_RELATIVE_TERMS = [
     "متر شمال موقعي",
     "متر جنوب موقعي",
 ]
-HOME_TARGET_TERMS = ["return to launch", "back to base", "to base", "base", "home", "القاعدة", "المنزل"]
+HOME_TARGET_TERMS = ["return to launch", "back to base", "to base", "base", "home", "rtb", "القاعدة", "المنزل"]
 CURRENT_POSITION_TERMS = ["current position", "current positions", "مواقعها الحالية", "موقعه الحالي"]
 ROUTE_BETWEEN_TERMS = ["between", "from", "corridor", "الممر بين", "المسار بين", "بين"]
 KNOWN_DRONE_IDS = [
@@ -350,6 +350,11 @@ def coerce_bounded_intent(
     if bounded["target_zone"] == "unknown" and not bounded["clarifying_question"]:
         bounded["clarifying_question"] = "Which target zone should Shepherd-AI resolve for this mission?"
     return {key: bounded[key] for key in sorted(BOUNDED_OUTPUT_FIELDS)}
+
+
+def apply_deterministic_intent_slots(command: str, raw_intent: Dict) -> Dict:
+    """Apply command-text slot guards without creating dispatch authority."""
+    return _apply_deterministic_intent_slots(command, raw_intent)
 
 
 def train_baseline_model(
@@ -783,6 +788,7 @@ def _normalize_command_for_matching(text: str) -> str:
     normalized = text.lower()
     normalized = normalized.replace("?", " ").replace("!", " ")
     normalized = normalized.replace("ـ", "")
+    normalized = re.sub(r"[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]", "", normalized, flags=re.UNICODE)
     normalized = re.sub(r"\s+", " ", normalized, flags=re.UNICODE)
     return normalized.strip()
 

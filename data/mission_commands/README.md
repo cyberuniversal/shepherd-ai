@@ -8,7 +8,7 @@ Files:
 
 - `seed.jsonl`: compact smoke-test gate for known parser behavior.
 - `benchmark.jsonl`: larger English/Arabic train/eval/holdout benchmark for parser evaluation and future model training.
-- `targeted_augmentation.jsonl`: train-only English/Arabic examples added from parser failure-analysis categories. These rows may expand training corpora, but they are not an evaluation gate.
+- `targeted_augmentation.jsonl`: train-only English/Arabic examples added from parser failure-analysis categories. These rows may expand training corpora, but they are not an evaluation gate. The current file has 74 train-only rows focused on target aliases, Arabic target extraction, mission patterns, priority wording, returns, and ambiguous-target handling.
 - `adversarial_holdout.jsonl`: hard English/Arabic holdout commands for evaluation only. Do not tune the heuristic parser directly against this file; use it to measure whether parser changes generalize to ambiguous, contradictory, mixed, and under-specified commands.
 
 Each row includes:

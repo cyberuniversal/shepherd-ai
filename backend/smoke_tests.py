@@ -961,6 +961,49 @@ def test_transformer_parser_scaffold_prepares_frozen_corpus():
     assert repaired["drone_count"] == 2
     assert repaired["pattern"] == "perimeter"
 
+    normalized_slots = coerce_generated_text(
+        '"action":"scout","target_zone":" ","drone_count":1,"pattern":"perimeter","priority":"medium"',
+        model_id="test-transformer",
+        model_digest="digest",
+        source_text="Urgent: perform a spiral scan at Al Nada with five drones.",
+    )
+    assert normalized_slots["target_zone"] == "al nada"
+    assert normalized_slots["drone_count"] == 5
+    assert normalized_slots["pattern"] == "spiral"
+    assert normalized_slots["priority"] == "high"
+
+    arabic_normalized_slots = coerce_generated_text(
+        '"action":"scout","target_zone":" ","drone_count":1,"pattern":"perimeter","priority":"medium"',
+        model_id="test-transformer",
+        model_digest="digest",
+        source_text="عاجل: نفذ مسحا حلزونيا حول وادي حنيفة بخمس طائرات.",
+    )
+    assert arabic_normalized_slots["target_zone"] == "وادي حنيفة"
+    assert arabic_normalized_slots["drone_count"] == 5
+    assert arabic_normalized_slots["pattern"] == "spiral"
+    assert arabic_normalized_slots["priority"] == "high"
+
+    rtb_normalized_slots = coerce_generated_text(
+        '"action":"scout","target_zone":"all","drone_count":1,"pattern":"perimeter","priority":"medium"',
+        model_id="test-transformer",
+        model_digest="digest",
+        source_text="RTB all units.",
+    )
+    assert rtb_normalized_slots["action"] == "return"
+    assert rtb_normalized_slots["target_zone"] == "home"
+    assert rtb_normalized_slots["drone_count"] == 13
+    assert rtb_normalized_slots["pattern"] == "return_to_launch"
+
+    arabic_secure_slots = coerce_generated_text(
+        '"action":"scout","target_zone":" ","drone_count":1,"pattern":"perimeter","priority":"medium"',
+        model_id="test-transformer",
+        model_digest="digest",
+        source_text="أمّن محيط المركز المالي بطائرتين.",
+    )
+    assert arabic_secure_slots["action"] == "secure"
+    assert arabic_secure_slots["target_zone"] == "المركز المالي"
+    assert arabic_secure_slots["drone_count"] == 2
+
 
 def test_scenario_fixture_generator_creates_manifest_and_records():
     with tempfile.TemporaryDirectory() as tmpdir:
