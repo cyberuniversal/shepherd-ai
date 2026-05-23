@@ -5,6 +5,11 @@ import sys
 from pathlib import Path
 from typing import Dict, List
 
+try:
+    from backend.targeting import apply_target_metadata
+except ImportError:
+    from targeting import apply_target_metadata
+
 
 DEFAULT_DATASET_PATH = Path("data/mission_commands/seed.jsonl")
 DEFAULT_BENCHMARK_PATH = Path("data/mission_commands/benchmark.jsonl")
@@ -22,9 +27,19 @@ REQUIRED_FIELDS = {
     "should_clarify",
     "notes",
 }
-REQUIRED_INTENT_FIELDS = {"action", "target_zone", "drone_count", "pattern"}
+REQUIRED_INTENT_FIELDS = {"action", "drone_count", "pattern"}
 REQUIRED_CONSTRAINT_FIELDS = {"confirmation_required", "nav_mode"}
-EVALUATED_INTENT_FIELDS = ["action", "target_zone", "target_reference", "drone_count", "pattern", "priority"]
+EVALUATED_INTENT_FIELDS = [
+    "action",
+    "target.raw_text",
+    "target.type",
+    "target.resolution_required",
+    "target_zone",
+    "target_reference",
+    "drone_count",
+    "pattern",
+    "priority",
+]
 
 
 def load_examples(path: str | Path = DEFAULT_DATASET_PATH) -> List[Dict]:
@@ -71,8 +86,9 @@ def validate_dataset(path: str | Path = DEFAULT_DATASET_PATH) -> Dict:
 def export_training_rows(path: str | Path = DEFAULT_DATASET_PATH) -> List[Dict]:
     rows = []
     for example in load_examples(path):
+        intent = apply_target_metadata(example["expected_intent"])
         target = {
-            "intent": example["expected_intent"],
+            "intent": intent,
             "constraints": example["expected_constraints"],
         }
         rows.append({
@@ -112,14 +128,14 @@ async def evaluate_dataset(path: str | Path = DEFAULT_DATASET_PATH) -> Dict:
     action_confusion = {}
 
     for example in examples:
-        parsed = await parser.parse_intent(example["command"])
-        expected = example["expected_intent"]
+        parsed = apply_target_metadata(await parser.parse_intent(example["command"]))
+        expected = apply_target_metadata(example["expected_intent"])
         field_results = {}
         for field in EVALUATED_INTENT_FIELDS:
-            if field not in expected:
+            expected_value = _intent_field_value(expected, field)
+            if expected_value is None:
                 continue
-            expected_value = expected.get(field)
-            parsed_value = parsed.get(field)
+            parsed_value = _intent_field_value(parsed, field)
             matched = _normalize_value(parsed_value) == _normalize_value(expected_value)
             field_totals[field] += 1
             if matched:
@@ -289,6 +305,8 @@ def _validate_example(
         missing_intent = sorted(REQUIRED_INTENT_FIELDS - set(intent))
         if missing_intent:
             errors.append(f"{label}: expected_intent missing fields: {', '.join(missing_intent)}")
+        if not intent.get("target_zone") and not isinstance(intent.get("target"), dict):
+            errors.append(f"{label}: expected_intent must include target_zone or target object")
         if not isinstance(intent.get("drone_count"), int) or intent.get("drone_count", 0) < 1:
             errors.append(f"{label}: expected_intent.drone_count must be a positive integer")
 
@@ -306,6 +324,17 @@ def _validate_example(
 def _normalize_value(value):
     if isinstance(value, str):
         return " ".join(value.lower().strip().split())
+    return value
+
+
+def _intent_field_value(intent: Dict, field: str):
+    if "." not in field:
+        return intent.get(field)
+    value = intent
+    for part in field.split("."):
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
     return value
 
 

@@ -330,6 +330,9 @@ def test_mission_command_dataset_seed_validates():
     rows = export_training_rows()
     assert rows
     assert all("input" in row and "target_json" in row and "split" in row for row in rows)
+    first_target = json.loads(rows[0]["target_json"])
+    assert first_target["intent"]["target"]["schema"] == "shepherd_target/1.0"
+    assert "target_raw_text" in first_target["intent"]
 
     evaluation = asyncio.run(evaluate_dataset())
     assert evaluation["valid"], evaluation["errors"]
@@ -337,6 +340,8 @@ def test_mission_command_dataset_seed_validates():
     metrics = evaluation["summary"]["field_metrics"]
     assert metrics["action"]["accuracy"] >= 0.95
     assert metrics["drone_count"]["accuracy"] >= 0.9
+    assert metrics["target.raw_text"]["accuracy"] >= 0.9
+    assert metrics["target.type"]["accuracy"] >= 0.9
     assert metrics["target_zone"]["accuracy"] >= 0.9
     assert metrics["pattern"]["accuracy"] >= 0.9
     assert evaluation["summary"]["subset_matches"] >= 30
@@ -420,6 +425,8 @@ def test_learned_parser_baseline_scaffold_keeps_frozen_splits():
         assert prediction["parser"] == "learned_baseline"
         assert prediction["needs_confirmation"] is True
         assert prediction["model_digest"] == loaded["artifact_digest"]
+        assert prediction["target"]["schema"] == "shepherd_target/1.0"
+        assert prediction["target_raw_text"] == prediction["target"]["raw_text"]
         assert "dispatch" not in prediction
 
 
@@ -494,14 +501,23 @@ def test_target_metadata_preserves_legacy_target_zone():
     assert intent["target_raw_text"] == "blue tower district"
     assert intent["target_type"] == "place_name"
     assert intent["target_resolution_required"] is True
+    assert intent["target"]["schema"] == "shepherd_target/1.0"
+    assert intent["target"]["raw_text"] == "blue tower district"
+    assert intent["target"]["legacy_zone"] == "blue tower district"
 
     coords = apply_target_metadata({"target_zone": "coordinates", "target_coords": {"lat": 24.761, "lng": 46.6402}})
     assert coords["target_type"] == "coordinates"
     assert coords["target_resolution_required"] is False
+    assert coords["target"]["coords"] == {"lat": 24.761, "lng": 46.6402}
 
     operator = apply_target_metadata({"target_zone": "operator_current_position", "target_reference": "operator"})
     assert operator["target_type"] == "operator_reference"
     assert operator["target_resolution_required"] is True
+    assert operator["target"]["reference"] == "operator"
+
+    nested = apply_target_metadata({"action": "scout", "target": {"type": "place_name", "raw_text": "Blue Tower"}})
+    assert nested["target_zone"] == "blue tower"
+    assert nested["target"]["raw_text"] == "blue tower"
 
 
 def test_parser_promotion_gate_accepts_normalized_baseline_and_blocks_strict_thresholds():
@@ -1366,6 +1382,7 @@ async def test_parser_keeps_unseen_place_as_target_span():
     assert intent["target_raw_text"] == "blue tower district"
     assert intent["target_type"] == "place_name"
     assert intent["target_resolution_required"]
+    assert intent["target"]["raw_text"] == "blue tower district"
     assert intent["drone_count"] == 1
     assert intent["needs_confirmation"]
 
@@ -1429,6 +1446,8 @@ async def test_mission_plan_overrides_parser_priority_with_deterministic_assessm
         assert slots["target_raw_text"] == "al nada"
         assert slots["target_type"] == "place_name"
         assert slots["target_resolution_required"]
+        assert slots["target"]["schema"] == "shepherd_target/1.0"
+        assert slots["target"]["raw_text"] == "al nada"
         assert assessment["source"] == "deterministic_priority_v1"
         assert assessment["parser_priority"] == "low"
         assert assessment["parser_priority_used"] is False

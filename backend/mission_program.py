@@ -37,6 +37,7 @@ def _intent_contract(intent: Dict, target_coords: Optional[Dict]) -> Dict:
     confidence = _confidence(intent)
     slots = {
         "target_zone": intent.get("target_zone"),
+        "target": intent.get("target"),
         "target_raw_text": intent.get("target_raw_text"),
         "target_type": intent.get("target_type"),
         "target_reference": intent.get("target_reference"),

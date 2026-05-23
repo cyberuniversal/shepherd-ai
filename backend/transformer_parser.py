@@ -20,9 +20,11 @@ try:
         DEFAULT_BENCHMARK_PATH,
         EVALUATED_INTENT_FIELDS,
     )
+    from backend.targeting import apply_target_metadata
 except ImportError:
     from learned_parser import BOUNDED_OUTPUT_FIELDS, apply_deterministic_intent_slots, coerce_bounded_intent, load_frozen_splits
     from mission_dataset import DEFAULT_ADVERSARIAL_PATH, DEFAULT_AUGMENTATION_PATH, DEFAULT_BENCHMARK_PATH, EVALUATED_INTENT_FIELDS
+    from targeting import apply_target_metadata
 
 
 TRANSFORMER_CORPUS_SCHEMA = "shepherd-transformer-parser-corpus/1.0"
@@ -458,10 +460,10 @@ def build_generation_diagnostic_record(row: Dict, raw_generated: str, *, model_i
     repaired_payload = _parse_generated_payload(raw_generated)
     field_results = {}
     for field in EVALUATED_INTENT_FIELDS:
-        if field not in expected:
+        expected_value = _intent_field_value(expected, field)
+        if expected_value is None:
             continue
-        expected_value = expected.get(field)
-        predicted_value = bounded.get(field)
+        predicted_value = _intent_field_value(bounded, field)
         field_results[field] = {
             "expected": expected_value,
             "predicted": predicted_value,
@@ -548,12 +550,12 @@ def coerce_generated_text(
 
 def _expected_intent_from_target(target: Dict) -> Dict:
     if "intent" in target and isinstance(target["intent"], dict):
-        return target["intent"]
-    return {
+        return apply_target_metadata(target["intent"])
+    return apply_target_metadata({
         field: target.get(field)
         for field in EVALUATED_INTENT_FIELDS
         if field in target
-    }
+    })
 
 
 def _training_record(example: Dict, split_name: str, *, target_profile: str = TARGET_PROFILE_WRAPPED) -> Dict:
@@ -574,12 +576,12 @@ def _training_record(example: Dict, split_name: str, *, target_profile: str = TA
 
 def _target_payload(example: Dict, target_profile: str) -> Dict:
     if target_profile == TARGET_PROFILE_INTENT:
-        intent = dict(example["expected_intent"])
+        intent = apply_target_metadata(example["expected_intent"])
         intent["needs_confirmation"] = True
         return intent
     if target_profile == TARGET_PROFILE_WRAPPED:
         return {
-            "intent": example["expected_intent"],
+            "intent": apply_target_metadata(example["expected_intent"]),
             "constraints": example["expected_constraints"],
             "should_clarify": bool(example["should_clarify"]),
         }
@@ -645,6 +647,17 @@ def _parse_generated_payload(generated_text: str):
 def _normalize_diagnostic_value(value):
     if isinstance(value, str):
         return value.strip().lower()
+    return value
+
+
+def _intent_field_value(intent: Dict, field: str):
+    if "." not in field:
+        return intent.get(field)
+    value = intent
+    for part in field.split("."):
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
     return value
 
 

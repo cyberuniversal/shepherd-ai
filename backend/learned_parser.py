@@ -18,6 +18,7 @@ try:
         load_examples,
         validate_dataset,
     )
+    from backend.targeting import apply_target_metadata
 except ImportError:
     from mission_dataset import (
         DEFAULT_AUGMENTATION_PATH,
@@ -27,6 +28,7 @@ except ImportError:
         load_examples,
         validate_dataset,
     )
+    from targeting import apply_target_metadata
 
 
 ARTIFACT_SCHEMA = "shepherd-learned-parser-baseline/1.0"
@@ -63,7 +65,12 @@ ALLOWED_PRIORITIES = {"high", "medium", "low"}
 ALLOWED_TARGET_REFERENCES = {"operator", "operator_relative", None}
 BOUNDED_OUTPUT_FIELDS = {
     "action",
+    "target",
     "target_zone",
+    "target_raw_text",
+    "target_type",
+    "target_resolution_required",
+    "target_metadata_schema",
     "target_reference",
     "drone_count",
     "priority",
@@ -347,6 +354,10 @@ def coerce_bounded_intent(
         "model_id": model_id,
         "model_digest": model_digest,
     }
+    for target_field in ("target", "target_raw_text", "target_type", "target_resolution_required", "target_metadata_schema"):
+        if target_field in raw_intent:
+            bounded[target_field] = raw_intent[target_field]
+    bounded = apply_target_metadata(bounded)
     if bounded["target_zone"] == "unknown" and not bounded["clarifying_question"]:
         bounded["clarifying_question"] = "Which target zone should Shepherd-AI resolve for this mission?"
     return {key: bounded[key] for key in sorted(BOUNDED_OUTPUT_FIELDS)}
@@ -480,13 +491,13 @@ def evaluate_adapter(adapter: StrictIntentAdapter, examples: Iterable[Dict], *, 
 
     for example in rows:
         predicted = adapter.predict(example["command"])
-        expected = example["expected_intent"]
+        expected = apply_target_metadata(example["expected_intent"])
         field_results = {}
         for field in EVALUATED_INTENT_FIELDS:
-            if field not in expected:
+            expected_value = _intent_field_value(expected, field)
+            if expected_value is None:
                 continue
-            expected_value = expected.get(field)
-            predicted_value = predicted.get(field)
+            predicted_value = _intent_field_value(predicted, field)
             matched = _normalize_value(expected_value) == _normalize_value(predicted_value)
             field_totals[field] += 1
             if matched:
@@ -584,6 +595,17 @@ def _cosine_similarity(left: Dict[str, int], right: Dict[str, int]) -> float:
 def _normalize_value(value):
     if isinstance(value, str):
         return " ".join(value.lower().strip().split())
+    return value
+
+
+def _intent_field_value(intent: Dict, field: str):
+    if "." not in field:
+        return intent.get(field)
+    value = intent
+    for part in field.split("."):
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
     return value
 
 

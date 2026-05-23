@@ -15,7 +15,7 @@ Files:
 
 Training data should teach slot extraction and bounded intent structure, not memorization of every possible place. Future public-data work should use general intent/slot datasets such as MASSIVE, SNIPS, CLINC150, or MTOP for language coverage, and separate gazetteer/map sources such as GeoNames or OpenStreetMap-derived local indexes for target resolution. Shepherd-specific rows should focus on command structure, target-span extraction, operator-relative references, counts, patterns, refusal/clarification behavior, and urgency signals.
 
-The target-schema migration is two-phase. Phase 1 keeps legacy `target_zone` so existing parsers, reports, and frontend views remain compatible, while runtime code also carries `target_raw_text`, `target_type`, and `target_resolution_required`. Phase 2 should move training targets and evaluation metrics to a nested `target` object after compatibility and migration tests exist.
+The target-schema migration is staged. Legacy `target_zone` remains so existing parsers, reports, and frontend views stay compatible, while runtime and training exports also carry a nested `target` object plus `target_raw_text`, `target_type`, and `target_resolution_required`. New dataset work should prefer the nested target contract, but should keep `target_zone` populated until the legacy field is formally removed.
 
 Priority is not a learned authority path. Dataset rows may include legacy `priority` values for compatibility with existing reports, but runtime planning computes final priority through `backend.priority` from explicit urgency language and deterministic mission policy. A model may help extract an urgency phrase in future schemas; it should not decide operational priority by memorizing labels.
 

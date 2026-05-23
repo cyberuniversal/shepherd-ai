@@ -4,7 +4,7 @@ This is the first training scaffold for Shepherd-AI intent parsing. It is not co
 
 The current mission-command JSONL files are synthetic scaffolds, not a public operational drone-command corpus. They exist to test the parser contract, split discipline, bounded-output adapter, and promotion gates while the research dataset strategy matures. Do not treat place names in these rows as a target-resolution strategy; the parser should extract target spans and the backend should resolve places through deterministic map/gazetteer logic.
 
-Target-schema migration is two-phase. Phase 1 keeps the legacy `target_zone` field for compatibility and adds runtime metadata fields (`target_raw_text`, `target_type`, `target_resolution_required`) to mission contracts. Phase 2 should move parser training/evaluation toward a nested `target` object once migration tests and compatibility shims are ready.
+Target-schema migration is staged. The legacy `target_zone` field remains for compatibility, while parser output, training exports, transformer targets, learned-parser adapters, and mission contracts also carry a nested `target` object plus `target_raw_text`, `target_type`, and `target_resolution_required`. New parser training work should prefer the nested target contract without removing legacy `target_zone` yet.
 
 ## Current Baseline
 

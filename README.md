@@ -191,7 +191,7 @@ Generate ignored off-nominal scenario records for local regression work:
 
 The generated manifest includes nominal, tampered, safety-rejected, selected-drone mismatch, low-battery, live-link, altitude-envelope, and operator-relative cases. These records are development fixtures and should stay out of git.
 
-Validate or export the early bilingual mission-command dataset for future parser training. These JSONL files are synthetic parser scaffolds for contract tests and early experiments, not a public operational drone-command corpus. Future dataset work should combine public intent/slot datasets for language coverage with deterministic map/gazetteer target resolution; Shepherd-specific rows should teach command structure and slot extraction rather than memorizing every place name. The current runtime uses a Phase 1 target metadata bridge: legacy `target_zone` remains compatible while `target_raw_text`, `target_type`, and `target_resolution_required` are carried into mission contracts for the future nested-target schema.
+Validate or export the early bilingual mission-command dataset for future parser training. These JSONL files are synthetic parser scaffolds for contract tests and early experiments, not a public operational drone-command corpus. Future dataset work should combine public intent/slot datasets for language coverage with deterministic map/gazetteer target resolution; Shepherd-specific rows should teach command structure and slot extraction rather than memorizing every place name. The current runtime keeps legacy `target_zone` compatible while also carrying a nested `target` object, `target_raw_text`, `target_type`, and `target_resolution_required` through parser output, training exports, and mission contracts.
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate
@@ -311,7 +311,7 @@ Open `http://localhost:5173/` in Chrome for browser voice input support.
 - Parser shadow candidate exporter that turns disagreement evidence into review-required augmentation candidates, not automatic training rows.
 - Bilingual mission-command dataset scaffold with seed, 200+ row benchmark, train-only targeted augmentation, and adversarial holdout files, train/eval/holdout splits, offline parser evaluation reports, and explicit synthetic-data provenance.
 - Smoke-tested offline parser baseline for the current English/Arabic seed benchmark.
-- Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, Phase 1 target metadata compatibility, deterministic runtime priority scoring, optional promotion-validated runtime loading, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
+- Learned-parser research scaffold with a nearest-ngram baseline artifact, deterministic intent-slot normalization, nested target compatibility, deterministic runtime priority scoring, optional promotion-validated runtime loading, optional transformer trainer, frozen train/eval/holdout handling, train-only augmentation provenance, adversarial evaluation, strict bounded-intent adapters, parser promotion gate, grouped failure-analysis reports, and baseline-vs-candidate comparison reports.
 - PX4/ArduPilot MAVSDK bridge with connection diagnostics and live telemetry sync.
 - Digital twin validation harness for local development without hardware.
 

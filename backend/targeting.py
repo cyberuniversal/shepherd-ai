@@ -2,17 +2,39 @@ from typing import Dict
 
 
 TARGET_METADATA_SCHEMA = "target_metadata/1.0"
+TARGET_OBJECT_SCHEMA = "shepherd_target/1.0"
 
 
 def apply_target_metadata(intent: Dict) -> Dict:
-    """Add backward-compatible target span metadata beside legacy target_zone."""
+    """Add nested target contract while preserving legacy target_zone fields."""
     updated = dict(intent)
+    _merge_existing_target(updated)
     metadata = infer_target_metadata(updated)
     updated.setdefault("target_raw_text", metadata["target_raw_text"])
     updated.setdefault("target_type", metadata["target_type"])
     updated.setdefault("target_resolution_required", metadata["target_resolution_required"])
+    updated["target_resolution_required"] = _coerce_bool(updated["target_resolution_required"])
     updated.setdefault("target_metadata_schema", TARGET_METADATA_SCHEMA)
+    updated["target"] = build_target_object(updated)
     return updated
+
+
+def build_target_object(intent: Dict) -> Dict:
+    metadata = infer_target_metadata(intent)
+    target_reference = _clean_text(intent.get("target_reference")) or None
+    target_coords = intent.get("target_coords")
+    coords = None
+    if isinstance(target_coords, dict) and {"lat", "lng"}.issubset(target_coords):
+        coords = {"lat": target_coords["lat"], "lng": target_coords["lng"]}
+    return {
+        "schema": TARGET_OBJECT_SCHEMA,
+        "type": intent.get("target_type") or metadata["target_type"],
+        "raw_text": intent.get("target_raw_text") or metadata["target_raw_text"],
+        "legacy_zone": _clean_text(intent.get("target_zone")) or "unknown",
+        "reference": target_reference,
+        "resolution_required": _coerce_bool(intent.get("target_resolution_required", metadata["target_resolution_required"])),
+        "coords": coords,
+    }
 
 
 def infer_target_metadata(intent: Dict) -> Dict:
@@ -70,7 +92,44 @@ def _metadata(*, raw_text: str, target_type: str, resolution_required: bool) -> 
     }
 
 
+def _merge_existing_target(intent: Dict) -> None:
+    target = intent.get("target")
+    if not isinstance(target, dict):
+        return
+    raw_text = target.get("raw_text") or target.get("label") or target.get("name")
+    if raw_text and not intent.get("target_raw_text"):
+        intent["target_raw_text"] = _clean_text(raw_text)
+    target_type = target.get("type")
+    if target_type and not intent.get("target_type"):
+        intent["target_type"] = _clean_text(target_type)
+    if "resolution_required" in target and "target_resolution_required" not in intent:
+        intent["target_resolution_required"] = _coerce_bool(target.get("resolution_required"))
+    reference = target.get("reference")
+    if reference and not intent.get("target_reference"):
+        intent["target_reference"] = _clean_text(reference)
+    coords = target.get("coords")
+    if isinstance(coords, dict) and {"lat", "lng"}.issubset(coords) and not intent.get("target_coords"):
+        intent["target_coords"] = {"lat": coords["lat"], "lng": coords["lng"]}
+    legacy_zone = target.get("legacy_zone")
+    if legacy_zone and not intent.get("target_zone"):
+        intent["target_zone"] = _clean_text(legacy_zone)
+    elif raw_text and not intent.get("target_zone"):
+        intent["target_zone"] = _clean_text(raw_text)
+
+
 def _clean_text(value) -> str:
     if value is None:
         return ""
     return " ".join(str(value).strip().lower().split())
+
+
+def _coerce_bool(value) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = _clean_text(value)
+        if normalized in {"false", "0", "no", "none", "null"}:
+            return False
+        if normalized in {"true", "1", "yes"}:
+            return True
+    return bool(value)

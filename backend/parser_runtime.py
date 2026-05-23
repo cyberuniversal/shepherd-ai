@@ -263,8 +263,8 @@ class PromotedLearnedParserRuntime:
         if failed:
             raise ValueError(f"Learned parser artifact contract failed: {', '.join(failed)}")
         artifact_fields = set(artifact.get("bounded_output_fields") or [])
-        if artifact_fields and artifact_fields != BOUNDED_OUTPUT_FIELDS:
-            raise ValueError("Learned parser artifact bounded output fields do not match runtime contract")
+        if artifact_fields and not artifact_fields.issubset(BOUNDED_OUTPUT_FIELDS):
+            raise ValueError("Learned parser artifact bounded output fields are outside runtime contract")
 
     def _validate_artifact_digest(self, artifact: Dict[str, Any]) -> str:
         expected = artifact.get("artifact_digest")
@@ -301,8 +301,8 @@ class PromotedLearnedParserRuntime:
         if failed:
             raise ValueError(f"Transformer parser contract failed: {', '.join(failed)}")
         artifact_fields = set(contract.get("bounded_output_fields") or [])
-        if artifact_fields and artifact_fields != BOUNDED_OUTPUT_FIELDS:
-            raise ValueError("Transformer parser bounded output fields do not match runtime contract")
+        if artifact_fields and not artifact_fields.issubset(BOUNDED_OUTPUT_FIELDS):
+            raise ValueError("Transformer parser bounded output fields are outside runtime contract")
         expected = contract.get("model_digest")
         if not expected:
             raise ValueError("Transformer parser contract is missing model_digest")
