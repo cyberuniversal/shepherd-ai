@@ -10,3 +10,4 @@ evidence/
 .shepherd/
 .tmp_scenarios/
 .tmp_models/
+.tmp_gazetteer/

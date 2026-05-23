@@ -48,6 +48,17 @@ Example `SHEPHERD-IR` step inside the bundle:
 }
 ```
 
+## Target Resolution
+
+Shepherd-AI does not train the parser to memorize every place name and does not invent coordinates for unknown targets. Place names are resolved by an offline local gazetteer before allocation or dispatch.
+
+- Default seed index: `data/gazetteer/riyadh_seed.jsonl`
+- Optional larger local index: set `SHEPHERD_GAZETTEER_PATH`
+- Unknown or ambiguous targets produce a blocked mission plan with no drone allocation.
+- Explicit coordinates and OP LINK/operator-relative targets still go through deterministic backend gates.
+
+The committed seed gazetteer is a small structural index for tests and early research. Larger operational indexes should come from approved local map sources and remain ignored under paths such as `.tmp_gazetteer/`.
+
 ## Real Drone Link
 
 Any PX4/ArduPilot aircraft exposing MAVLink can be connected through MAVSDK. Typical endpoints:
@@ -191,7 +202,7 @@ Generate ignored off-nominal scenario records for local regression work:
 
 The generated manifest includes nominal, tampered, safety-rejected, selected-drone mismatch, low-battery, live-link, altitude-envelope, and operator-relative cases. These records are development fixtures and should stay out of git.
 
-Validate or export the early bilingual mission-command dataset for future parser training. These JSONL files are synthetic parser scaffolds for contract tests and early experiments, not a public operational drone-command corpus. Future dataset work should combine public intent/slot datasets for language coverage with deterministic map/gazetteer target resolution; Shepherd-specific rows should teach command structure and slot extraction rather than memorizing every place name. The current runtime keeps legacy `target_zone` compatible while also carrying a nested `target` object, `target_raw_text`, `target_type`, and `target_resolution_required` through parser output, training exports, and mission contracts.
+Validate or export the early bilingual mission-command dataset for future parser training. These JSONL files are synthetic parser scaffolds for contract tests and early experiments, not a public operational drone-command corpus. Future dataset work should combine public intent/slot datasets for language coverage with deterministic local map/gazetteer target resolution; Shepherd-specific rows should teach command structure and slot extraction rather than memorizing every place name. The current runtime keeps legacy `target_zone` compatible while also carrying a nested `target` object, `target_raw_text`, `target_type`, and `target_resolution_required` through parser output, training exports, and mission contracts.
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.mission_dataset validate

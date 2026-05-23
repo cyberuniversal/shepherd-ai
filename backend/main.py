@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import asyncio
-import hashlib
 import httpx
 import time
 import uuid
@@ -15,6 +14,7 @@ try:
     from backend.controller import SwarmManager
     from backend.evidence_log import EvidenceLogger
     from backend.evidence_replay import EvidenceReplayHarness
+    from backend.gazetteer import get_known_location_map, resolve_place_name
     from backend.mission_program import compile_mission_program
     from backend.parser_shadow_candidates import generate_parser_shadow_candidates
     from backend.parser_shadow_report import generate_parser_shadow_report
@@ -31,6 +31,7 @@ except ImportError:
     from controller import SwarmManager
     from evidence_log import EvidenceLogger
     from evidence_replay import EvidenceReplayHarness
+    from gazetteer import get_known_location_map, resolve_place_name
     from mission_program import compile_mission_program
     from parser_shadow_candidates import generate_parser_shadow_candidates
     from parser_shadow_report import generate_parser_shadow_report
@@ -96,32 +97,8 @@ class OperatorStateInput(BaseModel):
 class MissionPlanRef(BaseModel):
     plan_id: str
 
-# ─── Known Locations (Riyadh landmarks) ───────────────────────────────────────
-
-KNOWN_LOCATIONS = {
-    "riyadh": (24.7136, 46.6753),
-    "imam university": (24.8144, 46.7027),
-    "جامعة الامام": (24.8144, 46.7027),
-    "airport": (24.9576, 46.7000),
-    "المطار": (24.9576, 46.7000),
-    "wadi hanifah": (24.6366, 46.6120),
-    "وادي حنيفة": (24.6366, 46.6120),
-    "kafd": (24.7610, 46.6402),
-    "المركز المالي": (24.7610, 46.6402),
-    "kingdom centre": (24.7114, 46.6744),
-    "kingdom center": (24.7114, 46.6744),
-    "al faisaliyah": (24.6906, 46.6851),
-    "boulevard": (24.7675, 46.6044),
-    "diriyah": (24.7335, 46.5750),
-    "masmak": (24.6312, 46.7133),
-    "stadium": (24.7886, 46.8396),
-    "king saud university": (24.7163, 46.6190),
-    "national museum": (24.6473, 46.7107),
-    "ministry of defense": (24.6644, 46.7126),
-    "al nada": (24.8012, 46.6808),
-}
-
-LOCATION_CACHE = {}
+# Local gazetteer seed for offline target resolution. Larger map indexes should
+# be provided through SHEPHERD_GAZETTEER_PATH, not online geocoding at dispatch.
 
 OPERATOR_STATE = {
     "active": False,
@@ -137,9 +114,7 @@ MISSION_PLAN_TTL_SECONDS = 10 * 60
 PENDING_MISSION_PLANS = {}
 DISPATCHABLE_MISSION_ACTIONS = {"scout", "recon", "secure", "rendezvous", "patrol"}
 
-# ─── Riyadh bounding box for fallback coords ─────────────────────────────────
 RIYADH_CENTER = (24.7136, 46.6753)
-RIYADH_RADIUS = 0.05  # ~5km in degrees
 RIYADH_WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
 WEATHER_CACHE_TTL_SECONDS = 10 * 60
 LAST_WEATHER_FETCH = 0.0
@@ -217,7 +192,7 @@ def _relative_target_database() -> dict:
     excluded = {"riyadh"}
     seen_coords = set()
     targets = {}
-    for name, coords in KNOWN_LOCATIONS.items():
+    for name, coords in get_known_location_map().items():
         if name in excluded:
             continue
         rounded = (round(coords[0], 5), round(coords[1], 5))
@@ -244,6 +219,7 @@ def _resolve_operator_position_target() -> tuple[float, float]:
 def _operator_position_target_detail() -> dict:
     lat, lng = _resolve_operator_position_target()
     return {
+        "resolved": True,
         "lat": lat,
         "lng": lng,
         "source": "operator_link",
@@ -255,15 +231,16 @@ def _operator_position_target_detail() -> dict:
     }
 
 async def resolve_target_detail(zone_name: str) -> dict:
-    if not zone_name or zone_name == "unknown":
-        return {
-            "lat": RIYADH_CENTER[0],
-            "lng": RIYADH_CENTER[1],
-            "source": "default_riyadh_center",
-            "label": "riyadh_center",
-        }
-         
     zone_lower = str(zone_name).lower().strip()
+    if not zone_lower or zone_lower == "unknown":
+        return {
+            "resolved": False,
+            "source": "local_gazetteer",
+            "label": zone_lower or "unknown",
+            "query": zone_name,
+            "reason": "missing_target",
+            "candidates": [],
+        }
 
     relative_direction = detect_relative_direction(zone_lower)
     if relative_direction:
@@ -291,6 +268,7 @@ async def resolve_target_detail(zone_name: str) -> dict:
             "decision",
         )
         return {
+            "resolved": True,
             "lat": target["lat"],
             "lng": target["lng"],
             "source": "operator_heading_geometry",
@@ -300,52 +278,19 @@ async def resolve_target_detail(zone_name: str) -> dict:
             "distance_m": target["distance_m"],
             "operator_heading": OPERATOR_STATE.get("operator_heading"),
         }
-     
-    # Sort keys longest-first so "kingdom centre" matches before "kingdom"
-    sorted_keys = sorted(KNOWN_LOCATIONS.keys(), key=len, reverse=True)
-    for key in sorted_keys:
-        if key in zone_lower:
-            lat, lng = KNOWN_LOCATIONS[key]
-            return {"lat": lat, "lng": lng, "source": "known_location", "label": key}
-            
-    # Check local cache for offline memorization
-    if zone_lower in LOCATION_CACHE:
-        lat, lng = LOCATION_CACHE[zone_lower]
-        return {"lat": lat, "lng": lng, "source": "location_cache", "label": zone_lower}
-        
-    # Dynamic Geocoding via OpenStreetMap Nominatim (online fallback)
-    try:
-        query = f"{zone_name} Riyadh Saudi Arabia"
-        async with httpx.AsyncClient() as client:
-            res = await client.get(
-                "https://nominatim.openstreetmap.org/search",
-                params={"q": query, "format": "json", "limit": 1},
-                headers={"User-Agent": "ShepherdAI/1.0"},
-                timeout=5.0
-            )
-            data = res.json()
-            if data and len(data) > 0:
-                lat = float(data[0]["lat"])
-                lng = float(data[0]["lon"])
-                LOCATION_CACHE[zone_lower] = (lat, lng) # Memorize it
-                print(f"Dynamically geocoded {zone_name} -> ({lat}, {lng})")
-                return {"lat": lat, "lng": lng, "source": "nominatim", "label": zone_name}
-    except Exception as e:
-        print(f"Geocoding failed for {zone_name}: {e}")
-            
-    # Fallback: deterministic coordinate within Riyadh bounding box
-    h = int(hashlib.sha256(zone_name.encode()).hexdigest(), 16)
-    lat_offset = ((h % 100) - 50) / 1000.0 * (RIYADH_RADIUS / 0.05)
-    lng_offset = (((h // 100) % 100) - 50) / 1000.0 * (RIYADH_RADIUS / 0.05)
-    return {
-        "lat": RIYADH_CENTER[0] + lat_offset,
-        "lng": RIYADH_CENTER[1] + lng_offset,
-        "source": "deterministic_fallback",
-        "label": zone_name,
-    }
+
+    result = resolve_place_name(zone_name)
+    if not result.get("resolved"):
+        return result
+    return result
 
 async def resolve_target(zone_name: str) -> tuple:
     detail = await resolve_target_detail(zone_name)
+    if not detail.get("resolved", True) or detail.get("lat") is None or detail.get("lng") is None:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Target '{zone_name or 'unknown'}' could not be resolved by the local gazetteer.",
+        )
     return (detail["lat"], detail["lng"])
 
 def _clone_swarm_for_preview() -> SwarmManager:
@@ -409,6 +354,7 @@ async def _resolve_intent_target(intent: dict) -> tuple[dict, dict]:
         target_lat = intent["target_coords"]["lat"]
         target_lng = intent["target_coords"]["lng"]
         return {
+            "resolved": True,
             "lat": target_lat,
             "lng": target_lng,
             "source": "explicit_coordinates",
@@ -420,6 +366,8 @@ async def _resolve_intent_target(intent: dict) -> tuple[dict, dict]:
         return resolution_detail, {"lat": resolution_detail["lat"], "lng": resolution_detail["lng"]}
 
     resolution_detail = await resolve_target_detail(intent.get("target_zone", ""))
+    if not resolution_detail.get("resolved", True):
+        return resolution_detail, None
     return resolution_detail, {"lat": resolution_detail["lat"], "lng": resolution_detail["lng"]}
 
 
@@ -503,6 +451,29 @@ async def _build_mission_from_intents(
             continue
 
         resolution_detail, target_coord = await _resolve_intent_target(intent)
+        if target_coord is None:
+            reason = (
+                f"Target '{resolution_detail.get('query') or resolution_detail.get('label')}' "
+                f"was not resolved by the local gazetteer ({resolution_detail.get('reason', 'not_found')}). "
+                "No drones allocated; add a local gazetteer entry or provide explicit coordinates."
+            )
+            working_swarm._think(f"MISSION BLOCKED: {reason}", "warning")
+            all_thinking.extend(working_swarm.get_thinking_log(last_n=1))
+            target_coords.append(None)
+            target_resolution.append(resolution_detail)
+            safety_reports.append({
+                "passed": False,
+                "safe": False,
+                "issues": [reason],
+                "checks": ["offline target resolution"],
+                "engine": "deterministic_target_resolver",
+            })
+            execution_results.append({
+                "executed": False,
+                "mode": "target_resolution_reject" if execute else "pending_confirmation",
+                "reason": reason,
+            })
+            continue
         target_lat = target_coord["lat"]
         target_lng = target_coord["lng"]
         drone_count = intent.get("drone_count", 1)
@@ -566,7 +537,9 @@ async def _build_mission_from_intents(
 
 def _build_plan_summary(plan_id: str, command: str, response: dict) -> dict:
     intents = response.get("intents", [])
-    target = next((item for item in response.get("target_resolution", []) if item and item.get("lat") is not None), None)
+    target_resolution = response.get("target_resolution", [])
+    target = next((item for item in target_resolution if item and item.get("lat") is not None), None)
+    unresolved_target = next((item for item in target_resolution if item and item.get("resolved") is False), None)
     safety_reports = response.get("safety_reports", [])
     safety_passed = all(report.get("passed") for report in safety_reports) if safety_reports else True
     safety_issues = [issue for report in safety_reports for issue in report.get("issues", [])]
@@ -585,17 +558,19 @@ def _build_plan_summary(plan_id: str, command: str, response: dict) -> dict:
         "live_mavlink" if swarm.live_mode else "digital_twin_simulation",
     )
     confirmable = bool(response.get("assigned")) and safety_passed
-    target_name = target.get("label") if target else "home"
+    target_name = target.get("label") if target else (unresolved_target.get("label") if unresolved_target else "home")
     question = primary_intent.get("clarifying_question")
     if not question and target:
         question = f"I found {target_name} at this location. Is this where you want the drones to go?"
+    elif not question and unresolved_target:
+        question = f"I could not resolve '{unresolved_target.get('query') or target_name}' from the local gazetteer. Add a local map entry or provide coordinates."
 
     return {
         "plan_id": plan_id,
         "command": command,
         "target_name": target_name,
         "target": {"lat": target["lat"], "lng": target["lng"]} if target else None,
-        "target_source": target.get("source") if target else "return_to_launch",
+        "target_source": target.get("source") if target else (unresolved_target.get("source") if unresolved_target else "return_to_launch"),
         "target_reference": target.get("target_reference") if target else None,
         "selected_drones": response.get("assigned", []),
         "requested_drone_count": primary_intent.get("drone_count", 1),

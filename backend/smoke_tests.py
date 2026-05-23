@@ -11,6 +11,7 @@ from backend.assurance_report import generate_assurance_report, write_assurance_
 from backend.brain import MissionParser
 from backend.evidence_log import EvidenceLogger
 from backend.evidence_replay import EvidenceReplayHarness
+from backend.gazetteer import resolve_place_name
 from backend.mission_dataset import (
     DEFAULT_ADVERSARIAL_PATH,
     DEFAULT_AUGMENTATION_PATH,
@@ -165,6 +166,25 @@ def test_relative_target_resolution():
     )
     assert target is not None
     assert target["name"] == "kafd"
+
+
+def test_local_gazetteer_resolves_aliases_and_keeps_unknowns_unresolved():
+    kafd = resolve_place_name("King Abdullah Financial District")
+    assert kafd["resolved"]
+    assert kafd["source"] == "local_gazetteer"
+    assert kafd["gazetteer_id"] == "kafd"
+    assert kafd["lat"] == 24.761
+    assert kafd["lng"] == 46.6402
+
+    arabic_kafd = resolve_place_name("\u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0627\u0644\u064a")
+    assert arabic_kafd["resolved"]
+    assert arabic_kafd["gazetteer_id"] == "kafd"
+
+    unknown = resolve_place_name("Blue Tower District")
+    assert not unknown["resolved"]
+    assert unknown["reason"] == "not_found"
+    assert "lat" not in unknown
+    assert "lng" not in unknown
 
 
 def test_geometric_sandbox_blocks_forbidden_polygon():
@@ -1401,11 +1421,38 @@ async def test_mission_plan_preview_does_not_move_real_swarm():
     assert response["plan_id"] in backend_main.PENDING_MISSION_PLANS
     assert response["status"] == "pending_confirmation"
     assert response["plan_summary"]["confirmable"]
+    assert response["target_resolution"][0]["source"] == "local_gazetteer"
     assert response["execution_results"][0]["mode"] == "pending_confirmation"
     assert {drone_id: drone.status for drone_id, drone in backend_main.swarm.fleet.items()} == real_statuses
 
     cancelled = await backend_main.cancel_mission_plan(backend_main.MissionPlanRef(plan_id=response["plan_id"]))
     assert cancelled["cancelled"]
+
+
+async def test_unresolved_place_blocks_plan_without_coordinate_fallback():
+    from backend import main as backend_main
+
+    backend_main.parser._ollama_available = False
+    backend_main.PENDING_MISSION_PLANS.clear()
+    real_statuses = {drone_id: drone.status for drone_id, drone in backend_main.swarm.fleet.items()}
+
+    response = await backend_main.create_mission_plan(
+        backend_main.CommandInput(command="Urgent, send one drone to Blue Tower District right now.", selected_drones=[])
+    )
+
+    assert response["status"] == "blocked"
+    assert not response["plan_summary"]["confirmable"]
+    assert response["assigned"] == []
+    assert all(target_coord is None for target_coord in response["target_coords"])
+    assert any(
+        target["resolved"] is False and target["reason"] == "not_found"
+        for target in response["target_resolution"]
+    )
+    assert all(report["engine"] == "deterministic_target_resolver" for report in response["safety_reports"])
+    assert response["execution_results"][0]["mode"] == "pending_confirmation"
+    assert {drone_id: drone.status for drone_id, drone in backend_main.swarm.fleet.items()} == real_statuses
+
+    backend_main.PENDING_MISSION_PLANS.clear()
 
 
 async def test_mission_plan_overrides_parser_priority_with_deterministic_assessment():
@@ -1608,6 +1655,7 @@ async def test_confirmed_mission_writes_evidence_log():
 
 def main():
     test_relative_target_resolution()
+    test_local_gazetteer_resolves_aliases_and_keeps_unknowns_unresolved()
     test_geometric_sandbox_blocks_forbidden_polygon()
     test_mission_program_safety_passes_normal_riyadh_route()
     test_shepherd_ir_v2_contract_fields()
@@ -1636,6 +1684,7 @@ def main():
     asyncio.run(test_operator_reference_command_parse())
     asyncio.run(test_parser_keeps_unseen_place_as_target_span())
     asyncio.run(test_mission_plan_preview_does_not_move_real_swarm())
+    asyncio.run(test_unresolved_place_blocks_plan_without_coordinate_fallback())
     asyncio.run(test_mission_plan_overrides_parser_priority_with_deterministic_assessment())
     asyncio.run(test_non_dispatchable_learned_action_is_blocked_before_allocation())
     asyncio.run(test_confirmed_mission_writes_evidence_log())
