@@ -37,10 +37,15 @@ def _intent_contract(intent: Dict, target_coords: Optional[Dict]) -> Dict:
     confidence = _confidence(intent)
     slots = {
         "target_zone": intent.get("target_zone"),
+        "target_raw_text": intent.get("target_raw_text"),
+        "target_type": intent.get("target_type"),
         "target_reference": intent.get("target_reference"),
+        "target_resolution_required": intent.get("target_resolution_required"),
+        "target_metadata_schema": intent.get("target_metadata_schema"),
         "target_coords": target_coords,
         "pattern": intent.get("pattern", "perimeter"),
         "priority": intent.get("priority", "medium"),
+        "priority_assessment": intent.get("priority_assessment"),
         "drone_count": intent.get("drone_count", 1),
         "area_size_m": intent.get("area_size_m", 200),
     }

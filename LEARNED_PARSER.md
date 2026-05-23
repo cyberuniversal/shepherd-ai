@@ -1,6 +1,10 @@
 # Learned Parser Research Scaffold
 
-This is the first training scaffold for Shepherd-AI intent parsing. It is not connected to live dispatch. A learned parser artifact may only produce bounded intent JSON; deterministic backend code still owns target resolution, allocation, safety checks, confirmation, SHEPHERD-IR compilation, and MAVSDK/MAVLink dispatch.
+This is the first training scaffold for Shepherd-AI intent parsing. It is not connected to live dispatch. A learned parser artifact may only produce bounded intent JSON; deterministic backend code still owns target resolution, allocation, safety checks, confirmation, runtime priority scoring, SHEPHERD-IR compilation, and MAVSDK/MAVLink dispatch.
+
+The current mission-command JSONL files are synthetic scaffolds, not a public operational drone-command corpus. They exist to test the parser contract, split discipline, bounded-output adapter, and promotion gates while the research dataset strategy matures. Do not treat place names in these rows as a target-resolution strategy; the parser should extract target spans and the backend should resolve places through deterministic map/gazetteer logic.
+
+Target-schema migration is two-phase. Phase 1 keeps the legacy `target_zone` field for compatibility and adds runtime metadata fields (`target_raw_text`, `target_type`, `target_resolution_required`) to mission contracts. Phase 2 should move parser training/evaluation toward a nested `target` object once migration tests and compatibility shims are ready.
 
 ## Current Baseline
 
@@ -160,7 +164,7 @@ The strict adapter returns only bounded intent fields:
 - action
 - target zone/reference
 - drone count
-- priority
+- priority/urgency hints for compatibility only; final runtime priority is recomputed by `backend.priority`
 - pattern
 - confirmation requirement
 - confidence and clarification question
@@ -168,7 +172,7 @@ The strict adapter returns only bounded intent fields:
 
 It never returns MAVSDK commands, vehicle actuation calls, or dispatch authority.
 
-The adapter also applies deterministic intent-slot normalization before final coercion. Known landmark aliases, coordinates, home/current-position commands, operator-relative phrasing, unresolved deictic targets, explicit action verbs, mission patterns, priority words, and explicit drone counts are normalized into bounded intent fields. This is not learned dispatch logic; it is a conservative parser-side guard that keeps obvious command slots from depending on nearest-neighbor text similarity.
+The adapter also applies deterministic intent-slot normalization before final coercion. Known landmark aliases, coordinates, home/current-position commands, operator-relative phrasing, unresolved deictic targets, explicit action verbs, mission patterns, urgency words, and explicit drone counts are normalized into bounded intent fields. This is not learned dispatch logic; it is a conservative parser-side guard that keeps obvious command slots from depending on nearest-neighbor text similarity.
 
 ## Next Research Step
 

@@ -2,14 +2,22 @@
 
 This directory contains bilingual examples for future Shepherd-AI intent-parser training and evaluation.
 
+Important: the current JSONL files are synthetic research scaffolds generated for parser-contract tests, smoke tests, and early training experiments. They are not a public operational drone-command corpus and should not be presented as one. They are useful for verifying that Shepherd-AI preserves split handling, bounded intent JSON, clarification behavior, and promotion gates while the real dataset strategy matures.
+
 The JSONL rows are research data, not an operational authority path. A model trained from this data may only produce bounded intent JSON; deterministic backend code still owns target resolution, allocation, safety, confirmation, SHEPHERD-IR compilation, and dispatch.
 
 Files:
 
 - `seed.jsonl`: compact smoke-test gate for known parser behavior.
 - `benchmark.jsonl`: larger English/Arabic train/eval/holdout benchmark for parser evaluation and future model training.
-- `targeted_augmentation.jsonl`: train-only English/Arabic examples added from parser failure-analysis categories. These rows may expand training corpora, but they are not an evaluation gate. The current file has 74 train-only rows focused on target aliases, Arabic target extraction, mission patterns, priority wording, returns, and ambiguous-target handling.
+- `targeted_augmentation.jsonl`: train-only English/Arabic examples added from parser failure-analysis categories. These rows may expand training corpora, but they are not an evaluation gate. The current file has 74 train-only rows focused on target aliases, Arabic target extraction, mission patterns, urgency wording, returns, and ambiguous-target handling.
 - `adversarial_holdout.jsonl`: hard English/Arabic holdout commands for evaluation only. Do not tune the heuristic parser directly against this file; use it to measure whether parser changes generalize to ambiguous, contradictory, mixed, and under-specified commands.
+
+Training data should teach slot extraction and bounded intent structure, not memorization of every possible place. Future public-data work should use general intent/slot datasets such as MASSIVE, SNIPS, CLINC150, or MTOP for language coverage, and separate gazetteer/map sources such as GeoNames or OpenStreetMap-derived local indexes for target resolution. Shepherd-specific rows should focus on command structure, target-span extraction, operator-relative references, counts, patterns, refusal/clarification behavior, and urgency signals.
+
+The target-schema migration is two-phase. Phase 1 keeps legacy `target_zone` so existing parsers, reports, and frontend views remain compatible, while runtime code also carries `target_raw_text`, `target_type`, and `target_resolution_required`. Phase 2 should move training targets and evaluation metrics to a nested `target` object after compatibility and migration tests exist.
+
+Priority is not a learned authority path. Dataset rows may include legacy `priority` values for compatibility with existing reports, but runtime planning computes final priority through `backend.priority` from explicit urgency language and deterministic mission policy. A model may help extract an urgency phrase in future schemas; it should not decide operational priority by memorizing labels.
 
 Each row includes:
 

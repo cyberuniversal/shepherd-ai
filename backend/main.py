@@ -18,9 +18,11 @@ try:
     from backend.mission_program import compile_mission_program
     from backend.parser_shadow_candidates import generate_parser_shadow_candidates
     from backend.parser_shadow_report import generate_parser_shadow_report
+    from backend.priority import apply_priority_assessment
     from backend.safety import validate_mission_program
     from backend.scenario_regression import ScenarioRegressionRunner, run_scenario_regression
     from backend.spatial import detect_relative_direction, resolve_relative_target
+    from backend.targeting import apply_target_metadata
 except ImportError:
     from action_script import synthesize_action_script
     from assurance import evaluate_runtime_assurance
@@ -32,9 +34,11 @@ except ImportError:
     from mission_program import compile_mission_program
     from parser_shadow_candidates import generate_parser_shadow_candidates
     from parser_shadow_report import generate_parser_shadow_report
+    from priority import apply_priority_assessment
     from safety import validate_mission_program
     from scenario_regression import ScenarioRegressionRunner, run_scenario_regression
     from spatial import detect_relative_direction, resolve_relative_target
+    from targeting import apply_target_metadata
 
 app = FastAPI(
     title="Shepherd-AI",
@@ -436,7 +440,8 @@ async def _build_mission_from_intents(
     target_resolution = []
     multi_intent = len(intents) > 1
 
-    for intent in intents:
+    for raw_intent in intents:
+        intent = apply_target_metadata(apply_priority_assessment(command, raw_intent))
         action = str(intent.get("action", "scout")).strip().lower()
         combined_drones = set(intent.get("explicit_drones", []))
         if not multi_intent:

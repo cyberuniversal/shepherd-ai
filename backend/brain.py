@@ -5,9 +5,11 @@ import re
 try:
     from backend.llm_provider import LLMProviderError, OllamaProvider
     from backend.parser_runtime import PromotedLearnedParserRuntime
+    from backend.targeting import apply_target_metadata
 except ImportError:
     from llm_provider import LLMProviderError, OllamaProvider
     from parser_runtime import PromotedLearnedParserRuntime
+    from targeting import apply_target_metadata
 
 # Arabic-Indic numeral mapping
 ARABIC_INDIC_MAP = str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789')
@@ -226,6 +228,12 @@ class MissionParser:
 
         target = re.sub(r'\s+(?:for|with|using)\s+.+$', '', target, flags=re.IGNORECASE)
         target = re.sub(r'\s+(?:لمسح|ب|بـ)\s*.+$', '', target)
+        target = re.sub(
+            r'\s+(?:right now|now|immediately|urgent|urgently|asap|quickly|fast)$',
+            '',
+            target,
+            flags=re.IGNORECASE,
+        )
         target = re.sub(r'^(?:the\s+)?base$', 'unknown', target, flags=re.IGNORECASE)
         if target.lower() in AMBIGUOUS_TARGETS:
             return "unknown"
@@ -559,6 +567,7 @@ class MissionParser:
             target = parsed.get("target_zone") or "the selected target"
             parsed["clarifying_question"] = f"Is {target} the correct target for this mission?"
 
+        parsed = apply_target_metadata(parsed)
         shadow_audit = self._build_shadow_audit(user_input, parsed)
         if shadow_audit:
             self._last_shadow_audits.append(shadow_audit)

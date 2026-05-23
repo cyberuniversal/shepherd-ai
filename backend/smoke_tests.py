@@ -46,6 +46,8 @@ from backend.parser_shadow_capture import CAPTURE_SCHEMA, capture_parser_shadow_
 from backend.parser_shadow_candidates import generate_parser_shadow_candidates, write_candidates_jsonl
 from backend.parser_shadow_report import generate_parser_shadow_report, write_parser_shadow_report
 from backend.parser_shadow_review import promote_reviewed_candidates
+from backend.priority import assess_priority
+from backend.targeting import apply_target_metadata
 from backend.transformer_parser import (
     TASK_PREFIX,
     TRANSFORMER_CORPUS_SCHEMA,
@@ -460,6 +462,46 @@ def test_targeted_augmentation_stays_train_only():
         assert secure_count["pattern"] == "perimeter"
         assert low_priority["priority"] == "low"
         assert low_priority["drone_count"] == 2
+
+
+def test_deterministic_priority_is_not_parser_authority():
+    urgent = assess_priority("Urgent, send one drone to KAFD now.", {"action": "scout", "priority": "low"})
+    assert urgent["priority"] == "high"
+    assert urgent["parser_priority"] == "low"
+    assert urgent["parser_priority_used"] is False
+    assert "urgent" in urgent["matched_high_terms"]
+
+    deferred = assess_priority("When available, send one drone to KAFD.", {"action": "scout", "priority": "high"})
+    assert deferred["priority"] == "low"
+    assert deferred["parser_priority"] == "high"
+    assert deferred["parser_priority_used"] is False
+    assert "when available" in deferred["matched_low_terms"]
+
+    negated_urgency = assess_priority("Not urgent, send one drone to KAFD.", {"action": "scout"})
+    assert negated_urgency["priority"] == "low"
+    assert "not urgent" in negated_urgency["matched_low_terms"]
+    assert "urgent" not in negated_urgency["matched_high_terms"]
+
+    conflicting = assess_priority("Urgent but no rush, send one drone to KAFD.", {"action": "scout"})
+    assert conflicting["priority"] == "medium"
+    assert conflicting["urgency_hint"] == "conflict"
+    assert conflicting["requires_priority_review"]
+
+
+def test_target_metadata_preserves_legacy_target_zone():
+    intent = apply_target_metadata({"action": "scout", "target_zone": "blue tower district"})
+    assert intent["target_zone"] == "blue tower district"
+    assert intent["target_raw_text"] == "blue tower district"
+    assert intent["target_type"] == "place_name"
+    assert intent["target_resolution_required"] is True
+
+    coords = apply_target_metadata({"target_zone": "coordinates", "target_coords": {"lat": 24.761, "lng": 46.6402}})
+    assert coords["target_type"] == "coordinates"
+    assert coords["target_resolution_required"] is False
+
+    operator = apply_target_metadata({"target_zone": "operator_current_position", "target_reference": "operator"})
+    assert operator["target_type"] == "operator_reference"
+    assert operator["target_resolution_required"] is True
 
 
 def test_parser_promotion_gate_accepts_normalized_baseline_and_blocks_strict_thresholds():
@@ -1307,11 +1349,25 @@ async def test_operator_reference_command_parse():
     assert intent["drone_count"] == 2
     assert intent["target_reference"] == "operator"
     assert intent["target_zone"] == "operator_current_position"
+    assert intent["target_type"] == "operator_reference"
+    assert intent["target_resolution_required"]
     assert intent["action"] == "rendezvous"
 
     al_nada_intent = await parser.parse_intent("Bring two drones to Al Nada")
     assert al_nada_intent["drone_count"] == 2
     assert al_nada_intent["target_zone"] == "al nada"
+
+
+async def test_parser_keeps_unseen_place_as_target_span():
+    parser = MissionParser()
+    parser._ollama_available = False
+    intent = await parser.parse_intent("Urgent, send one drone to Blue Tower District right now.")
+    assert intent["target_zone"] == "blue tower district"
+    assert intent["target_raw_text"] == "blue tower district"
+    assert intent["target_type"] == "place_name"
+    assert intent["target_resolution_required"]
+    assert intent["drone_count"] == 1
+    assert intent["needs_confirmation"]
 
 
 async def test_mission_plan_preview_does_not_move_real_swarm():
@@ -1333,6 +1389,54 @@ async def test_mission_plan_preview_does_not_move_real_swarm():
 
     cancelled = await backend_main.cancel_mission_plan(backend_main.MissionPlanRef(plan_id=response["plan_id"]))
     assert cancelled["cancelled"]
+
+
+async def test_mission_plan_overrides_parser_priority_with_deterministic_assessment():
+    from backend import main as backend_main
+
+    class FakeLowPriorityParser:
+        async def parse_compound_intent(self, command):
+            return [
+                {
+                    "action": "scout",
+                    "target_zone": "al nada",
+                    "target_reference": None,
+                    "drone_count": 1,
+                    "pattern": "perimeter",
+                    "priority": "low",
+                    "needs_confirmation": True,
+                    "confidence": 0.9,
+                    "parser": "test_parser",
+                    "fragment": command,
+                }
+            ]
+
+        def status(self):
+            return {"mode": "test_parser", "last_parser": "test_parser", "parser_shadow_audits": []}
+
+    old_parser = backend_main.parser
+    old_swarm = backend_main.swarm
+    try:
+        backend_main.parser = FakeLowPriorityParser()
+        backend_main.swarm = SwarmManager()
+        backend_main.PENDING_MISSION_PLANS.clear()
+        response = await backend_main.create_mission_plan(
+            backend_main.CommandInput(command="Urgent, send one drone to Al Nada now.", selected_drones=[])
+        )
+        slots = response["mission_programs"][0]["intent_contract"]["slots"]
+        assessment = slots["priority_assessment"]
+        assert slots["priority"] == "high"
+        assert slots["target_raw_text"] == "al nada"
+        assert slots["target_type"] == "place_name"
+        assert slots["target_resolution_required"]
+        assert assessment["source"] == "deterministic_priority_v1"
+        assert assessment["parser_priority"] == "low"
+        assert assessment["parser_priority_used"] is False
+        assert "urgent" in assessment["matched_high_terms"]
+    finally:
+        backend_main.parser = old_parser
+        backend_main.swarm = old_swarm
+        backend_main.PENDING_MISSION_PLANS.clear()
 
 
 async def test_non_dispatchable_learned_action_is_blocked_before_allocation():
@@ -1495,6 +1599,8 @@ def main():
     test_mission_command_dataset_seed_validates()
     test_learned_parser_baseline_scaffold_keeps_frozen_splits()
     test_targeted_augmentation_stays_train_only()
+    test_deterministic_priority_is_not_parser_authority()
+    test_target_metadata_preserves_legacy_target_zone()
     test_parser_promotion_gate_accepts_normalized_baseline_and_blocks_strict_thresholds()
     test_parser_failure_analysis_reports_grouped_failures()
     test_parser_comparison_reports_augmented_delta()
@@ -1509,7 +1615,9 @@ def main():
     asyncio.run(test_facade_allows_only_safe_ops())
     asyncio.run(test_live_telemetry_sync_updates_digital_twin())
     asyncio.run(test_operator_reference_command_parse())
+    asyncio.run(test_parser_keeps_unseen_place_as_target_span())
     asyncio.run(test_mission_plan_preview_does_not_move_real_swarm())
+    asyncio.run(test_mission_plan_overrides_parser_priority_with_deterministic_assessment())
     asyncio.run(test_non_dispatchable_learned_action_is_blocked_before_allocation())
     asyncio.run(test_confirmed_mission_writes_evidence_log())
     print("backend smoke tests passed")
