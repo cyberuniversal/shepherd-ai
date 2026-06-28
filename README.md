@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains project source documents, a deterministic typed-command intent parser baseline, and a speech-input scaffold for audio manifest validation and transcript evaluation. It is not an end-to-end prototype, does not control physical drones, and does not yet implement Whisper inference, grounding, planning, scheduling, vision, safety validation, or integrated mission execution.
+Current status: this repository contains project source documents, a deterministic typed-command intent parser baseline, and a speech-input scaffold for audio manifest validation, cached transcript generation, optional Whisper adapter wiring, and transcript evaluation. It is not an end-to-end prototype, does not control physical drones, and does not yet include real Whisper evaluation, grounding, planning, scheduling, vision, safety validation, or integrated mission execution.
 
 ## Source Documents
 
@@ -25,9 +25,15 @@ Audio support is deferred because the repository has no sample WAV files, transc
 
 ## Speech Input Scaffold
 
-Milestone 2 currently validates audio/transcript manifests and evaluates transcript text. It does not run Whisper yet.
+Milestone 2 currently validates audio/transcript manifests, runs a cached-transcript baseline, provides an optional Whisper adapter, and evaluates transcript text. It does not report Whisper accuracy yet because the repository has no real audio dataset or model configuration.
 
 Manifest records should point to WAV files under the dataset root and include transcript provenance fields. See `docs/milestone_2_speech_input.md`.
+
+Cached transcript workflow:
+
+```powershell
+python scripts/transcribe_audio_manifest.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --backend cached --output outputs/evaluations/transcripts_cached.json
+```
 
 ## Run Tests
 
