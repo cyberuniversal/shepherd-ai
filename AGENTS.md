@@ -1,26 +1,40 @@
 # Shepherd-AI Agent Instructions
 
-This file summarizes the Shepherd-AI project from the repository contents available on 2026-06-28. Do not treat planned roadmap items as implemented code.
+This file governs work in the Shepherd-AI repository. Do not treat planned roadmap items as implemented code.
 
 ## Mandatory Source Documents
 
-Before making architectural, research, dataset, evaluation, or roadmap decisions, read:
+Before making architectural, research, dataset, evaluation, roadmap, or implementation decisions, read:
 
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\roadmap.pdf`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_review\ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
 - Every Markdown file inside that literature-review export, including each paper page and its `Complete Summary ...md`.
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_to_implementation.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
 
+## Roadmap Versus Literature Review Authority
+
+Use the roadmap as high-level project sequencing only: which week/milestone comes next, what broad deliverables are expected, and which technology families are planned.
+
+Use the literature review for technical implementation decisions: architecture boundaries, model-training expectations, validation strategy, dataset discipline, grounding design, planner/scheduler boundaries, safety rules, and evaluation interpretation.
+
+If the roadmap sounds like a simple demo but the literature review shows that a hand-written, zero-shot, or untrained approach would be weak, follow the literature review. For example:
+
+- Week 2 intent extraction should not stop at a hand-written parser. Build labeled command data, define splits, train or fine-tune an intent extraction model when enough labels exist, and compare against a deterministic baseline.
+- Whisper can be used for speech-to-text, but ASR evaluation must be separate from intent extraction evaluation.
+- LLMs may propose structured plans or translations, but deterministic validators and conventional planners/controllers must gate execution.
+- Any trained or fine-tuned model requires recorded data provenance, split definitions, random seeds, package/model versions, parameters, raw outputs, and held-out evaluation.
+
 ## Current Repository Status
 
-At the time this file was created, the repository was documentation-only. Always inspect the current repository tree before describing implementation status. It contained:
+At the time this file was created, the repository was documentation-only. Always inspect the current repository tree before describing implementation status. Initially it contained:
 
 - `docs/roadmap.pdf`
 - `docs/literature_review/ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
 - This root-level `AGENTS.md`
 
-At creation time there was no source code, no README, no package/environment file, no notebooks, no datasets, no experiments, no tests, and no lint or format configuration in the repository. Do not claim any module has been implemented until code exists in the repository.
+At creation time there was no source code, no README, no package/environment file, no notebooks, no datasets, no experiments, no tests, and no lint or format configuration in the repository. The repository has since started adding source, tests, docs, and Colab notebook structure. Always inspect current files before making status claims.
 
 ## What Shepherd-AI Is
 
@@ -116,6 +130,32 @@ The literature review supports these design cautions:
 - Vision and language systems often show promising demos but limited reliability; distinguish format-valid output from actual task success.
 - Simulation results and physical-robot results are not interchangeable.
 
+## Colab-First Project Structure
+
+Maintain the Google Colab-style structure from the roadmap:
+
+- `notebooks/Notebook1_Setup.ipynb`
+- `notebooks/Notebook2_NLP.ipynb`
+- `notebooks/Notebook3_Grounding.ipynb`
+- `notebooks/Notebook4_Planner.ipynb`
+- `notebooks/Notebook5_Scheduler.ipynb`
+- `notebooks/Notebook6_Vision.ipynb`
+- `notebooks/Notebook7_Safety.ipynb`
+- `notebooks/Notebook8_FinalDemo.ipynb`
+- `notebooks/Notebook9_Evaluation.ipynb`
+- `datasets/commands/`
+- `datasets/sample_audio/`
+- `datasets/maps/`
+- `datasets/aerial_images/`
+- `outputs/`
+- `reports/`
+- `src/`
+- `tests/`
+
+Notebooks should orchestrate experiments and show reproducible Colab workflows. Shared logic belongs in `src/shepherd_ai/`, not duplicated across notebooks.
+
+Notebook outputs must not be used as evidence unless the raw output files, data inputs, model versions, parameters, and split definitions are committed or documented.
+
 ## Facts, Plans, And Hypotheses
 
 Use these labels in documentation and code comments when relevant:
@@ -136,13 +176,16 @@ Use these labels in documentation and code comments when relevant:
 
 ## Coding And Documentation Practices
 
-- Follow the roadmap sequence unless the user explicitly changes priority.
+- Follow the roadmap sequence unless the user explicitly changes priority, but use the literature review for how each milestone should be technically implemented.
 - Keep code and notebooks aligned with the planned project structure from the roadmap.
 - Treat data, outputs, reports, and experiments as first-class artifacts; document provenance and evaluation settings.
 - Add tests only when there is code to test, and derive commands from actual repository configuration.
 - If creating notebooks, keep them reproducible and document required inputs/outputs.
 - If creating Python modules, keep interfaces explicit and serializable where possible, especially for mission intents, grounded locations, plans, schedules, detections, safety reports, and mission reports.
 - If adding dependencies or commands, commit the supporting config files or document the environment clearly.
+- Prefer trainable, evaluated components where the literature shows that rules or zero-shot prompts are insufficient. Keep simple deterministic baselines for comparison.
+- Do not call a scaffold, wrapper, cached transcript flow, or hand-written baseline a trained model.
+- Do not claim a milestone is complete if its literature-supported training, validation, data, or evaluation requirements are missing.
 
 ## Do Not Claim Or Implement Without Evidence
 

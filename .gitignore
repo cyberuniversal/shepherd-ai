@@ -21,7 +21,8 @@ dist/
 
 # Keep small, documented samples in the repository. Do not commit private data,
 # model weights, downloaded public datasets, or large generated artifacts.
-datasets/aerial_images/
+datasets/aerial_images/*
+!datasets/aerial_images/README.md
 datasets/sample_audio/**/*.wav
 datasets/sample_audio/**/*.mp3
 datasets/sample_audio/**/*.flac
