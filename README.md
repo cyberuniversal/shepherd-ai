@@ -63,6 +63,23 @@ Manifest records should point to WAV files under the dataset root and include tr
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 
+## Week 2 Intent Training
+
+The first supervised intent-extraction baseline is documented in `docs/week2_intent_training.md`.
+
+Run:
+
+```powershell
+python scripts/train_intent_model.py --dataset datasets/commands/intent_labeled_synthetic.jsonl --model-output outputs/model_artifacts/intent_nb_v0.json --metrics-output outputs/evaluations/intent_nb_v0_metrics.json --comparison-output outputs/evaluations/intent_nb_v0_vs_deterministic.json --seed 17
+```
+
+Current synthetic held-out result:
+
+- `trained_nb_v0`: field accuracy 0.85, exact-record accuracy 0.25.
+- `deterministic_v0`: field accuracy 1.0, exact-record accuracy 1.0 on the same tiny synthetic test split.
+
+This is an early synthetic baseline and not a real-user or speech-recognition result.
+
 ## Run Tests
 
 Use Python from the repository root:
