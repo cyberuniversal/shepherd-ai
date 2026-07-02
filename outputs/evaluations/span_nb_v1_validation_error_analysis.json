@@ -1,0 +1,456 @@
+{
+  "false_negative_entity_counts": {
+    "action": 2,
+    "count": 3,
+    "location": 2,
+    "target": 4
+  },
+  "false_positive_entity_counts": {
+    "action": 5,
+    "constraint": 2,
+    "count": 3,
+    "location": 2,
+    "target": 7
+  },
+  "token_confusion": {
+    "B-action": {
+      "B-location": 1,
+      "B-target": 1
+    },
+    "B-count": {
+      "I-count": 2,
+      "O": 2
+    },
+    "B-location": {
+      "I-constraint": 1
+    },
+    "B-target": {
+      "O": 1
+    },
+    "I-action": {
+      "I-count": 1
+    },
+    "I-count": {
+      "O": 1
+    },
+    "I-location": {
+      "I-constraint": 2,
+      "O": 1
+    },
+    "I-target": {
+      "B-count": 1,
+      "B-target": 3,
+      "I-count": 1
+    },
+    "O": {
+      "B-action": 5
+    }
+  },
+  "worst_records": [
+    {
+      "false_negative_entities": [
+        [
+          "action",
+          19,
+          33
+        ],
+        [
+          "count",
+          4,
+          15
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          3
+        ],
+        [
+          "count",
+          4,
+          9
+        ],
+        [
+          "count",
+          27,
+          33
+        ],
+        [
+          "target",
+          19,
+          26
+        ]
+      ],
+      "id": "human_cmd_037",
+      "text": "Ask drone three to capture images of the storage area.",
+      "token_error_count": 5,
+      "token_error_rate": 0.45454545454545453,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Ask"
+        },
+        {
+          "expected": "B-count",
+          "index": 1,
+          "predicted": "I-count",
+          "token": "drone"
+        },
+        {
+          "expected": "I-count",
+          "index": 2,
+          "predicted": "O",
+          "token": "three"
+        },
+        {
+          "expected": "B-action",
+          "index": 4,
+          "predicted": "B-target",
+          "token": "capture"
+        },
+        {
+          "expected": "I-action",
+          "index": 5,
+          "predicted": "I-count",
+          "token": "images"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          30,
+          48
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "target",
+          30,
+          37
+        ],
+        [
+          "target",
+          38,
+          48
+        ]
+      ],
+      "id": "human_cmd_033",
+      "text": "Send drone one to inspect the eastern greenhouse.",
+      "token_error_count": 3,
+      "token_error_rate": 0.3333333333333333,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Send"
+        },
+        {
+          "expected": "B-count",
+          "index": 1,
+          "predicted": "I-count",
+          "token": "drone"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "B-target",
+          "token": "greenhouse"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          9,
+          22
+        ],
+        [
+          "target",
+          27,
+          43
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "count",
+          33,
+          43
+        ],
+        [
+          "target",
+          9,
+          16
+        ],
+        [
+          "target",
+          17,
+          22
+        ],
+        [
+          "target",
+          27,
+          32
+        ]
+      ],
+      "id": "human_cmd_038",
+      "text": "Scan the western crops for signs of dryness.",
+      "token_error_count": 3,
+      "token_error_rate": 0.3333333333333333,
+      "token_errors": [
+        {
+          "expected": "I-target",
+          "index": 3,
+          "predicted": "B-target",
+          "token": "crops"
+        },
+        {
+          "expected": "I-target",
+          "index": 6,
+          "predicted": "B-count",
+          "token": "of"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "I-count",
+          "token": "dryness"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          47,
+          59
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          6
+        ],
+        [
+          "target",
+          52,
+          59
+        ]
+      ],
+      "id": "human_cmd_041",
+      "text": "Divide the field between three drones and scan each section.",
+      "token_error_count": 3,
+      "token_error_rate": 0.2727272727272727,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Divide"
+        },
+        {
+          "expected": "B-target",
+          "index": 8,
+          "predicted": "O",
+          "token": "each"
+        },
+        {
+          "expected": "I-target",
+          "index": 9,
+          "predicted": "B-target",
+          "token": "section"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "location",
+          26,
+          38
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          34,
+          38
+        ],
+        [
+          "location",
+          26,
+          30
+        ]
+      ],
+      "id": "human_cmd_036",
+      "text": "Send all available drones back to base.",
+      "token_error_count": 2,
+      "token_error_rate": 0.25,
+      "token_errors": [
+        {
+          "expected": "I-location",
+          "index": 5,
+          "predicted": "O",
+          "token": "to"
+        },
+        {
+          "expected": "I-location",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "base"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "action",
+          23,
+          28
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "location",
+          23,
+          28
+        ]
+      ],
+      "id": "human_cmd_035",
+      "text": "Have the nearest drone check the irrigation canal.",
+      "token_error_count": 2,
+      "token_error_rate": 0.2222222222222222,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Have"
+        },
+        {
+          "expected": "B-action",
+          "index": 4,
+          "predicted": "B-location",
+          "token": "check"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "location",
+          43,
+          55
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          43,
+          55
+        ]
+      ],
+      "id": "human_cmd_040",
+      "text": "Inspect the greenhouse, then return to the launch point.",
+      "token_error_count": 2,
+      "token_error_rate": 0.18181818181818182,
+      "token_errors": [
+        {
+          "expected": "B-location",
+          "index": 8,
+          "predicted": "I-constraint",
+          "token": "launch"
+        },
+        {
+          "expected": "I-location",
+          "index": 9,
+          "predicted": "I-constraint",
+          "token": "point"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "count",
+          25,
+          32
+        ]
+      ],
+      "false_positive_entities": [],
+      "id": "human_cmd_032",
+      "text": "Send one drone north and another east.",
+      "token_error_count": 1,
+      "token_error_rate": 0.125,
+      "token_errors": [
+        {
+          "expected": "B-count",
+          "index": 5,
+          "predicted": "O",
+          "token": "another"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "count",
+          25,
+          32
+        ]
+      ],
+      "false_positive_entities": [],
+      "id": "human_cmd_039",
+      "text": "Send one drone north and another east.",
+      "token_error_count": 1,
+      "token_error_rate": 0.125,
+      "token_errors": [
+        {
+          "expected": "B-count",
+          "index": 5,
+          "predicted": "O",
+          "token": "another"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          8
+        ]
+      ],
+      "id": "human_cmd_034",
+      "text": "Dispatch two drones to survey the southern field.",
+      "token_error_count": 1,
+      "token_error_rate": 0.1111111111111111,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Dispatch"
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from shepherd_ai.intent import parse_intent  # noqa: E402
+from shepherd_ai.intent import DETERMINISTIC_PARSER_NAME, parse_intent  # noqa: E402
 
 DATASET_PATH = ROOT / "datasets" / "commands" / "roadmap_examples.jsonl"
 OUTPUT_PATH = ROOT / "outputs" / "evaluations" / "intent_baseline_roadmap_examples.json"
@@ -60,7 +60,7 @@ def evaluate() -> dict[str, Any]:
     result = {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "parser": "deterministic_v0",
+            "parser": DETERMINISTIC_PARSER_NAME,
             "dataset": str(DATASET_PATH.relative_to(ROOT)),
             "dataset_note": "Roadmap-derived synthetic smoke sample, not a research benchmark.",
             "random_seed": None,

@@ -1,0 +1,32 @@
+{
+  "data_type_counts": {
+    "human_verified_span_command": 50
+  },
+  "files": {
+    "label_map": "label_map.json",
+    "test": "test.jsonl",
+    "train": "train.jsonl",
+    "validation": "validation.jsonl"
+  },
+  "format": "huggingface_token_classification_jsonl",
+  "records": 50,
+  "split_counts": {
+    "test": 10,
+    "train": 30,
+    "validation": 10
+  },
+  "tag_counts": {
+    "B-action": 50,
+    "B-constraint": 10,
+    "B-count": 36,
+    "B-location": 25,
+    "B-target": 42,
+    "I-action": 2,
+    "I-constraint": 44,
+    "I-count": 53,
+    "I-location": 12,
+    "I-target": 32,
+    "O": 173
+  },
+  "tokens": 479
+}

@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import re
 from typing import Any
+from collections import Counter
 
 
 REQUIRED_FIELDS = ("id", "audio_path", "transcript", "source", "data_type", "split")
@@ -133,6 +134,25 @@ def evaluate_transcripts(
             "mean_word_error_rate": mean_wer,
         },
         "records": rows,
+    }
+
+
+def summarize_audio_manifest(records: list[AudioManifestRecord]) -> dict[str, Any]:
+    """Return split, provenance, and data-type counts for audio records."""
+
+    split_counts: Counter[str] = Counter()
+    source_counts: Counter[str] = Counter()
+    data_type_counts: Counter[str] = Counter()
+    for record in records:
+        split_counts[record.split] += 1
+        source_counts[record.source] += 1
+        data_type_counts[record.data_type] += 1
+
+    return {
+        "records": len(records),
+        "split_counts": dict(sorted(split_counts.items())),
+        "source_counts": dict(sorted(source_counts.items())),
+        "data_type_counts": dict(sorted(data_type_counts.items())),
     }
 
 

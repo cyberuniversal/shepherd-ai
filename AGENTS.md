@@ -156,6 +156,8 @@ Notebooks should orchestrate experiments and show reproducible Colab workflows. 
 
 Notebook outputs must not be used as evidence unless the raw output files, data inputs, model versions, parameters, and split definitions are committed or documented.
 
+For Week 2 Hugging Face transformer fine-tuning, use Google Colab with a T4 GPU runtime. Do not silently run transformer fine-tuning on local CPU. Local development may run lightweight validation, export, deterministic baselines, dependency-free baselines, and tests.
+
 ## Facts, Plans, And Hypotheses
 
 Use these labels in documentation and code comments when relevant:

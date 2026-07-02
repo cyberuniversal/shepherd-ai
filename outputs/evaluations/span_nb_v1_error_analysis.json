@@ -1,0 +1,658 @@
+{
+  "false_negative_entity_counts": {
+    "action": 1,
+    "constraint": 2,
+    "count": 2,
+    "location": 4,
+    "target": 9
+  },
+  "false_positive_entity_counts": {
+    "action": 4,
+    "constraint": 9,
+    "count": 6,
+    "location": 1,
+    "target": 9
+  },
+  "token_confusion": {
+    "B-action": {
+      "I-constraint": 1
+    },
+    "B-constraint": {
+      "I-constraint": 1,
+      "O": 1
+    },
+    "B-location": {
+      "B-target": 3,
+      "I-constraint": 1
+    },
+    "B-target": {
+      "I-constraint": 3
+    },
+    "I-constraint": {
+      "B-count": 1,
+      "I-count": 4,
+      "O": 1
+    },
+    "I-count": {
+      "B-location": 1,
+      "I-constraint": 4,
+      "O": 3
+    },
+    "I-location": {
+      "I-target": 1
+    },
+    "I-target": {
+      "B-constraint": 1,
+      "I-constraint": 7,
+      "I-count": 2,
+      "O": 1
+    },
+    "O": {
+      "B-action": 4,
+      "I-constraint": 3
+    }
+  },
+  "worst_records": [
+    {
+      "false_negative_entities": [
+        [
+          "location",
+          11,
+          21
+        ],
+        [
+          "target",
+          28,
+          43
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          22,
+          43
+        ],
+        [
+          "target",
+          11,
+          21
+        ]
+      ],
+      "id": "human_cmd_046",
+      "text": "Search the open field for a missing vehicle.",
+      "token_error_count": 6,
+      "token_error_rate": 0.6666666666666666,
+      "token_errors": [
+        {
+          "expected": "B-location",
+          "index": 2,
+          "predicted": "B-target",
+          "token": "open"
+        },
+        {
+          "expected": "I-location",
+          "index": 3,
+          "predicted": "I-target",
+          "token": "field"
+        },
+        {
+          "expected": "O",
+          "index": 4,
+          "predicted": "I-constraint",
+          "token": "for"
+        },
+        {
+          "expected": "O",
+          "index": 5,
+          "predicted": "I-constraint",
+          "token": "a"
+        },
+        {
+          "expected": "B-target",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "missing"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "I-constraint",
+          "token": "vehicle"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "constraint",
+          23,
+          56
+        ],
+        [
+          "target",
+          11,
+          22
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          18,
+          28
+        ],
+        [
+          "count",
+          33,
+          56
+        ],
+        [
+          "target",
+          11,
+          17
+        ]
+      ],
+      "id": "human_cmd_044",
+      "text": "Survey the entire farm using the fewest available drones.",
+      "token_error_count": 6,
+      "token_error_rate": 0.6,
+      "token_errors": [
+        {
+          "expected": "I-target",
+          "index": 3,
+          "predicted": "I-constraint",
+          "token": "farm"
+        },
+        {
+          "expected": "B-constraint",
+          "index": 4,
+          "predicted": "I-constraint",
+          "token": "using"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 5,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 6,
+          "predicted": "I-count",
+          "token": "fewest"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 7,
+          "predicted": "I-count",
+          "token": "available"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 8,
+          "predicted": "I-count",
+          "token": "drones"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          34,
+          45
+        ],
+        [
+          "target",
+          50,
+          63
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          8
+        ],
+        [
+          "constraint",
+          34,
+          63
+        ]
+      ],
+      "id": "human_cmd_047",
+      "text": "Dispatch two drones to survey the parking lot for blocked exits.",
+      "token_error_count": 6,
+      "token_error_rate": 0.5,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Dispatch"
+        },
+        {
+          "expected": "B-target",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "parking"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "I-constraint",
+          "token": "lot"
+        },
+        {
+          "expected": "O",
+          "index": 8,
+          "predicted": "I-constraint",
+          "token": "for"
+        },
+        {
+          "expected": "B-target",
+          "index": 9,
+          "predicted": "I-constraint",
+          "token": "blocked"
+        },
+        {
+          "expected": "I-target",
+          "index": 10,
+          "predicted": "I-constraint",
+          "token": "exits"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "count",
+          5,
+          39
+        ],
+        [
+          "target",
+          55,
+          65
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "constraint",
+          24,
+          39
+        ],
+        [
+          "constraint",
+          61,
+          65
+        ],
+        [
+          "count",
+          5,
+          14
+        ],
+        [
+          "location",
+          15,
+          19
+        ],
+        [
+          "target",
+          55,
+          60
+        ]
+      ],
+      "id": "human_cmd_050",
+      "text": "Send the drone with the highest battery to inspect the water tank.",
+      "token_error_count": 6,
+      "token_error_rate": 0.46153846153846156,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Send"
+        },
+        {
+          "expected": "I-count",
+          "index": 3,
+          "predicted": "B-location",
+          "token": "with"
+        },
+        {
+          "expected": "I-count",
+          "index": 4,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-count",
+          "index": 5,
+          "predicted": "I-constraint",
+          "token": "highest"
+        },
+        {
+          "expected": "I-count",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "battery"
+        },
+        {
+          "expected": "I-target",
+          "index": 11,
+          "predicted": "I-constraint",
+          "token": "tank"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "count",
+          5,
+          41
+        ],
+        [
+          "location",
+          49,
+          59
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          29,
+          41
+        ],
+        [
+          "count",
+          5,
+          20
+        ],
+        [
+          "target",
+          49,
+          59
+        ]
+      ],
+      "id": "human_cmd_030",
+      "text": "Send whichever drone has the most battery to the greenhouse.",
+      "token_error_count": 5,
+      "token_error_rate": 0.45454545454545453,
+      "token_errors": [
+        {
+          "expected": "I-count",
+          "index": 3,
+          "predicted": "O",
+          "token": "has"
+        },
+        {
+          "expected": "I-count",
+          "index": 4,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-count",
+          "index": 5,
+          "predicted": "I-constraint",
+          "token": "most"
+        },
+        {
+          "expected": "I-count",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "battery"
+        },
+        {
+          "expected": "B-location",
+          "index": 9,
+          "predicted": "B-target",
+          "token": "greenhouse"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          11,
+          28
+        ],
+        [
+          "target",
+          40,
+          63
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          46,
+          63
+        ],
+        [
+          "count",
+          19,
+          28
+        ],
+        [
+          "target",
+          11,
+          18
+        ],
+        [
+          "target",
+          40,
+          45
+        ]
+      ],
+      "id": "human_cmd_045",
+      "text": "Survey the stadium entrances and report areas of heavy crowding.",
+      "token_error_count": 4,
+      "token_error_rate": 0.36363636363636365,
+      "token_errors": [
+        {
+          "expected": "I-target",
+          "index": 3,
+          "predicted": "I-count",
+          "token": "entrances"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "B-constraint",
+          "token": "of"
+        },
+        {
+          "expected": "I-target",
+          "index": 8,
+          "predicted": "I-constraint",
+          "token": "heavy"
+        },
+        {
+          "expected": "I-target",
+          "index": 9,
+          "predicted": "I-constraint",
+          "token": "crowding"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "constraint",
+          46,
+          65
+        ],
+        [
+          "target",
+          30,
+          45
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          20,
+          25
+        ],
+        [
+          "count",
+          41,
+          45
+        ],
+        [
+          "count",
+          51,
+          65
+        ],
+        [
+          "target",
+          30,
+          40
+        ]
+      ],
+      "id": "human_cmd_049",
+      "text": "Send four drones to split the industrial zone into equal sections and report anything unusual.",
+      "token_error_count": 5,
+      "token_error_rate": 0.3125,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 4,
+          "predicted": "B-action",
+          "token": "split"
+        },
+        {
+          "expected": "I-target",
+          "index": 7,
+          "predicted": "I-count",
+          "token": "zone"
+        },
+        {
+          "expected": "B-constraint",
+          "index": 8,
+          "predicted": "O",
+          "token": "into"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 9,
+          "predicted": "B-count",
+          "token": "equal"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 10,
+          "predicted": "I-count",
+          "token": "sections"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "action",
+          45,
+          53
+        ],
+        [
+          "location",
+          23,
+          28
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "constraint",
+          45,
+          53
+        ],
+        [
+          "target",
+          23,
+          28
+        ]
+      ],
+      "id": "human_cmd_042",
+      "text": "Send two drones to the canal while one drone monitors the crops.",
+      "token_error_count": 3,
+      "token_error_rate": 0.23076923076923078,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Send"
+        },
+        {
+          "expected": "B-location",
+          "index": 5,
+          "predicted": "B-target",
+          "token": "canal"
+        },
+        {
+          "expected": "B-action",
+          "index": 9,
+          "predicted": "I-constraint",
+          "token": "monitors"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "location",
+          43,
+          47
+        ],
+        [
+          "target",
+          12,
+          26
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          43,
+          47
+        ],
+        [
+          "target",
+          12,
+          19
+        ]
+      ],
+      "id": "human_cmd_048",
+      "text": "Inspect the railway tracks, then return to base.",
+      "token_error_count": 2,
+      "token_error_rate": 0.2,
+      "token_errors": [
+        {
+          "expected": "I-target",
+          "index": 3,
+          "predicted": "O",
+          "token": "tracks"
+        },
+        {
+          "expected": "B-location",
+          "index": 8,
+          "predicted": "I-constraint",
+          "token": "base"
+        }
+      ]
+    }
+  ]
+}

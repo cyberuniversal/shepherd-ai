@@ -21,6 +21,9 @@ The current source of truth is:
 - `docs/implementation_plan.md`
 - `docs/milestone_2_speech_input.md`
 - `docs/literature_to_implementation.md`
+- `docs/week2_data_collection_protocol.md`
+- `docs/week2_training_explainer.md`
+- `docs/week2_span_annotation.md`
 
 The roadmap path is `docs/roadmap.pdf`; there is currently no `docs/roadmap/` directory.
 
@@ -38,7 +41,7 @@ The repository now includes the roadmap's Colab-style notebook sequence:
 - `notebooks/Notebook8_FinalDemo.ipynb`
 - `notebooks/Notebook9_Evaluation.ipynb`
 
-Notebooks should orchestrate Colab workflows. Reusable implementation belongs in `src/shepherd_ai/`, with tests in `tests/`.
+Notebooks should orchestrate Colab workflows. Reusable implementation belongs in `src/shepherd_ai/`, with tests in `tests/`. Transformer fine-tuning is Colab-first and should use a GPU runtime, not local CPU training.
 
 Dataset and artifact locations:
 
@@ -67,18 +70,109 @@ The current parser and transcript utilities are not trained models. A serious We
 
 The first supervised intent-extraction baseline is documented in `docs/week2_intent_training.md`.
 
-Run:
+Run the preserved weak baseline:
 
 ```powershell
-python scripts/train_intent_model.py --dataset datasets/commands/intent_labeled_synthetic.jsonl --model-output outputs/model_artifacts/intent_nb_v0.json --metrics-output outputs/evaluations/intent_nb_v0_metrics.json --comparison-output outputs/evaluations/intent_nb_v0_vs_deterministic.json --seed 17
+python scripts/train_intent_model.py --dataset datasets/commands/intent_labeled_synthetic.jsonl --model-output outputs/model_artifacts/intent_nb_v0.json --metrics-output outputs/evaluations/intent_nb_v0_metrics.json --comparison-output outputs/evaluations/intent_nb_v0_vs_deterministic.json --validation-output outputs/evaluations/intent_nb_v0_validation_metrics.json --seed 17
+```
+
+Run the improved Week 2 baseline:
+
+```powershell
+python scripts/train_intent_model.py --dataset datasets/commands/intent_labeled_synthetic.jsonl --model-output outputs/model_artifacts/intent_nb_v1.json --metrics-output outputs/evaluations/intent_nb_v1_metrics.json --comparison-output outputs/evaluations/intent_nb_v1_vs_deterministic.json --validation-output outputs/evaluations/intent_nb_v1_validation_metrics.json --seed 17 --model-name trained_nb_v1 --model-version 0.2 --include-bigrams --include-alias-features --alias-feature-weight 3
 ```
 
 Current synthetic held-out result:
 
-- `trained_nb_v0`: field accuracy 0.85, exact-record accuracy 0.25.
+- `trained_nb_v0`: test field accuracy 0.85, exact-record accuracy 0.25; validation field accuracy 0.95, exact-record accuracy 0.75.
+- `trained_nb_v1`: test field accuracy 1.0, exact-record accuracy 1.0; validation field accuracy 1.0, exact-record accuracy 1.0.
 - `deterministic_v0`: field accuracy 1.0, exact-record accuracy 1.0 on the same tiny synthetic test split.
 
-This is an early synthetic baseline and not a real-user or speech-recognition result.
+The `trained_nb_v1` result comes from a tiny synthetic test split and field-specific schema-alias features. It is a reproducible Week 2 training workflow check, not a real-user or speech-recognition result.
+
+Current deterministic parser status: new parser outputs are labeled `deterministic_v1`. This version adds an open-vocabulary target phrase fallback for supported Week 2 actions so commands such as `inspect the livestock pen` or `capture images of the red pickup truck` do not require every target to be hard-coded first. It is still a deterministic baseline, not a trained model.
+
+Current curated user-command result:
+
+- Dataset: `datasets/commands/human_written_commands_curated_v1.jsonl`
+- Split: 30 train, 10 validation, 10 test.
+- `trained_nb_human_curated_v1`: validation field accuracy 0.78, test field accuracy 0.70.
+- `trained_nb_human_curated_v2`: validation field accuracy 1.0, test field accuracy 1.0.
+- `deterministic_v0`: test field accuracy 1.0, exact-record accuracy 1.0.
+
+`trained_nb_human_curated_v1` is the preserved negative result for the trained field classifier. `trained_nb_human_curated_v2` is a hybrid parser-gated baseline with deterministic rule overrides, not proof that a pure trained model solved the task.
+
+The deterministic metrics above are historical outputs generated before the `deterministic_v1` parser label. Rerun the evaluation scripts to generate fresh raw artifacts for the current parser.
+
+Evaluate a saved model on a selected split without retraining:
+
+```powershell
+python scripts/evaluate_intent_model.py --model outputs/model_artifacts/intent_nb_v1.json --dataset datasets/commands/intent_labeled_synthetic.jsonl --split validation --output outputs/evaluations/intent_nb_v1_saved_model_validation.json
+```
+
+Week 2 data collection rules are documented in `docs/week2_data_collection_protocol.md`. The current training method and suggested paper reading order are documented in `docs/week2_training_explainer.md`.
+
+Span annotation for stronger slot extraction is documented in `docs/week2_span_annotation.md`. The repository now includes a dependency-free validator and BIO exporter for future spaCy or Hugging Face token-classification work:
+
+```powershell
+python scripts/create_span_record.py --output datasets/commands/human_verified_span_commands.jsonl --id span_cmd_001 --text "Send the nearest drone to inspect the livestock pen without crossing the road." --split train --target-span "livestock pen" --constraint-span "without crossing the road" --action-span "inspect"
+python scripts/create_span_record_from_command.py --input datasets/commands/human_written_commands_curated_v1.jsonl --id human_cmd_001 --output datasets/commands/human_verified_span_commands.jsonl --count-span "two drones" --location-span "north" --action-span "inspect" --target-span "crops"
+python scripts/rebuild_span_dataset_from_commands.py --commands-file span_label_commands.txt --output datasets/commands/human_verified_span_commands.jsonl --summary-output outputs/evaluations/human_verified_span_commands_summary.json --bio-output outputs/evaluations/human_verified_span_commands_bio.jsonl
+python scripts/validate_span_dataset.py --dataset datasets/commands/human_verified_span_commands.jsonl --summary-output outputs/evaluations/human_verified_span_commands_summary.json --bio-output outputs/evaluations/human_verified_span_commands_bio.jsonl
+```
+
+This command requires a real span-labeled dataset. Do not treat parser drafts or assistant-curated record labels as human-verified span labels.
+
+Train the initial supervised BIO span tagger:
+
+```powershell
+python scripts/train_span_tagger.py --dataset datasets/commands/human_verified_span_commands.jsonl --model-output outputs/model_artifacts/span_nb_v0.json --metrics-output outputs/evaluations/span_nb_v0_metrics.json --validation-output outputs/evaluations/span_nb_v0_validation_metrics.json --seed 17 --model-name span_nb_v0 --model-version 0.1
+python scripts/train_span_tagger.py --dataset datasets/commands/human_verified_span_commands.jsonl --model-output outputs/model_artifacts/span_nb_v1.json --metrics-output outputs/evaluations/span_nb_v1_metrics.json --validation-output outputs/evaluations/span_nb_v1_validation_metrics.json --seed 17 --model-name span_nb_v1 --model-version 0.2 --use-transitions
+```
+
+Current span-tagger results on human-verified span labels:
+
+- `span_nb_v0`: validation token accuracy 0.6774, validation entity F1 0.5455; test token accuracy 0.5789, test entity F1 0.3656.
+- `span_nb_v1`: validation token accuracy 0.7527, validation entity F1 0.6154; test token accuracy 0.6228, test entity F1 0.4198.
+
+These are honest early baselines, not solved slot extractors.
+
+Export a Colab-ready Hugging Face token-classification dataset:
+
+```powershell
+python scripts/export_hf_token_dataset.py --dataset datasets/commands/human_verified_span_commands.jsonl --output-dir outputs/hf_token_dataset
+```
+
+Fine-tune the transformer baseline in Google Colab with a T4 GPU runtime. In Colab, select `Runtime > Change runtime type > T4 GPU`, then verify CUDA before training:
+
+```python
+import torch
+
+assert torch.cuda.is_available(), "Select a Colab GPU runtime before training"
+print(torch.cuda.get_device_name(0))
+```
+
+Then run:
+
+```powershell
+python scripts/train_hf_token_classifier.py --dataset-dir outputs/hf_token_dataset --pretrained-model distilbert-base-uncased --output-dir outputs/model_artifacts/hf_token_classifier_distilbert --metrics-output outputs/evaluations/hf_token_classifier_distilbert_metrics.json --validation-output outputs/evaluations/hf_token_classifier_distilbert_validation_metrics.json --epochs 5 --learning-rate 0.00002 --batch-size 8 --seed 17 --required-device-substring T4
+```
+
+The script refuses to train without CUDA. Do not report a Hugging Face fine-tuning result unless the raw metrics file records the runtime, model, seed, parameters, split, and package versions.
+
+Create and validate real Week 2 command data only when the records are actually collected:
+
+```powershell
+python scripts/collect_week2_sample.py --text "Send two drones north and inspect the crops." --wav "C:\path\to\your_recording.wav" --split train
+python scripts/create_command_record.py --output datasets/commands/human_written_commands.jsonl --id human_cmd_001 --text "Send two drones north and inspect the crops." --split train --source human_written_collection_v1 --data-type human_written_command --action inspect --count 2 --location north --target crops
+python scripts/validate_command_dataset.py --dataset datasets/commands/human_written_commands.jsonl --summary-output outputs/evaluations/human_written_commands_summary.json --require-splits train,validation,test
+python scripts/validate_audio_manifest.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --summary-output outputs/evaluations/audio_manifest_summary.json
+python scripts/audit_week2_collection.py --commands datasets/commands/human_written_commands_draft.jsonl --audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --output outputs/evaluations/week2_collection_audit.json
+```
+
+The first command is the easiest path: type the transcript and pass a WAV path. It writes draft intent labels from the deterministic parser, marked with the current parser version such as `deterministic_v1_draft`. Review those labels before using them as human-verified training or evaluation labels.
+
+These commands are for real collection files. The repository currently includes command collection artifacts and an audio manifest, but those are not a final human-verified benchmark or a Whisper ASR evaluation.
 
 ## Run Tests
 

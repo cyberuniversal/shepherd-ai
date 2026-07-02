@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "batch_size": 8,
+    "dataset_dir": "outputs/hf_token_dataset",
+    "epochs": 5.0,
+    "learning_rate": 2e-05,
+    "model_name": "hf_token_classifier",
+    "pretrained_model": "distilbert-base-uncased",
+    "seed": 17,
+    "split": "test"
+  },
+  "metrics": {
+    "epoch": 5.0,
+    "eval_entity_f1": 0.0,
+    "eval_entity_precision": 0.0,
+    "eval_entity_recall": 0.0,
+    "eval_loss": 2.1571948528289795,
+    "eval_runtime": 0.1283,
+    "eval_samples_per_second": 77.95,
+    "eval_steps_per_second": 15.59
+  }
+}

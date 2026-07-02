@@ -2,7 +2,7 @@
 
 These notebooks follow the roadmap order, but implementation details must follow `AGENTS.md` and `docs/literature_to_implementation.md`.
 
-The notebooks are intentionally lightweight entry points. Shared logic should live in `src/shepherd_ai/` so experiments are reproducible from notebooks and scripts.
+The notebooks are intentionally lightweight entry points. Shared logic should live in `src/shepherd_ai/` so experiments are reproducible from notebooks and scripts. Transformer fine-tuning belongs in Colab with a T4 GPU runtime; local machines should be used for lightweight validation, export, and tests.
 
 Notebook sequence:
 

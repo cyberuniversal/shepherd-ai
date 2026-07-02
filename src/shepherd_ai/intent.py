@@ -13,6 +13,8 @@ import re
 from typing import Any
 
 
+DETERMINISTIC_PARSER_NAME = "deterministic_v1"
+
 NUMBER_WORDS: dict[str, int] = {
     "one": 1,
     "two": 2,
@@ -26,14 +28,28 @@ NUMBER_WORDS: dict[str, int] = {
     "ten": 10,
 }
 
+TARGET_STOP_MARKERS: tuple[str, ...] = (
+    "while",
+    "before",
+    "after",
+    "without",
+    "avoid",
+    "using",
+    "then",
+)
+
 ACTION_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("return", ("return", "come back")),
+    ("hold", ("hold position", "hold")),
+    ("search", ("search",)),
+    ("capture", ("capture", "capture images")),
     ("inspect", ("inspect", "check", "survey")),
     ("scan", ("scan",)),
+    ("return", ("return", "come back", "back to base", "back to the base")),
     ("send", ("send", "dispatch")),
 )
 
 LOCATION_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("open field", ("open field",)),
     ("north", ("north", "northern")),
     ("south", ("south", "southern")),
     ("east", ("east", "eastern")),
@@ -41,9 +57,20 @@ LOCATION_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 TARGET_ALIASES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("stadium entrances", ("stadium entrances", "stadium entrance")),
+    ("industrial zone", ("industrial zone",)),
+    ("irrigation canal", ("irrigation canal", "canal", "irrigation")),
+    ("missing vehicle", ("missing vehicle",)),
+    ("railway tracks", ("railway tracks", "railway track", "tracks")),
+    ("storage area", ("storage area",)),
+    ("parking lot", ("parking lot",)),
+    ("water tank", ("water tank",)),
     ("crops", ("crops", "crop")),
     ("greenhouse", ("greenhouse", "green house")),
-    ("irrigation canal", ("irrigation canal", "canal", "irrigation")),
+    ("farm", ("farm",)),
+    ("area", ("area",)),
+    ("car", ("car",)),
+    ("everything", ("everything",)),
     ("field", ("field",)),
     ("drones", ("drones", "drone")),
 )
@@ -59,7 +86,7 @@ class MissionIntent:
     target: str | None
     constraints: list[str] = field(default_factory=list)
     text: str = ""
-    parser: str = "deterministic_v0"
+    parser: str = DETERMINISTIC_PARSER_NAME
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -129,28 +156,60 @@ def _extract_action(text: str) -> str | None:
 
 
 def _extract_count(text: str) -> int | str | None:
-    if _contains_word_or_phrase(text, "all drones") or _contains_word_or_phrase(text, "all drone"):
+    if (
+        _contains_word_or_phrase(text, "all drones")
+        or _contains_word_or_phrase(text, "all drone")
+        or _contains_word_or_phrase(text, "all the drones")
+        or _contains_word_or_phrase(text, "all available drones")
+        or _contains_word_or_phrase(text, "all available drone")
+        or _contains_word_or_phrase(text, "every drones")
+        or _contains_word_or_phrase(text, "every drone")
+        or _contains_word_or_phrase(text, "every available drone")
+        or _contains_word_or_phrase(text, "every available drones")
+    ):
         return "all"
 
+    count_mentions: list[int] = []
     digit_match = re.search(r"\b(\d+)\s+drones?\b", text)
     if digit_match:
-        return int(digit_match.group(1))
+        count_mentions.append(int(digit_match.group(1)))
 
     for word, value in NUMBER_WORDS.items():
         if re.search(rf"\b{word}\s+drones?\b", text):
-            return value
+            count_mentions.append(value)
+        if re.search(rf"\b{word}\s+more\b", text):
+            count_mentions.append(value)
+
+    if count_mentions:
+        if re.search(r"\banother(?:\s+drone)?\b", text):
+            count_mentions.append(1)
+        return sum(count_mentions)
 
     drone_id_match = re.search(r"\bdrone\s+(\d+)\b", text)
     if drone_id_match:
+        return 1
+
+    for word in NUMBER_WORDS:
+        if re.search(rf"\bdrone\s+{word}\b", text):
+            return 1
+
+    if (
+        _contains_word_or_phrase(text, "the drone")
+        or _contains_word_or_phrase(text, "nearest drone")
+        or _contains_word_or_phrase(text, "whichever drone")
+    ):
         return 1
 
     return None
 
 
 def _extract_location(text: str) -> str | None:
+    matched_locations: list[str] = []
     for canonical, aliases in LOCATION_ALIASES:
         if any(_contains_word_or_phrase(text, alias) for alias in aliases):
-            return canonical
+            matched_locations.append(canonical)
+    if len(matched_locations) == 1:
+        return matched_locations[0]
     return None
 
 
@@ -159,6 +218,7 @@ def _extract_target(text: str, action: str | None) -> str | None:
         _contains_word_or_phrase(text, "all drones")
         or _contains_word_or_phrase(text, "all drone")
         or _contains_word_or_phrase(text, "drone")
+        or _contains_word_or_phrase(text, "drones")
     ):
         return "drones"
 
@@ -170,15 +230,104 @@ def _extract_target(text: str, action: str | None) -> str | None:
             continue
         if any(_contains_word_or_phrase(text, alias) for alias in aliases):
             return canonical
+    return _extract_open_vocabulary_target(text, action)
+
+
+def _extract_open_vocabulary_target(text: str, action: str | None) -> str | None:
+    """Extract a bounded noun phrase when a target is not in the alias table."""
+
+    if action is None or action in {"return", "hold"}:
+        return None
+
+    stop = _target_stop_pattern(include_for=action != "search")
+    patterns_by_action: dict[str, tuple[str, ...]] = {
+        "inspect": (
+            rf"\b(?:inspect|check|survey)\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+        ),
+        "scan": (
+            rf"\bscan\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+        ),
+        "capture": (
+            rf"\bcapture(?:\s+images?)?(?:\s+of)?\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+        ),
+        "search": (
+            rf"\bsearch\b.+?\bfor\s+(?:the\s+|a\s+|an\s+)?(.+?){_target_stop_pattern(include_for=False)}",
+            rf"\bsearch\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+        ),
+    }
+
+    for pattern in patterns_by_action.get(action, ()):
+        match = re.search(pattern, text)
+        if not match:
+            continue
+        target = _clean_open_target(match.group(1))
+        if target:
+            return target
     return None
+
+
+def _target_stop_pattern(*, include_for: bool) -> str:
+    markers = list(TARGET_STOP_MARKERS)
+    if include_for:
+        markers.append("for")
+    marker_pattern = "|".join(re.escape(marker) for marker in markers)
+    action_pattern = "|".join(
+        re.escape(keyword)
+        for _, keywords in ACTION_PATTERNS
+        for keyword in keywords
+        if keyword not in {"hold", "send", "dispatch"}
+    )
+    return rf"(?=\s+(?:{marker_pattern})\b|\s+and\s+(?:{action_pattern}|report)\b|$)"
+
+
+def _clean_open_target(target: str) -> str | None:
+    cleaned = target.strip()
+    cleaned = re.sub(r"^(?:the|a|an)\s+", "", cleaned)
+    cleaned = re.sub(r"\b(?:please|now)$", "", cleaned).strip()
+    if not cleaned:
+        return None
+    if cleaned in {"drone", "drones"}:
+        return None
+    if cleaned in {alias for _, aliases in LOCATION_ALIASES for alias in aliases}:
+        return None
+    if len(cleaned.split()) > 8:
+        return None
+    return cleaned
 
 
 def _extract_constraints(text: str) -> list[str]:
     constraints: list[str] = []
-    for marker in ("while", "before", "after", "without", "avoid"):
+    if _contains_word_or_phrase(text, "highest battery") or _contains_word_or_phrase(text, "most battery"):
+        constraints.append("highest battery")
+    split_match = re.search(r"\bsplit\s+(.+?)\s+into\s+(.+?)(?:\s+and\b|$)", text)
+    if split_match:
+        constraints.append(f"split {split_match.group(1).strip()} into {split_match.group(2).strip()}")
+    divide_match = re.search(r"\bdivide\s+(.+?)\s+between\s+(.+?)(?:\s+and\b|$)", text)
+    if divide_match:
+        constraints.append(f"divide {divide_match.group(1).strip()} between {divide_match.group(2).strip()}")
+    if re.search(r"\bone\s+drone\s+north\s+and\s+another\s+east\b", text):
+        constraints.append("one drone north and another east")
+    if _contains_word_or_phrase(text, "nearest drone"):
+        constraints.append("nearest drone")
+    for marker in ("while", "before", "after", "without", "avoid", "using"):
         match = re.search(rf"\b{marker}\b\s+(.+)$", text)
         if match:
-            constraints.append(f"{marker} {match.group(1).strip()}")
+            phrase = match.group(1).strip()
+            if marker == "while" and phrase.startswith("one drone"):
+                constraints.append(phrase)
+            else:
+                constraints.append(f"{marker} {phrase}")
+    for phrase in (
+        "for blocked exits",
+        "for signs of dryness",
+        "back to base",
+        "report anything unusual",
+        "report areas of heavy crowding",
+        "return to base",
+        "return to the launch point",
+    ):
+        if _contains_word_or_phrase(text, phrase):
+            constraints.append(phrase)
     return constraints
 
 

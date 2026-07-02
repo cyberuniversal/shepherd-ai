@@ -17,7 +17,14 @@ from pathlib import Path
 import re
 from typing import Any
 
-from shepherd_ai.intent import MissionIntent, parse_intent
+from shepherd_ai.intent import (
+    ACTION_PATTERNS,
+    DETERMINISTIC_PARSER_NAME,
+    LOCATION_ALIASES,
+    TARGET_ALIASES,
+    MissionIntent,
+    parse_intent,
+)
 
 
 FIELDS = ("action", "location", "target")
@@ -42,9 +49,10 @@ class NaiveBayesFieldModel:
     class_doc_counts: dict[str, int]
     token_counts: dict[str, dict[str, int]]
     vocabulary: list[str]
+    feature_config: dict[str, Any] | None = None
 
     def predict(self, text: str) -> str | None:
-        tokens = _tokenize(text)
+        tokens = _extract_features(text, self.feature_config, field=self.field)
         total_docs = sum(self.class_doc_counts.values())
         if total_docs == 0:
             return None
@@ -76,6 +84,7 @@ class NaiveBayesFieldModel:
                 for label, counts in payload["token_counts"].items()
             },
             vocabulary=[str(token) for token in payload["vocabulary"]],
+            feature_config=dict(payload.get("feature_config") or {}),
         )
 
 
@@ -90,11 +99,15 @@ class TrainedIntentModel:
 
     def predict(self, text: str) -> MissionIntent:
         rule_intent = parse_intent(text)
+        use_rule_overrides = bool((self.parameters or {}).get("use_rule_overrides", False))
+        predicted_action = self.field_models["action"].predict(text)
+        predicted_location = self.field_models["location"].predict(text)
+        predicted_target = self.field_models["target"].predict(text)
         return MissionIntent(
-            action=self.field_models["action"].predict(text),
+            action=rule_intent.action if use_rule_overrides else predicted_action,
             count=rule_intent.count,
-            location=self.field_models["location"].predict(text),
-            target=self.field_models["target"].predict(text),
+            location=rule_intent.location if use_rule_overrides else predicted_location,
+            target=rule_intent.target if use_rule_overrides else predicted_target,
             constraints=rule_intent.constraints,
             text=text,
             parser=self.model_name,
@@ -152,13 +165,36 @@ def load_labeled_commands(path: str | Path) -> list[LabeledCommand]:
     return records
 
 
-def train_intent_model(records: list[LabeledCommand]) -> TrainedIntentModel:
+def train_intent_model(
+    records: list[LabeledCommand],
+    *,
+    model_name: str = "trained_nb_v0",
+    model_version: str = "0.1",
+    include_bigrams: bool = False,
+    include_alias_features: bool = False,
+    alias_feature_weight: int = 3,
+    use_rule_overrides: bool = False,
+) -> TrainedIntentModel:
     if not records:
         raise ValueError("at least one labeled training record is required")
     validate_split_integrity(records)
+    feature_config = {
+        "include_unigrams": True,
+        "include_bigrams": include_bigrams,
+        "include_alias_features": include_alias_features,
+        "alias_feature_weight": alias_feature_weight,
+    }
     return TrainedIntentModel(
-        field_models={field: _train_field_model(records, field) for field in FIELDS},
+        field_models={field: _train_field_model(records, field, feature_config) for field in FIELDS},
         trained_records=len(records),
+        model_name=model_name,
+        model_version=model_version,
+        parameters={
+            "classifier": "multinomial_naive_bayes",
+            "alpha": 1.0,
+            "feature_config": feature_config,
+            "use_rule_overrides": use_rule_overrides,
+        },
     )
 
 
@@ -209,14 +245,17 @@ def evaluate_intent_model(
         )
 
     exact_matches = sum(1 for row in rows if row["all_fields_match"])
+    error_analysis = analyze_intent_errors({"records": rows})
+    data_types = sorted({record.data_type for record in records})
     return {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "model_name": model.model_name,
             "model_version": model.model_version,
             "dataset": dataset_name,
+            "data_types": data_types,
             "parameters": model.parameters or {"classifier": "multinomial_naive_bayes", "alpha": 1.0},
-            "note": "Synthetic command evaluation; not evidence of real user or speech performance.",
+            "note": _evaluation_note(data_types),
         },
         "summary": {
             "records": len(rows),
@@ -225,6 +264,7 @@ def evaluate_intent_model(
             "field_matches": matched_fields,
             "total_fields": total_fields,
             "field_accuracy": matched_fields / total_fields if total_fields else 0.0,
+            "field_error_counts": error_analysis["field_error_counts"],
         },
         "records": rows,
     }
@@ -238,7 +278,7 @@ def compare_with_deterministic_baseline(
 ) -> dict[str, Any]:
     trained = evaluate_intent_model(model, records, dataset_name=dataset_name)
     deterministic = _evaluate_predictor(
-        "deterministic_v0",
+        DETERMINISTIC_PARSER_NAME,
         lambda text: parse_intent(text).to_dict(),
         records,
         dataset_name=dataset_name,
@@ -247,11 +287,11 @@ def compare_with_deterministic_baseline(
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "dataset": dataset_name,
-            "systems_compared": ["deterministic_v0", model.model_name],
-            "note": "Synthetic held-out comparison; not evidence of real user or speech performance.",
+            "systems_compared": [DETERMINISTIC_PARSER_NAME, model.model_name],
+            "note": "Held-out comparison; interpret according to each system's data_types metadata.",
         },
         "systems": {
-            "deterministic_v0": deterministic,
+            DETERMINISTIC_PARSER_NAME: deterministic,
             model.model_name: trained,
         },
     }
@@ -278,13 +318,68 @@ def load_intent_model(path: str | Path) -> TrainedIntentModel:
     return TrainedIntentModel.from_dict(json.loads(Path(path).read_text(encoding="utf-8")))
 
 
-def _train_field_model(records: list[LabeledCommand], field: str) -> NaiveBayesFieldModel:
+def summarize_labeled_commands(records: list[LabeledCommand]) -> dict[str, Any]:
+    """Return split, provenance, and label counts for experiment metadata."""
+
+    split_counts: Counter[str] = Counter()
+    source_counts: Counter[str] = Counter()
+    data_type_counts: Counter[str] = Counter()
+    label_counts: dict[str, Counter[str]] = {field: Counter() for field in EVAL_FIELDS}
+    for record in records:
+        split_counts[record.split] += 1
+        source_counts[record.source] += 1
+        data_type_counts[record.data_type] += 1
+        for field in EVAL_FIELDS:
+            label_counts[field][_encode_label(record.expected_intent[field])] += 1
+
+    return {
+        "records": len(records),
+        "split_counts": dict(sorted(split_counts.items())),
+        "source_counts": dict(sorted(source_counts.items())),
+        "data_type_counts": dict(sorted(data_type_counts.items())),
+        "label_counts": {
+            field: {_decode_label_for_summary(label): count for label, count in sorted(counts.items())}
+            for field, counts in label_counts.items()
+        },
+    }
+
+
+def analyze_intent_errors(evaluation_result: dict[str, Any]) -> dict[str, Any]:
+    """Group held-out intent errors by field without changing raw records."""
+
+    errors_by_field: dict[str, list[dict[str, Any]]] = {}
+    for row in evaluation_result.get("records", []):
+        matches = dict(row.get("field_matches") or {})
+        for field, matched in matches.items():
+            if matched:
+                continue
+            errors_by_field.setdefault(field, []).append(
+                {
+                    "id": row["id"],
+                    "split": row["split"],
+                    "text": row["text"],
+                    "expected": row["expected_intent"][field],
+                    "actual": row["actual_intent"][field],
+                }
+            )
+
+    return {
+        "field_error_counts": {field: len(errors) for field, errors in sorted(errors_by_field.items())},
+        "errors_by_field": {field: errors for field, errors in sorted(errors_by_field.items())},
+    }
+
+
+def _train_field_model(
+    records: list[LabeledCommand],
+    field: str,
+    feature_config: dict[str, Any],
+) -> NaiveBayesFieldModel:
     class_doc_counts: Counter[str] = Counter()
     token_counts: dict[str, Counter[str]] = defaultdict(Counter)
     vocabulary: set[str] = set()
     for record in records:
         label = _encode_label(record.expected_intent[field])
-        tokens = _tokenize(record.text)
+        tokens = _extract_features(record.text, feature_config, field=field)
         class_doc_counts[label] += 1
         token_counts[label].update(tokens)
         vocabulary.update(tokens)
@@ -293,11 +388,57 @@ def _train_field_model(records: list[LabeledCommand], field: str) -> NaiveBayesF
         class_doc_counts=dict(class_doc_counts),
         token_counts={label: dict(counts) for label, counts in token_counts.items()},
         vocabulary=sorted(vocabulary),
+        feature_config=feature_config,
     )
 
 
 def _tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _extract_features(text: str, feature_config: dict[str, Any] | None, *, field: str) -> list[str]:
+    config = {
+        "include_unigrams": True,
+        "include_bigrams": False,
+        "include_alias_features": False,
+        "alias_feature_weight": 1,
+    }
+    config.update(feature_config or {})
+    tokens = _tokenize(text)
+    features: list[str] = []
+    if config["include_unigrams"]:
+        features.extend(tokens)
+    if config["include_bigrams"]:
+        features.extend(f"bigram:{left}_{right}" for left, right in zip(tokens, tokens[1:]))
+    if config["include_alias_features"]:
+        alias_features = _schema_alias_features(text, field=field)
+        for _ in range(int(config["alias_feature_weight"])):
+            features.extend(alias_features)
+    return features
+
+
+def _schema_alias_features(text: str, *, field: str) -> list[str]:
+    normalized = _normalize_text(text)
+    features: list[str] = []
+    if field == "action":
+        for action, aliases in ACTION_PATTERNS:
+            if any(_contains_alias(normalized, alias) for alias in aliases):
+                features.append(f"schema_action:{action}")
+    elif field == "location":
+        for location, aliases in LOCATION_ALIASES:
+            if any(_contains_alias(normalized, alias) for alias in aliases):
+                features.append(f"schema_location:{location}")
+    elif field == "target":
+        for target, aliases in TARGET_ALIASES:
+            if any(_contains_alias(normalized, alias) for alias in aliases):
+                features.append(f"schema_target:{target}")
+    return features
+
+
+def _contains_alias(normalized_text: str, phrase: str) -> bool:
+    normalized_phrase = _normalize_text(phrase)
+    escaped = re.escape(normalized_phrase)
+    return re.search(rf"\b{escaped}\b", normalized_text) is not None
 
 
 def _normalize_text(text: str) -> str:
@@ -312,6 +453,10 @@ def _decode_label(label: str | None) -> str | None:
     if label is None or label == NONE_LABEL:
         return None
     return label
+
+
+def _decode_label_for_summary(label: str) -> str:
+    return "null" if label == NONE_LABEL else label
 
 
 def _required_text(value: Any, field_name: str, line_number: int) -> str:
@@ -350,12 +495,15 @@ def _evaluate_predictor(
             }
         )
     exact_matches = sum(1 for row in rows if row["all_fields_match"])
+    error_analysis = analyze_intent_errors({"records": rows})
+    data_types = sorted({record.data_type for record in records})
     return {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "model_name": model_name,
             "dataset": dataset_name,
-            "note": "Synthetic command evaluation; not evidence of real user or speech performance.",
+            "data_types": data_types,
+            "note": _evaluation_note(data_types),
         },
         "summary": {
             "records": len(rows),
@@ -364,6 +512,15 @@ def _evaluate_predictor(
             "field_matches": matched_fields,
             "total_fields": total_fields,
             "field_accuracy": matched_fields / total_fields if total_fields else 0.0,
+            "field_error_counts": error_analysis["field_error_counts"],
         },
         "records": rows,
     }
+
+
+def _evaluation_note(data_types: list[str]) -> str:
+    if data_types == ["synthetic_command"]:
+        return "Synthetic command evaluation; not evidence of real user or speech performance."
+    if any("audio" in data_type or "asr" in data_type for data_type in data_types):
+        return "Transcript-derived command evaluation; ASR quality must be evaluated separately."
+    return "Text command evaluation; not evidence of speech recognition performance."

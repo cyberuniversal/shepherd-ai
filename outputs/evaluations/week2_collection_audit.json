@@ -1,0 +1,118 @@
+{
+  "audio": {
+    "data_type_counts": {
+      "human_recorded_audio": 10
+    },
+    "records": 10,
+    "source_counts": {
+      "manual_week2_collection_v1": 10
+    },
+    "split_counts": {
+      "train": 10
+    }
+  },
+  "commands": {
+    "data_type_counts": {
+      "human_written_command_draft_labeled": 50
+    },
+    "label_counts": {
+      "action": {
+        "inspect": 21,
+        "null": 6,
+        "return": 3,
+        "scan": 5,
+        "send": 15
+      },
+      "constraints": {
+        "['while another drone checks the irrigation canal']": 1,
+        "['while avoiding the storage area']": 2,
+        "['while minimizing total flight distance']": 1,
+        "['while one drone monitors the crops']": 1,
+        "['without getting too close']": 1,
+        "[]": 44
+      },
+      "count": {
+        "1": 6,
+        "2": 7,
+        "3": 4,
+        "4": 1,
+        "null": 32
+      },
+      "location": {
+        "east": 5,
+        "north": 9,
+        "null": 29,
+        "south": 2,
+        "west": 5
+      },
+      "target": {
+        "crops": 6,
+        "field": 10,
+        "greenhouse": 5,
+        "irrigation canal": 3,
+        "null": 26
+      }
+    },
+    "records": 50,
+    "source_counts": {
+      "manual_week2_collection_v1": 50
+    },
+    "split_counts": {
+      "train": 50
+    }
+  },
+  "metadata": {
+    "audio_manifest": "datasets\\sample_audio\\manifest.jsonl",
+    "commands": "datasets\\commands\\human_written_commands_draft.jsonl",
+    "note": "Audit only. Draft labels and collected records still require human review before research claims."
+  },
+  "warnings": {
+    "audio_records": 10,
+    "draft_labeled_records": 50,
+    "duplicate_command_texts": [
+      {
+        "count": 2,
+        "ids": [
+          "human_cmd_008",
+          "human_cmd_031"
+        ],
+        "normalized_text": "get the closest drone to inspect the storage area."
+      },
+      {
+        "count": 2,
+        "ids": [
+          "human_cmd_009",
+          "human_cmd_010"
+        ],
+        "normalized_text": "inspect the north field while avoiding the storage area."
+      },
+      {
+        "count": 2,
+        "ids": [
+          "human_cmd_032",
+          "human_cmd_039"
+        ],
+        "normalized_text": "send one drone north and another east."
+      },
+      {
+        "count": 2,
+        "ids": [
+          "human_cmd_001",
+          "human_cmd_002"
+        ],
+        "normalized_text": "send two drones north and inspect the crops."
+      }
+    ],
+    "missing_command_splits": [
+      "validation",
+      "test"
+    ],
+    "note": "Warnings identify review needs; they do not automatically make the data unusable.",
+    "null_field_counts": {
+      "action": 6,
+      "count": 32,
+      "location": 29,
+      "target": 26
+    }
+  }
+}

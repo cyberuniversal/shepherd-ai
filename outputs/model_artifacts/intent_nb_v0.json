@@ -7,6 +7,12 @@
         "scan": 5,
         "send": 2
       },
+      "feature_config": {
+        "alias_feature_weight": 3,
+        "include_alias_features": false,
+        "include_bigrams": false,
+        "include_unigrams": true
+      },
       "field": "action",
       "token_counts": {
         "inspect": {
@@ -123,6 +129,12 @@
         "north": 4,
         "south": 3,
         "west": 2
+      },
+      "feature_config": {
+        "alias_feature_weight": 3,
+        "include_alias_features": false,
+        "include_bigrams": false,
+        "include_unigrams": true
       },
       "field": "location",
       "token_counts": {
@@ -255,6 +267,12 @@
         "greenhouse": 3,
         "irrigation canal": 3
       },
+      "feature_config": {
+        "alias_feature_weight": 3,
+        "include_alias_features": false,
+        "include_bigrams": false,
+        "include_unigrams": true
+      },
       "field": "target",
       "token_counts": {
         "__none__": {
@@ -381,14 +399,72 @@
   "model_version": "0.1",
   "parameters": {
     "alpha": 1.0,
-    "classifier": "multinomial_naive_bayes"
+    "classifier": "multinomial_naive_bayes",
+    "feature_config": {
+      "alias_feature_weight": 3,
+      "include_alias_features": false,
+      "include_bigrams": false,
+      "include_unigrams": true
+    },
+    "use_rule_overrides": false
   },
   "trained_records": 18,
   "training_metadata": {
     "dataset": "datasets\\commands\\intent_labeled_synthetic.jsonl",
+    "dataset_summary": {
+      "data_type_counts": {
+        "synthetic_command": 26
+      },
+      "label_counts": {
+        "action": {
+          "inspect": 12,
+          "return": 3,
+          "scan": 7,
+          "send": 4
+        },
+        "constraints": {
+          "['before returning']": 1,
+          "['while avoiding the storage area']": 1,
+          "[]": 24
+        },
+        "count": {
+          "1": 2,
+          "2": 3,
+          "3": 2,
+          "4": 1,
+          "all": 3,
+          "null": 15
+        },
+        "location": {
+          "east": 5,
+          "north": 6,
+          "null": 7,
+          "south": 4,
+          "west": 4
+        },
+        "target": {
+          "crops": 6,
+          "drones": 3,
+          "field": 5,
+          "greenhouse": 4,
+          "irrigation canal": 4,
+          "null": 4
+        }
+      },
+      "records": 26,
+      "source_counts": {
+        "synthetic_literature_guided": 26
+      },
+      "split_counts": {
+        "test": 4,
+        "train": 18,
+        "validation": 4
+      }
+    },
     "evaluation_artifacts": {
       "comparison": "outputs\\evaluations\\intent_nb_v0_vs_deterministic.json",
-      "metrics": "outputs\\evaluations\\intent_nb_v0_metrics.json"
+      "metrics": "outputs\\evaluations\\intent_nb_v0_metrics.json",
+      "validation": "outputs\\evaluations\\intent_nb_v0_validation_metrics.json"
     },
     "random_seed": 17,
     "split_counts": {

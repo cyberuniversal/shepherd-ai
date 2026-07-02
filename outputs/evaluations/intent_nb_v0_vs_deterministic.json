@@ -1,8 +1,8 @@
 {
   "metadata": {
     "dataset": "intent_labeled_synthetic.jsonl",
-    "generated_at_utc": "2026-06-29T03:55:52.373190+00:00",
-    "note": "Synthetic held-out comparison; not evidence of real user or speech performance.",
+    "generated_at_utc": "2026-06-30T11:16:01.526770+00:00",
+    "note": "Held-out comparison; interpret according to each system's data_types metadata.",
     "random_seed": 17,
     "systems_compared": [
       "deterministic_v0",
@@ -12,8 +12,11 @@
   "systems": {
     "deterministic_v0": {
       "metadata": {
+        "data_types": [
+          "synthetic_command"
+        ],
         "dataset": "intent_labeled_synthetic.jsonl",
-        "generated_at_utc": "2026-06-29T03:55:52.373170+00:00",
+        "generated_at_utc": "2026-06-30T11:16:01.526757+00:00",
         "model_name": "deterministic_v0",
         "note": "Synthetic command evaluation; not evidence of real user or speech performance."
       },
@@ -139,6 +142,7 @@
         "exact_record_accuracy": 1.0,
         "exact_record_matches": 4,
         "field_accuracy": 1.0,
+        "field_error_counts": {},
         "field_matches": 20,
         "records": 4,
         "total_fields": 20
@@ -146,14 +150,24 @@
     },
     "trained_nb_v0": {
       "metadata": {
+        "data_types": [
+          "synthetic_command"
+        ],
         "dataset": "intent_labeled_synthetic.jsonl",
-        "generated_at_utc": "2026-06-29T03:55:52.372866+00:00",
+        "generated_at_utc": "2026-06-30T11:16:01.526026+00:00",
         "model_name": "trained_nb_v0",
         "model_version": "0.1",
         "note": "Synthetic command evaluation; not evidence of real user or speech performance.",
         "parameters": {
           "alpha": 1.0,
-          "classifier": "multinomial_naive_bayes"
+          "classifier": "multinomial_naive_bayes",
+          "feature_config": {
+            "alias_feature_weight": 3,
+            "include_alias_features": false,
+            "include_bigrams": false,
+            "include_unigrams": true
+          },
+          "use_rule_overrides": false
         }
       },
       "records": [
@@ -278,6 +292,9 @@
         "exact_record_accuracy": 0.25,
         "exact_record_matches": 1,
         "field_accuracy": 0.85,
+        "field_error_counts": {
+          "location": 3
+        },
         "field_matches": 17,
         "records": 4,
         "total_fields": 20

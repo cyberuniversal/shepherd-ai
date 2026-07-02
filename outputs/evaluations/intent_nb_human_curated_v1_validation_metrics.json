@@ -1,0 +1,358 @@
+{
+  "metadata": {
+    "data_types": [
+      "human_written_command_assistant_labeled"
+    ],
+    "dataset": "human_written_commands_curated_v1.jsonl",
+    "generated_at_utc": "2026-06-30T11:44:15.520230+00:00",
+    "model_name": "trained_nb_human_curated_v1",
+    "model_version": "0.1",
+    "note": "Text command evaluation; not evidence of speech recognition performance.",
+    "parameters": {
+      "alpha": 1.0,
+      "classifier": "multinomial_naive_bayes",
+      "feature_config": {
+        "alias_feature_weight": 3,
+        "include_alias_features": true,
+        "include_bigrams": true,
+        "include_unigrams": true
+      },
+      "use_rule_overrides": false
+    },
+    "random_seed": 17,
+    "split": "validation"
+  },
+  "records": [
+    {
+      "actual_intent": {
+        "action": "send",
+        "constraints": [
+          "one drone north and another east"
+        ],
+        "count": 2,
+        "location": "north",
+        "target": null
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "send",
+        "constraints": [
+          "one drone north and another east"
+        ],
+        "count": 2,
+        "location": null,
+        "target": null
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": false,
+        "target": true
+      },
+      "id": "human_cmd_032",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Send one drone north and another east."
+    },
+    {
+      "actual_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "field"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "greenhouse"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": false
+      },
+      "id": "human_cmd_033",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Send drone one to inspect the eastern greenhouse."
+    },
+    {
+      "actual_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "west",
+        "target": "field"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "south",
+        "target": "field"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": false,
+        "target": true
+      },
+      "id": "human_cmd_034",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Dispatch two drones to survey the southern field."
+    },
+    {
+      "actual_intent": {
+        "action": "inspect",
+        "constraints": [
+          "nearest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "crops"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [
+          "nearest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "irrigation canal"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": false
+      },
+      "id": "human_cmd_035",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Have the nearest drone check the irrigation canal."
+    },
+    {
+      "actual_intent": {
+        "action": "send",
+        "constraints": [
+          "back to base"
+        ],
+        "count": "all",
+        "location": "east",
+        "target": null
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "return",
+        "constraints": [
+          "back to base"
+        ],
+        "count": "all",
+        "location": null,
+        "target": "drones"
+      },
+      "field_matches": {
+        "action": false,
+        "constraints": true,
+        "count": true,
+        "location": false,
+        "target": false
+      },
+      "id": "human_cmd_036",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Send all available drones back to base."
+    },
+    {
+      "actual_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "storage area"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "storage area"
+      },
+      "field_matches": {
+        "action": false,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": true
+      },
+      "id": "human_cmd_037",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Ask drone three to capture images of the storage area."
+    },
+    {
+      "actual_intent": {
+        "action": "scan",
+        "constraints": [
+          "for signs of dryness"
+        ],
+        "count": null,
+        "location": "west",
+        "target": "crops"
+      },
+      "all_fields_match": true,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "scan",
+        "constraints": [
+          "for signs of dryness"
+        ],
+        "count": null,
+        "location": "west",
+        "target": "crops"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": true
+      },
+      "id": "human_cmd_038",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Scan the western crops for signs of dryness."
+    },
+    {
+      "actual_intent": {
+        "action": "send",
+        "constraints": [
+          "one drone north and another east"
+        ],
+        "count": 2,
+        "location": "north",
+        "target": null
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "send",
+        "constraints": [
+          "one drone north and another east"
+        ],
+        "count": 2,
+        "location": null,
+        "target": null
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": false,
+        "target": true
+      },
+      "id": "human_cmd_039",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Send one drone north and another east."
+    },
+    {
+      "actual_intent": {
+        "action": "inspect",
+        "constraints": [
+          "return to the launch point"
+        ],
+        "count": null,
+        "location": null,
+        "target": "field"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [
+          "return to the launch point"
+        ],
+        "count": null,
+        "location": null,
+        "target": "greenhouse"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": false
+      },
+      "id": "human_cmd_040",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Inspect the greenhouse, then return to the launch point."
+    },
+    {
+      "actual_intent": {
+        "action": "scan",
+        "constraints": [
+          "divide the field between three drones"
+        ],
+        "count": 3,
+        "location": "east",
+        "target": "field"
+      },
+      "all_fields_match": false,
+      "data_type": "human_written_command_assistant_labeled",
+      "expected_intent": {
+        "action": "scan",
+        "constraints": [
+          "divide the field between three drones"
+        ],
+        "count": 3,
+        "location": null,
+        "target": "field"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": false,
+        "target": true
+      },
+      "id": "human_cmd_041",
+      "source": "manual_week2_collection_v1",
+      "split": "validation",
+      "text": "Divide the field between three drones and scan each section."
+    }
+  ],
+  "summary": {
+    "exact_record_accuracy": 0.1,
+    "exact_record_matches": 1,
+    "field_accuracy": 0.78,
+    "field_error_counts": {
+      "action": 2,
+      "location": 5,
+      "target": 4
+    },
+    "field_matches": 39,
+    "records": 10,
+    "total_fields": 50
+  }
+}

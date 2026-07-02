@@ -1,0 +1,44 @@
+{
+  "best_by_entity_f1": "span_nb_v1",
+  "generated_at_utc": "2026-07-02T10:04:09.144199+00:00",
+  "metric_fields": [
+    "token_accuracy",
+    "entity_precision",
+    "entity_recall",
+    "entity_f1"
+  ],
+  "runs": {
+    "span_nb_v0": {
+      "delta_from_first": {
+        "entity_f1": 0.0,
+        "entity_precision": 0.0,
+        "entity_recall": 0.0,
+        "token_accuracy": 0.0
+      },
+      "metrics": {
+        "entity_f1": 0.3655913978494624,
+        "entity_precision": 0.29310344827586204,
+        "entity_recall": 0.4857142857142857,
+        "token_accuracy": 0.5789473684210527
+      },
+      "path": "outputs\\evaluations\\span_nb_v0_metrics.json",
+      "split": "test"
+    },
+    "span_nb_v1": {
+      "delta_from_first": {
+        "entity_f1": 0.054161688570290745,
+        "entity_precision": 0.07646176911544228,
+        "entity_recall": 0.0,
+        "token_accuracy": 0.04385964912280704
+      },
+      "metrics": {
+        "entity_f1": 0.4197530864197531,
+        "entity_precision": 0.3695652173913043,
+        "entity_recall": 0.4857142857142857,
+        "token_accuracy": 0.6228070175438597
+      },
+      "path": "outputs\\evaluations\\span_nb_v1_metrics.json",
+      "split": "test"
+    }
+  }
+}

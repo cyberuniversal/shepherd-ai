@@ -1,0 +1,12 @@
+{
+  "data_type_counts": {
+    "human_recorded_audio": 10
+  },
+  "records": 10,
+  "source_counts": {
+    "manual_week2_collection_v1": 10
+  },
+  "split_counts": {
+    "train": 10
+  }
+}

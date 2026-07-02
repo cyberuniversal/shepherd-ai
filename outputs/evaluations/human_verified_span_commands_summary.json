@@ -1,0 +1,21 @@
+{
+  "data_type_counts": {
+    "human_verified_span_command": 50
+  },
+  "records": 50,
+  "source_counts": {
+    "manual_week2_span_annotation_v1": 50
+  },
+  "span_field_counts": {
+    "action": 50,
+    "constraint": 10,
+    "count": 36,
+    "location": 25,
+    "target": 42
+  },
+  "split_counts": {
+    "test": 10,
+    "train": 30,
+    "validation": 10
+  }
+}

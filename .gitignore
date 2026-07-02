@@ -30,9 +30,11 @@ datasets/sample_audio/**/*.m4a
 datasets/sample_audio/**/*.ogg
 datasets/sample_audio/**/*.webm
 models/
+outputs/model_artifacts/hf_token_classifier*/
 *.pt
 *.pth
 *.onnx
+*.safetensors
 
 *.env
 .env*
