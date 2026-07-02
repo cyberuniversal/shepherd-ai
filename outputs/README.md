@@ -43,5 +43,6 @@ Current Week 2 artifacts:
 - `outputs/evaluations/human_verified_span_commands_summary.json`
 - `outputs/evaluations/human_verified_span_commands_bio.jsonl`
 - `outputs/hf_token_dataset/`: Hugging Face token-classification JSONL export for Colab transformer fine-tuning.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`: held-out validation/test metrics from a Colab T4 DistilBERT token-classification run on the human-verified span dataset.
 
 Generated Hugging Face checkpoint/model directories under `outputs/model_artifacts/hf_token_classifier*/` are ignored and should not be committed. Preserve small raw metrics JSON files for provenance, and record whether a run was Colab/T4 or exploratory local output.

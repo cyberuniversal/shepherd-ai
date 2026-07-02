@@ -155,10 +155,20 @@ print(torch.cuda.get_device_name(0))
 Then run:
 
 ```powershell
-python scripts/train_hf_token_classifier.py --dataset-dir outputs/hf_token_dataset --pretrained-model distilbert-base-uncased --output-dir outputs/model_artifacts/hf_token_classifier_distilbert --metrics-output outputs/evaluations/hf_token_classifier_distilbert_metrics.json --validation-output outputs/evaluations/hf_token_classifier_distilbert_validation_metrics.json --epochs 5 --learning-rate 0.00002 --batch-size 8 --seed 17 --required-device-substring T4
+python scripts/train_hf_token_classifier.py --dataset-dir outputs/hf_token_dataset --pretrained-model distilbert-base-uncased --output-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4 --metrics-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json --validation-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json --epochs 30 --learning-rate 0.00005 --batch-size 8 --seed 17 --required-device-substring T4
 ```
 
-The script refuses to train without CUDA. Do not report a Hugging Face fine-tuning result unless the raw metrics file records the runtime, model, seed, parameters, split, and package versions.
+The script refuses to train without CUDA. Do not report a Hugging Face fine-tuning result as provenance-complete unless the raw metrics file records the runtime, model, seed, parameters, split, and package versions.
+
+Completed Colab/T4 DistilBERT token-classifier run, July 2, 2026:
+
+- Notebook: `notebooks/Notebook2_NLP_Colab_T4.ipynb`
+- Runtime verified in Colab: `T4 (Python 3)`
+- Validation entity F1: 0.7945
+- Test entity F1: 0.5926
+- Raw held-out metrics copied from Colab output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`
+
+The full run-metadata metrics JSON was saved in the Colab runtime but still needs to be copied back into the repository.
 
 Create and validate real Week 2 command data only when the records are actually collected:
 

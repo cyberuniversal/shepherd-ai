@@ -227,6 +227,20 @@ python scripts/train_hf_token_classifier.py `
 
 The script refuses to train without CUDA and records runtime/package metadata in the metrics output. Hugging Face model checkpoints are generated artifacts and should not be committed.
 
+Completed Colab/T4 run, July 2, 2026:
+
+- Notebook: `notebooks/Notebook2_NLP_Colab_T4.ipynb`
+- Runtime: Google Colab `T4 (Python 3)` shown in the Colab status bar.
+- Model: `distilbert-base-uncased`
+- Data: `outputs/hf_token_dataset`, exported from `datasets/commands/human_verified_span_commands.jsonl`
+- Seed: 17
+- Epochs: 30
+- Learning rate: 0.00005
+- Batch size: 8
+- Raw held-out metrics copied from Colab output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`
+
+The full metadata metrics file was saved inside the Colab runtime at `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`, but it was not copied back into the repository in this run because browser automation became blocked by a Chrome extension UI after training completed. Do not treat package-version metadata as locally preserved until that file is copied back.
+
 ## Results
 
 Held-out synthetic test result for `trained_nb_v0`:
@@ -306,12 +320,24 @@ Span tagger result for `span_nb_v1`:
 
 Interpretation: `span_nb_v1` adds transition-aware Viterbi decoding. The test entity F1 improves over `span_nb_v0` from 0.3656 to 0.4198. The error analysis shows the improvement mostly comes from fewer false-positive entities, not from finding more true entities. This is still not strong enough to treat as solved slot extraction.
 
+Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilbert_colab_t4`:
+
+- Validation entity F1: 0.7945
+- Validation entity precision: 0.7632
+- Validation entity recall: 0.8286
+- Test entity F1: 0.5926
+- Test entity precision: 0.5217
+- Test entity recall: 0.6857
+
+Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. This is an encouraging baseline result, not evidence that slot extraction is solved.
+
 ## Not Implemented
 
 - No final human-verified command benchmark.
 - No ASR-derived intent dataset.
 - No Whisper ASR evaluation.
-- No completed Colab/T4 transformer or spaCy fine-tuning result yet.
+- No copied-back full Colab metadata metrics file for the completed DistilBERT run.
+- No spaCy fine-tuning result yet.
 - No grounding, planning, scheduling, vision, safety validation, or end-to-end mission evaluation.
 
 ## Next Training Work
