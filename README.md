@@ -186,6 +186,14 @@ python scripts/build_span_review_queue.py --evaluation outputs/evaluations/hf_to
 
 This queue is not corrected training data. It marks model predictions as `model_generated_not_gold` and points to records that need human review before labels are changed or reused for training.
 
+Export the queued records into an editable command file and a review report:
+
+```powershell
+python scripts/export_span_review_commands.py --span-dataset datasets/commands/human_verified_span_commands.jsonl --review-queue outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl --commands-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt --report-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md --source-command-dataset datasets/commands/human_written_commands_curated_v1.jsonl
+```
+
+Open the report and command file together. Edit the command file only after human review, then rebuild the span dataset with `scripts/rebuild_span_dataset_from_commands.py`.
+
 Create and validate real Week 2 command data only when the records are actually collected:
 
 ```powershell

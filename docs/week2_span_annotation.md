@@ -146,6 +146,27 @@ python scripts/build_span_review_queue.py `
 
 Each queue record keeps the original command, current gold tags, model-predicted tags, entity disagreements, and token errors. The queue is for human inspection only; it does not relabel the dataset.
 
+Export the queued records into a Notepad-friendly command file:
+
+```powershell
+python scripts/export_span_review_commands.py `
+  --span-dataset datasets/commands/human_verified_span_commands.jsonl `
+  --review-queue outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl `
+  --commands-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt `
+  --report-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md `
+  --source-command-dataset datasets/commands/human_written_commands_curated_v1.jsonl
+```
+
+The command file starts from the current gold spans, not the model predictions. Use the Markdown report as context while editing. After human review, rebuild the dataset from the edited command file:
+
+```powershell
+python scripts/rebuild_span_dataset_from_commands.py `
+  --commands-file outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt `
+  --output datasets/commands/human_verified_span_commands.jsonl `
+  --summary-output outputs/evaluations/human_verified_span_commands_summary.json `
+  --bio-output outputs/evaluations/human_verified_span_commands_bio.jsonl
+```
+
 ## Research Integrity
 
 Do not call a span dataset human-verified unless a human checked every span.

@@ -49,5 +49,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json`: held-out BIO false-positive/false-negative analysis from the same evaluator.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl`: prioritized human-review queue derived from held-out token-classifier errors.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_summary.json`: metadata and summary counts for that review queue.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt`: editable command file generated from current gold spans for queued records.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md`: human-readable context for reviewing those commands.
 
 Generated Hugging Face checkpoint/model directories under `outputs/model_artifacts/hf_token_classifier*/` are ignored and should not be committed. Preserve small raw metrics JSON files for provenance, and record whether a run was Colab/T4 or exploratory local output.
