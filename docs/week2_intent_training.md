@@ -241,6 +241,18 @@ Completed Colab/T4 run, July 2, 2026:
 
 The full metadata metrics file was saved inside the Colab runtime at `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`, but it was not copied back into the repository in this run because browser automation became blocked by a Chrome extension UI after training completed. Do not treat package-version metadata as locally preserved until that file is copied back.
 
+After training, run record-level evaluation and error analysis in the same Colab T4 runtime:
+
+```powershell
+python scripts/evaluate_hf_token_classifier.py `
+  --dataset-dir outputs/hf_token_dataset `
+  --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4 `
+  --split test `
+  --evaluation-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json `
+  --error-analysis-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json `
+  --required-device-substring T4
+```
+
 ## Results
 
 Held-out synthetic test result for `trained_nb_v0`:

@@ -170,6 +170,12 @@ Completed Colab/T4 DistilBERT token-classifier run, July 2, 2026:
 
 The full run-metadata metrics JSON was saved in the Colab runtime but still needs to be copied back into the repository.
 
+After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
+
+```powershell
+python scripts/evaluate_hf_token_classifier.py --dataset-dir outputs/hf_token_dataset --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4 --split test --evaluation-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json --error-analysis-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json --required-device-substring T4
+```
+
 Create and validate real Week 2 command data only when the records are actually collected:
 
 ```powershell
