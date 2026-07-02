@@ -192,7 +192,13 @@ Export the queued records into an editable command file and a review report:
 python scripts/export_span_review_commands.py --span-dataset datasets/commands/human_verified_span_commands.jsonl --review-queue outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl --commands-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt --report-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md --source-command-dataset datasets/commands/human_written_commands_curated_v1.jsonl
 ```
 
-Open the report and command file together. Edit the command file only after human review, then rebuild the span dataset with `scripts/rebuild_span_dataset_from_commands.py`.
+Open the report and command file together. Edit the command file only after human review, then apply the reviewed subset back into the full span dataset:
+
+```powershell
+python scripts/apply_span_review_commands.py --base-dataset datasets/commands/human_verified_span_commands.jsonl --commands-file outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt --output datasets/commands/human_verified_span_commands.jsonl --summary-output outputs/evaluations/human_verified_span_commands_summary.json --bio-output outputs/evaluations/human_verified_span_commands_bio.jsonl
+```
+
+Use `apply_span_review_commands.py` for review subsets so unreviewed records are preserved. `rebuild_span_dataset_from_commands.py` is for full command files that intentionally recreate the whole dataset.
 
 Create and validate real Week 2 command data only when the records are actually collected:
 

@@ -52,4 +52,6 @@ Current Week 2 artifacts:
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt`: editable command file generated from current gold spans for queued records.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md`: human-readable context for reviewing those commands.
 
+When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
+
 Generated Hugging Face checkpoint/model directories under `outputs/model_artifacts/hf_token_classifier*/` are ignored and should not be committed. Preserve small raw metrics JSON files for provenance, and record whether a run was Colab/T4 or exploratory local output.

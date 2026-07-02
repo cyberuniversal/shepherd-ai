@@ -278,6 +278,17 @@ python scripts/export_span_review_commands.py `
   --source-command-dataset datasets/commands/human_written_commands_curated_v1.jsonl
 ```
 
+After human review, apply the edited subset without dropping unreviewed records:
+
+```powershell
+python scripts/apply_span_review_commands.py `
+  --base-dataset datasets/commands/human_verified_span_commands.jsonl `
+  --commands-file outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt `
+  --output datasets/commands/human_verified_span_commands.jsonl `
+  --summary-output outputs/evaluations/human_verified_span_commands_summary.json `
+  --bio-output outputs/evaluations/human_verified_span_commands_bio.jsonl
+```
+
 ## Results
 
 Held-out synthetic test result for `trained_nb_v0`:
