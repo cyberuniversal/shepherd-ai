@@ -18,16 +18,16 @@
       "transformers_version": "5.12.1"
     },
     "seed": 17,
-    "split": "validation"
+    "split": "test"
   },
   "metrics": {
     "epoch": 30.0,
-    "eval_entity_f1": 0.7945205479452055,
-    "eval_entity_precision": 0.7631578947368421,
-    "eval_entity_recall": 0.8285714285714286,
-    "eval_loss": 0.5738901495933533,
-    "eval_runtime": 0.0183,
-    "eval_samples_per_second": 546.133,
-    "eval_steps_per_second": 109.227
+    "eval_entity_f1": 0.5925925925925927,
+    "eval_entity_precision": 0.5217391304347826,
+    "eval_entity_recall": 0.6857142857142857,
+    "eval_loss": 0.7717908620834351,
+    "eval_runtime": 0.0192,
+    "eval_samples_per_second": 520.043,
+    "eval_steps_per_second": 104.009
   }
 }

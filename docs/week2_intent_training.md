@@ -237,9 +237,10 @@ Completed Colab/T4 run, July 2, 2026:
 - Epochs: 30
 - Learning rate: 0.00005
 - Batch size: 8
-- Raw held-out metrics copied from Colab output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`
-
-The full metadata metrics file was saved inside the Colab runtime at `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`, but it was not copied back into the repository in this run because browser automation became blocked by a Chrome extension UI after training completed. Do not treat package-version metadata as locally preserved until that file is copied back.
+- Runtime/package metadata copied back from Colab in `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`: CUDA enabled on `Tesla T4`; `torch` 2.11.0+cu128; `transformers` 5.12.1; `accelerate` 1.14.0; `datasets` 4.0.0.
+- Raw held-out metrics copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json` and `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`.
+- Record-level held-out predictions copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json`.
+- Held-out BIO error analysis copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json`.
 
 After training, run record-level evaluation and error analysis in the same Colab T4 runtime:
 
@@ -340,15 +341,16 @@ Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilber
 - Test entity F1: 0.5926
 - Test entity precision: 0.5217
 - Test entity recall: 0.6857
+- Test token accuracy: 0.7368
+- Test record-level error analysis: 9 of 10 records have at least one entity error; false negatives are highest for `target` with 4 missed entities, followed by `constraint`, `count`, and `location` with 2 each; false positives are highest for `constraint` with 8 entities and `target` with 7 entities.
 
-Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. This is an encouraging baseline result, not evidence that slot extraction is solved.
+Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
 
 ## Not Implemented
 
 - No final human-verified command benchmark.
 - No ASR-derived intent dataset.
 - No Whisper ASR evaluation.
-- No copied-back full Colab metadata metrics file for the completed DistilBERT run.
 - No spaCy fine-tuning result yet.
 - No grounding, planning, scheduling, vision, safety validation, or end-to-end mission evaluation.
 

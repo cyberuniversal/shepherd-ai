@@ -164,11 +164,13 @@ Completed Colab/T4 DistilBERT token-classifier run, July 2, 2026:
 
 - Notebook: `notebooks/Notebook2_NLP_Colab_T4.ipynb`
 - Runtime verified in Colab: `T4 (Python 3)`
+- Runtime metadata recorded in `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`: CUDA enabled on `Tesla T4`; `torch` 2.11.0+cu128; `transformers` 5.12.1; `accelerate` 1.14.0; `datasets` 4.0.0.
 - Validation entity F1: 0.7945
 - Test entity F1: 0.5926
-- Raw held-out metrics copied from Colab output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`
-
-The full run-metadata metrics JSON was saved in the Colab runtime but still needs to be copied back into the repository.
+- Raw metrics copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json` and `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`
+- Record-level held-out predictions: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json`
+- Held-out BIO error analysis: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json`
+- Error profile: 9 of 10 test records contain at least one entity error; largest false-negative bucket is `target` with 4 missed entities, and largest false-positive buckets are `constraint` with 8 entities and `target` with 7 entities.
 
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
