@@ -254,6 +254,19 @@ python scripts/evaluate_hf_token_classifier.py `
   --required-device-substring T4
 ```
 
+Build a prioritized review queue from the held-out prediction errors:
+
+```powershell
+python scripts/build_span_review_queue.py `
+  --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json `
+  --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl `
+  --summary-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_summary.json `
+  --focus-field target `
+  --focus-field constraint
+```
+
+This review queue does not create new gold labels. It ranks records for human review using expected-versus-predicted BIO/entity disagreements and explicitly marks predictions as `model_generated_not_gold`.
+
 ## Results
 
 Held-out synthetic test result for `trained_nb_v0`:
@@ -343,6 +356,8 @@ Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilber
 - Test entity recall: 0.6857
 - Test token accuracy: 0.7368
 - Test record-level error analysis: 9 of 10 records have at least one entity error; false negatives are highest for `target` with 4 missed entities, followed by `constraint`, `count`, and `location` with 2 each; false positives are highest for `constraint` with 8 entities and `target` with 7 entities.
+- Review queue generated from held-out predictions: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl`.
+- Review queue summary: 9 records require review; focus-field record counts are `constraint`: 8 and `target`: 4.
 
 Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
 

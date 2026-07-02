@@ -131,6 +131,21 @@ python scripts/validate_span_dataset.py `
 
 The BIO export records tokens, character offsets, and labels such as `B-target`, `I-target`, and `O`.
 
+## Review Queue From Model Errors
+
+After a held-out token-classifier evaluation exists, build a review queue instead of editing the dataset from model predictions directly:
+
+```powershell
+python scripts/build_span_review_queue.py `
+  --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json `
+  --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl `
+  --summary-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_summary.json `
+  --focus-field target `
+  --focus-field constraint
+```
+
+Each queue record keeps the original command, current gold tags, model-predicted tags, entity disagreements, and token errors. The queue is for human inspection only; it does not relabel the dataset.
+
 ## Research Integrity
 
 Do not call a span dataset human-verified unless a human checked every span.

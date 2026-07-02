@@ -178,6 +178,14 @@ After training, run record-level transformer evaluation and BIO error analysis i
 python scripts/evaluate_hf_token_classifier.py --dataset-dir outputs/hf_token_dataset --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4 --split test --evaluation-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json --error-analysis-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json --required-device-substring T4
 ```
 
+Build a prioritized human-review queue from held-out transformer errors:
+
+```powershell
+python scripts/build_span_review_queue.py --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_queue.jsonl --summary-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_summary.json --focus-field target --focus-field constraint
+```
+
+This queue is not corrected training data. It marks model predictions as `model_generated_not_gold` and points to records that need human review before labels are changed or reused for training.
+
 Create and validate real Week 2 command data only when the records are actually collected:
 
 ```powershell
