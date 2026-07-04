@@ -22,6 +22,13 @@ Each JSONL record must include:
 
 Span-labeled command datasets use a separate schema documented in `docs/week2_span_annotation.md`. They include exact character spans for fields such as `target`, `location`, and `constraint`, and can be exported to BIO token labels with `scripts/validate_span_dataset.py`.
 
+Current span-labeled dataset:
+
+- `human_verified_span_commands.jsonl`: 85 human-verified span command records.
+- Sources: 50 records from `manual_week2_span_annotation_v1` and 35 records from `manual_week2_span_annotation_v2`.
+- Splits: 57 train, 18 validation, 10 test.
+- The 35 `manual_week2_span_annotation_v2` records came from the corrected command file `reports/week2_followup_span_commands_corrected.txt`.
+
 ## Research Integrity
 
 The current labeled dataset is synthetic and self-authored. It is useful for pipeline development, training-code tests, and baseline comparisons, but it is not evidence of real user performance or speech performance.

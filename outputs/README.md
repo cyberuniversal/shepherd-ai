@@ -43,6 +43,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/human_verified_span_commands_summary.json`
 - `outputs/evaluations/human_verified_span_commands_bio.jsonl`
 - `outputs/hf_token_dataset/`: Hugging Face token-classification JSONL export for Colab transformer fine-tuning.
+- Current `outputs/hf_token_dataset/` export: 85 records, split as 57 train, 18 validation, 10 test, generated after applying the 35-record `manual_week2_span_annotation_v2` follow-up batch.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_metrics.json`: test metrics and runtime/package metadata from a Colab T4 DistilBERT token-classification run on the human-verified span dataset.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_validation_metrics.json`: validation metrics from the same Colab T4 run.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json`: record-level held-out predictions from `scripts/evaluate_hf_token_classifier.py`.

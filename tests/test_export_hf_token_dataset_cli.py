@@ -39,7 +39,7 @@ class ExportHfTokenDatasetCliTests(unittest.TestCase):
         self.assertIn("B-target", label_map["label2id"])
         self.assertEqual(len(train_record["tokens"]), len(train_record["ner_tags"]))
         self.assertEqual(len(train_record["tokens"]), len(train_record["labels"]))
-        self.assertEqual(summary["split_counts"], {"test": 10, "train": 30, "validation": 10})
+        self.assertEqual(summary["split_counts"], {"test": 10, "train": 57, "validation": 18})
 
 
 if __name__ == "__main__":

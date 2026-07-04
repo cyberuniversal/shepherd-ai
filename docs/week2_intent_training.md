@@ -50,11 +50,11 @@ Human-verified span dataset: `human_verified_span_commands.jsonl`
 
 Split:
 
-- Train: 30 records
-- Validation: 10 records
+- Train: 57 records
+- Validation: 18 records
 - Test: 10 records
 
-These records add exact character spans for token-level slot extraction. They are human-verified text-command span labels, not ASR-derived labels.
+These records add exact character spans for token-level slot extraction. They are human-verified text-command span labels, not ASR-derived labels. The dataset currently includes 50 records from `manual_week2_span_annotation_v1` and 35 targeted follow-up records from `manual_week2_span_annotation_v2`.
 
 ## Current Deterministic Baseline
 
@@ -367,21 +367,21 @@ Historical result note: the raw results above were generated before the open-voc
 
 Span tagger result for `span_nb_v0`:
 
-- Validation token accuracy: 0.6774
-- Validation entity F1: 0.5455
-- Test token accuracy: 0.5789
-- Test entity F1: 0.3656
+- Validation token accuracy: 0.6857
+- Validation entity F1: 0.4969
+- Test token accuracy: 0.6667
+- Test entity F1: 0.4646
 
-Interpretation: `span_nb_v0` is a useful negative/early baseline. It confirms that the span-label pipeline, BIO conversion, training, and held-out evaluation work, but the model is not strong enough to treat as solved slot extraction. The low held-out entity F1 supports moving next to a stronger sequence model, more data, or both.
+Interpretation: `span_nb_v0` is a useful negative/early baseline. It confirms that the span-label pipeline, BIO conversion, training, and held-out evaluation work, but the model is not strong enough to treat as solved slot extraction. The expanded training data improved its held-out test score over the earlier 50-record run, but the result is still weak.
 
 Span tagger result for `span_nb_v1`:
 
-- Validation token accuracy: 0.7527
-- Validation entity F1: 0.6154
-- Test token accuracy: 0.6228
-- Test entity F1: 0.4198
+- Validation token accuracy: 0.7143
+- Validation entity F1: 0.5753
+- Test token accuracy: 0.7018
+- Test entity F1: 0.5870
 
-Interpretation: `span_nb_v1` adds transition-aware Viterbi decoding. The test entity F1 improves over `span_nb_v0` from 0.3656 to 0.4198. The error analysis shows the improvement mostly comes from fewer false-positive entities, not from finding more true entities. This is still not strong enough to treat as solved slot extraction.
+Interpretation: `span_nb_v1` adds transition-aware Viterbi decoding. On the expanded 85-record dataset, the test entity F1 improves over `span_nb_v0` from 0.4646 to 0.5870. This is still not strong enough to treat as solved slot extraction, but it confirms the new follow-up records improved the lightweight local baseline.
 
 Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilbert_colab_t4`:
 
@@ -398,7 +398,7 @@ Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilber
 - Editable review command file: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_commands.txt`.
 - Human-readable review report: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_span_review_report.md`.
 
-Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
+Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it was trained and evaluated on only the first 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
 
 Reviewed-label Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilbert_colab_t4_reviewed`:
 
@@ -411,7 +411,7 @@ Reviewed-label Colab/T4 Hugging Face token-classifier result for `hf_token_class
 - Test token accuracy: 0.7281
 - Test record-level error analysis: 8 of 10 records are listed in the worst-record queue; false negatives are highest for `action` and `target` with 4 missed entities each, followed by `constraint`, `count`, and `location` with 2 each; false positives are highest for `constraint` with 8 entities and `target` with 7 entities.
 
-Interpretation: the reviewed-label retrain is a small held-out test improvement over the previous Colab/T4 transformer baseline, from test entity F1 0.5926 to 0.6047. Validation entity F1 is unchanged at 0.7945. This is a provenance-complete retrain on the updated span labels, not evidence that slot extraction is solved. The dataset still has only 50 records and the model still has substantial entity-level errors.
+Interpretation: the reviewed-label retrain is a small held-out test improvement over the previous Colab/T4 transformer baseline, from test entity F1 0.5926 to 0.6047. Validation entity F1 is unchanged at 0.7945. This is a provenance-complete retrain on the reviewed 50-record span dataset, not evidence that slot extraction is solved. The model still has substantial entity-level errors.
 
 ## Targeted Collection Plan
 
@@ -450,6 +450,16 @@ Current packet output:
 - Recommended splits: 27 train, 8 validation, 0 test.
 - Slot IDs: `human_cmd_followup_001` through `human_cmd_followup_035`.
 - The packet is a worksheet, not a dataset. Every `text` field and `spans` list is blank until a human writes the command and verifies exact character spans.
+
+Applied follow-up batch, July 4, 2026:
+
+- Corrected command file: `reports/week2_followup_span_commands_corrected.txt`.
+- Records added: 35.
+- Source: `manual_week2_span_annotation_v2`.
+- Updated span dataset: 85 records total, with 57 train, 18 validation, and the original 10-record test split unchanged.
+- Updated span counts: `action`: 104, `constraint`: 20, `count`: 50, `location`: 39, `target`: 81.
+- Updated Hugging Face token dataset: 85 records and 809 tokens.
+- Important: the Colab/T4 transformer metrics above are now pre-expansion results. Retrain in Colab T4 before reporting a result for the 85-record dataset.
 
 ## Not Implemented
 

@@ -132,8 +132,8 @@ python scripts/train_span_tagger.py --dataset datasets/commands/human_verified_s
 
 Current span-tagger results on human-verified span labels:
 
-- `span_nb_v0`: validation token accuracy 0.6774, validation entity F1 0.5455; test token accuracy 0.5789, test entity F1 0.3656.
-- `span_nb_v1`: validation token accuracy 0.7527, validation entity F1 0.6154; test token accuracy 0.6228, test entity F1 0.4198.
+- `span_nb_v0`: validation token accuracy 0.6857, validation entity F1 0.4969; test token accuracy 0.6667, test entity F1 0.4646.
+- `span_nb_v1`: validation token accuracy 0.7143, validation entity F1 0.5753; test token accuracy 0.7018, test entity F1 0.5870.
 
 These are honest early baselines, not solved slot extractors.
 
@@ -201,6 +201,15 @@ python scripts/create_week2_collection_packet.py --plan outputs/evaluations/hf_t
 ```
 
 The current packet has 35 blank slots: 27 train and 8 validation. It is a worksheet only; it does not contain collected command text or labels.
+
+Applied follow-up span batch, July 4, 2026:
+
+- Corrected command file: `reports/week2_followup_span_commands_corrected.txt`
+- Added 35 `manual_week2_span_annotation_v2` records to `datasets/commands/human_verified_span_commands.jsonl`
+- Current span dataset: 85 records, split as 57 train, 18 validation, 10 test
+- Current Hugging Face token dataset: 85 records and 809 tokens
+
+The latest Colab/T4 transformer metrics were produced before this 35-record expansion. Retrain in Colab T4 before reporting model performance on the expanded dataset.
 
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 

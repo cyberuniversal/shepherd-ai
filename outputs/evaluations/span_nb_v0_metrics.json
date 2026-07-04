@@ -4,7 +4,7 @@
       "human_verified_span_command"
     ],
     "dataset": "human_verified_span_commands.jsonl",
-    "generated_at_utc": "2026-07-02T09:55:19.719503+00:00",
+    "generated_at_utc": "2026-07-04T14:34:51.018322+00:00",
     "model_name": "span_nb_v0",
     "model_version": "0.1",
     "note": "Human-verified span command evaluation; not ASR or end-to-end mission performance.",
@@ -19,7 +19,8 @@
         "previous_token",
         "next_token",
         "position"
-      ]
+      ],
+      "use_transitions": false
     },
     "random_seed": 17,
     "split": "test"
@@ -171,6 +172,11 @@
       "expected_entities": [
         [
           "action",
+          0,
+          4
+        ],
+        [
+          "action",
           45,
           53
         ],
@@ -196,7 +202,7 @@
         ]
       ],
       "expected_tags": [
-        "O",
+        "B-action",
         "B-count",
         "I-count",
         "O",
@@ -308,7 +314,7 @@
         "I-count",
         "O",
         "O",
-        "I-target",
+        "B-target",
         "B-constraint",
         "B-count",
         "I-count",
@@ -320,7 +326,7 @@
       "split": "test",
       "text": "Send two drones to the canal while one drone monitors the crops.",
       "token_matches": [
-        false,
+        true,
         true,
         true,
         true,
@@ -425,6 +431,11 @@
           5
         ],
         [
+          "action",
+          29,
+          35
+        ],
+        [
           "target",
           10,
           24
@@ -441,7 +452,7 @@
         "B-target",
         "I-target",
         "O",
-        "O",
+        "B-action",
         "B-target",
         "I-target",
         "O"
@@ -454,7 +465,7 @@
         true,
         true,
         true,
-        true,
+        false,
         true,
         true,
         true
@@ -552,18 +563,18 @@
         ],
         [
           "constraint",
-          23,
+          18,
           28
         ],
         [
-          "count",
+          "constraint",
           33,
-          56
+          39
         ],
         [
-          "location",
-          18,
-          22
+          "count",
+          40,
+          56
         ],
         [
           "target",
@@ -575,10 +586,10 @@
         "B-action",
         "O",
         "B-target",
-        "I-location",
+        "I-constraint",
         "I-constraint",
         "O",
-        "I-count",
+        "I-constraint",
         "I-count",
         "I-count",
         "O"
@@ -592,7 +603,7 @@
         false,
         false,
         false,
-        false,
+        true,
         false,
         false,
         true
@@ -618,6 +629,11 @@
           6
         ],
         [
+          "action",
+          33,
+          39
+        ],
+        [
           "target",
           11,
           28
@@ -634,7 +650,7 @@
         "B-target",
         "I-target",
         "O",
-        "O",
+        "B-action",
         "B-target",
         "I-target",
         "I-target",
@@ -695,9 +711,9 @@
           6
         ],
         [
-          "constraint",
-          11,
-          18
+          "action",
+          33,
+          39
         ],
         [
           "constraint",
@@ -710,14 +726,14 @@
           28
         ],
         [
-          "count",
-          33,
-          39
-        ],
-        [
           "location",
           46,
           48
+        ],
+        [
+          "target",
+          11,
+          18
         ],
         [
           "target",
@@ -733,10 +749,10 @@
       "predicted_tags": [
         "B-action",
         "O",
-        "I-constraint",
+        "B-target",
         "I-count",
         "O",
-        "I-count",
+        "B-action",
         "B-target",
         "I-location",
         "I-constraint",
@@ -748,10 +764,10 @@
       "token_matches": [
         true,
         true,
-        false,
-        false,
         true,
         false,
+        true,
+        true,
         true,
         false,
         false,
@@ -848,18 +864,23 @@
         ],
         [
           "constraint",
-          26,
-          43
-        ],
-        [
-          "count",
-          22,
-          25
+          28,
+          35
         ],
         [
           "target",
           11,
           21
+        ],
+        [
+          "target",
+          26,
+          27
+        ],
+        [
+          "target",
+          36,
+          43
         ]
       ],
       "predicted_tags": [
@@ -867,10 +888,10 @@
         "O",
         "B-target",
         "I-target",
-        "B-count",
+        "O",
+        "B-target",
         "I-constraint",
-        "I-constraint",
-        "I-constraint",
+        "B-target",
         "O"
       ],
       "split": "test",
@@ -880,7 +901,7 @@
         true,
         false,
         false,
-        false,
+        true,
         false,
         false,
         false,
@@ -900,6 +921,11 @@
     },
     {
       "expected_entities": [
+        [
+          "action",
+          0,
+          8
+        ],
         [
           "action",
           23,
@@ -922,7 +948,7 @@
         ]
       ],
       "expected_tags": [
-        "O",
+        "B-action",
         "B-count",
         "I-count",
         "O",
@@ -998,28 +1024,18 @@
           29
         ],
         [
-          "action",
-          50,
-          57
-        ],
-        [
-          "constraint",
-          34,
-          45
-        ],
-        [
           "count",
           9,
           19
         ],
         [
-          "count",
-          46,
-          49
+          "target",
+          34,
+          45
         ],
         [
           "target",
-          58,
+          50,
           63
         ]
       ],
@@ -1030,27 +1046,27 @@
         "O",
         "B-action",
         "O",
-        "I-constraint",
-        "I-constraint",
-        "B-count",
-        "B-action",
         "B-target",
+        "I-target",
+        "O",
+        "B-target",
+        "I-target",
         "O"
       ],
       "split": "test",
       "text": "Dispatch two drones to survey the parking lot for blocked exits.",
       "token_matches": [
-        false,
         true,
         true,
         true,
         true,
         true,
-        false,
-        false,
-        false,
-        false,
-        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
         true
       ],
       "tokens": [
@@ -1076,6 +1092,11 @@
           7
         ],
         [
+          "action",
+          33,
+          39
+        ],
+        [
           "location",
           43,
           47
@@ -1093,7 +1114,7 @@
         "I-target",
         "O",
         "O",
-        "O",
+        "B-action",
         "O",
         "B-location",
         "O"
@@ -1149,8 +1170,8 @@
         ],
         [
           "constraint",
-          12,
-          19
+          20,
+          26
         ],
         [
           "constraint",
@@ -1159,20 +1180,20 @@
         ],
         [
           "count",
-          20,
-          26
-        ],
-        [
-          "count",
           33,
           39
+        ],
+        [
+          "target",
+          12,
+          19
         ]
       ],
       "predicted_tags": [
         "B-action",
         "O",
+        "B-target",
         "I-constraint",
-        "I-count",
         "O",
         "O",
         "I-count",
@@ -1185,7 +1206,7 @@
       "token_matches": [
         true,
         true,
-        false,
+        true,
         false,
         true,
         true,
@@ -1332,8 +1353,13 @@
           25
         ],
         [
+          "action",
+          70,
+          76
+        ],
+        [
           "count",
-          5,
+          10,
           16
         ],
         [
@@ -1364,7 +1390,7 @@
       ],
       "predicted_tags": [
         "B-action",
-        "B-count",
+        "O",
         "I-count",
         "O",
         "B-action",
@@ -1375,7 +1401,7 @@
         "I-target",
         "B-target",
         "O",
-        "O",
+        "B-action",
         "B-target",
         "I-target",
         "O"
@@ -1384,18 +1410,18 @@
       "text": "Send four drones to split the industrial zone into equal sections and report anything unusual.",
       "token_matches": [
         true,
-        true,
-        true,
-        true,
         false,
         true,
         true,
         false,
+        true,
+        true,
+        false,
         false,
         false,
         false,
         true,
-        true,
+        false,
         true,
         true,
         true
@@ -1423,6 +1449,11 @@
       "expected_entities": [
         [
           "action",
+          0,
+          4
+        ],
+        [
+          "action",
           43,
           50
         ],
@@ -1438,7 +1469,7 @@
         ]
       ],
       "expected_tags": [
-        "O",
+        "B-action",
         "B-count",
         "I-count",
         "I-count",
@@ -1520,17 +1551,12 @@
         ],
         [
           "constraint",
-          24,
+          32,
           39
         ],
         [
-          "constraint",
-          61,
-          65
-        ],
-        [
           "count",
-          5,
+          9,
           14
         ],
         [
@@ -1539,41 +1565,46 @@
           19
         ],
         [
+          "location",
+          24,
+          31
+        ],
+        [
           "target",
           55,
-          60
+          65
         ]
       ],
       "predicted_tags": [
         "B-action",
-        "B-count",
+        "O",
         "I-count",
         "B-location",
         "O",
-        "I-constraint",
+        "B-location",
         "I-constraint",
         "O",
         "B-action",
         "O",
         "B-target",
-        "I-constraint",
+        "I-target",
         "O"
       ],
       "split": "test",
       "text": "Send the drone with the highest battery to inspect the water tank.",
       "token_matches": [
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
         false,
         true,
         true,
-        false,
-        false,
-        false,
-        false,
         true,
         true,
         true,
-        true,
-        false,
         true
       ],
       "tokens": [
@@ -1594,15 +1625,15 @@
     }
   ],
   "summary": {
-    "entity_f1": 0.3655913978494624,
-    "entity_precision": 0.29310344827586204,
-    "entity_recall": 0.4857142857142857,
-    "expected_entities": 35,
-    "matched_entities": 17,
-    "predicted_entities": 58,
+    "entity_f1": 0.46464646464646464,
+    "entity_precision": 0.3898305084745763,
+    "entity_recall": 0.575,
+    "expected_entities": 40,
+    "matched_entities": 23,
+    "predicted_entities": 59,
     "records": 10,
-    "token_accuracy": 0.5789473684210527,
-    "token_matches": 66,
+    "token_accuracy": 0.6666666666666666,
+    "token_matches": 76,
     "tokens": 114
   }
 }

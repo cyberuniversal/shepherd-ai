@@ -53,7 +53,7 @@ class TrainSpanTaggerCliTests(unittest.TestCase):
         self.assertEqual(model["parameters"]["use_transitions"], True)
         self.assertIn("<START>", model["transition_counts"])
         self.assertEqual(model["training_metadata"]["random_seed"], 17)
-        self.assertEqual(model["training_metadata"]["split_counts"], {"test": 10, "train": 30, "validation": 10})
+        self.assertEqual(model["training_metadata"]["split_counts"], {"test": 10, "train": 57, "validation": 18})
         self.assertEqual(metrics["metadata"]["split"], "test")
         self.assertIn("entity_f1", metrics["summary"])
         self.assertEqual(validation["metadata"]["split"], "validation")

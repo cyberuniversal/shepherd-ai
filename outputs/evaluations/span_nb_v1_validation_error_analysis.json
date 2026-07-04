@@ -1,49 +1,65 @@
 {
   "false_negative_entity_counts": {
-    "action": 2,
-    "count": 3,
-    "location": 2,
-    "target": 4
+    "action": 4,
+    "constraint": 2,
+    "count": 5,
+    "location": 6,
+    "target": 5
   },
   "false_positive_entity_counts": {
-    "action": 5,
-    "constraint": 2,
+    "action": 6,
+    "constraint": 7,
     "count": 3,
     "location": 2,
-    "target": 7
+    "target": 22
   },
   "token_confusion": {
     "B-action": {
-      "B-location": 1,
-      "B-target": 1
+      "B-target": 4
+    },
+    "B-constraint": {
+      "I-constraint": 1
     },
     "B-count": {
-      "I-count": 2,
-      "O": 2
+      "B-target": 2,
+      "I-count": 3,
+      "O": 1
     },
     "B-location": {
-      "I-constraint": 1
+      "B-target": 5
     },
     "B-target": {
       "O": 1
     },
     "I-action": {
-      "I-count": 1
+      "I-constraint": 1
+    },
+    "I-constraint": {
+      "B-target": 2,
+      "I-target": 1,
+      "O": 2
     },
     "I-count": {
+      "B-action": 1,
+      "B-count": 1,
       "O": 1
     },
     "I-location": {
-      "I-constraint": 2,
+      "B-target": 1,
+      "I-target": 2,
       "O": 1
     },
     "I-target": {
-      "B-count": 1,
+      "B-constraint": 1,
+      "B-location": 1,
       "B-target": 3,
-      "I-count": 1
+      "I-constraint": 1
     },
     "O": {
-      "B-action": 5
+      "B-action": 5,
+      "B-target": 1,
+      "I-constraint": 7,
+      "I-target": 1
     }
   },
   "worst_records": [
@@ -67,14 +83,14 @@
           3
         ],
         [
-          "count",
-          4,
-          9
+          "constraint",
+          27,
+          36
         ],
         [
           "count",
-          27,
-          33
+          4,
+          9
         ],
         [
           "target",
@@ -84,8 +100,8 @@
       ],
       "id": "human_cmd_037",
       "text": "Ask drone three to capture images of the storage area.",
-      "token_error_count": 5,
-      "token_error_rate": 0.45454545454545453,
+      "token_error_count": 6,
+      "token_error_rate": 0.5454545454545454,
       "token_errors": [
         {
           "expected": "O",
@@ -114,8 +130,152 @@
         {
           "expected": "I-action",
           "index": 5,
-          "predicted": "I-count",
+          "predicted": "I-constraint",
           "token": "images"
+        },
+        {
+          "expected": "O",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "of"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "count",
+          7,
+          18
+        ],
+        [
+          "location",
+          22,
+          26
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          13,
+          18
+        ],
+        [
+          "count",
+          7,
+          12
+        ],
+        [
+          "target",
+          22,
+          26
+        ]
+      ],
+      "id": "human_cmd_followup_024",
+      "text": "Return drone seven to base.",
+      "token_error_count": 3,
+      "token_error_rate": 0.5,
+      "token_errors": [
+        {
+          "expected": "B-count",
+          "index": 1,
+          "predicted": "I-count",
+          "token": "drone"
+        },
+        {
+          "expected": "I-count",
+          "index": 2,
+          "predicted": "B-action",
+          "token": "seven"
+        },
+        {
+          "expected": "B-location",
+          "index": 4,
+          "predicted": "B-target",
+          "token": "base"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "action",
+          22,
+          29
+        ],
+        [
+          "action",
+          49,
+          55
+        ],
+        [
+          "location",
+          63,
+          75
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          30,
+          42
+        ],
+        [
+          "target",
+          22,
+          29
+        ],
+        [
+          "target",
+          49,
+          55
+        ],
+        [
+          "target",
+          63,
+          75
+        ]
+      ],
+      "id": "human_cmd_followup_032",
+      "text": "Inspect the pipeline, capture close images, then return to the launch point.",
+      "token_error_count": 6,
+      "token_error_rate": 0.4,
+      "token_errors": [
+        {
+          "expected": "B-action",
+          "index": 4,
+          "predicted": "B-target",
+          "token": "capture"
+        },
+        {
+          "expected": "O",
+          "index": 5,
+          "predicted": "I-constraint",
+          "token": "close"
+        },
+        {
+          "expected": "O",
+          "index": 6,
+          "predicted": "I-constraint",
+          "token": "images"
+        },
+        {
+          "expected": "B-action",
+          "index": 9,
+          "predicted": "B-target",
+          "token": "return"
+        },
+        {
+          "expected": "B-location",
+          "index": 12,
+          "predicted": "B-target",
+          "token": "launch"
+        },
+        {
+          "expected": "I-location",
+          "index": 13,
+          "predicted": "I-target",
+          "token": "point"
         }
       ]
     },
@@ -172,6 +332,51 @@
     {
       "false_negative_entities": [
         [
+          "count",
+          5,
+          22
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "count",
+          9,
+          22
+        ]
+      ],
+      "id": "human_cmd_035",
+      "text": "Have the nearest drone check the irrigation canal.",
+      "token_error_count": 3,
+      "token_error_rate": 0.3333333333333333,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 0,
+          "predicted": "B-action",
+          "token": "Have"
+        },
+        {
+          "expected": "B-count",
+          "index": 1,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-count",
+          "index": 2,
+          "predicted": "B-count",
+          "token": "nearest"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
           "target",
           9,
           22
@@ -184,7 +389,7 @@
       ],
       "false_positive_entities": [
         [
-          "count",
+          "constraint",
           33,
           43
         ],
@@ -218,14 +423,199 @@
         {
           "expected": "I-target",
           "index": 6,
-          "predicted": "B-count",
+          "predicted": "B-constraint",
           "token": "of"
         },
         {
           "expected": "I-target",
           "index": 7,
-          "predicted": "I-count",
+          "predicted": "I-constraint",
           "token": "dryness"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "constraint",
+          22,
+          58
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "constraint",
+          22,
+          36
+        ],
+        [
+          "target",
+          41,
+          58
+        ]
+      ],
+      "id": "human_cmd_followup_012",
+      "text": "Survey the south road while avoiding the construction zone.",
+      "token_error_count": 3,
+      "token_error_rate": 0.3,
+      "token_errors": [
+        {
+          "expected": "I-constraint",
+          "index": 6,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 7,
+          "predicted": "B-target",
+          "token": "construction"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 8,
+          "predicted": "I-target",
+          "token": "zone"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [],
+      "false_positive_entities": [
+        [
+          "constraint",
+          8,
+          17
+        ]
+      ],
+      "id": "human_cmd_followup_004",
+      "text": "Capture images of the solar panels.",
+      "token_error_count": 2,
+      "token_error_rate": 0.2857142857142857,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 1,
+          "predicted": "I-constraint",
+          "token": "images"
+        },
+        {
+          "expected": "O",
+          "index": 2,
+          "predicted": "I-constraint",
+          "token": "of"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [],
+      "false_positive_entities": [
+        [
+          "constraint",
+          8,
+          17
+        ]
+      ],
+      "id": "human_cmd_followup_008",
+      "text": "Capture photos of the tunnel entrance.",
+      "token_error_count": 2,
+      "token_error_rate": 0.2857142857142857,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 1,
+          "predicted": "I-constraint",
+          "token": "photos"
+        },
+        {
+          "expected": "O",
+          "index": 2,
+          "predicted": "I-constraint",
+          "token": "of"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "target",
+          11,
+          23
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "location",
+          19,
+          23
+        ],
+        [
+          "target",
+          11,
+          18
+        ]
+      ],
+      "id": "human_cmd_followup_020",
+      "text": "Survey the coastal path before sunset.",
+      "token_error_count": 2,
+      "token_error_rate": 0.2857142857142857,
+      "token_errors": [
+        {
+          "expected": "I-target",
+          "index": 3,
+          "predicted": "B-location",
+          "token": "path"
+        },
+        {
+          "expected": "B-constraint",
+          "index": 4,
+          "predicted": "I-constraint",
+          "token": "before"
+        }
+      ]
+    },
+    {
+      "false_negative_entities": [
+        [
+          "location",
+          43,
+          55
+        ]
+      ],
+      "false_positive_entities": [
+        [
+          "target",
+          29,
+          35
+        ],
+        [
+          "target",
+          43,
+          55
+        ]
+      ],
+      "id": "human_cmd_040",
+      "text": "Inspect the greenhouse, then return to the launch point.",
+      "token_error_count": 3,
+      "token_error_rate": 0.2727272727272727,
+      "token_errors": [
+        {
+          "expected": "O",
+          "index": 5,
+          "predicted": "B-target",
+          "token": "return"
+        },
+        {
+          "expected": "B-location",
+          "index": 8,
+          "predicted": "B-target",
+          "token": "launch"
+        },
+        {
+          "expected": "I-location",
+          "index": 9,
+          "predicted": "I-target",
+          "token": "point"
         }
       ]
     },
@@ -284,14 +674,14 @@
       ],
       "false_positive_entities": [
         [
-          "constraint",
-          34,
-          38
-        ],
-        [
           "location",
           26,
           30
+        ],
+        [
+          "target",
+          34,
+          38
         ]
       ],
       "id": "human_cmd_036",
@@ -308,7 +698,7 @@
         {
           "expected": "I-location",
           "index": 6,
-          "predicted": "I-constraint",
+          "predicted": "B-target",
           "token": "base"
         }
       ]
@@ -316,73 +706,105 @@
     {
       "false_negative_entities": [
         [
-          "action",
-          23,
-          28
+          "constraint",
+          35,
+          64
+        ],
+        [
+          "location",
+          26,
+          30
         ]
       ],
       "false_positive_entities": [
         [
-          "action",
-          0,
-          4
+          "constraint",
+          35,
+          52
         ],
         [
-          "location",
-          23,
-          28
+          "target",
+          26,
+          30
+        ],
+        [
+          "target",
+          57,
+          64
         ]
       ],
-      "id": "human_cmd_035",
-      "text": "Have the nearest drone check the irrigation canal.",
-      "token_error_count": 2,
-      "token_error_rate": 0.2222222222222222,
+      "id": "human_cmd_followup_016",
+      "text": "Dispatch one drone to the roof but keep it away from the antenna.",
+      "token_error_count": 3,
+      "token_error_rate": 0.21428571428571427,
       "token_errors": [
         {
-          "expected": "O",
-          "index": 0,
-          "predicted": "B-action",
-          "token": "Have"
+          "expected": "B-location",
+          "index": 5,
+          "predicted": "B-target",
+          "token": "roof"
         },
         {
-          "expected": "B-action",
-          "index": 4,
-          "predicted": "B-location",
-          "token": "check"
+          "expected": "I-constraint",
+          "index": 11,
+          "predicted": "O",
+          "token": "the"
+        },
+        {
+          "expected": "I-constraint",
+          "index": 12,
+          "predicted": "B-target",
+          "token": "antenna"
         }
       ]
     },
     {
       "false_negative_entities": [
         [
+          "action",
+          38,
+          45
+        ],
+        [
           "location",
-          43,
-          55
+          68,
+          72
         ]
       ],
       "false_positive_entities": [
         [
-          "constraint",
-          43,
-          55
+          "target",
+          38,
+          52
+        ],
+        [
+          "target",
+          68,
+          72
         ]
       ],
-      "id": "human_cmd_040",
-      "text": "Inspect the greenhouse, then return to the launch point.",
-      "token_error_count": 2,
-      "token_error_rate": 0.18181818181818182,
+      "id": "human_cmd_followup_028",
+      "text": "Dispatch two drones to scan the road, capture images, and return to base.",
+      "token_error_count": 3,
+      "token_error_rate": 0.1875,
       "token_errors": [
         {
-          "expected": "B-location",
+          "expected": "B-action",
           "index": 8,
-          "predicted": "I-constraint",
-          "token": "launch"
+          "predicted": "B-target",
+          "token": "capture"
         },
         {
-          "expected": "I-location",
+          "expected": "O",
           "index": 9,
-          "predicted": "I-constraint",
-          "token": "point"
+          "predicted": "I-target",
+          "token": "images"
+        },
+        {
+          "expected": "B-location",
+          "index": 14,
+          "predicted": "B-target",
+          "token": "base"
         }
       ]
     },
@@ -394,7 +816,13 @@
           32
         ]
       ],
-      "false_positive_entities": [],
+      "false_positive_entities": [
+        [
+          "target",
+          25,
+          32
+        ]
+      ],
       "id": "human_cmd_032",
       "text": "Send one drone north and another east.",
       "token_error_count": 1,
@@ -403,7 +831,7 @@
         {
           "expected": "B-count",
           "index": 5,
-          "predicted": "O",
+          "predicted": "B-target",
           "token": "another"
         }
       ]
@@ -416,7 +844,13 @@
           32
         ]
       ],
-      "false_positive_entities": [],
+      "false_positive_entities": [
+        [
+          "target",
+          25,
+          32
+        ]
+      ],
       "id": "human_cmd_039",
       "text": "Send one drone north and another east.",
       "token_error_count": 1,
@@ -425,7 +859,7 @@
         {
           "expected": "B-count",
           "index": 5,
-          "predicted": "O",
+          "predicted": "B-target",
           "token": "another"
         }
       ]

@@ -1,6 +1,6 @@
 {
   "data_type_counts": {
-    "human_verified_span_command": 50
+    "human_verified_span_command": 85
   },
   "files": {
     "label_map": "label_map.json",
@@ -9,24 +9,24 @@
     "validation": "validation.jsonl"
   },
   "format": "huggingface_token_classification_jsonl",
-  "records": 50,
+  "records": 85,
   "split_counts": {
     "test": 10,
-    "train": 30,
-    "validation": 10
+    "train": 57,
+    "validation": 18
   },
   "tag_counts": {
-    "B-action": 55,
-    "B-constraint": 10,
-    "B-count": 36,
-    "B-location": 25,
-    "B-target": 42,
+    "B-action": 104,
+    "B-constraint": 20,
+    "B-count": 50,
+    "B-location": 39,
+    "B-target": 81,
     "I-action": 2,
-    "I-constraint": 44,
-    "I-count": 53,
-    "I-location": 12,
-    "I-target": 32,
-    "O": 168
+    "I-constraint": 85,
+    "I-count": 66,
+    "I-location": 19,
+    "I-target": 55,
+    "O": 288
   },
-  "tokens": 479
+  "tokens": 809
 }
