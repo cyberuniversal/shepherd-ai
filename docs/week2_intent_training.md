@@ -461,6 +461,33 @@ Applied follow-up batch, July 4, 2026:
 - Updated Hugging Face token dataset: 85 records and 809 tokens.
 - Important: the Colab/T4 transformer metrics above are now pre-expansion results. Retrain in Colab T4 before reporting a result for the 85-record dataset.
 
+Expanded 85-record Colab/T4 retrain, July 4, 2026:
+
+- Notebook: `notebooks/Notebook2_NLP_Colab_T4.ipynb`
+- Runtime: Google Colab `T4 (Python 3)`.
+- Model: `distilbert-base-uncased`
+- Data: `outputs/hf_token_dataset`, exported from the 85-record `datasets/commands/human_verified_span_commands.jsonl`.
+- Seed: 17
+- Epochs: 30
+- Learning rate: 0.00005
+- Batch size: 8
+- Runtime/package metadata copied back from Colab in `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json`: CUDA enabled on `Tesla T4`; `torch` 2.11.0+cu128; `transformers` 5.12.1; `accelerate` 1.14.0; `datasets` 4.0.0.
+- Validation entity F1: 0.8382
+- Validation entity precision: 0.7917
+- Validation entity recall: 0.8906
+- Test entity F1: 0.7857
+- Test entity precision: 0.7500
+- Test entity recall: 0.8250
+- Test token accuracy: 0.8246
+- Test record-level error analysis: 6 of 10 records have at least one token error; false negatives are `target`: 2, `count`: 2, `action`: 1, `constraint`: 1, and `location`: 1; false positives are `target`: 4, `constraint`: 3, `count`: 2, `action`: 1, and `location`: 1.
+- Raw artifacts copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json`, `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_validation_metrics.json`, `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json`, and `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json`.
+- Review queue generated from remaining held-out errors: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_queue.jsonl`.
+- Review queue summary: 6 records require review; focus-field record counts are `constraint`: 4 and `target`: 3.
+- Editable review command file: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_commands.txt`.
+- Human-readable review report: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_report.md`.
+
+Interpretation: the expanded-dataset transformer retrain is the strongest Week 2 slot-extraction result so far. Held-out test entity F1 improved from 0.6047 to 0.7857 after adding the 35 targeted follow-up span records. This is still not a solved intent extractor: the held-out test split has only 10 records, the result is text-command-only, and ASR/Whisper performance is still not evaluated.
+
 ## Not Implemented
 
 - No final human-verified command benchmark.

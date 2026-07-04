@@ -57,6 +57,14 @@ Current Week 2 artifacts:
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json`: record-level held-out predictions from the reviewed-label retrain.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json`: held-out BIO false-positive/false-negative analysis from the reviewed-label retrain.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json`: machine-readable targeted human span-data collection plan derived from the reviewed-label retrain errors.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json`: test metrics and runtime/package metadata from the expanded 85-record Colab T4 DistilBERT retrain.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_validation_metrics.json`: validation metrics from the expanded 85-record Colab T4 retrain.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json`: record-level held-out predictions from the expanded 85-record Colab T4 retrain.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json`: held-out BIO false-positive/false-negative analysis from the expanded 85-record Colab T4 retrain.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_queue.jsonl`: prioritized human-review queue derived from remaining expanded85 held-out errors.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_summary.json`: metadata and summary counts for that expanded85 review queue.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_commands.txt`: editable command file generated from current gold spans for the expanded85 queued records.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_report.md`: human-readable context for reviewing the expanded85 queued records.
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
 

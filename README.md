@@ -209,7 +209,20 @@ Applied follow-up span batch, July 4, 2026:
 - Current span dataset: 85 records, split as 57 train, 18 validation, 10 test
 - Current Hugging Face token dataset: 85 records and 809 tokens
 
-The latest Colab/T4 transformer metrics were produced before this 35-record expansion. Retrain in Colab T4 before reporting model performance on the expanded dataset.
+Completed expanded 85-record Colab/T4 DistilBERT retrain, July 4, 2026:
+
+- Runtime verified in Colab: `T4 (Python 3)`
+- Data: 85-record `outputs/hf_token_dataset`
+- Validation entity F1: 0.8382
+- Test entity F1: 0.7857
+- Test entity precision: 0.7500
+- Test entity recall: 0.8250
+- Test token accuracy: 0.8246
+- Record-level held-out errors: 6 of 10 records still have at least one token error
+- Raw artifacts: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_*`
+- Review files: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_*`
+
+This is the strongest Week 2 text-command span result so far, but it is not an ASR result and not end-to-end mission performance.
 
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
