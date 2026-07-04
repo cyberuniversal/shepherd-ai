@@ -16,7 +16,7 @@
     "validation": 10
   },
   "tag_counts": {
-    "B-action": 50,
+    "B-action": 55,
     "B-constraint": 10,
     "B-count": 36,
     "B-location": 25,
@@ -26,7 +26,7 @@
     "I-count": 53,
     "I-location": 12,
     "I-target": 32,
-    "O": 173
+    "O": 168
   },
   "tokens": 479
 }

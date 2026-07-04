@@ -385,6 +385,8 @@ Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilber
 
 Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
 
+Human review update, July 4, 2026: the queued test split span commands were reviewed and applied with `scripts/apply_span_review_commands.py`. The dataset still has 50 records, but action spans increased from 50 to 55. The Colab/T4 metrics above were produced before this label update and should be treated as the previous baseline until the transformer is retrained on the updated `outputs/hf_token_dataset`.
+
 ## Not Implemented
 
 - No final human-verified command benchmark.

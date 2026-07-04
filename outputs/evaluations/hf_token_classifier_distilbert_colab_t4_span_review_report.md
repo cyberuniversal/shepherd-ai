@@ -29,7 +29,7 @@ Text: `Survey the stadium entrances and report areas of heavy crowding.`
 
 Review fields: `constraint, target`
 Focus errors: `6`; token errors: `4`
-Current gold span arguments: action='Survey', target='stadium entrances', target='areas of heavy crowding'
+Current gold span arguments: action='Survey', target='stadium entrances', action='report', target='areas of heavy crowding'
 False negatives from model comparison: target='stadium entrances', target='areas of heavy crowding'
 False positives from model comparison: constraint='of heavy crowding', target='stadium', target='entrances', target='areas'
 
@@ -49,7 +49,7 @@ Text: `Dispatch two drones to survey the parking lot for blocked exits.`
 
 Review fields: `constraint, target`
 Focus errors: `2`; token errors: `2`
-Current gold span arguments: count='two drones', action='survey', target='parking lot', target='blocked exits'
+Current gold span arguments: action='Dispatch', count='two drones', action='survey', target='parking lot', target='blocked exits'
 False negatives from model comparison: target='blocked exits'
 False positives from model comparison: constraint='blocked exits'
 
@@ -79,7 +79,7 @@ Text: `Send the drone with the highest battery to inspect the water tank.`
 
 Review fields: `action, constraint, count`
 Focus errors: `1`; token errors: `5`
-Current gold span arguments: count='the drone with the highest battery', action='inspect', target='water tank'
+Current gold span arguments: action='Send', count='the drone with the highest battery', action='inspect', target='water tank'
 False negatives from model comparison: count='the drone with the highest battery'
 False positives from model comparison: action='Send', constraint='the highest battery', count='the drone', count='with'
 
@@ -89,7 +89,7 @@ Text: `Inspect the railway tracks, then return to base.`
 
 Review fields: `constraint, location`
 Focus errors: `1`; token errors: `1`
-Current gold span arguments: action='Inspect', target='railway tracks', location='base'
+Current gold span arguments: action='Inspect', target='railway tracks', action='return', location='base'
 False negatives from model comparison: location='base'
 False positives from model comparison: constraint='base'
 
@@ -99,6 +99,6 @@ Text: `Send two drones to the canal while one drone monitors the crops.`
 
 Review fields: `action`
 Focus errors: `0`; token errors: `1`
-Current gold span arguments: count='two drones', location='canal', count='one drone', action='monitors', target='crops'
+Current gold span arguments: action='Send', count='two drones', location='canal', count='one drone', action='monitors', target='crops'
 False negatives from model comparison: none
 False positives from model comparison: action='Send'

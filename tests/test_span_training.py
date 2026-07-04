@@ -35,7 +35,7 @@ class SpanTrainingTests(unittest.TestCase):
 
         self.assertEqual(summary["records"], 50)
         self.assertEqual(summary["split_counts"], {"test": 10, "train": 30, "validation": 10})
-        self.assertEqual(summary["tag_counts"]["B-action"], 50)
+        self.assertEqual(summary["tag_counts"]["B-action"], 55)
 
     def test_train_span_tagger_predicts_bio_tags(self) -> None:
         records = records_from_span_commands(ROOT / "datasets" / "commands" / "human_verified_span_commands.jsonl")
