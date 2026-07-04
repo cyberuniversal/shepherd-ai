@@ -194,6 +194,14 @@ python scripts/plan_week2_span_collection.py --span-dataset datasets/commands/hu
 
 Current targeted collection plan: 35 new human-written, human-verified span records, focused on `target`, `constraint`, `count`, `action`, and `location` errors. The generated plan does not contain new command text or gold labels. Since it is derived from held-out test errors, use the targeted records for train/validation expansion and create a fresh held-out test set before making stronger model claims.
 
+Create the blank collection packet:
+
+```powershell
+python scripts/create_week2_collection_packet.py --plan outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json --jsonl-output reports/week2_targeted_span_collection_packet.jsonl --markdown-output reports/week2_targeted_span_collection_packet.md
+```
+
+The current packet has 35 blank slots: 27 train and 8 validation. It is a worksheet only; it does not contain collected command text or labels.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell

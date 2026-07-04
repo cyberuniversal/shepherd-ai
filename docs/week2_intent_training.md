@@ -435,6 +435,22 @@ Current plan output, generated from the reviewed run:
 
 This plan does not generate command text or gold labels. It only turns the current error profile into collection requirements. New command text must be human-written or explicitly labeled as synthetic/model-generated.
 
+Create a blank collection packet from that plan:
+
+```powershell
+python scripts/create_week2_collection_packet.py `
+  --plan outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json `
+  --jsonl-output reports/week2_targeted_span_collection_packet.jsonl `
+  --markdown-output reports/week2_targeted_span_collection_packet.md
+```
+
+Current packet output:
+
+- 35 blank collection slots.
+- Recommended splits: 27 train, 8 validation, 0 test.
+- Slot IDs: `human_cmd_followup_001` through `human_cmd_followup_035`.
+- The packet is a worksheet, not a dataset. Every `text` field and `spans` list is blank until a human writes the command and verifies exact character spans.
+
 ## Not Implemented
 
 - No final human-verified command benchmark.

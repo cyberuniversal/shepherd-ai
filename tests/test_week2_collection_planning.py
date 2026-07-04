@@ -1,7 +1,9 @@
 import unittest
 
 from shepherd_ai.week2_collection_planning import (
+    build_week2_collection_packet,
     build_week2_collection_plan,
+    render_week2_collection_packet_markdown,
     render_week2_collection_plan_markdown,
 )
 
@@ -50,6 +52,29 @@ class Week2CollectionPlanningTests(unittest.TestCase):
         self.assertIn("does not contain generated command text", markdown)
         self.assertIn("human-written span records", markdown)
         self.assertNotIn('"Send', markdown)
+
+    def test_collection_packet_creates_blank_non_test_slots(self) -> None:
+        plan = build_week2_collection_plan(
+            span_summary={"records": 1, "span_field_counts": {"target": 1}},
+            evaluation_summary={"records": 1, "entity_f1": 0.25},
+            error_analysis={
+                "false_negative_entity_counts": {"target": 4},
+                "false_positive_entity_counts": {},
+            },
+            source_paths={},
+        )
+
+        packet = build_week2_collection_packet(plan, record_prefix="followup")
+        markdown = render_week2_collection_packet_markdown(packet)
+
+        self.assertEqual(len(packet), 4)
+        self.assertEqual(packet[0]["slot_id"], "followup_001")
+        self.assertEqual(packet[0]["text"], "")
+        self.assertEqual(packet[0]["spans"], [])
+        self.assertTrue(all(row["recommended_split"] in {"train", "validation"} for row in packet))
+        self.assertTrue(all(row["recommended_split"] != "test" for row in packet))
+        self.assertTrue(all(row["do_not_use_as_unbiased_test"] for row in packet))
+        self.assertIn("Total blank slots: 4", markdown)
 
 
 if __name__ == "__main__":

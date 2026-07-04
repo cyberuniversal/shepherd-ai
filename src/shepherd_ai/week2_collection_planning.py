@@ -200,6 +200,91 @@ def render_week2_collection_plan_markdown(plan: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def build_week2_collection_packet(
+    plan: dict[str, Any],
+    *,
+    record_prefix: str = "human_cmd_followup",
+    source: str = "manual_week2_span_annotation_v2",
+) -> list[dict[str, Any]]:
+    """Create blank human collection slots from a targeted collection plan.
+
+    The returned rows are not dataset records. They are a collection worksheet:
+    text and spans are intentionally blank until a human writes a command and
+    verifies exact span labels.
+    """
+
+    packet: list[dict[str, Any]] = []
+    sequence = 1
+    for priority in plan.get("field_priorities", []):
+        requested_records = int(priority.get("heuristic_requested_new_records", 0))
+        if requested_records <= 0:
+            continue
+        field = str(priority["field"])
+        for field_index in range(1, requested_records + 1):
+            packet.append(
+                {
+                    "slot_id": f"{record_prefix}_{sequence:03d}",
+                    "status": "needs_human_command_and_span_labels",
+                    "record_id_suggestion": f"{record_prefix}_{sequence:03d}",
+                    "priority_field": field,
+                    "priority_field_slot": field_index,
+                    "recommended_split": _recommended_followup_split(sequence),
+                    "source": source,
+                    "data_type": "human_verified_span_command",
+                    "text": "",
+                    "spans": [],
+                    "collection_guidance": list(priority.get("collection_guidance", [])),
+                    "research_integrity_note": (
+                        "This is a blank collection slot, not a dataset record. Do not train on it until "
+                        "a human writes the command text and verifies exact character spans."
+                    ),
+                    "do_not_use_as_unbiased_test": True,
+                }
+            )
+            sequence += 1
+    return packet
+
+
+def render_week2_collection_packet_markdown(packet: list[dict[str, Any]]) -> str:
+    """Render a blank collection worksheet for human command entry."""
+
+    train_count = sum(1 for row in packet if row.get("recommended_split") == "train")
+    validation_count = sum(1 for row in packet if row.get("recommended_split") == "validation")
+    lines = [
+        "# Week 2 Targeted Span Collection Packet",
+        "",
+        "This is a blank worksheet for real human-written commands and human-verified exact span labels.",
+        "",
+        "Do not treat any row as collected data until the `text` and `spans` fields are filled and validated.",
+        "",
+        "## Summary",
+        "",
+        f"- Total blank slots: {len(packet)}",
+        f"- Recommended train slots: {train_count}",
+        f"- Recommended validation slots: {validation_count}",
+        "- Recommended test slots: 0",
+        "",
+        "## How To Use",
+        "",
+        "1. Write one original command for each slot.",
+        "2. Label exact spans with `scripts/create_span_record.py` or `scripts/create_span_record_from_command.py`.",
+        "3. Keep targeted follow-up records out of the held-out test split.",
+        "4. Validate the updated dataset before training.",
+        "",
+        "## Blank Slots",
+        "",
+        "| Slot | Split | Priority Field | What To Collect |",
+        "| --- | --- | --- | --- |",
+    ]
+    for row in packet:
+        guidance = " ".join(str(item) for item in row.get("collection_guidance", []))
+        lines.append(
+            f"| `{row['slot_id']}` | `{row['recommended_split']}` | `{row['priority_field']}` | {guidance} |"
+        )
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _int_counts(raw: Any) -> dict[str, int]:
     if not isinstance(raw, dict):
         return {}
@@ -216,3 +301,7 @@ def _format_float(value: Any) -> str:
     if isinstance(value, (float, int)):
         return f"{float(value):.4f}"
     return "not stated"
+
+
+def _recommended_followup_split(sequence: int) -> str:
+    return "validation" if sequence % 4 == 0 else "train"
