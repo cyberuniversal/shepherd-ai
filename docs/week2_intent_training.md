@@ -242,6 +242,21 @@ Completed Colab/T4 run, July 2, 2026:
 - Record-level held-out predictions copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_predictions.json`.
 - Held-out BIO error analysis copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json`.
 
+Reviewed-label Colab/T4 retrain, July 4, 2026:
+
+- Notebook: `notebooks/Notebook2_NLP_Colab_T4.ipynb`
+- Runtime: Google Colab `T4 (Python 3)`.
+- Model: `distilbert-base-uncased`
+- Data: `outputs/hf_token_dataset`, regenerated from `datasets/commands/human_verified_span_commands.jsonl` after the reviewed test split span commands were applied.
+- Seed: 17
+- Epochs: 30
+- Learning rate: 0.00005
+- Batch size: 8
+- Runtime/package metadata copied back from Colab in `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_metrics.json`: CUDA enabled on `Tesla T4`; `torch` 2.11.0+cu128; `transformers` 5.12.1; `accelerate` 1.14.0; `datasets` 4.0.0.
+- Raw held-out metrics copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_metrics.json` and `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_validation_metrics.json`.
+- Record-level held-out predictions copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json`.
+- Held-out BIO error analysis copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json`.
+
 After training, run record-level evaluation and error analysis in the same Colab T4 runtime:
 
 ```powershell
@@ -385,7 +400,18 @@ Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilber
 
 Interpretation: the DistilBERT token classifier is the first completed transformer baseline for Week 2 span extraction. It improves over the dependency-free `span_nb_v1` baseline on both validation entity F1 and held-out test entity F1, but it is still trained and evaluated on only 50 human-verified span records. The error profile shows remaining confusion between targets and constraints, so this is an encouraging baseline result, not evidence that slot extraction is solved.
 
-Human review update, July 4, 2026: the queued test split span commands were reviewed and applied with `scripts/apply_span_review_commands.py`. The dataset still has 50 records, but action spans increased from 50 to 55. The Colab/T4 metrics above were produced before this label update and should be treated as the previous baseline until the transformer is retrained on the updated `outputs/hf_token_dataset`.
+Reviewed-label Colab/T4 Hugging Face token-classifier result for `hf_token_classifier_distilbert_colab_t4_reviewed`:
+
+- Validation entity F1: 0.7945
+- Validation entity precision: 0.7632
+- Validation entity recall: 0.8286
+- Test entity F1: 0.6047
+- Test entity precision: 0.5652
+- Test entity recall: 0.6500
+- Test token accuracy: 0.7281
+- Test record-level error analysis: 8 of 10 records are listed in the worst-record queue; false negatives are highest for `action` and `target` with 4 missed entities each, followed by `constraint`, `count`, and `location` with 2 each; false positives are highest for `constraint` with 8 entities and `target` with 7 entities.
+
+Interpretation: the reviewed-label retrain is a small held-out test improvement over the previous Colab/T4 transformer baseline, from test entity F1 0.5926 to 0.6047. Validation entity F1 is unchanged at 0.7945. This is a provenance-complete retrain on the updated span labels, not evidence that slot extraction is solved. The dataset still has only 50 records and the model still has substantial entity-level errors.
 
 ## Not Implemented
 

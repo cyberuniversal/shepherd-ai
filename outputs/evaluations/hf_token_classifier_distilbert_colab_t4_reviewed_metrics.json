@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "batch_size": 8,
+    "dataset_dir": "outputs/hf_token_dataset",
+    "epochs": 30.0,
+    "learning_rate": 5e-05,
+    "model_name": "hf_token_classifier",
+    "pretrained_model": "distilbert-base-uncased",
+    "required_device_substring": "T4",
+    "runtime": {
+      "accelerate_version": "1.14.0",
+      "cuda_available": true,
+      "cuda_device_names": [
+        "Tesla T4"
+      ],
+      "datasets_version": "4.0.0",
+      "torch_version": "2.11.0+cu128",
+      "transformers_version": "5.12.1"
+    },
+    "seed": 17,
+    "split": "test"
+  },
+  "metrics": {
+    "epoch": 30.0,
+    "eval_entity_f1": 0.6046511627906976,
+    "eval_entity_precision": 0.5652173913043478,
+    "eval_entity_recall": 0.65,
+    "eval_loss": 0.9374000430107117,
+    "eval_runtime": 0.0317,
+    "eval_samples_per_second": 315.8,
+    "eval_steps_per_second": 63.16
+  }
+}

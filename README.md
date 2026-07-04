@@ -172,6 +172,20 @@ Completed Colab/T4 DistilBERT token-classifier run, July 2, 2026:
 - Held-out BIO error analysis: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_test_error_analysis.json`
 - Error profile: 9 of 10 test records contain at least one entity error; largest false-negative bucket is `target` with 4 missed entities, and largest false-positive buckets are `constraint` with 8 entities and `target` with 7 entities.
 
+Reviewed-label Colab/T4 DistilBERT token-classifier retrain, July 4, 2026:
+
+- Runtime verified in Colab: `T4 (Python 3)`
+- Runtime metadata recorded in `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_metrics.json`: CUDA enabled on `Tesla T4`; `torch` 2.11.0+cu128; `transformers` 5.12.1; `accelerate` 1.14.0; `datasets` 4.0.0.
+- Data: `outputs/hf_token_dataset`, regenerated after applying the reviewed span command subset.
+- Validation entity F1: 0.7945
+- Test entity F1: 0.6047
+- Test token accuracy: 0.7281
+- Raw metrics copied back from Colab: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_metrics.json` and `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_validation_metrics.json`
+- Record-level held-out predictions: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json`
+- Held-out BIO error analysis: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json`
+
+This retrain improves the previous held-out test entity F1 from 0.5926 to 0.6047 on the same 10-record test split. It is still a small-data Week 2 baseline with substantial entity errors, not a solved intent extractor.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell
