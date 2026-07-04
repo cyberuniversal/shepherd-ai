@@ -43,9 +43,15 @@ def build_whisper_prediction(
 ) -> WhisperPrediction:
     """Create one serializable Whisper prediction row."""
 
+    audio_path = record.audio_path
+    try:
+        serialized_audio_path = str(audio_path.resolve().relative_to(Path.cwd().resolve()))
+    except ValueError:
+        serialized_audio_path = str(audio_path)
+
     return WhisperPrediction(
         id=record.id,
-        audio_path=str(record.audio_path),
+        audio_path=serialized_audio_path,
         expected_transcript=record.transcript,
         predicted_transcript=predicted_transcript.strip(),
         model_name=model_name,

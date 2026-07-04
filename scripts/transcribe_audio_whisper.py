@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from importlib import metadata
 import json
 from pathlib import Path
+import platform
 import sys
 from typing import Any
 
@@ -50,6 +52,8 @@ def main() -> None:
             "Whisper is not installed. In Colab, run: python -m pip install -q openai-whisper"
         ) from exc
 
+    import torch
+
     model = whisper.load_model(args.model, device=args.device)
     parameters: dict[str, Any] = {
         "manifest": args.manifest,
@@ -59,6 +63,14 @@ def main() -> None:
         "language": args.language,
         "fp16": args.fp16,
         "device_metadata": device_metadata,
+        "runtime": {
+            "python": sys.version,
+            "platform": platform.platform(),
+        },
+        "packages": {
+            "openai-whisper": _package_version("openai-whisper"),
+            "torch": getattr(torch, "__version__", "not stated"),
+        },
     }
     predictions = []
     for record in records:
@@ -94,6 +106,13 @@ def main() -> None:
     evaluation_output.parent.mkdir(parents=True, exist_ok=True)
     evaluation_output.write_text(json.dumps(evaluation, indent=2, sort_keys=True), encoding="utf-8")
     print(json.dumps(evaluation["summary"], indent=2, sort_keys=True))
+
+
+def _package_version(name: str) -> str:
+    try:
+        return metadata.version(name)
+    except metadata.PackageNotFoundError:
+        return "not installed"
 
 
 if __name__ == "__main__":

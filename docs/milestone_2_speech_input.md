@@ -4,7 +4,7 @@
 
 The roadmap places speech recognition and intent extraction in Week 2. Typed-command intent extraction is already implemented as the first baseline, so the next roadmap-aligned step is the speech input side of the same week.
 
-The repository now has a small self-recorded WAV manifest and transcript set. Because Whisper ASR results have not yet been recorded, this milestone keeps the reproducibility scaffold explicit: audio manifest validation, transcript evaluation utilities, and a Colab/GPU-oriented Whisper transcription script.
+The repository now has a small self-recorded WAV manifest and transcript set. The reproducibility scaffold remains explicit: audio manifest validation, transcript evaluation utilities, and a GPU-oriented Whisper transcription script.
 
 ## System Requirement Supported
 
@@ -18,9 +18,9 @@ This milestone supports the roadmap requirement to accept uploaded audio, conver
 
 Current baseline: cached or manually provided transcript text evaluated against expected transcript text.
 
-Implemented but not yet evaluated: `scripts/transcribe_audio_whisper.py`, which runs Whisper inference when Whisper is installed and writes raw predictions plus transcript metrics.
+Implemented and initially evaluated: `scripts/transcribe_audio_whisper.py`, which runs Whisper inference when Whisper is installed and writes raw predictions plus transcript metrics.
 
-This baseline is intentionally narrow. It lets the project validate dataset records and transcript metrics before introducing a speech model.
+This baseline is intentionally narrow. It evaluates speech-to-text only; intent/span extraction evaluation remains separate.
 
 ## Required Data
 
@@ -65,6 +65,19 @@ The scaffold provides:
 
 Raw evaluation output should remain under `outputs/evaluations/`.
 
+Recorded local-GPU ASR run, July 4, 2026:
+
+- Environment: local Windows GPU run, not Google Colab.
+- Device: `NVIDIA GeForce GTX 1650 SUPER`.
+- Model: Whisper `base`.
+- Command flags: `--device cuda`, `--language en`, `--required-device-substring GTX`, `--no-fp16`.
+- Reason for local run: the WAV files are intentionally not tracked by Git, so the Colab clone cannot access them without uploading private audio or committing recordings to the public repository.
+- Raw predictions: `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`.
+- Evaluation: `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`.
+- Result on the 10-record train-marked sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
+
+This is a real Whisper ASR evaluation on the current recorded WAVs, but it is not a Colab/T4 result and not a final held-out speech benchmark.
+
 Run Whisper in Colab/T4:
 
 ```powershell
@@ -88,11 +101,11 @@ This scaffold is complete when:
 - Transcript comparisons produce per-record and summary metrics.
 - Tests pass.
 
-The full speech-to-text milestone is not complete until Whisper dependency/version metadata, model configuration, raw predicted transcripts, and transcript evaluation results are committed.
+The full speech-to-text milestone is not complete until the project defines a real audio split policy and, if Colab remains required, a private-audio upload workflow that does not publish WAV recordings to GitHub.
 
 ## Known Uncertainties
 
-- Exact Whisper package and version will be recorded after the first ASR run.
+- Colab/T4 ASR is still not recorded because the WAV files are intentionally untracked and unavailable to a clean Colab clone.
 - Whisper model size is currently planned as `base` for the first reproducible pass.
 - Audio recording conditions are not stated.
 - Language/accent/noise coverage is not stated.

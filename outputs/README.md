@@ -65,6 +65,9 @@ Current Week 2 artifacts:
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_summary.json`: metadata and summary counts for that expanded85 review queue.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_commands.txt`: editable command file generated from current gold spans for the expanded85 queued records.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_review_report.md`: human-readable context for reviewing the expanded85 queued records.
+- `outputs/evaluations/audio_manifest_summary.json`: validation summary for the current 10-record human-recorded audio manifest.
+- `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`: raw Whisper `base` predictions from the local `NVIDIA GeForce GTX 1650 SUPER` GPU run.
+- `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`: transcript exact-match and WER evaluation for that same local-GPU ASR run.
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
 

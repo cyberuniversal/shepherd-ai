@@ -60,15 +60,17 @@ Inputs and outputs: Inputs are WAV files and transcript metadata. Outputs are tr
 
 Dependencies: Whisper and an audio-processing environment. Exact package/version choices are not stated.
 
-Deliverables: Audio dataset manifest, transcript format, speech-to-text script/notebook, tests for manifest handling, and documented model configuration.
+Deliverables: Audio dataset manifest, transcript format, speech-to-text script/notebook, tests for manifest handling, documented model configuration, and raw Whisper prediction/evaluation artifacts.
 
 Tests: File-format validation, transcript loading, and deterministic behavior for cached transcripts.
 
-Evaluation metrics: Speech-recognition accuracy when a labeled transcript set exists.
+Evaluation metrics: Speech-recognition exact-match accuracy and word error rate when a labeled transcript set exists.
 
 Completion criteria: A documented sample-audio workflow produces transcripts reproducibly without private data or credentials.
 
-Known uncertainties: The repository now has 10 self-recorded WAV records, all marked `train`; a final audio train/validation/test split, Whisper version, and acceptance threshold are still not specified.
+Current status: A Whisper `base` ASR run has been recorded on a local `NVIDIA GeForce GTX 1650 SUPER` GPU with `--no-fp16`, producing exact-match accuracy `0.9` and mean word error rate `0.01` on the 10-record sample-audio manifest.
+
+Known uncertainties: The repository now has 10 self-recorded WAV records, all marked `train`; a final audio train/validation/test split and acceptance threshold are still not specified. The Colab/T4 ASR run is still not recorded because the WAV files are intentionally not tracked in the public repository and therefore are unavailable to a clean Colab clone.
 
 ## Milestone 3: Command Grounding And Map Representation
 

@@ -56,11 +56,11 @@ Dataset and artifact locations:
 
 The first implemented milestone is a typed-command intent extraction baseline from Week 2 of the roadmap. It accepts simple typed mission commands and emits JSON fields aligned with the roadmap: `action`, `count`, `location`, `target`, and `constraints`.
 
-Audio model evaluation is separate from text intent extraction. The repository has 10 self-recorded WAV command records under `datasets/sample_audio/`, but no Whisper ASR result has been recorded yet.
+Audio model evaluation is separate from text intent extraction. The repository has 10 self-recorded WAV command records under `datasets/sample_audio/`. A local-GPU Whisper ASR result has been recorded, but a Colab/T4 ASR result has not, because the WAV files are intentionally not tracked in the public GitHub repository.
 
 ## Speech Input Scaffold
 
-Milestone 2 currently validates audio/transcript manifests, evaluates transcript text, and includes a Colab/GPU-oriented Whisper transcription script. A raw Whisper ASR evaluation still needs to be run and committed before reporting speech-recognition performance.
+Milestone 2 currently validates audio/transcript manifests, evaluates transcript text, and includes a GPU-oriented Whisper transcription script. A first raw Whisper ASR evaluation has been run on the local `NVIDIA GeForce GTX 1650 SUPER` GPU, not on Colab/T4.
 
 Manifest records should point to WAV files under the dataset root and include transcript provenance fields. See `docs/milestone_2_speech_input.md`.
 
@@ -71,6 +71,17 @@ python scripts/transcribe_audio_whisper.py --manifest datasets/sample_audio/mani
 ```
 
 The script writes raw predicted transcripts separately from the WER/exact-match evaluation.
+
+Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
+
+- Predictions: `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`
+- Evaluation: `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`
+- Device: `NVIDIA GeForce GTX 1650 SUPER`
+- Flags: `--device cuda --language en --required-device-substring GTX --no-fp16`
+- Exact-match accuracy: `0.9`
+- Mean word error rate: `0.01`
+
+This is not a final audio benchmark because all 10 sample-audio records are currently marked `train`.
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 
