@@ -68,7 +68,7 @@ Evaluation metrics: Speech-recognition accuracy when a labeled transcript set ex
 
 Completion criteria: A documented sample-audio workflow produces transcripts reproducibly without private data or credentials.
 
-Known uncertainties: No audio files or transcript split currently exist.
+Known uncertainties: The repository now has 10 self-recorded WAV records, all marked `train`; a final audio train/validation/test split, Whisper version, and acceptance threshold are still not specified.
 
 ## Milestone 3: Command Grounding And Map Representation
 

@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains project source documents, a deterministic typed-command intent parser baseline, and a speech-input scaffold for audio manifest validation and transcript evaluation. It is not an end-to-end prototype, does not control physical drones, and does not yet implement Whisper inference, grounding, planning, scheduling, vision, safety validation, or integrated mission execution.
+Current status: this repository contains project source documents, typed-command intent baselines, supervised span extraction baselines, a Colab/T4 DistilBERT token-classifier workflow, and a speech-input scaffold with a Whisper transcription script. It is not an end-to-end prototype, does not control physical drones, and does not yet implement grounding, planning, scheduling, vision, safety validation, or integrated mission execution.
 
 ## Project Rule
 
@@ -56,13 +56,21 @@ Dataset and artifact locations:
 
 The first implemented milestone is a typed-command intent extraction baseline from Week 2 of the roadmap. It accepts simple typed mission commands and emits JSON fields aligned with the roadmap: `action`, `count`, `location`, `target`, and `constraints`.
 
-Audio support is deferred because the repository has no sample WAV files, transcripts, Whisper configuration, package versions, or evaluation split.
+Audio model evaluation is separate from text intent extraction. The repository has 10 self-recorded WAV command records under `datasets/sample_audio/`, but no Whisper ASR result has been recorded yet.
 
 ## Speech Input Scaffold
 
-Milestone 2 currently validates audio/transcript manifests and evaluates transcript text. It does not run Whisper yet.
+Milestone 2 currently validates audio/transcript manifests, evaluates transcript text, and includes a Colab/GPU-oriented Whisper transcription script. A raw Whisper ASR evaluation still needs to be run and committed before reporting speech-recognition performance.
 
 Manifest records should point to WAV files under the dataset root and include transcript provenance fields. See `docs/milestone_2_speech_input.md`.
+
+Run Whisper ASR in Colab or another documented GPU environment:
+
+```powershell
+python scripts/transcribe_audio_whisper.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --predictions-output outputs/evaluations/whisper_base_audio_predictions.jsonl --evaluation-output outputs/evaluations/whisper_base_audio_evaluation.json --model base --device cuda --language en --required-device-substring T4
+```
+
+The script writes raw predicted transcripts separately from the WER/exact-match evaluation.
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 
