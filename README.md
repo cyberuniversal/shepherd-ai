@@ -186,6 +186,14 @@ Reviewed-label Colab/T4 DistilBERT token-classifier retrain, July 4, 2026:
 
 This retrain improves the previous held-out test entity F1 from 0.5926 to 0.6047 on the same 10-record test split. It is still a small-data Week 2 baseline with substantial entity errors, not a solved intent extractor.
 
+Plan the next targeted human span-data batch from the reviewed error analysis:
+
+```powershell
+python scripts/plan_week2_span_collection.py --span-dataset datasets/commands/human_verified_span_commands.jsonl --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json --error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json --json-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json --markdown-output reports/week2_targeted_span_collection_plan.md
+```
+
+Current targeted collection plan: 35 new human-written, human-verified span records, focused on `target`, `constraint`, `count`, `action`, and `location` errors. The generated plan does not contain new command text or gold labels. Since it is derived from held-out test errors, use the targeted records for train/validation expansion and create a fresh held-out test set before making stronger model claims.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell

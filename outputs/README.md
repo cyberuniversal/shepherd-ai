@@ -55,6 +55,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_validation_metrics.json`: validation metrics from the same reviewed-label Colab T4 retrain.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json`: record-level held-out predictions from the reviewed-label retrain.
 - `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json`: held-out BIO false-positive/false-negative analysis from the reviewed-label retrain.
+- `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json`: machine-readable targeted human span-data collection plan derived from the reviewed-label retrain errors.
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
 

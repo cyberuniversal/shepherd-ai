@@ -413,6 +413,28 @@ Reviewed-label Colab/T4 Hugging Face token-classifier result for `hf_token_class
 
 Interpretation: the reviewed-label retrain is a small held-out test improvement over the previous Colab/T4 transformer baseline, from test entity F1 0.5926 to 0.6047. Validation entity F1 is unchanged at 0.7945. This is a provenance-complete retrain on the updated span labels, not evidence that slot extraction is solved. The dataset still has only 50 records and the model still has substantial entity-level errors.
 
+## Targeted Collection Plan
+
+Build the next human data collection batch from the reviewed Colab/T4 error analysis:
+
+```powershell
+python scripts/plan_week2_span_collection.py `
+  --span-dataset datasets/commands/human_verified_span_commands.jsonl `
+  --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_predictions.json `
+  --error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_test_error_analysis.json `
+  --json-output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_reviewed_collection_plan.json `
+  --markdown-output reports/week2_targeted_span_collection_plan.md
+```
+
+Current plan output, generated from the reviewed run:
+
+- Minimum next batch: 35 human-written, human-verified span records.
+- Highest-priority fields: `target` with 11 requested records and `constraint` with 10 requested records.
+- Additional requested coverage: `count` 6 records, `action` 5 records, and `location` 3 records.
+- Split policy: put targeted follow-up records in train or validation only, because the plan is derived from held-out test errors. Do not treat targeted follow-up records as an unbiased test result.
+
+This plan does not generate command text or gold labels. It only turns the current error profile into collection requirements. New command text must be human-written or explicitly labeled as synthetic/model-generated.
+
 ## Not Implemented
 
 - No final human-verified command benchmark.
