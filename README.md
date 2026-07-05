@@ -76,10 +76,12 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 
 - Predictions: `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`
 - Evaluation: `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`
+- Error analysis: `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`
 - Device: `NVIDIA GeForce GTX 1650 SUPER`
 - Flags: `--device cuda --language en --required-device-substring GTX --no-fp16`
 - Exact-match accuracy: `0.9`
 - Mean word error rate: `0.01`
+- Observed normalized word substitution: `fifty -> 50`
 
 This is not a final audio benchmark because all 10 sample-audio records are currently marked `train`.
 

@@ -1,0 +1,62 @@
+{
+  "error_record_count": 1,
+  "error_records": [
+    {
+      "edit_distance": 1,
+      "expected": "Send two drones west but keep them below fifty meters.",
+      "id": "audio_006",
+      "non_equal_operations": [
+        {
+          "hypothesis": "50",
+          "hypothesis_index": 8,
+          "operation": "substitute",
+          "reference": "fifty",
+          "reference_index": 8
+        }
+      ],
+      "predicted": "Send two drones west, but keep them below 50 meters.",
+      "word_error_rate": 0.1
+    }
+  ],
+  "metadata": {
+    "source_model_name": "whisper",
+    "source_model_version": "base",
+    "source_parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-04T17:26:30.075999+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]"
+      }
+    },
+    "source_summary": {
+      "exact_match_accuracy": 0.9,
+      "exact_matches": 9,
+      "mean_word_error_rate": 0.01,
+      "records": 10
+    }
+  },
+  "operation_counts": {
+    "equal": 74,
+    "substitute": 1
+  },
+  "substitution_counts": {
+    "fifty -> 50": 1
+  }
+}

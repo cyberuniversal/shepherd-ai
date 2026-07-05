@@ -33,3 +33,9 @@ Run Whisper ASR in Colab/T4 after installing `openai-whisper`:
 ```powershell
 python scripts/transcribe_audio_whisper.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --predictions-output outputs/evaluations/whisper_base_audio_predictions.jsonl --evaluation-output outputs/evaluations/whisper_base_audio_evaluation.json --model base --device cuda --language en --required-device-substring T4
 ```
+
+Current recorded ASR artifact set is from a local `NVIDIA GeForce GTX 1650 SUPER` GPU run, not Colab/T4:
+
+- `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`
+- `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`
+- `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`

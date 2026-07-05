@@ -68,6 +68,13 @@ Current Week 2 artifacts:
 - `outputs/evaluations/audio_manifest_summary.json`: validation summary for the current 10-record human-recorded audio manifest.
 - `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`: raw Whisper `base` predictions from the local `NVIDIA GeForce GTX 1650 SUPER` GPU run.
 - `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`: transcript exact-match and WER evaluation for that same local-GPU ASR run.
+- `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`: word-level error analysis for that same local-GPU ASR run.
+
+Generate the ASR error analysis with:
+
+```powershell
+python scripts/analyze_asr_errors.py --evaluation outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json --output outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json
+```
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
 

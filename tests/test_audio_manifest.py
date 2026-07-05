@@ -11,6 +11,7 @@ from shepherd_ai.audio_manifest import (  # noqa: E402
     AudioManifestError,
     evaluate_transcripts,
     load_audio_manifest,
+    word_error_details,
     word_error_rate,
 )
 
@@ -72,6 +73,25 @@ class AudioManifestTests(unittest.TestCase):
         self.assertAlmostEqual(word_error_rate("send two drones north", "send drones east now"), 0.75)
         self.assertEqual(word_error_rate("", ""), 0.0)
         self.assertEqual(word_error_rate("", "extra words"), 1.0)
+
+    def test_word_error_details_reports_alignment_operations(self) -> None:
+        details = word_error_details(
+            "Send two drones west but keep them below fifty meters.",
+            "Send two drones west, but keep them below 50 meters.",
+        )
+
+        self.assertAlmostEqual(details["word_error_rate"], 0.1)
+        self.assertEqual(details["edit_distance"], 1)
+        self.assertIn(
+            {
+                "operation": "substitute",
+                "reference_index": 8,
+                "hypothesis_index": 8,
+                "reference": "fifty",
+                "hypothesis": "50",
+            },
+            details["operations"],
+        )
 
     def test_evaluate_transcripts_reports_per_record_and_summary(self) -> None:
         expected = {

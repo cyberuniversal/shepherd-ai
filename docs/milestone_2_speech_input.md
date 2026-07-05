@@ -74,7 +74,9 @@ Recorded local-GPU ASR run, July 4, 2026:
 - Reason for local run: the WAV files are intentionally not tracked by Git, so the Colab clone cannot access them without uploading private audio or committing recordings to the public repository.
 - Raw predictions: `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`.
 - Evaluation: `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`.
+- Error analysis: `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`.
 - Result on the 10-record train-marked sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
+- Observed normalized word substitution: `fifty -> 50`.
 
 This is a real Whisper ASR evaluation on the current recorded WAVs, but it is not a Colab/T4 result and not a final held-out speech benchmark.
 

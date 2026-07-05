@@ -93,6 +93,26 @@ def word_error_rate(reference: str, hypothesis: str) -> float:
     return _edit_distance(reference_words, hypothesis_words) / len(reference_words)
 
 
+def word_error_details(reference: str, hypothesis: str) -> dict[str, Any]:
+    """Return word-level alignment details for transcript error analysis."""
+
+    reference_words = _words(reference)
+    hypothesis_words = _words(hypothesis)
+    operations = _edit_operations(reference_words, hypothesis_words)
+    edit_distance = sum(1 for operation in operations if operation["operation"] != "equal")
+    if reference_words:
+        wer = edit_distance / len(reference_words)
+    else:
+        wer = 0.0 if not hypothesis_words else 1.0
+    return {
+        "reference_words": reference_words,
+        "hypothesis_words": hypothesis_words,
+        "edit_distance": edit_distance,
+        "word_error_rate": wer,
+        "operations": operations,
+    }
+
+
 def evaluate_transcripts(
     expected: dict[str, str],
     predicted: dict[str, str],
@@ -192,3 +212,90 @@ def _edit_distance(reference: list[str], hypothesis: list[str]) -> int:
             )
         previous = current
     return previous[-1]
+
+
+def _edit_operations(reference: list[str], hypothesis: list[str]) -> list[dict[str, Any]]:
+    rows = len(reference)
+    cols = len(hypothesis)
+    costs = [[0] * (cols + 1) for _ in range(rows + 1)]
+    backtrace: list[list[str]] = [[""] * (cols + 1) for _ in range(rows + 1)]
+
+    for row in range(1, rows + 1):
+        costs[row][0] = row
+        backtrace[row][0] = "delete"
+    for col in range(1, cols + 1):
+        costs[0][col] = col
+        backtrace[0][col] = "insert"
+
+    for row in range(1, rows + 1):
+        for col in range(1, cols + 1):
+            if reference[row - 1] == hypothesis[col - 1]:
+                choices = [(costs[row - 1][col - 1], "equal")]
+            else:
+                choices = [(costs[row - 1][col - 1] + 1, "substitute")]
+            choices.extend(
+                [
+                    (costs[row - 1][col] + 1, "delete"),
+                    (costs[row][col - 1] + 1, "insert"),
+                ]
+            )
+            cost, operation = min(choices, key=lambda item: item[0])
+            costs[row][col] = cost
+            backtrace[row][col] = operation
+
+    operations: list[dict[str, Any]] = []
+    row = rows
+    col = cols
+    while row > 0 or col > 0:
+        operation = backtrace[row][col]
+        if operation == "equal":
+            operations.append(
+                {
+                    "operation": "equal",
+                    "reference_index": row - 1,
+                    "hypothesis_index": col - 1,
+                    "reference": reference[row - 1],
+                    "hypothesis": hypothesis[col - 1],
+                }
+            )
+            row -= 1
+            col -= 1
+        elif operation == "substitute":
+            operations.append(
+                {
+                    "operation": "substitute",
+                    "reference_index": row - 1,
+                    "hypothesis_index": col - 1,
+                    "reference": reference[row - 1],
+                    "hypothesis": hypothesis[col - 1],
+                }
+            )
+            row -= 1
+            col -= 1
+        elif operation == "delete":
+            operations.append(
+                {
+                    "operation": "delete",
+                    "reference_index": row - 1,
+                    "hypothesis_index": None,
+                    "reference": reference[row - 1],
+                    "hypothesis": None,
+                }
+            )
+            row -= 1
+        elif operation == "insert":
+            operations.append(
+                {
+                    "operation": "insert",
+                    "reference_index": None,
+                    "hypothesis_index": col - 1,
+                    "reference": None,
+                    "hypothesis": hypothesis[col - 1],
+                }
+            )
+            col -= 1
+        else:
+            raise RuntimeError("invalid transcript alignment state")
+
+    operations.reverse()
+    return operations
