@@ -59,7 +59,9 @@ The immediate Shepherd-AI consequence is:
 
 Schema-alias features are not free-form reasoning. They encode known aliases such as `north`/`northern`, `greenhouse`, and `irrigation canal` as features that a supervised classifier can use.
 
-`deterministic_v1` also includes an open-vocabulary target phrase fallback. If no bounded target alias matches, it can extract short target phrases for supported actions such as `inspect`, `scan`, `capture`, and `search`. This reduces brittleness for commands like "inspect the livestock pen" or "capture images of the red pickup truck," but it is still deterministic and still needs held-out evaluation.
+`deterministic_v1` introduced an open-vocabulary target phrase fallback. If no bounded target alias matched, it could extract short target phrases for supported actions such as `inspect`, `scan`, `capture`, and `search`.
+
+`deterministic_v2` is the current parser. It adds post-hoc fixes from the reviewed audio-generalization batch, including location-target separation for `X for Y` commands, map/monitor/photograph wording, open-vocabulary location phrases, compound-command constraints, and a few observed ASR confusions. This improves the current reviewed audio batch but does not replace the need for a trained and independently evaluated language component.
 
 The deterministic constraint rules now preserve simple altitude-limit phrases such as `keep them below fifty meters`, `keep them below 50 meters`, and `below forty meters`. The repository also includes `constraint_normalizer_v1`, which canonicalizes simple altitude-limit strings into bounded records such as altitude below 50 meters. This is still not a full safety schema and does not enforce flight rules.
 

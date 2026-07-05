@@ -62,7 +62,7 @@ class CreateWeek2AudioIntentReviewPacketCliTests(unittest.TestCase):
         self.assertEqual(rows[0]["review_status"], "needs_human_review")
         self.assertEqual(rows[0]["data_type"], "human_recorded_audio_intent_draft")
         self.assertEqual(rows[0]["expected_intent"]["action"], "inspect")
-        self.assertEqual(rows[0]["parser"], "deterministic_v1")
+        self.assertEqual(rows[0]["parser"], "deterministic_v2")
         self.assertIn("constraint_review_needed", rows[0]["draft_review_flags"])
         self.assertIn("Do not use draft records", markdown)
 

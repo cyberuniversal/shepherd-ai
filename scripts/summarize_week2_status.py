@@ -66,11 +66,12 @@ def build_summary(
     hf_metrics = hf_token_metrics["metrics"]
     error_worst_records = hf_token_error_analysis.get("worst_records", [])
 
-    deterministic_human = intent_summary.get("deterministic_v1:human_transcript", {})
-    deterministic_asr = intent_summary.get("deterministic_v1:asr_transcript", {})
+    deterministic_name = _latest_deterministic_name(intent_summary)
+    deterministic_human = intent_summary.get(f"{deterministic_name}:human_transcript", {})
+    deterministic_asr = intent_summary.get(f"{deterministic_name}:asr_transcript", {})
     trained_human = intent_summary.get("trained_nb_human_curated_v2:human_transcript", {})
     trained_asr = intent_summary.get("trained_nb_human_curated_v2:asr_transcript", {})
-    deterministic_impact = intent_impact["summary"].get("deterministic_v1", {})
+    deterministic_impact = intent_impact["summary"].get(deterministic_name, {})
     trained_impact = intent_impact["summary"].get("trained_nb_human_curated_v2", {})
 
     headline = {
@@ -113,13 +114,13 @@ def build_summary(
                 "summary": audio_summary,
             },
             "audio_linked_intent_accuracy": {
-                "deterministic_v1_human_transcript": deterministic_human,
-                "deterministic_v1_asr_transcript": deterministic_asr,
+                f"{deterministic_name}_human_transcript": deterministic_human,
+                f"{deterministic_name}_asr_transcript": deterministic_asr,
                 "trained_nb_human_curated_v2_human_transcript": trained_human,
                 "trained_nb_human_curated_v2_asr_transcript": trained_asr,
             },
             "asr_intent_impact": {
-                "deterministic_v1": deterministic_impact,
+                deterministic_name: deterministic_impact,
                 "trained_nb_human_curated_v2": trained_impact,
             },
             "asr_span_impact": span_summary,
@@ -195,6 +196,11 @@ def _interpretation(headline: dict[str, Any], hf_token_error_analysis: dict[str,
 
 def _load_json(path: str | Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _latest_deterministic_name(intent_summary: dict[str, Any]) -> str:
+    names = sorted({key.split(":", 1)[0] for key in intent_summary if key.startswith("deterministic_")})
+    return names[-1] if names else "deterministic_v1"
 
 
 def _pct(value: Any) -> str:

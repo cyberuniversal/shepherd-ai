@@ -51,7 +51,7 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(payload["action"], "scan")
         self.assertEqual(payload["location"], "west")
         self.assertEqual(payload["target"], "field")
-        self.assertEqual(payload["parser"], "deterministic_v1")
+        self.assertEqual(payload["parser"], "deterministic_v2")
 
     def test_empty_command_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
@@ -185,6 +185,51 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(compound.constraints, ["one drone to the greenhouse"])
         self.assertEqual(bring_back.action, "return")
         self.assertEqual(bring_back.target, "drones")
+
+    def test_audio_generalization_validation_location_target_patterns(self) -> None:
+        stalled = parse_intent("Have two drones scan the service road for stalled vehicles.")
+        roof = parse_intent("Check the lower roof for standing water after the rain.")
+        returning = parse_intent("Send all available drones back to the launch area.")
+
+        self.assertEqual(stalled.action, "scan")
+        self.assertEqual(stalled.location, "service road")
+        self.assertEqual(stalled.target, "stalled vehicles")
+        self.assertEqual(roof.action, "inspect")
+        self.assertEqual(roof.location, "lower roof")
+        self.assertEqual(roof.target, "standing water")
+        self.assertEqual(roof.constraints, ["after the rain"])
+        self.assertEqual(returning.action, "return")
+        self.assertEqual(returning.location, "launch area")
+        self.assertEqual(returning.target, "drones")
+
+    def test_audio_generalization_extended_action_and_constraint_patterns(self) -> None:
+        mapped = parse_intent("Use three drones to map the outer fence from east to west.")
+        photographed = parse_intent("Have the nearest drone photograph the damaged sign.")
+        monitored = parse_intent("Monitor the main road until the ambulance arrives.")
+
+        self.assertEqual(mapped.action, "scan")
+        self.assertEqual(mapped.target, "outer fence")
+        self.assertEqual(mapped.constraints, ["from east to west"])
+        self.assertEqual(photographed.action, "capture")
+        self.assertEqual(photographed.target, "damaged sign")
+        self.assertEqual(photographed.constraints, ["nearest drone"])
+        self.assertEqual(monitored.action, "scan")
+        self.assertEqual(monitored.location, "main road")
+        self.assertEqual(monitored.target, "main road")
+        self.assertEqual(monitored.constraints, ["until the ambulance arrives"])
+
+    def test_audio_generalization_compound_patterns_are_lossy_but_explicit(self) -> None:
+        sent_then_return = parse_intent("Send one drone to the southern wall, then return it to the launch area.")
+        divided = parse_intent("Send three drones to divide the campus into separate search areas.")
+
+        self.assertEqual(sent_then_return.action, "send")
+        self.assertEqual(sent_then_return.location, "southern wall")
+        self.assertIsNone(sent_then_return.target)
+        self.assertEqual(sent_then_return.constraints, ["then return it to the launch area"])
+        self.assertEqual(divided.action, "search")
+        self.assertEqual(divided.count, 3)
+        self.assertEqual(divided.target, "campus")
+        self.assertEqual(divided.constraints, ["divide the campus into separate search areas"])
 
 
 if __name__ == "__main__":

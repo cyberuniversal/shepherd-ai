@@ -167,7 +167,7 @@ class Week2CollectionCliTests(unittest.TestCase):
 
         self.assertIn("human_cmd_001", completed.stdout)
         self.assertEqual(command_record["data_type"], "human_written_command_draft_labeled")
-        self.assertEqual(command_record["label_source"], "deterministic_v1_draft")
+        self.assertEqual(command_record["label_source"], "deterministic_v2_draft")
         self.assertEqual(command_record["expected_intent"]["action"], "inspect")
         self.assertEqual(command_record["expected_intent"]["count"], 2)
         self.assertEqual(audio_record["id"], "audio_001")

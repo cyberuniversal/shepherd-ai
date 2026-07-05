@@ -2,11 +2,11 @@
   "metadata": {
     "dataset": "datasets\\commands\\roadmap_examples.jsonl",
     "dataset_note": "Roadmap-derived synthetic smoke sample, not a research benchmark.",
-    "generated_at_utc": "2026-06-30T11:43:55.173471+00:00",
+    "generated_at_utc": "2026-07-05T13:43:49.995780+00:00",
     "model_name": null,
     "model_version": null,
     "parameters": {},
-    "parser": "deterministic_v1",
+    "parser": "deterministic_v2",
     "random_seed": null
   },
   "records": [

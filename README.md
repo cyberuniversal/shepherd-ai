@@ -90,7 +90,7 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 
 The audio manifest now has a retrospective seed-17 split: 6 train, 2 validation, and 2 test records. The split-level summary shows validation and test WER `0.0` on two records each, while the single `fifty -> 50` substitution is in train. This is still not a final audio benchmark because the split was assigned after the first pooled ASR result existed.
 
-The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used. Current result: the `fifty -> 50` ASR substitution changes the raw extracted `constraints` string for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`, but the normalized semantic intent comparison and canonical altitude-constraint comparison treat the two constraints as equivalent.
+The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used for the original 10-record sample. Historical result: the `fifty -> 50` ASR substitution changed the raw extracted `constraints` string for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`, but the normalized semantic intent comparison and canonical altitude-constraint comparison treated the two constraints as equivalent.
 
 The audio-linked intent accuracy analysis reuses matching labels from `datasets/commands/human_written_commands_curated_v1.jsonl`; it does not create new gold labels. Current result on the 10 audio transcripts: human transcripts score exact-record accuracy `1.0`, and Whisper transcripts score `0.9` because the raw constraint string differs for `fifty` versus `50`.
 
@@ -122,7 +122,7 @@ Current synthetic held-out result:
 
 The `trained_nb_v1` result comes from a tiny synthetic test split and field-specific schema-alias features. It is a reproducible Week 2 training workflow check, not a real-user or speech-recognition result.
 
-Current deterministic parser status: new parser outputs are labeled `deterministic_v1`. This version adds an open-vocabulary target phrase fallback for supported Week 2 actions so commands such as `inspect the livestock pen` or `capture images of the red pickup truck` do not require every target to be hard-coded first. It is still a deterministic baseline, not a trained model.
+Current deterministic parser status: new parser outputs are labeled `deterministic_v2`. `deterministic_v1` added an open-vocabulary target phrase fallback for supported Week 2 actions. `deterministic_v2` adds post-hoc fixes for the reviewed audio-generalization batch, including `scan/search/check X for Y` location-target separation, map/monitor/photograph normalization, broader open-vocabulary locations, compound-command constraints, and a few ASR-confusion patterns such as `survey -> server`. It is still a deterministic baseline, not a trained model.
 
 Current curated user-command result:
 
@@ -134,7 +134,7 @@ Current curated user-command result:
 
 `trained_nb_human_curated_v1` is the preserved negative result for the trained field classifier. `trained_nb_human_curated_v2` is a hybrid parser-gated baseline with deterministic rule overrides, not proof that a pure trained model solved the task.
 
-The deterministic metrics above are historical outputs generated before the `deterministic_v1` parser label. Rerun the evaluation scripts to generate fresh raw artifacts for the current parser.
+The deterministic metrics above are historical outputs generated before the current `deterministic_v2` parser label. Rerun the evaluation scripts to generate fresh raw artifacts for the current parser.
 
 Evaluate a saved model on a selected split without retraining:
 
@@ -299,13 +299,16 @@ Human-reviewed audio-intent labels have now been applied for this same 30-record
 
 - Gold candidate: `datasets/commands/audio_generalization_human_verified_intents.jsonl`
 - Review summary: `outputs/evaluations/audio_generalization_human_verified_intents_summary.json`
-- Intent accuracy: `outputs/evaluations/whisper_base_audio_generalization_intent_accuracy_human_verified_local_gtx1650.json`
+- Initial reviewed intent accuracy: `outputs/evaluations/whisper_base_audio_generalization_intent_accuracy_human_verified_local_gtx1650.json`
+- Post-hoc `deterministic_v2` intent accuracy: `outputs/evaluations/whisper_base_audio_generalization_intent_accuracy_human_verified_v2_local_gtx1650.json`
 - Readiness: 30 records, 0 draft records, 0 unreviewed records.
-- `deterministic_v1` on human transcripts: exact-record accuracy 7 / 30 = 0.2333; field accuracy 0.6667.
-- `deterministic_v1` on Whisper transcripts: exact-record accuracy 4 / 30 = 0.1333; field accuracy 0.6133.
+- Initial `deterministic_v1` on human transcripts: exact-record accuracy 7 / 30 = 0.2333; field accuracy 0.6667.
+- Initial `deterministic_v1` on Whisper transcripts: exact-record accuracy 4 / 30 = 0.1333; field accuracy 0.6133.
+- Post-hoc `deterministic_v2` on human transcripts: exact-record accuracy 27 / 30 = 0.9000; field accuracy 0.9600.
+- Post-hoc `deterministic_v2` on Whisper transcripts: exact-record accuracy 19 / 30 = 0.6333; field accuracy 0.8933.
 - `trained_nb_human_curated_v2` currently matches the deterministic result on this batch because it is a parser-gated hybrid baseline.
 
-This is the strongest current evidence that Week 2 intent extraction is not solved. The next technical work should target the large target/location/action error counts exposed by the reviewed audio batch.
+This is the strongest current evidence that Week 2 intent extraction improves with structured error analysis but is not solved. Because `deterministic_v2` was created after reviewing this batch, the same 30 records are not a clean final benchmark for it.
 
 Create draft intent labels for human review before reporting gold intent accuracy on the new audio batch:
 
@@ -377,7 +380,7 @@ python scripts/validate_audio_manifest.py --manifest datasets/sample_audio/manif
 python scripts/audit_week2_collection.py --commands datasets/commands/human_written_commands_draft.jsonl --audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --output outputs/evaluations/week2_collection_audit.json
 ```
 
-The first command is the easiest path: type the transcript and pass a WAV path. It writes draft intent labels from the deterministic parser, marked with the current parser version such as `deterministic_v1_draft`. Review those labels before using them as human-verified training or evaluation labels.
+The first command is the easiest path: type the transcript and pass a WAV path. It writes draft intent labels from the deterministic parser, marked with the current parser version such as `deterministic_v2_draft`. Review those labels before using them as human-verified training or evaluation labels.
 
 These commands are for real collection files. The repository currently includes command collection artifacts and an audio manifest, but those are not a final human-verified benchmark or a Whisper ASR evaluation.
 

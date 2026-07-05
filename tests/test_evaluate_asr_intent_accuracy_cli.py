@@ -95,8 +95,8 @@ class EvaluateAsrIntentAccuracyCliTests(unittest.TestCase):
 
             result = json.loads(output.read_text(encoding="utf-8"))
 
-        self.assertIn("deterministic_v1:human_transcript", completed.stdout)
-        summary = result["summary"]["deterministic_v1:asr_transcript"]
+        self.assertIn("deterministic_v2:human_transcript", completed.stdout)
+        summary = result["summary"]["deterministic_v2:asr_transcript"]
         self.assertEqual(summary["exact_record_accuracy"], 1.0)
         self.assertEqual(result["records"][0]["gold_label_sources"], ["unit_test"])
         self.assertIn("--gold-commands", result["metadata"]["evaluation_note"])

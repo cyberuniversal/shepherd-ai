@@ -13,7 +13,7 @@ The roadmap identifies Week 2 as speech recognition and intent extraction. The l
 - Trainable field-level multinomial Naive Bayes model for `action`, `location`, and `target`.
 - Configurable feature extraction for unigrams, bigrams, and bounded schema-alias features.
 - Rule-based count and constraint extraction reused from the deterministic parser.
-- Deterministic parser `deterministic_v1`, which adds an open-vocabulary target phrase fallback after bounded aliases fail.
+- Deterministic parser `deterministic_v2`, which extends the open-vocabulary fallback with post-hoc audio-batch error fixes.
 - Held-out test evaluation.
 - Comparison against deterministic parser baselines.
 - Field-level error analysis.
@@ -58,7 +58,9 @@ These records add exact character spans for token-level slot extraction. They ar
 
 ## Current Deterministic Baseline
 
-`deterministic_v1` keeps the bounded JSON intent fields from `deterministic_v0` but reduces target-dictionary brittleness. When no target alias matches, it extracts a short target phrase for supported Week 2 actions such as `inspect`, `scan`, `capture`, and `search`.
+`deterministic_v1` kept the bounded JSON intent fields from `deterministic_v0` but reduced target-dictionary brittleness. When no target alias matched, it extracted a short target phrase for supported Week 2 actions such as `inspect`, `scan`, `capture`, and `search`.
+
+`deterministic_v2` is the current parser. It was created after inspecting the reviewed 30-record audio-generalization batch, so same-batch metrics are post-hoc rather than a clean final benchmark. It adds targeted handling for `scan/search/check X for Y`, map/monitor/photograph wording, open-vocabulary location phrases, compound-command constraints, and a small number of observed ASR confusions.
 
 Examples now covered without adding target aliases:
 
@@ -363,7 +365,7 @@ Curated user-command result for `trained_nb_human_curated_v2`:
 
 Interpretation: `trained_nb_human_curated_v2` is a hybrid parser-gated baseline. It uses the Naive Bayes training artifact but makes bounded deterministic parser outputs authoritative for `action`, `location`, and `target`. This is not evidence that a pure trained model solved the broader command set. It shows that the literature-supported pattern of bounded structured parsing plus deterministic validation is currently stronger for this small dataset than the field-level Naive Bayes classifier alone.
 
-Historical result note: the raw results above were generated before the open-vocabulary fallback and are labeled `deterministic_v0` where applicable. New parser outputs and new comparison artifacts should be labeled `deterministic_v1`.
+Historical result note: the raw results above were generated before the current audio-oriented parser updates and may be labeled `deterministic_v0` or `deterministic_v1` where applicable. New parser outputs and new comparison artifacts should be labeled `deterministic_v2`.
 
 Span tagger result for `span_nb_v0`:
 

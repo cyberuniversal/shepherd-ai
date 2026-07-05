@@ -195,7 +195,7 @@ class IntentTrainingTests(unittest.TestCase):
             dataset_name="intent_labeled_synthetic",
         )
 
-        self.assertEqual(set(comparison["systems"]), {"deterministic_v1", "trained_nb_v0"})
+        self.assertEqual(set(comparison["systems"]), {"deterministic_v2", "trained_nb_v0"})
         self.assertEqual(comparison["metadata"]["dataset"], "intent_labeled_synthetic")
         self.assertEqual(comparison["systems"]["trained_nb_v0"]["summary"]["records"], len(test_records))
 

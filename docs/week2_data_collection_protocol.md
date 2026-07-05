@@ -118,7 +118,7 @@ python scripts/collect_week2_sample.py `
 
 This copies the WAV into `datasets/sample_audio/`, appends `datasets/sample_audio/manifest.jsonl`, and appends `datasets/commands/human_written_commands_draft.jsonl`.
 
-Important: records created by `collect_week2_sample.py` use `data_type: human_written_command_draft_labeled` and a parser-versioned `label_source` such as `deterministic_v1_draft`. Older draft records may show `deterministic_v0_draft`. The command text and audio can be human-provided, but the intent labels are parser drafts. Review labels before treating them as human-verified ground truth.
+Important: records created by `collect_week2_sample.py` use `data_type: human_written_command_draft_labeled` and a parser-versioned `label_source` such as `deterministic_v2_draft`. Older draft records may show `deterministic_v0_draft` or `deterministic_v1_draft`. The command text and audio can be human-provided, but the intent labels are parser drafts. Review labels before treating them as human-verified ground truth.
 
 Append one labeled typed command to a collection JSONL file:
 

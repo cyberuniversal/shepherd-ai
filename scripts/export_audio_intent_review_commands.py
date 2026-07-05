@@ -68,8 +68,8 @@ def _command_from_record(record: dict[str, Any]) -> dict[str, Any]:
         "target": intent.get("target"),
         "constraints": intent.get("constraints", []),
         "review_status": "needs_human_review",
-        "data_type": "human_recorded_audio_intent_draft",
-        "label_source": "deterministic_v1_draft",
+        "data_type": record.get("data_type", "human_recorded_audio_intent_draft"),
+        "label_source": record.get("label_source", "not stated"),
         "review_notes": [],
         "draft_review_flags": record.get("draft_review_flags", []),
     }
