@@ -82,7 +82,7 @@ Recorded local-GPU ASR run, July 4, 2026:
 - Pooled result on the 10-record sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
 - Observed normalized word substitution: `fifty -> 50`.
 - Retrospective split-level result: train WER `0.0167`, validation WER `0.0`, test WER `0.0`.
-- ASR-to-intent impact result: the normalized `fifty -> 50` substitution changes the raw extracted `constraints` string for one train record, but not the normalized semantic intent comparison. This is an impact/consistency result, not intent accuracy.
+- ASR-to-intent impact result: the normalized `fifty -> 50` substitution changes the raw extracted `constraints` string for one train record, but not the normalized semantic intent comparison or canonical altitude-constraint comparison. This is an impact/consistency result, not intent accuracy or safety validation.
 - Audio-linked intent accuracy result: the 10 human transcripts match existing curated command labels. Human transcripts score exact-record accuracy `1.0`; Whisper transcripts score `0.9` due to the raw `fifty` versus `50` constraint string.
 - ASR-to-span impact result: the 10 human transcripts match existing human-verified span labels. The local `span_nb_v1` baseline scores human-transcript span entity F1 `0.7324` on those matched records. Whisper changes one raw predicted `constraint` entity for `audio_006` because `fifty` becomes `50`, but the number-normalized semantic span comparison is unchanged. This is not ASR span accuracy because no human gold spans exist for the Whisper transcript text.
 

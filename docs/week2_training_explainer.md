@@ -61,7 +61,7 @@ Schema-alias features are not free-form reasoning. They encode known aliases suc
 
 `deterministic_v1` also includes an open-vocabulary target phrase fallback. If no bounded target alias matches, it can extract short target phrases for supported actions such as `inspect`, `scan`, `capture`, and `search`. This reduces brittleness for commands like "inspect the livestock pen" or "capture images of the red pickup truck," but it is still deterministic and still needs held-out evaluation.
 
-The deterministic constraint rules now preserve simple altitude-limit phrases such as `keep them below fifty meters`, `keep them below 50 meters`, and `below forty meters`. These are still string constraints, not a formal safety schema.
+The deterministic constraint rules now preserve simple altitude-limit phrases such as `keep them below fifty meters`, `keep them below 50 meters`, and `below forty meters`. The repository also includes `constraint_normalizer_v1`, which canonicalizes simple altitude-limit strings into bounded records such as altitude below 50 meters. This is still not a full safety schema and does not enforce flight rules.
 
 ## Training Flow
 

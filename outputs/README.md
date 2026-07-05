@@ -70,7 +70,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`: transcript exact-match and WER evaluation for that same local-GPU ASR run.
 - `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`: word-level error analysis for that same local-GPU ASR run.
 - `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`: train/validation/test ASR metrics for the retrospective seed-17 audio split.
-- `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`: comparison of downstream intent outputs on human transcripts versus Whisper transcripts, including raw and normalized semantic intent-change summaries.
+- `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`: comparison of downstream intent outputs on human transcripts versus Whisper transcripts, including raw, normalized semantic, and canonical altitude-constraint change summaries.
 - `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`: intent accuracy on audio transcripts whose human transcript exactly matches a curated command-label record.
 - `outputs/evaluations/whisper_base_span_impact_local_gtx1650.json`: comparison of downstream span tagger outputs on human transcripts versus Whisper transcripts, plus human-transcript span accuracy for audio records that match human-verified span labels. This is not ASR span accuracy because no separate gold spans exist for the Whisper transcript text.
 

@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from shepherd_ai.audio_manifest import load_audio_manifest, word_error_details  # noqa: E402
+from shepherd_ai.constraint_normalization import constraint_semantic_signatures, normalize_constraints  # noqa: E402
 from shepherd_ai.intent import DETERMINISTIC_PARSER_NAME, NUMBER_WORDS, parse_intent  # noqa: E402
 from shepherd_ai.intent_training import EVAL_FIELDS, load_intent_model  # noqa: E402
 from shepherd_ai.whisper_asr import load_whisper_predictions  # noqa: E402
@@ -79,11 +80,14 @@ def analyze_impact(
             }
             normalized_human_intent = _normalize_intent_for_comparison(human_intent)
             normalized_asr_intent = _normalize_intent_for_comparison(asr_intent)
+            human_canonical_constraints = _canonical_constraints(human_intent)
+            asr_canonical_constraints = _canonical_constraints(asr_intent)
             normalized_field_changes = {
                 field: {"human": normalized_human_intent[field], "asr": normalized_asr_intent[field]}
                 for field in EVAL_FIELDS
                 if normalized_human_intent[field] != normalized_asr_intent[field]
             }
+            canonical_constraint_changed = _constraint_signatures(human_intent) != _constraint_signatures(asr_intent)
             rows.append(
                 {
                     "id": record_id,
@@ -103,6 +107,9 @@ def analyze_impact(
                     "normalized_asr_intent": normalized_asr_intent,
                     "semantic_intent_changed": bool(normalized_field_changes),
                     "normalized_field_changes": normalized_field_changes,
+                    "human_canonical_constraints": human_canonical_constraints,
+                    "asr_canonical_constraints": asr_canonical_constraints,
+                    "canonical_constraint_changed": canonical_constraint_changed,
                 }
             )
         system_summaries[system_name] = _summarize_rows(rows)
@@ -113,7 +120,8 @@ def analyze_impact(
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "evaluation_note": (
                 "ASR-to-intent impact analysis only. This compares extractor outputs on human transcripts "
-                "and ASR transcripts; it is not intent accuracy because no gold intent labels are used."
+                "and ASR transcripts; it is not intent accuracy because no gold intent labels are used. "
+                "Canonical constraint comparison currently covers simple altitude-limit phrases only."
             ),
             "fields": list(EVAL_FIELDS),
             "systems": list(systems),
@@ -168,6 +176,20 @@ def _normalize_constraint_text(text: str) -> str:
     return " ".join(normalized.split())
 
 
+def _canonical_constraints(intent: dict[str, Any]) -> list[dict[str, Any]]:
+    constraints = intent.get("constraints")
+    if not isinstance(constraints, list):
+        return []
+    return [constraint.to_dict() for constraint in normalize_constraints([str(constraint) for constraint in constraints])]
+
+
+def _constraint_signatures(intent: dict[str, Any]) -> set[tuple[str, str | None, int | float | str | None, str | None]]:
+    constraints = intent.get("constraints")
+    if not isinstance(constraints, list):
+        return set()
+    return constraint_semantic_signatures([str(constraint) for constraint in constraints])
+
+
 def _replace_word(text: str, word: str, replacement: str) -> str:
     return re.sub(rf"\b{re.escape(word)}\b", replacement, text)
 
@@ -187,6 +209,8 @@ def _summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
             split_counts[split]["intent_changed"] += 1
         if row["semantic_intent_changed"]:
             split_counts[split]["semantic_intent_changed"] += 1
+        if row["canonical_constraint_changed"]:
+            split_counts[split]["canonical_constraint_changed"] += 1
         for field in row["field_changes"]:
             changed_field_counts[field] += 1
         for field in row["normalized_field_changes"]:
@@ -197,6 +221,7 @@ def _summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     normalized_word_changed = sum(1 for row in rows if row["normalized_word_changed"])
     intent_changed = sum(1 for row in rows if row["intent_changed"])
     semantic_intent_changed = sum(1 for row in rows if row["semantic_intent_changed"])
+    canonical_constraint_changed = sum(1 for row in rows if row["canonical_constraint_changed"])
     return {
         "records": records,
         "raw_transcript_changed_records": raw_transcript_changed,
@@ -207,11 +232,16 @@ def _summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "intent_changed_rate": intent_changed / records if records else 0.0,
         "semantic_intent_changed_records": semantic_intent_changed,
         "semantic_intent_changed_rate": semantic_intent_changed / records if records else 0.0,
+        "canonical_constraint_changed_records": canonical_constraint_changed,
+        "canonical_constraint_changed_rate": canonical_constraint_changed / records if records else 0.0,
         "unchanged_intent_when_normalized_word_changed": sum(
             1 for row in rows if row["normalized_word_changed"] and not row["intent_changed"]
         ),
         "unchanged_semantic_intent_when_normalized_word_changed": sum(
             1 for row in rows if row["normalized_word_changed"] and not row["semantic_intent_changed"]
+        ),
+        "unchanged_canonical_constraint_when_normalized_word_changed": sum(
+            1 for row in rows if row["normalized_word_changed"] and not row["canonical_constraint_changed"]
         ),
         "changed_field_counts": dict(sorted(changed_field_counts.items())),
         "normalized_changed_field_counts": dict(sorted(normalized_changed_field_counts.items())),

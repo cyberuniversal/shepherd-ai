@@ -78,9 +78,15 @@ class AnalyzeAsrIntentImpactCliTests(unittest.TestCase):
         self.assertEqual(summary["intent_changed_records"], 1)
         self.assertEqual(summary["changed_field_counts"], {"constraints": 1})
         self.assertEqual(summary["semantic_intent_changed_records"], 0)
+        self.assertEqual(summary["canonical_constraint_changed_records"], 0)
         self.assertEqual(summary["normalized_changed_field_counts"], {})
         self.assertEqual(summary["unchanged_intent_when_normalized_word_changed"], 0)
         self.assertEqual(summary["unchanged_semantic_intent_when_normalized_word_changed"], 1)
+        self.assertEqual(summary["unchanged_canonical_constraint_when_normalized_word_changed"], 1)
+        self.assertEqual(
+            impact["records"][0]["human_canonical_constraints"][0]["value"],
+            impact["records"][0]["asr_canonical_constraints"][0]["value"],
+        )
         self.assertEqual(impact["records"][0]["split"], "test")
 
 

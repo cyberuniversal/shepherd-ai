@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "evaluation_note": "ASR-to-intent impact analysis only. This compares extractor outputs on human transcripts and ASR transcripts; it is not intent accuracy because no gold intent labels are used.",
+    "evaluation_note": "ASR-to-intent impact analysis only. This compares extractor outputs on human transcripts and ASR transcripts; it is not intent accuracy because no gold intent labels are used. Canonical constraint comparison currently covers simple altitude-limit phrases only.",
     "fields": [
       "action",
       "count",
@@ -8,7 +8,7 @@
       "target",
       "constraints"
     ],
-    "generated_at_utc": "2026-07-05T06:07:48.167584+00:00",
+    "generated_at_utc": "2026-07-05T10:02:42.161829+00:00",
     "manifest": "datasets\\sample_audio\\manifest.jsonl",
     "model_artifacts": [
       "outputs\\model_artifacts\\intent_nb_human_curated_v2.json"
@@ -21,6 +21,7 @@
   },
   "records": [
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "inspect",
         "constraints": [],
@@ -29,7 +30,9 @@
         "target": "crops"
       },
       "asr_transcript": "Send two drones north and inspect the crops.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "inspect",
         "constraints": [],
@@ -64,6 +67,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "send",
         "constraints": [],
@@ -72,7 +76,9 @@
         "target": null
       },
       "asr_transcript": "Dispatch three drones and send them south.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "send",
         "constraints": [],
@@ -107,6 +113,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "scan",
         "constraints": [],
@@ -115,7 +122,9 @@
         "target": "car"
       },
       "asr_transcript": "Scan the car.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "scan",
         "constraints": [],
@@ -150,6 +159,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "return to me",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -160,7 +182,21 @@
         "target": "field"
       },
       "asr_transcript": "Check the field and return to me.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "return to me",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -201,6 +237,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "hold",
         "constraints": [],
@@ -209,7 +246,9 @@
         "target": null
       },
       "asr_transcript": "Hold position.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "hold",
         "constraints": [],
@@ -244,6 +283,17 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "altitude_limit",
+          "notes": [],
+          "parser": "constraint_normalizer_v1",
+          "relation": "below",
+          "source_text": "keep them below 50 meters",
+          "unit": "meters",
+          "value": 50
+        }
+      ],
       "asr_intent": {
         "action": "send",
         "constraints": [
@@ -254,6 +304,7 @@
         "target": null
       },
       "asr_transcript": "Send two drones west, but keep them below 50 meters.",
+      "canonical_constraint_changed": false,
       "field_changes": {
         "constraints": {
           "asr": [
@@ -264,6 +315,17 @@
           ]
         }
       },
+      "human_canonical_constraints": [
+        {
+          "kind": "altitude_limit",
+          "notes": [],
+          "parser": "constraint_normalizer_v1",
+          "relation": "below",
+          "source_text": "keep them below fifty meters",
+          "unit": "meters",
+          "value": 50
+        }
+      ],
       "human_intent": {
         "action": "send",
         "constraints": [
@@ -304,6 +366,19 @@
       "transcript_word_error_rate": 0.1
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -314,7 +389,21 @@
         "target": "storage area"
       },
       "asr_transcript": "Get the closest drone to inspect the storage area.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -355,6 +444,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while avoiding the storage area",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -365,7 +467,21 @@
         "target": "field"
       },
       "asr_transcript": "Inspect the north field while avoiding the storage area.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while avoiding the storage area",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -406,6 +522,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "one drone to the greenhouse",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "scan",
         "constraints": [
@@ -416,7 +545,21 @@
         "target": "field"
       },
       "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "one drone to the greenhouse",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "scan",
         "constraints": [
@@ -457,6 +600,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "return",
         "constraints": [],
@@ -465,7 +609,9 @@
         "target": "drones"
       },
       "asr_transcript": "Bring all the drones back.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "return",
         "constraints": [],
@@ -500,6 +646,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "inspect",
         "constraints": [],
@@ -508,7 +655,9 @@
         "target": "crops"
       },
       "asr_transcript": "Send two drones north and inspect the crops.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "inspect",
         "constraints": [],
@@ -543,6 +692,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "send",
         "constraints": [],
@@ -551,7 +701,9 @@
         "target": null
       },
       "asr_transcript": "Dispatch three drones and send them south.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "send",
         "constraints": [],
@@ -586,6 +738,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "scan",
         "constraints": [],
@@ -594,7 +747,9 @@
         "target": "car"
       },
       "asr_transcript": "Scan the car.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "scan",
         "constraints": [],
@@ -629,6 +784,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "return to me",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -639,7 +807,21 @@
         "target": "field"
       },
       "asr_transcript": "Check the field and return to me.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "return to me",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -680,6 +862,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "hold",
         "constraints": [],
@@ -688,7 +871,9 @@
         "target": null
       },
       "asr_transcript": "Hold position.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "hold",
         "constraints": [],
@@ -723,6 +908,17 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "altitude_limit",
+          "notes": [],
+          "parser": "constraint_normalizer_v1",
+          "relation": "below",
+          "source_text": "keep them below 50 meters",
+          "unit": "meters",
+          "value": 50
+        }
+      ],
       "asr_intent": {
         "action": "send",
         "constraints": [
@@ -733,6 +929,7 @@
         "target": null
       },
       "asr_transcript": "Send two drones west, but keep them below 50 meters.",
+      "canonical_constraint_changed": false,
       "field_changes": {
         "constraints": {
           "asr": [
@@ -743,6 +940,17 @@
           ]
         }
       },
+      "human_canonical_constraints": [
+        {
+          "kind": "altitude_limit",
+          "notes": [],
+          "parser": "constraint_normalizer_v1",
+          "relation": "below",
+          "source_text": "keep them below fifty meters",
+          "unit": "meters",
+          "value": 50
+        }
+      ],
       "human_intent": {
         "action": "send",
         "constraints": [
@@ -783,6 +991,19 @@
       "transcript_word_error_rate": 0.1
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -793,7 +1014,21 @@
         "target": "storage area"
       },
       "asr_transcript": "Get the closest drone to inspect the storage area.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -834,6 +1069,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while avoiding the storage area",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "inspect",
         "constraints": [
@@ -844,7 +1092,21 @@
         "target": "field"
       },
       "asr_transcript": "Inspect the north field while avoiding the storage area.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while avoiding the storage area",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "inspect",
         "constraints": [
@@ -885,6 +1147,19 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "one drone to the greenhouse",
+          "unit": null,
+          "value": null
+        }
+      ],
       "asr_intent": {
         "action": "scan",
         "constraints": [
@@ -895,7 +1170,21 @@
         "target": "field"
       },
       "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "one drone to the greenhouse",
+          "unit": null,
+          "value": null
+        }
+      ],
       "human_intent": {
         "action": "scan",
         "constraints": [
@@ -936,6 +1225,7 @@
       "transcript_word_error_rate": 0.0
     },
     {
+      "asr_canonical_constraints": [],
       "asr_intent": {
         "action": "return",
         "constraints": [],
@@ -944,7 +1234,9 @@
         "target": "drones"
       },
       "asr_transcript": "Bring all the drones back.",
+      "canonical_constraint_changed": false,
       "field_changes": {},
+      "human_canonical_constraints": [],
       "human_intent": {
         "action": "return",
         "constraints": [],
@@ -981,6 +1273,8 @@
   ],
   "summary": {
     "deterministic_v1": {
+      "canonical_constraint_changed_rate": 0.0,
+      "canonical_constraint_changed_records": 0,
       "changed_field_counts": {
         "constraints": 1
       },
@@ -1010,10 +1304,13 @@
           "records": 2
         }
       },
+      "unchanged_canonical_constraint_when_normalized_word_changed": 1,
       "unchanged_intent_when_normalized_word_changed": 0,
       "unchanged_semantic_intent_when_normalized_word_changed": 1
     },
     "trained_nb_human_curated_v2": {
+      "canonical_constraint_changed_rate": 0.0,
+      "canonical_constraint_changed_records": 0,
       "changed_field_counts": {
         "constraints": 1
       },
@@ -1043,6 +1340,7 @@
           "records": 2
         }
       },
+      "unchanged_canonical_constraint_when_normalized_word_changed": 1,
       "unchanged_intent_when_normalized_word_changed": 0,
       "unchanged_semantic_intent_when_normalized_word_changed": 1
     }
