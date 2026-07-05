@@ -164,6 +164,34 @@ python scripts/audit_week2_collection.py `
   --output outputs/evaluations/week2_collection_audit.json
 ```
 
+Create a blank packet for the next non-overlapping audio generalization batch:
+
+```powershell
+python scripts/create_week2_audio_generalization_packet.py `
+  --commands datasets/commands/human_written_commands_curated_v1.jsonl `
+  --spans datasets/commands/human_verified_span_commands.jsonl `
+  --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --dataset-root . `
+  --jsonl-output reports/week2_audio_generalization_packet.jsonl `
+  --markdown-output reports/week2_audio_generalization_packet.md `
+  --validation-count 10 `
+  --test-count 20 `
+  --record-prefix audio_generalization
+```
+
+Before running ASR on a filled future audio manifest, audit that its transcripts do not overlap existing command, span, or audio text:
+
+```powershell
+python scripts/audit_week2_audio_generalization_manifest.py `
+  --candidate-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
+  --commands datasets/commands/human_written_commands_curated_v1.jsonl `
+  --spans datasets/commands/human_verified_span_commands.jsonl `
+  --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --dataset-root . `
+  --output outputs/evaluations/week2_audio_generalization_manifest_audit.json `
+  --fail-on-overlap
+```
+
 The command examples above are workflow examples only. Do not commit `human_written_commands.jsonl`, `manifest.jsonl`, or audio files unless the records are real, provenance is documented, and privacy/licensing requirements are satisfied.
 
 ## Research Integrity Rules

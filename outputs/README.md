@@ -118,6 +118,12 @@ Generate the Week 2 performance-risk audit with:
 python scripts/audit_week2_performance_risks.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --status-summary outputs/evaluations/week2_status_summary.json --intent-model outputs/model_artifacts/intent_nb_human_curated_v2.json --output-json outputs/evaluations/week2_performance_risk_audit.json --output-markdown reports/week2_performance_risk_audit.md
 ```
 
+Audit a future filled audio-generalization manifest before ASR with:
+
+```powershell
+python scripts/audit_week2_audio_generalization_manifest.py --candidate-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --output outputs/evaluations/week2_audio_generalization_manifest_audit.json --fail-on-overlap
+```
+
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.
 
 Generated Hugging Face checkpoint/model directories under `outputs/model_artifacts/hf_token_classifier*/` are ignored and should not be committed. Preserve small raw metrics JSON files for provenance, and record whether a run was Colab/T4 or exploratory local output.
