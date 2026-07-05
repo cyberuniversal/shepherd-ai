@@ -1,0 +1,22 @@
+{
+  "duplicate_transcripts_within_candidate": [],
+  "metadata": {
+    "candidate_manifest": "datasets\\sample_audio\\audio_generalization_manifest.jsonl",
+    "commands": "datasets\\commands\\human_written_commands_curated_v1.jsonl",
+    "existing_audio_manifest": "datasets\\sample_audio\\manifest.jsonl",
+    "generated_at_utc": "2026-07-05T12:32:02.454875+00:00",
+    "note": "Audio generalization manifest audit. A clean future evaluation batch should have no transcript overlap with existing command, span, or audio transcript text.",
+    "spans": "datasets\\commands\\human_verified_span_commands.jsonl"
+  },
+  "overlaps": [],
+  "summary": {
+    "duplicate_transcripts_within_candidate": 0,
+    "overlap_records": 0,
+    "passes_non_overlap_policy": true,
+    "records": 30,
+    "split_counts": {
+      "test": 20,
+      "validation": 10
+    }
+  }
+}

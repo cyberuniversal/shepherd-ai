@@ -286,6 +286,15 @@ python scripts/audit_week2_audio_generalization_manifest.py --candidate-manifest
 
 The current blank packet is `reports/week2_audio_generalization_packet.md` and `reports/week2_audio_generalization_packet.jsonl`. It contains no collected data or evaluation result.
 
+Completed local-GPU Whisper run on the non-overlapping 30-record audio generalization batch:
+
+- Manifest: `datasets/sample_audio/audio_generalization_manifest.jsonl`
+- Report: `reports/week2_audio_generalization_asr_report.md`
+- Exact transcript accuracy: `0.60`
+- Mean word error rate: `0.0716`
+- Downstream semantic intent changes: 7 of 30 records
+- Important caveat: this is local GTX, not Colab/T4, and it is ASR-to-intent impact rather than gold intent accuracy.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell

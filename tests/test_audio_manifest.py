@@ -47,6 +47,33 @@ class AudioManifestTests(unittest.TestCase):
             self.assertEqual(records[0].transcript, "Send two drones north and inspect the crops.")
             self.assertEqual(records[0].split, "example")
 
+    def test_loads_manifest_saved_with_utf8_bom(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            audio = root / "datasets" / "sample_audio" / "audio_001.wav"
+            audio.parent.mkdir(parents=True)
+            audio.write_bytes(b"RIFF")
+            manifest = root / "datasets" / "sample_audio" / "manifest.jsonl"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_001",
+                        "audio_path": "datasets/sample_audio/audio_001.wav",
+                        "transcript": "Send two drones north.",
+                        "source": "self_recorded",
+                        "data_type": "human_recorded_audio",
+                        "split": "validation",
+                    }
+                )
+                + "\n",
+                encoding="utf-8-sig",
+            )
+
+            records = load_audio_manifest(manifest, dataset_root=root)
+
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0].id, "audio_001")
+
     def test_rejects_manifest_record_outside_dataset_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-05T12:35:07.034276+00:00",
+    "manifest": "datasets\\sample_audio\\audio_generalization_manifest.jsonl",
+    "source_model_name": "whisper",
+    "source_model_version": "base",
+    "source_parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-05T12:34:41.784264+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\audio_generalization_manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    },
+    "source_summary": {
+      "exact_match_accuracy": 0.6,
+      "exact_matches": 18,
+      "mean_word_error_rate": 0.07159090909090908,
+      "records": 30
+    },
+    "split_policy": "pre_registered_audio_generalization_v1_10_validation_20_test"
+  },
+  "split_summaries": {
+    "test": {
+      "exact_match_accuracy": 0.55,
+      "exact_matches": 11,
+      "mean_word_error_rate": 0.06002525252525252,
+      "record_ids": [
+        "audio_generalization_011",
+        "audio_generalization_012",
+        "audio_generalization_013",
+        "audio_generalization_014",
+        "audio_generalization_015",
+        "audio_generalization_016",
+        "audio_generalization_017",
+        "audio_generalization_018",
+        "audio_generalization_019",
+        "audio_generalization_020",
+        "audio_generalization_021",
+        "audio_generalization_022",
+        "audio_generalization_023",
+        "audio_generalization_024",
+        "audio_generalization_025",
+        "audio_generalization_026",
+        "audio_generalization_027",
+        "audio_generalization_028",
+        "audio_generalization_029",
+        "audio_generalization_030"
+      ],
+      "records": 20
+    },
+    "validation": {
+      "exact_match_accuracy": 0.7,
+      "exact_matches": 7,
+      "mean_word_error_rate": 0.09472222222222222,
+      "record_ids": [
+        "audio_generalization_001",
+        "audio_generalization_002",
+        "audio_generalization_003",
+        "audio_generalization_004",
+        "audio_generalization_005",
+        "audio_generalization_006",
+        "audio_generalization_007",
+        "audio_generalization_008",
+        "audio_generalization_009",
+        "audio_generalization_010"
+      ],
+      "records": 10
+    }
+  }
+}

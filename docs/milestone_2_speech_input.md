@@ -88,6 +88,21 @@ Recorded local-GPU ASR run, July 4, 2026:
 
 This is a real Whisper ASR evaluation on the current recorded WAVs, but it is not a Colab/T4 result and not a final held-out speech benchmark.
 
+Recorded non-overlapping audio generalization run, July 5, 2026:
+
+- Environment: local Windows GPU run, not Google Colab.
+- Device: `NVIDIA GeForce GTX 1650 SUPER`.
+- Model: Whisper `base`.
+- Manifest: `datasets/sample_audio/audio_generalization_manifest.jsonl`.
+- Report: `reports/week2_audio_generalization_asr_report.md`.
+- Split: 10 validation and 20 test records.
+- Non-overlap audit: 0 overlaps with existing command, span, or audio transcript text.
+- Overall exact-match accuracy: `0.60`.
+- Overall mean word error rate: `0.0716`.
+- Validation exact-match accuracy: `0.70`; test exact-match accuracy: `0.55`.
+- ASR-to-intent impact: 8 of 30 records changed raw intent outputs, and 7 of 30 changed semantic intent outputs after normalization.
+- This is stronger evidence than the first overlapping 10-record sample, but it is still not gold intent accuracy because separate human-verified intent labels have not been created for the new audio commands.
+
 Run Whisper in Colab/T4:
 
 ```powershell

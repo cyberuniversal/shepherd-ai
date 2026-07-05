@@ -75,6 +75,13 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_span_impact_local_gtx1650.json`: comparison of downstream span tagger outputs on human transcripts versus Whisper transcripts, plus human-transcript span accuracy for audio records that match human-verified span labels. This is not ASR span accuracy because no separate gold spans exist for the Whisper transcript text.
 - `outputs/evaluations/week2_status_summary.json`: compact machine-readable Week 2 scoreboard generated from the raw ASR, intent, span, and Colab/T4 token-classifier artifacts.
 - `outputs/evaluations/week2_performance_risk_audit.json`: machine-readable audit explaining why current Week 2 metrics can be high and which risks limit claim strength.
+- `outputs/evaluations/audio_generalization_manifest_summary.json`: validation summary for the 30-record non-overlapping audio generalization manifest.
+- `outputs/evaluations/week2_audio_generalization_manifest_audit.json`: non-overlap audit for the audio generalization manifest.
+- `outputs/evaluations/whisper_base_audio_generalization_predictions_local_gtx1650.jsonl`: raw Whisper `base` predictions for the 30-record audio generalization batch on local GTX.
+- `outputs/evaluations/whisper_base_audio_generalization_evaluation_local_gtx1650.json`: transcript exact-match and WER evaluation for that generalization run.
+- `outputs/evaluations/whisper_base_audio_generalization_error_analysis_local_gtx1650.json`: word-level ASR error analysis for the generalization run.
+- `outputs/evaluations/whisper_base_audio_generalization_split_summary_local_gtx1650.json`: validation/test ASR metrics for the pre-registered generalization batch.
+- `outputs/evaluations/whisper_base_audio_generalization_intent_impact_local_gtx1650.json`: ASR-to-intent impact analysis for the generalization batch; not gold intent accuracy.
 
 Generate the ASR error analysis with:
 

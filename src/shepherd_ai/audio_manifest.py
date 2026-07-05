@@ -51,7 +51,7 @@ def load_audio_manifest(path: str | Path, *, dataset_root: str | Path) -> list[A
     root = Path(dataset_root).resolve()
     records: list[AudioManifestRecord] = []
 
-    for line_number, line in enumerate(manifest_path.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_number, line in enumerate(manifest_path.read_text(encoding="utf-8-sig").splitlines(), start=1):
         if not line.strip():
             continue
         try:
