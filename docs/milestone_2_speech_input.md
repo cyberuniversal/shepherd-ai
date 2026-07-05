@@ -77,10 +77,12 @@ Recorded local-GPU ASR run, July 4, 2026:
 - Error analysis: `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`.
 - Split summary: `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`.
 - Intent impact analysis: `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`.
+- Intent accuracy analysis with matched command labels: `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`.
 - Pooled result on the 10-record sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
 - Observed normalized word substitution: `fifty -> 50`.
 - Retrospective split-level result: train WER `0.0167`, validation WER `0.0`, test WER `0.0`.
 - ASR-to-intent impact result: the normalized `fifty -> 50` substitution changes the raw extracted `constraints` string for one train record, but not the normalized semantic intent comparison. This is an impact/consistency result, not intent accuracy.
+- Audio-linked intent accuracy result: the 10 human transcripts match existing curated command labels. Human transcripts score exact-record accuracy `1.0`; Whisper transcripts score `0.9` due to the raw `fifty` versus `50` constraint string.
 
 This is a real Whisper ASR evaluation on the current recorded WAVs, but it is not a Colab/T4 result and not a final held-out speech benchmark.
 

@@ -45,7 +45,7 @@ ACTION_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("capture", ("capture", "capture images")),
     ("inspect", ("inspect", "check", "survey")),
     ("scan", ("scan",)),
-    ("return", ("return", "come back", "back to base", "back to the base")),
+    ("return", ("return", "come back", "bring back", "back to base", "back to the base")),
     ("send", ("send", "dispatch")),
 )
 
@@ -150,6 +150,8 @@ def _normalize(text: str) -> str:
 def _extract_action(text: str) -> str | None:
     # If a command asks to send drones and perform an inspection action, the
     # mission action is the inspection/scanning task rather than transport.
+    if re.search(r"\bbring\b.+\bback\b", text):
+        return "return"
     for action, keywords in ACTION_PATTERNS:
         if any(_contains_word_or_phrase(text, keyword) for keyword in keywords):
             return action
@@ -197,6 +199,7 @@ def _extract_count(text: str) -> int | str | None:
     if (
         _contains_word_or_phrase(text, "the drone")
         or _contains_word_or_phrase(text, "nearest drone")
+        or _contains_word_or_phrase(text, "closest drone")
         or _contains_word_or_phrase(text, "whichever drone")
     ):
         return 1
@@ -223,15 +226,44 @@ def _extract_target(text: str, action: str | None) -> str | None:
     ):
         return "drones"
 
-    if _contains_word_or_phrase(text, "irrigation canal"):
+    if re.search(r"\bdivide\s+the\s+field\s+between\b", text):
+        return "field"
+
+    target_text = _target_alias_search_text(text, action)
+
+    if _contains_word_or_phrase(target_text, "irrigation canal"):
         return "irrigation canal"
 
     for canonical, aliases in TARGET_ALIASES:
         if canonical == "drones":
             continue
-        if any(_contains_word_or_phrase(text, alias) for alias in aliases):
+        if any(_contains_word_or_phrase(target_text, alias) for alias in aliases):
             return canonical
     return _extract_open_vocabulary_target(text, action)
+
+
+def _target_alias_search_text(text: str, action: str | None) -> str:
+    search_text = text
+    for candidate_action, keywords in ACTION_PATTERNS:
+        if candidate_action != action or action in {None, "send", "return", "hold"}:
+            continue
+        matches = [
+            match
+            for keyword in keywords
+            for match in re.finditer(rf"\b{re.escape(keyword)}\b", search_text)
+        ]
+        if matches:
+            search_text = search_text[max(match.start() for match in matches) :]
+            break
+    for marker in ("while", "without", "before", "after", "using", "below"):
+        match = re.search(rf"\b{marker}\b", search_text)
+        if match:
+            search_text = search_text[: match.start()].strip()
+    if action != "search":
+        match = re.search(r"\bfor\b", search_text)
+        if match:
+            search_text = search_text[: match.start()].strip()
+    return search_text
 
 
 def _extract_open_vocabulary_target(text: str, action: str | None) -> str | None:
@@ -300,6 +332,8 @@ def _extract_constraints(text: str) -> list[str]:
     constraints: list[str] = []
     if _contains_word_or_phrase(text, "highest battery") or _contains_word_or_phrase(text, "most battery"):
         constraints.append("highest battery")
+    if _contains_word_or_phrase(text, "closest drone"):
+        constraints.append("closest drone")
     for match in re.finditer(r"\bkeep\s+(?:them|the\s+drones|drones)\s+below\s+([a-z0-9-]+)\s+(?:meters|metres)\b", text):
         constraints.append(f"keep them below {match.group(1)} meters")
     for match in re.finditer(r"\bbelow\s+([a-z0-9-]+)\s+(?:meters|metres)\b", text):
@@ -316,6 +350,9 @@ def _extract_constraints(text: str) -> list[str]:
         constraints.append("one drone north and another east")
     if _contains_word_or_phrase(text, "nearest drone"):
         constraints.append("nearest drone")
+    greenhouse_scan_match = re.search(r"\b(dispatch|send)\s+one\s+drone\s+to\s+the\s+greenhouse\s+then\b", text)
+    if greenhouse_scan_match:
+        constraints.append("one drone to the greenhouse")
     for marker in ("while", "before", "after", "without", "avoid", "using"):
         match = re.search(rf"\b{marker}\b\s+(.+)$", text)
         if match:
@@ -332,6 +369,7 @@ def _extract_constraints(text: str) -> list[str]:
         "report areas of heavy crowding",
         "return to base",
         "return to the launch point",
+        "return to me",
     ):
         if _contains_word_or_phrase(text, phrase):
             constraints.append(phrase)

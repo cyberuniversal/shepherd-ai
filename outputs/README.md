@@ -71,6 +71,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`: word-level error analysis for that same local-GPU ASR run.
 - `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`: train/validation/test ASR metrics for the retrospective seed-17 audio split.
 - `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`: comparison of downstream intent outputs on human transcripts versus Whisper transcripts, including raw and normalized semantic intent-change summaries.
+- `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`: intent accuracy on audio transcripts whose human transcript exactly matches a curated command-label record.
 
 Generate the ASR error analysis with:
 
@@ -88,6 +89,12 @@ Generate the ASR-to-intent impact analysis with:
 
 ```powershell
 python scripts/analyze_asr_intent_impact.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --predictions outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl --model outputs/model_artifacts/intent_nb_human_curated_v2.json --output outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json
+```
+
+Generate the audio-linked intent accuracy analysis with:
+
+```powershell
+python scripts/evaluate_asr_intent_accuracy.py --manifest datasets/sample_audio/manifest.jsonl --dataset-root . --predictions outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl --gold-commands datasets/commands/human_written_commands_curated_v1.jsonl --model outputs/model_artifacts/intent_nb_human_curated_v2.json --output outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json
 ```
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.

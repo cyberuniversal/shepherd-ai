@@ -8,7 +8,7 @@
       "target",
       "constraints"
     ],
-    "generated_at_utc": "2026-07-05T05:56:59.390895+00:00",
+    "generated_at_utc": "2026-07-05T06:07:48.167584+00:00",
     "manifest": "datasets\\sample_audio\\manifest.jsonl",
     "model_artifacts": [
       "outputs\\model_artifacts\\intent_nb_human_curated_v2.json"
@@ -152,7 +152,9 @@
     {
       "asr_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -161,7 +163,9 @@
       "field_changes": {},
       "human_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -171,7 +175,9 @@
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -179,7 +185,9 @@
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -298,8 +306,10 @@
     {
       "asr_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -307,8 +317,10 @@
       "field_changes": {},
       "human_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -317,16 +329,20 @@
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -346,7 +362,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "asr_transcript": "Inspect the north field while avoiding the storage area.",
       "field_changes": {},
@@ -357,7 +373,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "human_transcript": "Inspect the north field while avoiding the storage area.",
       "id": "audio_008",
@@ -369,7 +385,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
@@ -379,7 +395,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": false,
@@ -392,37 +408,45 @@
     {
       "asr_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "one drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
       "field_changes": {},
       "human_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "one drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "human_transcript": "Dispatch one drone to the greenhouse then send two more to scan the west field.",
       "id": "audio_009",
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "1 drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "1 drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": true,
@@ -434,38 +458,38 @@
     },
     {
       "asr_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "asr_transcript": "Bring all the drones back.",
       "field_changes": {},
       "human_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "human_transcript": "Bring all the drones back.",
       "id": "audio_010",
       "intent_changed": false,
       "normalized_asr_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": false,
@@ -607,7 +631,9 @@
     {
       "asr_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -616,7 +642,9 @@
       "field_changes": {},
       "human_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -626,7 +654,9 @@
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -634,7 +664,9 @@
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "inspect",
-        "constraints": [],
+        "constraints": [
+          "return to me"
+        ],
         "count": null,
         "location": null,
         "target": "field"
@@ -753,8 +785,10 @@
     {
       "asr_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -762,8 +796,10 @@
       "field_changes": {},
       "human_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -772,16 +808,20 @@
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "inspect",
-        "constraints": [],
-        "count": null,
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
         "location": null,
         "target": "storage area"
       },
@@ -801,7 +841,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "asr_transcript": "Inspect the north field while avoiding the storage area.",
       "field_changes": {},
@@ -812,7 +852,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "human_transcript": "Inspect the north field while avoiding the storage area.",
       "id": "audio_008",
@@ -824,7 +864,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
@@ -834,7 +874,7 @@
         ],
         "count": null,
         "location": "north",
-        "target": "storage area"
+        "target": "field"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": false,
@@ -847,37 +887,45 @@
     {
       "asr_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "one drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
       "field_changes": {},
       "human_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "one drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "human_transcript": "Dispatch one drone to the greenhouse then send two more to scan the west field.",
       "id": "audio_009",
       "intent_changed": false,
       "normalized_asr_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "1 drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
         "action": "scan",
-        "constraints": [],
+        "constraints": [
+          "1 drone to the greenhouse"
+        ],
         "count": 3,
         "location": "west",
-        "target": "greenhouse"
+        "target": "field"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": true,
@@ -889,38 +937,38 @@
     },
     {
       "asr_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "asr_transcript": "Bring all the drones back.",
       "field_changes": {},
       "human_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "human_transcript": "Bring all the drones back.",
       "id": "audio_010",
       "intent_changed": false,
       "normalized_asr_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "normalized_field_changes": {},
       "normalized_human_intent": {
-        "action": null,
+        "action": "return",
         "constraints": [],
         "count": "all",
         "location": null,
-        "target": null
+        "target": "drones"
       },
       "normalized_word_changed": false,
       "raw_transcript_changed": false,

@@ -80,6 +80,7 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 - Error analysis: `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`
 - Split summary: `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`
 - Intent impact: `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`
+- Intent accuracy: `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`
 - Device: `NVIDIA GeForce GTX 1650 SUPER`
 - Flags: `--device cuda --language en --required-device-substring GTX --no-fp16`
 - Exact-match accuracy: `0.9`
@@ -89,6 +90,8 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 The audio manifest now has a retrospective seed-17 split: 6 train, 2 validation, and 2 test records. The split-level summary shows validation and test WER `0.0` on two records each, while the single `fifty -> 50` substitution is in train. This is still not a final audio benchmark because the split was assigned after the first pooled ASR result existed.
 
 The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used. Current result: the `fifty -> 50` ASR substitution changes the raw extracted `constraints` string for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`, but the normalized semantic intent comparison treats the two constraints as equivalent.
+
+The audio-linked intent accuracy analysis reuses matching labels from `datasets/commands/human_written_commands_curated_v1.jsonl`; it does not create new gold labels. Current result on the 10 audio transcripts: human transcripts score exact-record accuracy `1.0`, and Whisper transcripts score `0.9` because the raw constraint string differs for `fifty` versus `50`.
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 

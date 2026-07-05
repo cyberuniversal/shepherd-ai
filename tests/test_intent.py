@@ -169,6 +169,23 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(target_altitude.target, "tower")
         self.assertEqual(target_altitude.constraints, ["below forty meters"])
 
+    def test_audio_linked_command_variants_are_preserved(self) -> None:
+        return_to_me = parse_intent("Check the field and return to me.")
+        closest = parse_intent("Get the closest drone to inspect the storage area.")
+        avoiding = parse_intent("Inspect the north field while avoiding the storage area.")
+        compound = parse_intent("Dispatch one drone to the greenhouse then send two more to scan the west field.")
+        bring_back = parse_intent("Bring all the drones back.")
+
+        self.assertEqual(return_to_me.constraints, ["return to me"])
+        self.assertEqual(closest.count, 1)
+        self.assertEqual(closest.constraints, ["closest drone"])
+        self.assertEqual(avoiding.target, "field")
+        self.assertEqual(avoiding.constraints, ["while avoiding the storage area"])
+        self.assertEqual(compound.target, "field")
+        self.assertEqual(compound.constraints, ["one drone to the greenhouse"])
+        self.assertEqual(bring_back.action, "return")
+        self.assertEqual(bring_back.target, "drones")
+
 
 if __name__ == "__main__":
     unittest.main()
