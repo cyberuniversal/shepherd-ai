@@ -204,7 +204,38 @@ python scripts/create_week2_audio_intent_review_packet.py `
 
 This packet contains parser drafts only. Correct the JSONL fields, change `review_status` to `human_reviewed`, and change `data_type` to `human_verified_audio_intent_command` before using it for intent accuracy.
 
-Validate review readiness before using the packet as gold labels:
+For a faster and safer review workflow, export the packet into a compact JSONL review file:
+
+```powershell
+python scripts/export_audio_intent_review_commands.py `
+  --packet reports/week2_audio_generalization_intent_review_packet.jsonl `
+  --commands-output reports/week2_audio_generalization_intent_review_commands.jsonl `
+  --report-output reports/week2_audio_generalization_intent_review_commands.md
+```
+
+Open the Markdown report and compact JSONL file together. The Markdown report shows the transcript, draft intent, and parser-review flags. The compact JSONL file is the file to edit. For each line:
+
+- Review the transcript text.
+- Correct `action`, `count`, `location`, `target`, and `constraints`.
+- Change `review_status` to `human_reviewed`.
+- Change `data_type` to `human_verified_audio_intent_command`.
+- Change `label_source` to `human_reviewed_v1`.
+- Keep `review_notes` as a list; add a short note if a label was ambiguous.
+
+Apply the reviewed compact file back into a full JSONL packet:
+
+```powershell
+python scripts/apply_audio_intent_review_commands.py `
+  --packet reports/week2_audio_generalization_intent_review_packet.jsonl `
+  --commands-file reports/week2_audio_generalization_intent_review_commands.jsonl `
+  --output datasets/commands/audio_generalization_human_verified_intents.jsonl `
+  --summary-output outputs/evaluations/audio_generalization_human_verified_intents_summary.json `
+  --require-reviewed
+```
+
+The apply command intentionally exits non-zero with `--require-reviewed` until every record is human-reviewed and no draft label source remains.
+
+Validate review readiness before using any audio-intent JSONL as gold labels:
 
 ```powershell
 python scripts/validate_audio_intent_review_packet.py `
@@ -212,6 +243,8 @@ python scripts/validate_audio_intent_review_packet.py `
   --summary-output outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json `
   --require-reviewed
 ```
+
+The current draft packet intentionally fails this check. After applying a fully reviewed compact file, validate `datasets/commands/audio_generalization_human_verified_intents.jsonl` instead.
 
 The command examples above are workflow examples only. Do not commit `human_written_commands.jsonl`, `manifest.jsonl`, or audio files unless the records are real, provenance is documented, and privacy/licensing requirements are satisfied.
 

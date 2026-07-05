@@ -303,13 +303,29 @@ python scripts/create_week2_audio_intent_review_packet.py --manifest datasets/sa
 
 The current review packet is `reports/week2_audio_generalization_intent_review_packet.md`. It has 30 draft labels, all marked `needs_human_review`; do not use them for training or accuracy reporting until corrected and marked as reviewed.
 
-Validate review readiness before using the packet as gold labels:
+Export the draft packet into a compact editable review file:
+
+```powershell
+python scripts/export_audio_intent_review_commands.py --packet reports/week2_audio_generalization_intent_review_packet.jsonl --commands-output reports/week2_audio_generalization_intent_review_commands.jsonl --report-output reports/week2_audio_generalization_intent_review_commands.md
+```
+
+Open `reports/week2_audio_generalization_intent_review_commands.md` beside `reports/week2_audio_generalization_intent_review_commands.jsonl`. For each JSONL line, correct only the intent fields after human review of the transcript: `action`, `count`, `location`, `target`, and `constraints`. When a line has been reviewed, set `review_status` to `human_reviewed`, `data_type` to `human_verified_audio_intent_command`, and `label_source` to `human_reviewed_v1`.
+
+Apply the reviewed compact file back into a full gold-label candidate:
+
+```powershell
+python scripts/apply_audio_intent_review_commands.py --packet reports/week2_audio_generalization_intent_review_packet.jsonl --commands-file reports/week2_audio_generalization_intent_review_commands.jsonl --output datasets/commands/audio_generalization_human_verified_intents.jsonl --summary-output outputs/evaluations/audio_generalization_human_verified_intents_summary.json --require-reviewed
+```
+
+This command should fail until every record has actually been marked as human-reviewed.
+
+Validate review readiness before using any audio-intent JSONL as gold labels:
 
 ```powershell
 python scripts/validate_audio_intent_review_packet.py --packet reports/week2_audio_generalization_intent_review_packet.jsonl --summary-output outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json --require-reviewed
 ```
 
-The current packet intentionally fails `--require-reviewed` because it is still a draft.
+The current draft packet intentionally fails `--require-reviewed`. After applying a fully reviewed compact file, validate `datasets/commands/audio_generalization_human_verified_intents.jsonl` instead.
 
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
