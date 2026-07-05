@@ -63,10 +63,26 @@ def main() -> None:
 
 def load_gold_commands(path: str | Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for line in Path(path).read_text(encoding="utf-8").splitlines():
+    for line_number, line in enumerate(Path(path).read_text(encoding="utf-8-sig").splitlines(), start=1):
         if line.strip():
-            records.append(json.loads(line))
+            record = json.loads(line)
+            _reject_draft_gold_record(record, line_number=line_number)
+            records.append(record)
     return records
+
+
+def _reject_draft_gold_record(record: dict[str, Any], *, line_number: int) -> None:
+    data_type = str(record.get("data_type", ""))
+    label_source = str(record.get("label_source", ""))
+    review_status = record.get("review_status")
+    if "draft" in data_type or label_source.endswith("_draft"):
+        raise ValueError(
+            f"line {line_number}: draft labels cannot be used as gold commands for intent accuracy"
+        )
+    if review_status is not None and review_status != "human_reviewed":
+        raise ValueError(
+            f"line {line_number}: review_status must be 'human_reviewed' before intent accuracy evaluation"
+        )
 
 
 def build_gold_index(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:

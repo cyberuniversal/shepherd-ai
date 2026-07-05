@@ -303,6 +303,14 @@ python scripts/create_week2_audio_intent_review_packet.py --manifest datasets/sa
 
 The current review packet is `reports/week2_audio_generalization_intent_review_packet.md`. It has 30 draft labels, all marked `needs_human_review`; do not use them for training or accuracy reporting until corrected and marked as reviewed.
 
+Validate review readiness before using the packet as gold labels:
+
+```powershell
+python scripts/validate_audio_intent_review_packet.py --packet reports/week2_audio_generalization_intent_review_packet.jsonl --summary-output outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json --require-reviewed
+```
+
+The current packet intentionally fails `--require-reviewed` because it is still a draft.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell

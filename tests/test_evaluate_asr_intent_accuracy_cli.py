@@ -100,6 +100,92 @@ class EvaluateAsrIntentAccuracyCliTests(unittest.TestCase):
         self.assertEqual(summary["exact_record_accuracy"], 1.0)
         self.assertEqual(result["records"][0]["gold_label_sources"], ["unit_test"])
 
+    def test_cli_rejects_draft_review_packet_as_gold(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            audio_dir = root / "datasets" / "sample_audio"
+            audio_dir.mkdir(parents=True)
+            (audio_dir / "audio_001.wav").write_bytes(b"RIFF")
+            manifest = audio_dir / "manifest.jsonl"
+            transcript = "Send one drone to inspect the loading bay before noon."
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_001",
+                        "audio_path": "datasets/sample_audio/audio_001.wav",
+                        "transcript": transcript,
+                        "source": "test",
+                        "data_type": "human_recorded_audio",
+                        "split": "test",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            predictions = root / "predictions.jsonl"
+            predictions.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_001",
+                        "audio_path": "datasets/sample_audio/audio_001.wav",
+                        "expected_transcript": transcript,
+                        "predicted_transcript": transcript,
+                        "model_name": "whisper",
+                        "model_version": "base",
+                        "parameters": {},
+                    },
+                    sort_keys=True,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            draft_gold = root / "draft_gold.jsonl"
+            draft_gold.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_001_intent",
+                        "text": transcript,
+                        "split": "test",
+                        "source": "test",
+                        "data_type": "human_recorded_audio_intent_draft",
+                        "label_source": "deterministic_v1_draft",
+                        "review_status": "needs_human_review",
+                        "expected_intent": {
+                            "action": "inspect",
+                            "count": 1,
+                            "location": None,
+                            "target": "loading bay",
+                            "constraints": ["before noon"],
+                        },
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--manifest",
+                    str(manifest),
+                    "--dataset-root",
+                    str(root),
+                    "--predictions",
+                    str(predictions),
+                    "--gold-commands",
+                    str(draft_gold),
+                    "--output",
+                    str(root / "accuracy.json"),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("draft labels cannot be used", completed.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

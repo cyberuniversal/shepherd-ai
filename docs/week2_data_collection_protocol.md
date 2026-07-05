@@ -204,6 +204,15 @@ python scripts/create_week2_audio_intent_review_packet.py `
 
 This packet contains parser drafts only. Correct the JSONL fields, change `review_status` to `human_reviewed`, and change `data_type` to `human_verified_audio_intent_command` before using it for intent accuracy.
 
+Validate review readiness before using the packet as gold labels:
+
+```powershell
+python scripts/validate_audio_intent_review_packet.py `
+  --packet reports/week2_audio_generalization_intent_review_packet.jsonl `
+  --summary-output outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json `
+  --require-reviewed
+```
+
 The command examples above are workflow examples only. Do not commit `human_written_commands.jsonl`, `manifest.jsonl`, or audio files unless the records are real, provenance is documented, and privacy/licensing requirements are satisfied.
 
 ## Research Integrity Rules

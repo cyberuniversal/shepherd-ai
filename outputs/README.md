@@ -82,6 +82,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_audio_generalization_error_analysis_local_gtx1650.json`: word-level ASR error analysis for the generalization run.
 - `outputs/evaluations/whisper_base_audio_generalization_split_summary_local_gtx1650.json`: validation/test ASR metrics for the pre-registered generalization batch.
 - `outputs/evaluations/whisper_base_audio_generalization_intent_impact_local_gtx1650.json`: ASR-to-intent impact analysis for the generalization batch; not gold intent accuracy.
+- `outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json`: readiness validation summary for the draft audio intent review packet.
 
 Generate the ASR error analysis with:
 
