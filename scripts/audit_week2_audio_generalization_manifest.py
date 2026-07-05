@@ -24,7 +24,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate-manifest", required=True, help="Future audio manifest to audit.")
     parser.add_argument("--commands", required=True, help="Existing curated command JSONL.")
     parser.add_argument("--spans", required=True, help="Existing span-labeled command JSONL.")
-    parser.add_argument("--existing-audio-manifest", required=True, help="Existing audio manifest JSONL.")
+    parser.add_argument(
+        "--existing-audio-manifest",
+        action="append",
+        required=True,
+        help="Existing audio manifest JSONL. Repeat to block overlap with multiple prior audio sets.",
+    )
     parser.add_argument("--dataset-root", required=True, help="Root used for audio path validation.")
     parser.add_argument("--output", required=True, help="Audit JSON output.")
     parser.add_argument(
@@ -41,14 +46,14 @@ def main() -> None:
     existing_index = _existing_text_index(
         commands_path=args.commands,
         spans_path=args.spans,
-        existing_audio_manifest=args.existing_audio_manifest,
+        existing_audio_manifests=args.existing_audio_manifest,
         dataset_root=args.dataset_root,
     )
     audit = audit_candidate_manifest(candidate_records, existing_index)
     audit["metadata"]["candidate_manifest"] = args.candidate_manifest
     audit["metadata"]["commands"] = args.commands
     audit["metadata"]["spans"] = args.spans
-    audit["metadata"]["existing_audio_manifest"] = args.existing_audio_manifest
+    audit["metadata"]["existing_audio_manifests"] = args.existing_audio_manifest
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -100,7 +105,7 @@ def _existing_text_index(
     *,
     commands_path: str | Path,
     spans_path: str | Path,
-    existing_audio_manifest: str | Path,
+    existing_audio_manifests: list[str | Path],
     dataset_root: str | Path,
 ) -> dict[str, list[dict[str, str]]]:
     index: dict[str, list[dict[str, str]]] = defaultdict(list)
@@ -108,8 +113,16 @@ def _existing_text_index(
         index[_normalize_text(record.text)].append({"source": "commands", "id": record.id, "split": record.split})
     for record in load_span_labeled_commands(spans_path):
         index[_normalize_text(record.text)].append({"source": "spans", "id": record.id, "split": record.split})
-    for record in load_audio_manifest(existing_audio_manifest, dataset_root=dataset_root):
-        index[_normalize_text(record.transcript)].append({"source": "audio", "id": record.id, "split": record.split})
+    for manifest_path in existing_audio_manifests:
+        for record in load_audio_manifest(manifest_path, dataset_root=dataset_root):
+            index[_normalize_text(record.transcript)].append(
+                {
+                    "source": "audio",
+                    "id": record.id,
+                    "split": record.split,
+                    "manifest": str(manifest_path),
+                }
+            )
     return dict(index)
 
 

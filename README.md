@@ -275,16 +275,16 @@ The audit is `reports/week2_performance_risk_audit.md`, with machine-readable ou
 Pre-register a fresh non-overlapping audio batch before the next ASR run:
 
 ```powershell
-python scripts/create_week2_audio_generalization_packet.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --jsonl-output reports/week2_audio_generalization_packet.jsonl --markdown-output reports/week2_audio_generalization_packet.md --validation-count 10 --test-count 20 --record-prefix audio_generalization
+python scripts/create_week2_audio_generalization_packet.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --dataset-root . --jsonl-output reports/week2_audio_v2_holdout_packet.jsonl --markdown-output reports/week2_audio_v2_holdout_packet.md --validation-count 10 --test-count 20 --record-prefix audio_v2_holdout --source manual_week2_audio_v2_holdout_v1
 ```
 
 After real WAVs and human-verified transcripts are collected into a candidate manifest, audit it for overlap before ASR:
 
 ```powershell
-python scripts/audit_week2_audio_generalization_manifest.py --candidate-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --output outputs/evaluations/week2_audio_generalization_manifest_audit.json --fail-on-overlap
+python scripts/audit_week2_audio_generalization_manifest.py --candidate-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --dataset-root . --output outputs/evaluations/week2_audio_v2_holdout_manifest_audit.json --fail-on-overlap
 ```
 
-The current blank packet is `reports/week2_audio_generalization_packet.md` and `reports/week2_audio_generalization_packet.jsonl`. It contains no collected data or evaluation result.
+The current blank v2 holdout packet is `reports/week2_audio_v2_holdout_packet.md` and `reports/week2_audio_v2_holdout_packet.jsonl`. It contains no collected data or evaluation result. Its purpose is to test whether `deterministic_v2` generalizes beyond the reviewed batch that motivated it.
 
 Completed local-GPU Whisper run on the non-overlapping 30-record audio generalization batch:
 

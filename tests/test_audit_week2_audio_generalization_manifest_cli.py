@@ -17,11 +17,11 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
             spans = root / "spans.jsonl"
             audio_dir = root / "datasets" / "sample_audio"
             audio_dir.mkdir(parents=True)
-            for name in ("audio_001.wav", "candidate_001.wav", "candidate_002.wav", "candidate_003.wav"):
+            for name in ("audio_001.wav", "audio_002.wav", "candidate_001.wav", "candidate_002.wav", "candidate_003.wav"):
                 (audio_dir / name).write_bytes(b"RIFF")
 
             existing_text = "Send two drones north."
-            new_text = "Inspect the loading dock after sunrise."
+            second_existing_text = "Return all drones to base."
             commands.write_text(_command_line("cmd_001", existing_text), encoding="utf-8")
             spans.write_text(_span_line("span_001", existing_text), encoding="utf-8")
             existing_manifest = audio_dir / "manifest.jsonl"
@@ -34,6 +34,21 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
                         "source": "manual",
                         "data_type": "human_recorded_audio",
                         "split": "train",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            second_existing_manifest = audio_dir / "manifest_2.jsonl"
+            second_existing_manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_002",
+                        "audio_path": "datasets/sample_audio/audio_002.wav",
+                        "transcript": second_existing_text,
+                        "source": "manual",
+                        "data_type": "human_recorded_audio",
+                        "split": "test",
                     }
                 )
                 + "\n",
@@ -57,7 +72,7 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
                             {
                                 "id": "candidate_002",
                                 "audio_path": "datasets/sample_audio/candidate_002.wav",
-                                "transcript": new_text,
+                                "transcript": second_existing_text,
                                 "source": "manual_week2_audio_generalization_v1",
                                 "data_type": "human_recorded_audio",
                                 "split": "test",
@@ -67,7 +82,7 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
                             {
                                 "id": "candidate_003",
                                 "audio_path": "datasets/sample_audio/candidate_003.wav",
-                                "transcript": new_text,
+                                "transcript": second_existing_text,
                                 "source": "manual_week2_audio_generalization_v1",
                                 "data_type": "human_recorded_audio",
                                 "split": "test",
@@ -92,6 +107,8 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
                     str(spans),
                     "--existing-audio-manifest",
                     str(existing_manifest),
+                    "--existing-audio-manifest",
+                    str(second_existing_manifest),
                     "--dataset-root",
                     str(root),
                     "--output",
@@ -107,9 +124,16 @@ class AuditWeek2AudioGeneralizationManifestCliTests(unittest.TestCase):
 
         self.assertIn('"passes_non_overlap_policy": false', completed.stdout)
         self.assertEqual(audit["summary"]["records"], 3)
-        self.assertEqual(audit["summary"]["overlap_records"], 1)
+        self.assertEqual(audit["summary"]["overlap_records"], 3)
         self.assertEqual(audit["summary"]["duplicate_transcripts_within_candidate"], 1)
         self.assertFalse(audit["summary"]["passes_non_overlap_policy"])
+        matched_manifests = {
+            match["manifest"]
+            for overlap in audit["overlaps"]
+            for match in overlap["matched_existing_records"]
+            if match["source"] == "audio"
+        }
+        self.assertIn(str(second_existing_manifest), matched_manifests)
 
 
 def _command_line(record_id: str, text: str) -> str:

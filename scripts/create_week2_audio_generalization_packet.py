@@ -28,7 +28,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commands", required=True, help="Existing curated command JSONL.")
     parser.add_argument("--spans", required=True, help="Existing span-labeled command JSONL.")
-    parser.add_argument("--existing-audio-manifest", required=True, help="Existing audio manifest JSONL.")
+    parser.add_argument(
+        "--existing-audio-manifest",
+        action="append",
+        required=True,
+        help="Existing audio manifest JSONL. Repeat to block overlap with multiple prior audio sets.",
+    )
     parser.add_argument("--dataset-root", required=True, help="Root used for existing audio path validation.")
     parser.add_argument("--jsonl-output", required=True, help="Blank packet JSONL output.")
     parser.add_argument("--markdown-output", required=True, help="Human-readable packet output.")
@@ -44,7 +49,7 @@ def main() -> None:
     existing_texts = _existing_text_profile(
         commands_path=args.commands,
         spans_path=args.spans,
-        existing_audio_manifest=args.existing_audio_manifest,
+        existing_audio_manifests=args.existing_audio_manifest,
         dataset_root=args.dataset_root,
     )
     packet = build_audio_generalization_packet(
@@ -137,7 +142,7 @@ def render_audio_generalization_packet_markdown(packet: dict[str, Any]) -> str:
         "## Purpose",
         "",
         "Collect a fresh audio batch whose transcripts do not overlap existing Week 2 command or span text.",
-        "This is intended to produce stronger ASR and speech-to-intent evidence than the current overlapping 10-record audio sample.",
+        "This is intended to produce stronger ASR and speech-to-intent evidence than prior audio samples.",
         "",
         "## Summary",
         "",
@@ -169,12 +174,16 @@ def _existing_text_profile(
     *,
     commands_path: str | Path,
     spans_path: str | Path,
-    existing_audio_manifest: str | Path,
+    existing_audio_manifests: list[str | Path],
     dataset_root: str | Path,
 ) -> dict[str, Any]:
     command_records = load_labeled_commands(commands_path)
     span_records = load_span_labeled_commands(spans_path)
-    audio_records = load_audio_manifest(existing_audio_manifest, dataset_root=dataset_root)
+    audio_records = [
+        record
+        for manifest_path in existing_audio_manifests
+        for record in load_audio_manifest(manifest_path, dataset_root=dataset_root)
+    ]
     normalized_sources: dict[str, set[str]] = {}
     for source_name, records, text_attr in (
         ("commands", command_records, "text"),

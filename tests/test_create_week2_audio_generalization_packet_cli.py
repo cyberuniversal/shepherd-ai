@@ -18,8 +18,11 @@ class CreateWeek2AudioGeneralizationPacketCliTests(unittest.TestCase):
             audio_dir = root / "datasets" / "sample_audio"
             audio_dir.mkdir(parents=True)
             (audio_dir / "audio_001.wav").write_bytes(b"RIFF")
+            (audio_dir / "audio_002.wav").write_bytes(b"RIFF")
             manifest = audio_dir / "manifest.jsonl"
+            second_manifest = audio_dir / "manifest_2.jsonl"
             text = "Send two drones north."
+            second_text = "Return all drones to base."
             commands.write_text(
                 json.dumps(
                     {
@@ -68,6 +71,20 @@ class CreateWeek2AudioGeneralizationPacketCliTests(unittest.TestCase):
                 + "\n",
                 encoding="utf-8",
             )
+            second_manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "audio_002",
+                        "audio_path": "datasets/sample_audio/audio_002.wav",
+                        "transcript": second_text,
+                        "source": "manual",
+                        "data_type": "human_recorded_audio",
+                        "split": "test",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
             jsonl_output = root / "packet.jsonl"
             markdown_output = root / "packet.md"
 
@@ -81,6 +98,8 @@ class CreateWeek2AudioGeneralizationPacketCliTests(unittest.TestCase):
                     str(spans),
                     "--existing-audio-manifest",
                     str(manifest),
+                    "--existing-audio-manifest",
+                    str(second_manifest),
                     "--dataset-root",
                     str(root),
                     "--jsonl-output",
@@ -108,6 +127,7 @@ class CreateWeek2AudioGeneralizationPacketCliTests(unittest.TestCase):
         self.assertEqual(rows[0]["id"], "fresh_audio_001")
         self.assertEqual(rows[0]["transcript"], "")
         self.assertIn("Non-overlap required: true", markdown)
+        self.assertIn("Existing normalized texts blocked for overlap: 2", markdown)
 
 
 if __name__ == "__main__":

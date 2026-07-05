@@ -164,31 +164,34 @@ python scripts/audit_week2_collection.py `
   --output outputs/evaluations/week2_collection_audit.json
 ```
 
-Create a blank packet for the next non-overlapping audio generalization batch:
+Create a blank packet for the next non-overlapping audio generalization batch. For the current `deterministic_v2` follow-up, block overlap with both prior audio manifests:
 
 ```powershell
 python scripts/create_week2_audio_generalization_packet.py `
   --commands datasets/commands/human_written_commands_curated_v1.jsonl `
   --spans datasets/commands/human_verified_span_commands.jsonl `
   --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
   --dataset-root . `
-  --jsonl-output reports/week2_audio_generalization_packet.jsonl `
-  --markdown-output reports/week2_audio_generalization_packet.md `
+  --jsonl-output reports/week2_audio_v2_holdout_packet.jsonl `
+  --markdown-output reports/week2_audio_v2_holdout_packet.md `
   --validation-count 10 `
   --test-count 20 `
-  --record-prefix audio_generalization
+  --record-prefix audio_v2_holdout `
+  --source manual_week2_audio_v2_holdout_v1
 ```
 
 Before running ASR on a filled future audio manifest, audit that its transcripts do not overlap existing command, span, or audio text:
 
 ```powershell
 python scripts/audit_week2_audio_generalization_manifest.py `
-  --candidate-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
+  --candidate-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl `
   --commands datasets/commands/human_written_commands_curated_v1.jsonl `
   --spans datasets/commands/human_verified_span_commands.jsonl `
   --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
   --dataset-root . `
-  --output outputs/evaluations/week2_audio_generalization_manifest_audit.json `
+  --output outputs/evaluations/week2_audio_v2_holdout_manifest_audit.json `
   --fail-on-overlap
 ```
 

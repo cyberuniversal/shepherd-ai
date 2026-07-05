@@ -101,7 +101,18 @@ Recorded non-overlapping audio generalization run, July 5, 2026:
 - Overall mean word error rate: `0.0716`.
 - Validation exact-match accuracy: `0.70`; test exact-match accuracy: `0.55`.
 - ASR-to-intent impact: 8 of 30 records changed raw intent outputs, and 7 of 30 changed semantic intent outputs after normalization.
-- This is stronger evidence than the first overlapping 10-record sample, but it is still not gold intent accuracy because separate human-verified intent labels have not been created for the new audio commands.
+- Human-reviewed audio-intent labels were later applied in `datasets/commands/audio_generalization_human_verified_intents.jsonl`.
+- Initial `deterministic_v1` reviewed intent accuracy: 7 of 30 exact matches on human transcripts and 4 of 30 exact matches on Whisper transcripts.
+- Post-hoc `deterministic_v2` reviewed intent accuracy: 27 of 30 exact matches on human transcripts and 19 of 30 exact matches on Whisper transcripts.
+- The `deterministic_v2` result is not a clean final benchmark because the parser was revised after inspecting this reviewed batch.
+
+Next pre-registered audio holdout:
+
+- Blank packet: `reports/week2_audio_v2_holdout_packet.md` and `reports/week2_audio_v2_holdout_packet.jsonl`.
+- Slots: 10 validation and 20 test records.
+- Source for future records: `manual_week2_audio_v2_holdout_v1`.
+- Overlap blocklist: existing curated commands, human-verified spans, `datasets/sample_audio/manifest.jsonl`, and `datasets/sample_audio/audio_generalization_manifest.jsonl`.
+- Purpose: test whether `deterministic_v2` generalizes beyond the batch that motivated it.
 
 Run Whisper in Colab/T4:
 
