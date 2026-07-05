@@ -29,6 +29,9 @@ Artifacts:
 - Error analysis: `outputs/evaluations/whisper_base_audio_generalization_error_analysis_local_gtx1650.json`
 - Split summary: `outputs/evaluations/whisper_base_audio_generalization_split_summary_local_gtx1650.json`
 - Intent impact: `outputs/evaluations/whisper_base_audio_generalization_intent_impact_local_gtx1650.json`
+- Human-reviewed audio intent labels: `datasets/commands/audio_generalization_human_verified_intents.jsonl`
+- Human-reviewed intent-label summary: `outputs/evaluations/audio_generalization_human_verified_intents_summary.json`
+- Human-reviewed intent accuracy: `outputs/evaluations/whisper_base_audio_generalization_intent_accuracy_human_verified_local_gtx1650.json`
 
 ## ASR Metrics
 
@@ -64,7 +67,7 @@ Number normalizations also occurred:
 
 ## Downstream Intent Impact
 
-This is not intent accuracy because the new audio batch does not yet have separate human-verified intent labels. It compares parser/model outputs on human transcripts versus Whisper transcripts.
+This compares parser/model outputs on human transcripts versus Whisper transcripts. It is useful for isolating ASR-induced changes, but the gold-label accuracy section below is the stronger intent-extraction evaluation for this batch.
 
 For both `deterministic_v1` and `trained_nb_human_curated_v2`:
 
@@ -87,15 +90,38 @@ Changed fields after semantic normalization:
 - `count`: 3
 - `target`: 3
 
+## Human-Reviewed Intent Accuracy
+
+The audio generalization batch now has 30 human-reviewed audio intent labels:
+
+- Label file: `datasets/commands/audio_generalization_human_verified_intents.jsonl`
+- Label source: `human_reviewed_v1`
+- Data type: `human_verified_audio_intent_command`
+- Split: 10 validation, 20 test
+- Readiness check: passed, with 0 draft records and 0 unreviewed records
+
+The reviewed labels were normalized to the current Week 2 single-action schema. Review notes mark schema-gap commands such as mapping, monitoring, allocation-like division, and compound send-then-return instructions.
+
+Gold intent accuracy using the existing local-GPU Whisper predictions:
+
+| System | Transcript | Exact Record Accuracy | Field Accuracy | Main Field Errors |
+| --- | --- | ---: | ---: | --- |
+| `deterministic_v1` | human transcript | 7 / 30 = 0.2333 | 0.6667 | target 18, location 16, constraints 9, action 7 |
+| `deterministic_v1` | Whisper transcript | 4 / 30 = 0.1333 | 0.6133 | target 20, location 16, action 10, constraints 9, count 3 |
+| `trained_nb_human_curated_v2` | human transcript | 7 / 30 = 0.2333 | 0.6667 | target 18, location 16, constraints 9, action 7 |
+| `trained_nb_human_curated_v2` | Whisper transcript | 4 / 30 = 0.1333 | 0.6133 | target 20, location 16, action 10, constraints 9, count 3 |
+
+This result is much lower than the earlier audio-linked metric because the earlier metric reused overlapping typed-command labels. The reviewed non-overlapping audio labels are a stricter test and show that Week 2 intent extraction still needs substantial improvement.
+
 ## Interpretation
 
 This batch shows that the earlier 10-record result was too optimistic for broader claims. Whisper still performs reasonably, but the non-overlapping batch introduces real recognition errors on mission-critical words such as actions, drone counts, and targets.
 
-The canonical constraint normalizer handled number-format changes, so altitude-like numeric substitutions did not become canonical constraint changes. However, action/target/count errors remain important because they can change the downstream mission representation.
+The canonical constraint normalizer handled number-format changes, so altitude-like numeric substitutions did not become canonical constraint changes. However, action/target/count errors remain important because they can change the downstream mission representation. The human-reviewed labels also show that the current deterministic and hybrid intent baselines are too brittle for non-overlapping real spoken commands.
 
 ## Current Limitations
 
 - This is a local GTX run, not a Colab/T4 run.
-- The batch has human transcripts and audio, but not separate human-verified intent labels.
-- ASR-to-intent impact is a consistency analysis, not gold intent accuracy.
+- The reviewed labels use the current single-action Week 2 schema, so compound commands and monitoring/allocation-like requests are lossy.
+- ASR-to-intent impact is a consistency analysis; the gold intent accuracy result is reported separately above.
 - The audio files remain untracked; only the manifest and outputs are documented.

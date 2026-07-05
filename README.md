@@ -295,13 +295,25 @@ Completed local-GPU Whisper run on the non-overlapping 30-record audio generaliz
 - Downstream semantic intent changes: 7 of 30 records
 - Important caveat: this is local GTX, not Colab/T4, and it is ASR-to-intent impact rather than gold intent accuracy.
 
+Human-reviewed audio-intent labels have now been applied for this same 30-record batch:
+
+- Gold candidate: `datasets/commands/audio_generalization_human_verified_intents.jsonl`
+- Review summary: `outputs/evaluations/audio_generalization_human_verified_intents_summary.json`
+- Intent accuracy: `outputs/evaluations/whisper_base_audio_generalization_intent_accuracy_human_verified_local_gtx1650.json`
+- Readiness: 30 records, 0 draft records, 0 unreviewed records.
+- `deterministic_v1` on human transcripts: exact-record accuracy 7 / 30 = 0.2333; field accuracy 0.6667.
+- `deterministic_v1` on Whisper transcripts: exact-record accuracy 4 / 30 = 0.1333; field accuracy 0.6133.
+- `trained_nb_human_curated_v2` currently matches the deterministic result on this batch because it is a parser-gated hybrid baseline.
+
+This is the strongest current evidence that Week 2 intent extraction is not solved. The next technical work should target the large target/location/action error counts exposed by the reviewed audio batch.
+
 Create draft intent labels for human review before reporting gold intent accuracy on the new audio batch:
 
 ```powershell
 python scripts/create_week2_audio_intent_review_packet.py --manifest datasets/sample_audio/audio_generalization_manifest.jsonl --dataset-root . --jsonl-output reports/week2_audio_generalization_intent_review_packet.jsonl --markdown-output reports/week2_audio_generalization_intent_review_packet.md
 ```
 
-The current review packet is `reports/week2_audio_generalization_intent_review_packet.md`. It has 30 draft labels, all marked `needs_human_review`; do not use them for training or accuracy reporting until corrected and marked as reviewed.
+The source review packet is `reports/week2_audio_generalization_intent_review_packet.md`. It has 30 parser-draft labels and remains preserved as a draft artifact. The reviewed compact file and applied gold candidate are separate artifacts listed above.
 
 Export the draft packet into a compact editable review file:
 

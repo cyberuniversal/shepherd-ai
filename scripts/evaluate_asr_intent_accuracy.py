@@ -157,8 +157,8 @@ def evaluate_audio_intent_accuracy(
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "evaluation_note": (
                 "Intent accuracy on audio-linked transcripts whose expected transcript exactly matches a labeled "
-                "command record. Gold labels are reused from the command dataset and are not newly collected audio "
-                "intent labels."
+                "record in --gold-commands. Draft labels and non-human-reviewed labels are rejected before "
+                "evaluation."
             ),
             "fields": list(EVAL_FIELDS),
             "systems": list(systems),

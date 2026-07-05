@@ -99,6 +99,8 @@ class EvaluateAsrIntentAccuracyCliTests(unittest.TestCase):
         summary = result["summary"]["deterministic_v1:asr_transcript"]
         self.assertEqual(summary["exact_record_accuracy"], 1.0)
         self.assertEqual(result["records"][0]["gold_label_sources"], ["unit_test"])
+        self.assertIn("--gold-commands", result["metadata"]["evaluation_note"])
+        self.assertNotIn("reused from the command dataset", result["metadata"]["evaluation_note"])
 
     def test_cli_rejects_draft_review_packet_as_gold(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

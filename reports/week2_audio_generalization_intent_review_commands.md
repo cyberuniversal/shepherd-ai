@@ -1,6 +1,8 @@
 # Week 2 Audio Intent Review Commands
 
-This is a human-review aid. The exported JSONL starts from deterministic parser drafts and is not gold data.
+Status update: `reports\week2_audio_generalization_intent_review_commands.jsonl` has been human-reviewed and applied to `datasets\commands\audio_generalization_human_verified_intents.jsonl`.
+
+This Markdown file remains a review aid generated from the original deterministic parser drafts. The per-record "Draft intent" lines below are historical parser drafts, not the final reviewed labels. Use the JSONL file and applied dataset as the reviewed source of truth.
 
 - Draft packet: `reports\week2_audio_generalization_intent_review_packet.jsonl`
 - Editable review file: `reports\week2_audio_generalization_intent_review_commands.jsonl`
