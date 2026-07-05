@@ -1,0 +1,326 @@
+{
+  "details": {
+    "asr": {
+      "device_names": [
+        "NVIDIA GeForce GTX 1650 SUPER"
+      ],
+      "model_name": "whisper",
+      "model_version": "base",
+      "summary": {
+        "exact_match_accuracy": 0.9,
+        "exact_matches": 9,
+        "mean_word_error_rate": 0.01,
+        "records": 10
+      }
+    },
+    "asr_intent_impact": {
+      "deterministic_v1": {
+        "canonical_constraint_changed_rate": 0.0,
+        "canonical_constraint_changed_records": 0,
+        "changed_field_counts": {
+          "constraints": 1
+        },
+        "intent_changed_rate": 0.1,
+        "intent_changed_records": 1,
+        "normalized_changed_field_counts": {},
+        "normalized_word_changed_rate": 0.1,
+        "normalized_word_changed_records": 1,
+        "raw_transcript_changed_rate": 0.3,
+        "raw_transcript_changed_records": 3,
+        "records": 10,
+        "semantic_intent_changed_rate": 0.0,
+        "semantic_intent_changed_records": 0,
+        "split_counts": {
+          "test": {
+            "raw_transcript_changed": 1,
+            "records": 2
+          },
+          "train": {
+            "intent_changed": 1,
+            "normalized_word_changed": 1,
+            "raw_transcript_changed": 1,
+            "records": 6
+          },
+          "validation": {
+            "raw_transcript_changed": 1,
+            "records": 2
+          }
+        },
+        "unchanged_canonical_constraint_when_normalized_word_changed": 1,
+        "unchanged_intent_when_normalized_word_changed": 0,
+        "unchanged_semantic_intent_when_normalized_word_changed": 1
+      },
+      "trained_nb_human_curated_v2": {
+        "canonical_constraint_changed_rate": 0.0,
+        "canonical_constraint_changed_records": 0,
+        "changed_field_counts": {
+          "constraints": 1
+        },
+        "intent_changed_rate": 0.1,
+        "intent_changed_records": 1,
+        "normalized_changed_field_counts": {},
+        "normalized_word_changed_rate": 0.1,
+        "normalized_word_changed_records": 1,
+        "raw_transcript_changed_rate": 0.3,
+        "raw_transcript_changed_records": 3,
+        "records": 10,
+        "semantic_intent_changed_rate": 0.0,
+        "semantic_intent_changed_records": 0,
+        "split_counts": {
+          "test": {
+            "raw_transcript_changed": 1,
+            "records": 2
+          },
+          "train": {
+            "intent_changed": 1,
+            "normalized_word_changed": 1,
+            "raw_transcript_changed": 1,
+            "records": 6
+          },
+          "validation": {
+            "raw_transcript_changed": 1,
+            "records": 2
+          }
+        },
+        "unchanged_canonical_constraint_when_normalized_word_changed": 1,
+        "unchanged_intent_when_normalized_word_changed": 0,
+        "unchanged_semantic_intent_when_normalized_word_changed": 1
+      }
+    },
+    "asr_span_impact": {
+      "ambiguous_audio_ids": [],
+      "changed_entity_field_counts": {
+        "constraint": 2
+      },
+      "evaluated_records": 10,
+      "human_transcript_span_accuracy": {
+        "entity_f1": 0.7323943661971831,
+        "entity_precision": 0.65,
+        "entity_recall": 0.8387096774193549,
+        "expected_entities": 31,
+        "matched_entities": 26,
+        "predicted_entities": 40,
+        "records": 10,
+        "token_accuracy": 0.8470588235294118,
+        "token_matches": 72,
+        "tokens": 85
+      },
+      "matched_audio_records": 10,
+      "normalized_word_changed_rate": 0.1,
+      "normalized_word_changed_records": 1,
+      "raw_transcript_changed_rate": 0.3,
+      "raw_transcript_changed_records": 3,
+      "semantic_changed_entity_field_counts": {},
+      "semantic_span_prediction_changed_rate": 0.0,
+      "semantic_span_prediction_changed_records": 0,
+      "span_prediction_changed_rate": 0.1,
+      "span_prediction_changed_records": 1,
+      "split_counts": {
+        "test": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        },
+        "train": {
+          "normalized_word_changed": 1,
+          "raw_transcript_changed": 1,
+          "records": 6,
+          "span_prediction_changed": 1
+        },
+        "validation": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        }
+      },
+      "unchanged_semantic_span_prediction_when_normalized_word_changed": 1,
+      "unchanged_span_prediction_when_normalized_word_changed": 0,
+      "unmatched_audio_ids": []
+    },
+    "audio_linked_intent_accuracy": {
+      "deterministic_v1_asr_transcript": {
+        "exact_record_accuracy": 0.9,
+        "exact_record_matches": 9,
+        "field_accuracy": 0.98,
+        "field_error_counts": {
+          "constraints": 1
+        },
+        "field_matches": 49,
+        "records": 10,
+        "split_counts": {
+          "test": {
+            "exact_record_matches": 2,
+            "records": 2
+          },
+          "train": {
+            "exact_record_matches": 5,
+            "records": 6
+          },
+          "validation": {
+            "exact_record_matches": 2,
+            "records": 2
+          }
+        },
+        "total_fields": 50
+      },
+      "deterministic_v1_human_transcript": {
+        "exact_record_accuracy": 1.0,
+        "exact_record_matches": 10,
+        "field_accuracy": 1.0,
+        "field_error_counts": {},
+        "field_matches": 50,
+        "records": 10,
+        "split_counts": {
+          "test": {
+            "exact_record_matches": 2,
+            "records": 2
+          },
+          "train": {
+            "exact_record_matches": 6,
+            "records": 6
+          },
+          "validation": {
+            "exact_record_matches": 2,
+            "records": 2
+          }
+        },
+        "total_fields": 50
+      },
+      "trained_nb_human_curated_v2_asr_transcript": {
+        "exact_record_accuracy": 0.9,
+        "exact_record_matches": 9,
+        "field_accuracy": 0.98,
+        "field_error_counts": {
+          "constraints": 1
+        },
+        "field_matches": 49,
+        "records": 10,
+        "split_counts": {
+          "test": {
+            "exact_record_matches": 2,
+            "records": 2
+          },
+          "train": {
+            "exact_record_matches": 5,
+            "records": 6
+          },
+          "validation": {
+            "exact_record_matches": 2,
+            "records": 2
+          }
+        },
+        "total_fields": 50
+      },
+      "trained_nb_human_curated_v2_human_transcript": {
+        "exact_record_accuracy": 1.0,
+        "exact_record_matches": 10,
+        "field_accuracy": 1.0,
+        "field_error_counts": {},
+        "field_matches": 50,
+        "records": 10,
+        "split_counts": {
+          "test": {
+            "exact_record_matches": 2,
+            "records": 2
+          },
+          "train": {
+            "exact_record_matches": 6,
+            "records": 6
+          },
+          "validation": {
+            "exact_record_matches": 2,
+            "records": 2
+          }
+        },
+        "total_fields": 50
+      }
+    },
+    "colab_t4_span_transformer": {
+      "false_negative_entity_counts": {
+        "action": 1,
+        "constraint": 1,
+        "count": 2,
+        "location": 1,
+        "target": 2
+      },
+      "false_positive_entity_counts": {
+        "action": 1,
+        "constraint": 3,
+        "count": 2,
+        "location": 1,
+        "target": 4
+      },
+      "metrics": {
+        "epoch": 30.0,
+        "eval_entity_f1": 0.7857142857142856,
+        "eval_entity_precision": 0.75,
+        "eval_entity_recall": 0.825,
+        "eval_loss": 0.6661341786384583,
+        "eval_runtime": 0.0238,
+        "eval_samples_per_second": 419.556,
+        "eval_steps_per_second": 83.911
+      },
+      "runtime": {
+        "accelerate_version": "1.14.0",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "Tesla T4"
+        ],
+        "datasets_version": "4.0.0",
+        "torch_version": "2.11.0+cu128",
+        "transformers_version": "5.12.1"
+      },
+      "worst_record_ids": [
+        "human_cmd_030",
+        "human_cmd_050",
+        "human_cmd_045",
+        "human_cmd_049",
+        "human_cmd_048",
+        "human_cmd_047"
+      ]
+    }
+  },
+  "headline": {
+    "asr_exact_match_accuracy": 0.9,
+    "asr_mean_word_error_rate": 0.01,
+    "asr_raw_span_prediction_changed_records": 1,
+    "asr_semantic_span_prediction_changed_records": 0,
+    "audio_records": 10,
+    "canonical_constraint_changed_records": 0,
+    "colab_t4_distilbert_error_records": 6,
+    "colab_t4_distilbert_test_entity_f1": 0.7857142857142856,
+    "colab_t4_distilbert_test_entity_precision": 0.75,
+    "colab_t4_distilbert_test_entity_recall": 0.825,
+    "deterministic_asr_intent_exact_accuracy": 0.9,
+    "deterministic_human_intent_exact_accuracy": 1.0,
+    "span_nb_v1_audio_matched_human_entity_f1": 0.7323943661971831,
+    "trained_asr_intent_exact_accuracy": 0.9,
+    "trained_human_intent_exact_accuracy": 1.0
+  },
+  "interpretation": [
+    "ASR is currently strong on the small recorded sample, but the evidence is not benchmark-grade.",
+    "The observed ASR word substitution affects raw constraint strings, but canonical altitude constraints remain unchanged.",
+    "Audio-linked intent extraction is perfect on human transcripts and drops to 0.90 exact-record accuracy on Whisper transcripts because of one raw constraint mismatch.",
+    "The strongest text span extractor is the expanded 85-record Colab/T4 DistilBERT run, with entity F1 around 0.79 on the current 10-record test split.",
+    "The remaining transformer span errors still cluster around count/constraint confusion and target boundary mistakes.",
+    "The next research-useful improvement is a pre-registered larger audio batch or a restored Colab checkpoint for direct transformer inference on ASR text."
+  ],
+  "limitations": [
+    "The current audio set has only 10 recordings.",
+    "The current audio split was assigned retrospectively after the first pooled ASR run.",
+    "The recorded ASR run used a local GTX GPU, not Colab/T4.",
+    "Audio-linked intent labels are reused from matching text-command records; they are not newly collected audio-specific gold labels.",
+    "ASR transcript span rows compare predictions only; no human gold spans exist for Whisper transcript text.",
+    "The strongest transformer result is text-command span extraction, not speech-to-mission performance."
+  ],
+  "metadata": {
+    "generated_at_utc": "2026-07-05T10:08:25.313700+00:00",
+    "source_paths": {
+      "audio_evaluation": "outputs\\evaluations\\whisper_base_audio_evaluation_local_gtx1650.json",
+      "hf_token_error_analysis": "outputs\\evaluations\\hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json",
+      "hf_token_metrics": "outputs\\evaluations\\hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json",
+      "intent_accuracy": "outputs\\evaluations\\whisper_base_intent_accuracy_local_gtx1650.json",
+      "intent_impact": "outputs\\evaluations\\whisper_base_intent_impact_local_gtx1650.json",
+      "span_impact": "outputs\\evaluations\\whisper_base_span_impact_local_gtx1650.json"
+    },
+    "status_note": "Week 2 status summary from existing raw artifacts. This is not a final benchmark; the audio set is small, local-GPU ASR is not Colab/T4, and the current audio split is retrospective."
+  }
+}

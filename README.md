@@ -256,6 +256,14 @@ Completed expanded 85-record Colab/T4 DistilBERT retrain, July 4, 2026:
 
 This is the strongest Week 2 text-command span result so far, but it is not an ASR result and not end-to-end mission performance.
 
+Current Week 2 status summary:
+
+```powershell
+python scripts/summarize_week2_status.py --audio-evaluation outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json --intent-accuracy outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json --intent-impact outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json --hf-token-metrics outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json --hf-token-error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json --output-json outputs/evaluations/week2_status_summary.json --output-markdown reports/week2_status_summary.md
+```
+
+The generated report is `reports/week2_status_summary.md`, with machine-readable output in `outputs/evaluations/week2_status_summary.json`.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell
