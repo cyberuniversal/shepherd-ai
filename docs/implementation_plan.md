@@ -68,9 +68,9 @@ Evaluation metrics: Speech-recognition exact-match accuracy and word error rate 
 
 Completion criteria: A documented sample-audio workflow produces transcripts reproducibly without private data or credentials.
 
-Current status: A Whisper `base` ASR run has been recorded on a local `NVIDIA GeForce GTX 1650 SUPER` GPU with `--no-fp16`, producing exact-match accuracy `0.9` and mean word error rate `0.01` on the 10-record sample-audio manifest.
+Current status: A Whisper `base` ASR run has been recorded on a local `NVIDIA GeForce GTX 1650 SUPER` GPU with `--no-fp16`, producing pooled exact-match accuracy `0.9` and mean word error rate `0.01` on the 10-record sample-audio manifest. A retrospective seed-17 split summary now reports 6 train, 2 validation, and 2 test records.
 
-Known uncertainties: The repository now has 10 self-recorded WAV records, all marked `train`; a final audio train/validation/test split and acceptance threshold are still not specified. The Colab/T4 ASR run is still not recorded because the WAV files are intentionally not tracked in the public repository and therefore are unavailable to a clean Colab clone.
+Known uncertainties: The current audio split was assigned after the first pooled ASR result existed, so it is not a clean final held-out benchmark. A pre-registered audio split for newly collected recordings and an acceptance threshold are still not specified. The Colab/T4 ASR run is still not recorded because the WAV files are intentionally not tracked in the public repository and therefore are unavailable to a clean Colab clone.
 
 ## Milestone 3: Command Grounding And Map Representation
 

@@ -8,7 +8,7 @@ Current contents:
 - `manifest.jsonl` with human-provided transcripts.
 - Source: `manual_week2_collection_v1`.
 - Data type: `human_recorded_audio`.
-- Current split: all 10 records are `train`.
+- Current split: 6 `train`, 2 `validation`, and 2 `test` records under the retrospective seed-17 split policy documented in `docs/week2_audio_split_policy.md`.
 
 Do not add private recordings, large audio files, or generated model outputs without documenting source, consent/licensing status, transcript provenance, split, and preprocessing.
 
@@ -39,3 +39,4 @@ Current recorded ASR artifact set is from a local `NVIDIA GeForce GTX 1650 SUPER
 - `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`
 - `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`
 - `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`
+- `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`

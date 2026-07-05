@@ -52,7 +52,7 @@ Current audio data:
 - Manifest: `datasets/sample_audio/manifest.jsonl`.
 - Source: `manual_week2_collection_v1`.
 - Data type: `human_recorded_audio`.
-- Current split: all 10 records are `train`, so this is not yet a final ASR benchmark split.
+- Current split after the retrospective seed-17 policy: 6 `train`, 2 `validation`, and 2 `test` records. See `docs/week2_audio_split_policy.md`.
 
 ## Evaluation
 
@@ -75,8 +75,10 @@ Recorded local-GPU ASR run, July 4, 2026:
 - Raw predictions: `outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl`.
 - Evaluation: `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`.
 - Error analysis: `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`.
-- Result on the 10-record train-marked sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
+- Split summary: `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`.
+- Pooled result on the 10-record sample: exact-match accuracy `0.9`, mean word error rate `0.01`.
 - Observed normalized word substitution: `fifty -> 50`.
+- Retrospective split-level result: train WER `0.0167`, validation WER `0.0`, test WER `0.0`.
 
 This is a real Whisper ASR evaluation on the current recorded WAVs, but it is not a Colab/T4 result and not a final held-out speech benchmark.
 
@@ -111,5 +113,5 @@ The full speech-to-text milestone is not complete until the project defines a re
 - Whisper model size is currently planned as `base` for the first reproducible pass.
 - Audio recording conditions are not stated.
 - Language/accent/noise coverage is not stated.
-- Train/validation/test split policy for audio is not finalized; the current 10 recordings are all marked `train`.
+- The current train/validation/test audio split is retrospective and therefore not a clean final held-out benchmark.
 - Acceptance threshold for speech accuracy is not stated.

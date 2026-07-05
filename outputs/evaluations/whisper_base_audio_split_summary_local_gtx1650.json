@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-05T05:45:31.769756+00:00",
+    "manifest": "datasets\\sample_audio\\manifest.jsonl",
+    "source_model_name": "whisper",
+    "source_model_version": "base",
+    "source_parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-04T17:26:30.075999+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]"
+      }
+    },
+    "source_summary": {
+      "exact_match_accuracy": 0.9,
+      "exact_matches": 9,
+      "mean_word_error_rate": 0.01,
+      "records": 10
+    },
+    "split_policy": "retrospective_seed17_6_2_2"
+  },
+  "split_summaries": {
+    "test": {
+      "exact_match_accuracy": 1.0,
+      "exact_matches": 2,
+      "mean_word_error_rate": 0.0,
+      "record_ids": [
+        "audio_007",
+        "audio_009"
+      ],
+      "records": 2
+    },
+    "train": {
+      "exact_match_accuracy": 0.8333333333333334,
+      "exact_matches": 5,
+      "mean_word_error_rate": 0.016666666666666666,
+      "record_ids": [
+        "audio_001",
+        "audio_002",
+        "audio_004",
+        "audio_006",
+        "audio_008",
+        "audio_010"
+      ],
+      "records": 6
+    },
+    "validation": {
+      "exact_match_accuracy": 1.0,
+      "exact_matches": 2,
+      "mean_word_error_rate": 0.0,
+      "record_ids": [
+        "audio_003",
+        "audio_005"
+      ],
+      "records": 2
+    }
+  }
+}
