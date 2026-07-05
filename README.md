@@ -284,7 +284,25 @@ After real WAVs and human-verified transcripts are collected into a candidate ma
 python scripts/audit_week2_audio_generalization_manifest.py --candidate-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --dataset-root . --output outputs/evaluations/week2_audio_v2_holdout_manifest_audit.json --fail-on-overlap
 ```
 
-The current blank v2 holdout packet is `reports/week2_audio_v2_holdout_packet.md` and `reports/week2_audio_v2_holdout_packet.jsonl`. It contains no collected data or evaluation result. Its purpose is to test whether `deterministic_v2` generalizes beyond the reviewed batch that motivated it.
+The v2 holdout packet is `reports/week2_audio_v2_holdout_packet.md` and `reports/week2_audio_v2_holdout_packet.jsonl`. It was filled as `datasets/sample_audio/audio_v2_holdout_manifest.jsonl` with 30 non-overlapping recordings. Its purpose is to test whether `deterministic_v2` generalizes beyond the reviewed batch that motivated it.
+
+Completed local-GPU Whisper run on the fresh v2 audio holdout:
+
+- Manifest: `datasets/sample_audio/audio_v2_holdout_manifest.jsonl`
+- Report: `reports/week2_audio_v2_holdout_asr_report.md`
+- Exact transcript accuracy: 22 / 30 = 0.7333
+- Mean word error rate: 0.0485
+- Validation exact transcript accuracy: 6 / 10 = 0.6000
+- Test exact transcript accuracy: 16 / 20 = 0.8000
+- ASR-to-intent semantic changes with `deterministic_v2`: 5 / 30 records
+- Gold intent accuracy: not evaluated yet because the v2 holdout intent labels are still drafts.
+
+Draft intent labels for the v2 holdout are ready for human review:
+
+- Draft packet: `reports/week2_audio_v2_holdout_intent_review_packet.jsonl`
+- Editable review file: `reports/week2_audio_v2_holdout_intent_review_commands.jsonl`
+- Readiness summary: `outputs/evaluations/week2_audio_v2_holdout_intent_review_packet_summary.json`
+- Current readiness: 30 draft records, 30 not reviewed, not ready for gold evaluation.
 
 Completed local-GPU Whisper run on the non-overlapping 30-record audio generalization batch:
 

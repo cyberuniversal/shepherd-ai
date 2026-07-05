@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-05T17:34:45.680551+00:00",
+    "manifest": "datasets\\sample_audio\\audio_v2_holdout_manifest.jsonl",
+    "source_model_name": "whisper",
+    "source_model_version": "base",
+    "source_parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-05T17:34:10.967677+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\audio_v2_holdout_manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    },
+    "source_summary": {
+      "exact_match_accuracy": 0.7333333333333333,
+      "exact_matches": 22,
+      "mean_word_error_rate": 0.048468013468013466,
+      "records": 30
+    },
+    "split_policy": "not stated"
+  },
+  "split_summaries": {
+    "test": {
+      "exact_match_accuracy": 0.8,
+      "exact_matches": 16,
+      "mean_word_error_rate": 0.02190656565656566,
+      "record_ids": [
+        "audio_v2_holdout_011",
+        "audio_v2_holdout_012",
+        "audio_v2_holdout_013",
+        "audio_v2_holdout_014",
+        "audio_v2_holdout_015",
+        "audio_v2_holdout_016",
+        "audio_v2_holdout_017",
+        "audio_v2_holdout_018",
+        "audio_v2_holdout_019",
+        "audio_v2_holdout_020",
+        "audio_v2_holdout_021",
+        "audio_v2_holdout_022",
+        "audio_v2_holdout_023",
+        "audio_v2_holdout_024",
+        "audio_v2_holdout_025",
+        "audio_v2_holdout_026",
+        "audio_v2_holdout_027",
+        "audio_v2_holdout_028",
+        "audio_v2_holdout_029",
+        "audio_v2_holdout_030"
+      ],
+      "records": 20
+    },
+    "validation": {
+      "exact_match_accuracy": 0.6,
+      "exact_matches": 6,
+      "mean_word_error_rate": 0.10159090909090909,
+      "record_ids": [
+        "audio_v2_holdout_001",
+        "audio_v2_holdout_002",
+        "audio_v2_holdout_003",
+        "audio_v2_holdout_004",
+        "audio_v2_holdout_005",
+        "audio_v2_holdout_006",
+        "audio_v2_holdout_007",
+        "audio_v2_holdout_008",
+        "audio_v2_holdout_009",
+        "audio_v2_holdout_010"
+      ],
+      "records": 10
+    }
+  }
+}

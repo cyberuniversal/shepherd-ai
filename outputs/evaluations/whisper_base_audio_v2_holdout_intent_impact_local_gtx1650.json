@@ -1,0 +1,3630 @@
+{
+  "metadata": {
+    "evaluation_note": "ASR-to-intent impact analysis only. This compares extractor outputs on human transcripts and ASR transcripts; it is not intent accuracy because no gold intent labels are used. Canonical constraint comparison currently covers simple altitude-limit phrases only.",
+    "fields": [
+      "action",
+      "count",
+      "location",
+      "target",
+      "constraints"
+    ],
+    "generated_at_utc": "2026-07-05T17:34:34.781524+00:00",
+    "manifest": "datasets\\sample_audio\\audio_v2_holdout_manifest.jsonl",
+    "model_artifacts": [
+      "outputs\\model_artifacts\\intent_nb_human_curated_v2.json"
+    ],
+    "predictions": "outputs\\evaluations\\whisper_base_audio_v2_holdout_predictions_local_gtx1650.jsonl",
+    "systems": [
+      "deterministic_v2",
+      "trained_nb_human_curated_v2"
+    ]
+  },
+  "records": [
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "before sunset",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "asr_transcript": "Inspect the generator shed for smoke before sunset.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "before sunset",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "human_transcript": "Inspect the generator shed for smoke before sunset.",
+      "id": "audio_v2_holdout_001",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 2,
+        "location": "scam the hotel driveway for stopped cars",
+        "target": null
+      },
+      "asr_transcript": "Send two drones to scam the hotel driveway for stopped cars.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "action": {
+          "asr": "send",
+          "human": "scan"
+        },
+        "location": {
+          "asr": "scam the hotel driveway for stopped cars",
+          "human": "hotel driveway"
+        },
+        "target": {
+          "asr": null,
+          "human": "stopped cars"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 2,
+        "location": "hotel driveway",
+        "target": "stopped cars"
+      },
+      "human_transcript": "Send two drones to scan the hotel driveway for stopped cars.",
+      "id": "audio_v2_holdout_002",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 2,
+        "location": "scam the hotel driveway for stopped cars",
+        "target": null
+      },
+      "normalized_field_changes": {
+        "action": {
+          "asr": "send",
+          "human": "scan"
+        },
+        "location": {
+          "asr": "scam the hotel driveway for stopped cars",
+          "human": "hotel driveway"
+        },
+        "target": {
+          "asr": null,
+          "human": "stopped cars"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 2,
+        "location": "hotel driveway",
+        "target": "stopped cars"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.09090909090909091
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "cracked pavement near the gate house"
+      },
+      "asr_transcript": "have drawn three photograph the cracked pavement near the gate house.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "count": {
+          "asr": null,
+          "human": 1
+        },
+        "target": {
+          "asr": "cracked pavement near the gate house",
+          "human": "cracked pavement near the gatehouse"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "cracked pavement near the gatehouse"
+      },
+      "human_transcript": "Have drone three photograph the cracked pavement near the gatehouse.",
+      "id": "audio_v2_holdout_003",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "cracked pavement near the gate house"
+      },
+      "normalized_field_changes": {
+        "count": {
+          "asr": null,
+          "human": 1
+        },
+        "target": {
+          "asr": "cracked pavement near the gate house",
+          "human": "cracked pavement near the gatehouse"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "cracked pavement near the gatehouse"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 3,
+      "transcript_word_error_rate": 0.3
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "asr_transcript": "Search the picnic area for a lost backpack.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "human_transcript": "Search the picnic area for a lost backpack.",
+      "id": "audio_v2_holdout_004",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "using one drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "using one drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "easter walking path"
+      },
+      "asr_transcript": "map the easter walking path using one drone.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "location": {
+          "asr": null,
+          "human": "east"
+        },
+        "target": {
+          "asr": "easter walking path",
+          "human": "eastern walking path"
+        }
+      },
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "using one drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "using one drone"
+        ],
+        "count": 1,
+        "location": "east",
+        "target": "eastern walking path"
+      },
+      "human_transcript": "Map the eastern walking path using one drone.",
+      "id": "audio_v2_holdout_005",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "using 1 drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "easter walking path"
+      },
+      "normalized_field_changes": {
+        "location": {
+          "asr": null,
+          "human": "east"
+        },
+        "target": {
+          "asr": "easter walking path",
+          "human": "eastern walking path"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "using 1 drone"
+        ],
+        "count": 1,
+        "location": "east",
+        "target": "eastern walking path"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.125
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "asr_transcript": "Return the closest drone to the control tent.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "human_transcript": "Return the closest drone to the control tent.",
+      "id": "audio_v2_holdout_006",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until the crowd clears",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "quarry out and trim",
+        "target": "quarry out and trim"
+      },
+      "asr_transcript": "Monitor the quarry out and trim until the crowd clears.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "location": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        },
+        "target": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        }
+      },
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until the crowd clears",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "courtyard entrance",
+        "target": "courtyard entrance"
+      },
+      "human_transcript": "Monitor the courtyard entrance until the crowd clears.",
+      "id": "audio_v2_holdout_007",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "quarry out and trim",
+        "target": "quarry out and trim"
+      },
+      "normalized_field_changes": {
+        "location": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        },
+        "target": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "courtyard entrance",
+        "target": "courtyard entrance"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 4,
+      "transcript_word_error_rate": 0.5
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "asr_transcript": "Capture images of the damaged light pole.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "human_transcript": "Capture images of the damaged light pole.",
+      "id": "audio_v2_holdout_008",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "without entering the marked zone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "asr_transcript": "Scan the service garage without entering the marked zone.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "without entering the marked zone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "human_transcript": "Scan the service garage without entering the marked zone.",
+      "id": "audio_v2_holdout_009",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Send all drones to hold position above the command post.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Send all drones to hold position above the command post.",
+      "id": "audio_v2_holdout_010",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "asr_transcript": "Inspect the Bicycle Racks for abandoned items.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "human_transcript": "Inspect the bicycle racks for abandoned items.",
+      "id": "audio_v2_holdout_011",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "asr_transcript": "dispatch one drone to check the northern staircase.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "human_transcript": "Dispatch one drone to check the northern staircase.",
+      "id": "audio_v2_holdout_012",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "asr_transcript": "Search the gravel path behind the library for a red suitcase.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "human_transcript": "Search the gravel path behind the library for a red suitcase.",
+      "id": "audio_v2_holdout_013",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after the buses leave",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "asr_transcript": "Survey the hotel entrance after the buses leave.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after the buses leave",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "human_transcript": "Survey the hotel entrance after the buses leave.",
+      "id": "audio_v2_holdout_014",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "asr_transcript": "Send drone 8 to monitor the backup generator.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "human_transcript": "Send drone eight to monitor the backup generator.",
+      "id": "audio_v2_holdout_015",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.125
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "asr_transcript": "Scan the food court roof for loose materials.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "human_transcript": "Scan the food court roof for loose materials.",
+      "id": "audio_v2_holdout_016",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "asr_transcript": "Use two drones to inspect the visitor bridge from both ends.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "human_transcript": "Use two drones to inspect the visitor bridge from both ends.",
+      "id": "audio_v2_holdout_017",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "asr_transcript": "Check the fountain area for water overflow.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "human_transcript": "Check the fountain area for water overflow.",
+      "id": "audio_v2_holdout_018",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "asr_transcript": "Photograph the damaged railing near the upper walkway.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "human_transcript": "Photograph the damaged railing near the upper walkway.",
+      "id": "audio_v2_holdout_019",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "asr_transcript": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "human_transcript": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "id": "audio_v2_holdout_020",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "asr_transcript": "Search the Palm Garden for signs of fire.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "human_transcript": "Search the palm garden for signs of fire.",
+      "id": "audio_v2_holdout_021",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while keeping away from the terminal doors",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "asr_transcript": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while keeping away from the terminal doors",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "human_transcript": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "id": "audio_v2_holdout_022",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "asr_transcript": "Map the storage alley and report any blocked passage.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "human_transcript": "Map the storage alley and report any blocked passage.",
+      "id": "audio_v2_holdout_023",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after it completes the fence check",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Return drone 2 after it completes the fence check.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after it completes the fence check",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Return drone two after it completes the fence check.",
+      "id": "audio_v2_holdout_024",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1111111111111111
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "asr_transcript": "Inspect the temporary stage for broken supports.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "human_transcript": "Inspect the temporary stage for broken supports.",
+      "id": "audio_v2_holdout_025",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "asr_transcript": "Send three drones to cover the north, center, and south sections.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "human_transcript": "Send three drones to cover the north, center, and south sections.",
+      "id": "audio_v2_holdout_026",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "asr_transcript": "Scan the clinic entrance for people waiting outside.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "human_transcript": "Scan the clinic entrance for people waiting outside.",
+      "id": "audio_v2_holdout_027",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until further notice",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Hold drone 4 above the roundabout until further notice.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until further notice",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Hold drone four above the roundabout until further notice.",
+      "id": "audio_v2_holdout_028",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1111111111111111
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "asr_transcript": "capture a wide photo of the overflow parking area.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "human_transcript": "Capture a wide photo of the overflow parking area.",
+      "id": "audio_v2_holdout_029",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "that outdoor seating area"
+      },
+      "asr_transcript": "Survey that outdoor seating area and return to the control tent.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "target": {
+          "asr": "that outdoor seating area",
+          "human": "outdoor seating area"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "outdoor seating area"
+      },
+      "human_transcript": "Survey the outdoor seating area and return to the control tent.",
+      "id": "audio_v2_holdout_030",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "that outdoor seating area"
+      },
+      "normalized_field_changes": {
+        "target": {
+          "asr": "that outdoor seating area",
+          "human": "outdoor seating area"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "outdoor seating area"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "test",
+      "system": "deterministic_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.09090909090909091
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "before sunset",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "asr_transcript": "Inspect the generator shed for smoke before sunset.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "before sunset",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "human_transcript": "Inspect the generator shed for smoke before sunset.",
+      "id": "audio_v2_holdout_001",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "before sunset"
+        ],
+        "count": null,
+        "location": "generator shed",
+        "target": "smoke"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 2,
+        "location": "scam the hotel driveway for stopped cars",
+        "target": null
+      },
+      "asr_transcript": "Send two drones to scam the hotel driveway for stopped cars.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "action": {
+          "asr": "send",
+          "human": "scan"
+        },
+        "location": {
+          "asr": "scam the hotel driveway for stopped cars",
+          "human": "hotel driveway"
+        },
+        "target": {
+          "asr": null,
+          "human": "stopped cars"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 2,
+        "location": "hotel driveway",
+        "target": "stopped cars"
+      },
+      "human_transcript": "Send two drones to scan the hotel driveway for stopped cars.",
+      "id": "audio_v2_holdout_002",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 2,
+        "location": "scam the hotel driveway for stopped cars",
+        "target": null
+      },
+      "normalized_field_changes": {
+        "action": {
+          "asr": "send",
+          "human": "scan"
+        },
+        "location": {
+          "asr": "scam the hotel driveway for stopped cars",
+          "human": "hotel driveway"
+        },
+        "target": {
+          "asr": null,
+          "human": "stopped cars"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 2,
+        "location": "hotel driveway",
+        "target": "stopped cars"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.09090909090909091
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "cracked pavement near the gate house"
+      },
+      "asr_transcript": "have drawn three photograph the cracked pavement near the gate house.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "count": {
+          "asr": null,
+          "human": 1
+        },
+        "target": {
+          "asr": "cracked pavement near the gate house",
+          "human": "cracked pavement near the gatehouse"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "cracked pavement near the gatehouse"
+      },
+      "human_transcript": "Have drone three photograph the cracked pavement near the gatehouse.",
+      "id": "audio_v2_holdout_003",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "cracked pavement near the gate house"
+      },
+      "normalized_field_changes": {
+        "count": {
+          "asr": null,
+          "human": 1
+        },
+        "target": {
+          "asr": "cracked pavement near the gate house",
+          "human": "cracked pavement near the gatehouse"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "cracked pavement near the gatehouse"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 3,
+      "transcript_word_error_rate": 0.3
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "asr_transcript": "Search the picnic area for a lost backpack.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "human_transcript": "Search the picnic area for a lost backpack.",
+      "id": "audio_v2_holdout_004",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "picnic area",
+        "target": "lost backpack"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "using one drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "using one drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "easter walking path"
+      },
+      "asr_transcript": "map the easter walking path using one drone.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "location": {
+          "asr": null,
+          "human": "east"
+        },
+        "target": {
+          "asr": "easter walking path",
+          "human": "eastern walking path"
+        }
+      },
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "using one drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "using one drone"
+        ],
+        "count": 1,
+        "location": "east",
+        "target": "eastern walking path"
+      },
+      "human_transcript": "Map the eastern walking path using one drone.",
+      "id": "audio_v2_holdout_005",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "using 1 drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "easter walking path"
+      },
+      "normalized_field_changes": {
+        "location": {
+          "asr": null,
+          "human": "east"
+        },
+        "target": {
+          "asr": "easter walking path",
+          "human": "eastern walking path"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "using 1 drone"
+        ],
+        "count": 1,
+        "location": "east",
+        "target": "eastern walking path"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.125
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "asr_transcript": "Return the closest drone to the control tent.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "closest drone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "human_transcript": "Return the closest drone to the control tent.",
+      "id": "audio_v2_holdout_006",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "return",
+        "constraints": [
+          "closest drone"
+        ],
+        "count": 1,
+        "location": null,
+        "target": "drones"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until the crowd clears",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "quarry out and trim",
+        "target": "quarry out and trim"
+      },
+      "asr_transcript": "Monitor the quarry out and trim until the crowd clears.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "location": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        },
+        "target": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        }
+      },
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until the crowd clears",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "courtyard entrance",
+        "target": "courtyard entrance"
+      },
+      "human_transcript": "Monitor the courtyard entrance until the crowd clears.",
+      "id": "audio_v2_holdout_007",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "quarry out and trim",
+        "target": "quarry out and trim"
+      },
+      "normalized_field_changes": {
+        "location": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        },
+        "target": {
+          "asr": "quarry out and trim",
+          "human": "courtyard entrance"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "until the crowd clears"
+        ],
+        "count": null,
+        "location": "courtyard entrance",
+        "target": "courtyard entrance"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 4,
+      "transcript_word_error_rate": 0.5
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "asr_transcript": "Capture images of the damaged light pole.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "human_transcript": "Capture images of the damaged light pole.",
+      "id": "audio_v2_holdout_008",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged light pole"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "without entering the marked zone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "asr_transcript": "Scan the service garage without entering the marked zone.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "without entering the marked zone",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "human_transcript": "Scan the service garage without entering the marked zone.",
+      "id": "audio_v2_holdout_009",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "without entering the marked zone"
+        ],
+        "count": null,
+        "location": null,
+        "target": "service garage"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Send all drones to hold position above the command post.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Send all drones to hold position above the command post.",
+      "id": "audio_v2_holdout_010",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "asr_transcript": "Inspect the Bicycle Racks for abandoned items.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "human_transcript": "Inspect the bicycle racks for abandoned items.",
+      "id": "audio_v2_holdout_011",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "bicycle racks",
+        "target": "abandoned items"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "asr_transcript": "dispatch one drone to check the northern staircase.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "human_transcript": "Dispatch one drone to check the northern staircase.",
+      "id": "audio_v2_holdout_012",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "north",
+        "target": "northern staircase"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "asr_transcript": "Search the gravel path behind the library for a red suitcase.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "human_transcript": "Search the gravel path behind the library for a red suitcase.",
+      "id": "audio_v2_holdout_013",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "gravel path behind the library",
+        "target": "red suitcase"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after the buses leave",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "asr_transcript": "Survey the hotel entrance after the buses leave.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after the buses leave",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "human_transcript": "Survey the hotel entrance after the buses leave.",
+      "id": "audio_v2_holdout_014",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after the buses leave"
+        ],
+        "count": null,
+        "location": null,
+        "target": "hotel entrance"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "asr_transcript": "Send drone 8 to monitor the backup generator.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "human_transcript": "Send drone eight to monitor the backup generator.",
+      "id": "audio_v2_holdout_015",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "backup generator"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.125
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "asr_transcript": "Scan the food court roof for loose materials.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "human_transcript": "Scan the food court roof for loose materials.",
+      "id": "audio_v2_holdout_016",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "food court roof",
+        "target": "loose materials"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "asr_transcript": "Use two drones to inspect the visitor bridge from both ends.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "human_transcript": "Use two drones to inspect the visitor bridge from both ends.",
+      "id": "audio_v2_holdout_017",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": null,
+        "target": "visitor bridge"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "asr_transcript": "Check the fountain area for water overflow.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "human_transcript": "Check the fountain area for water overflow.",
+      "id": "audio_v2_holdout_018",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "fountain area",
+        "target": "water overflow"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "asr_transcript": "Photograph the damaged railing near the upper walkway.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "human_transcript": "Photograph the damaged railing near the upper walkway.",
+      "id": "audio_v2_holdout_019",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "damaged railing near the upper walkway"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "asr_transcript": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "human_transcript": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "id": "audio_v2_holdout_020",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": null,
+        "target": "control booth"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "asr_transcript": "Search the Palm Garden for signs of fire.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "human_transcript": "Search the palm garden for signs of fire.",
+      "id": "audio_v2_holdout_021",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "search",
+        "constraints": [],
+        "count": null,
+        "location": "palm garden",
+        "target": "signs of fire"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while keeping away from the terminal doors",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "asr_transcript": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "while keeping away from the terminal doors",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "human_transcript": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "id": "audio_v2_holdout_022",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [
+          "while keeping away from the terminal doors"
+        ],
+        "count": null,
+        "location": null,
+        "target": "taxi lane"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "asr_transcript": "Map the storage alley and report any blocked passage.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "human_transcript": "Map the storage alley and report any blocked passage.",
+      "id": "audio_v2_holdout_023",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage alley"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after it completes the fence check",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Return drone 2 after it completes the fence check.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "after it completes the fence check",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Return drone two after it completes the fence check.",
+      "id": "audio_v2_holdout_024",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "after it completes the fence check"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1111111111111111
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "asr_transcript": "Inspect the temporary stage for broken supports.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "human_transcript": "Inspect the temporary stage for broken supports.",
+      "id": "audio_v2_holdout_025",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": "temporary stage",
+        "target": "broken supports"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "asr_transcript": "Send three drones to cover the north, center, and south sections.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "human_transcript": "Send three drones to cover the north, center, and south sections.",
+      "id": "audio_v2_holdout_026",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "cover the north center and south sections",
+        "target": null
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "asr_transcript": "Scan the clinic entrance for people waiting outside.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "human_transcript": "Scan the clinic entrance for people waiting outside.",
+      "id": "audio_v2_holdout_027",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": "clinic entrance",
+        "target": "people waiting outside"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until further notice",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Hold drone 4 above the roundabout until further notice.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [
+        {
+          "kind": "unparsed_constraint",
+          "notes": [
+            "no_supported_canonical_form"
+          ],
+          "parser": "constraint_normalizer_v1",
+          "relation": null,
+          "source_text": "until further notice",
+          "unit": null,
+          "value": null
+        }
+      ],
+      "human_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Hold drone four above the roundabout until further notice.",
+      "id": "audio_v2_holdout_028",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "hold",
+        "constraints": [
+          "until further notice"
+        ],
+        "count": 1,
+        "location": null,
+        "target": null
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1111111111111111
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "asr_transcript": "capture a wide photo of the overflow parking area.",
+      "canonical_constraint_changed": false,
+      "field_changes": {},
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "human_transcript": "Capture a wide photo of the overflow parking area.",
+      "id": "audio_v2_holdout_029",
+      "intent_changed": false,
+      "normalized_asr_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "normalized_field_changes": {},
+      "normalized_human_intent": {
+        "action": "capture",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "wide photo of the overflow parking area"
+      },
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_canonical_constraints": [],
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "that outdoor seating area"
+      },
+      "asr_transcript": "Survey that outdoor seating area and return to the control tent.",
+      "canonical_constraint_changed": false,
+      "field_changes": {
+        "target": {
+          "asr": "that outdoor seating area",
+          "human": "outdoor seating area"
+        }
+      },
+      "human_canonical_constraints": [],
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "outdoor seating area"
+      },
+      "human_transcript": "Survey the outdoor seating area and return to the control tent.",
+      "id": "audio_v2_holdout_030",
+      "intent_changed": true,
+      "normalized_asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "that outdoor seating area"
+      },
+      "normalized_field_changes": {
+        "target": {
+          "asr": "that outdoor seating area",
+          "human": "outdoor seating area"
+        }
+      },
+      "normalized_human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "outdoor seating area"
+      },
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "semantic_intent_changed": true,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.09090909090909091
+    }
+  ],
+  "summary": {
+    "deterministic_v2": {
+      "canonical_constraint_changed_rate": 0.0,
+      "canonical_constraint_changed_records": 0,
+      "changed_field_counts": {
+        "action": 1,
+        "count": 1,
+        "location": 3,
+        "target": 5
+      },
+      "intent_changed_rate": 0.16666666666666666,
+      "intent_changed_records": 5,
+      "normalized_changed_field_counts": {
+        "action": 1,
+        "count": 1,
+        "location": 3,
+        "target": 5
+      },
+      "normalized_word_changed_rate": 0.26666666666666666,
+      "normalized_word_changed_records": 8,
+      "raw_transcript_changed_rate": 0.4,
+      "raw_transcript_changed_records": 12,
+      "records": 30,
+      "semantic_intent_changed_rate": 0.16666666666666666,
+      "semantic_intent_changed_records": 5,
+      "split_counts": {
+        "test": {
+          "intent_changed": 1,
+          "normalized_word_changed": 4,
+          "raw_transcript_changed": 8,
+          "records": 20,
+          "semantic_intent_changed": 1
+        },
+        "validation": {
+          "intent_changed": 4,
+          "normalized_word_changed": 4,
+          "raw_transcript_changed": 4,
+          "records": 10,
+          "semantic_intent_changed": 4
+        }
+      },
+      "unchanged_canonical_constraint_when_normalized_word_changed": 8,
+      "unchanged_intent_when_normalized_word_changed": 3,
+      "unchanged_semantic_intent_when_normalized_word_changed": 3
+    },
+    "trained_nb_human_curated_v2": {
+      "canonical_constraint_changed_rate": 0.0,
+      "canonical_constraint_changed_records": 0,
+      "changed_field_counts": {
+        "action": 1,
+        "count": 1,
+        "location": 3,
+        "target": 5
+      },
+      "intent_changed_rate": 0.16666666666666666,
+      "intent_changed_records": 5,
+      "normalized_changed_field_counts": {
+        "action": 1,
+        "count": 1,
+        "location": 3,
+        "target": 5
+      },
+      "normalized_word_changed_rate": 0.26666666666666666,
+      "normalized_word_changed_records": 8,
+      "raw_transcript_changed_rate": 0.4,
+      "raw_transcript_changed_records": 12,
+      "records": 30,
+      "semantic_intent_changed_rate": 0.16666666666666666,
+      "semantic_intent_changed_records": 5,
+      "split_counts": {
+        "test": {
+          "intent_changed": 1,
+          "normalized_word_changed": 4,
+          "raw_transcript_changed": 8,
+          "records": 20,
+          "semantic_intent_changed": 1
+        },
+        "validation": {
+          "intent_changed": 4,
+          "normalized_word_changed": 4,
+          "raw_transcript_changed": 4,
+          "records": 10,
+          "semantic_intent_changed": 4
+        }
+      },
+      "unchanged_canonical_constraint_when_normalized_word_changed": 8,
+      "unchanged_intent_when_normalized_word_changed": 3,
+      "unchanged_semantic_intent_when_normalized_word_changed": 3
+    }
+  }
+}

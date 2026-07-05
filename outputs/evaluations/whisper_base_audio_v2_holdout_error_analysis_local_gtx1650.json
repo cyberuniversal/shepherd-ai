@@ -1,0 +1,219 @@
+{
+  "error_record_count": 8,
+  "error_records": [
+    {
+      "edit_distance": 4,
+      "expected": "Monitor the courtyard entrance until the crowd clears.",
+      "id": "audio_v2_holdout_007",
+      "non_equal_operations": [
+        {
+          "hypothesis": "quarry",
+          "hypothesis_index": 2,
+          "operation": "insert",
+          "reference": null,
+          "reference_index": null
+        },
+        {
+          "hypothesis": "out",
+          "hypothesis_index": 3,
+          "operation": "insert",
+          "reference": null,
+          "reference_index": null
+        },
+        {
+          "hypothesis": "and",
+          "hypothesis_index": 4,
+          "operation": "substitute",
+          "reference": "courtyard",
+          "reference_index": 2
+        },
+        {
+          "hypothesis": "trim",
+          "hypothesis_index": 5,
+          "operation": "substitute",
+          "reference": "entrance",
+          "reference_index": 3
+        }
+      ],
+      "predicted": "Monitor the quarry out and trim until the crowd clears.",
+      "word_error_rate": 0.5
+    },
+    {
+      "edit_distance": 3,
+      "expected": "Have drone three photograph the cracked pavement near the gatehouse.",
+      "id": "audio_v2_holdout_003",
+      "non_equal_operations": [
+        {
+          "hypothesis": "drawn",
+          "hypothesis_index": 1,
+          "operation": "substitute",
+          "reference": "drone",
+          "reference_index": 1
+        },
+        {
+          "hypothesis": "gate",
+          "hypothesis_index": 9,
+          "operation": "insert",
+          "reference": null,
+          "reference_index": null
+        },
+        {
+          "hypothesis": "house",
+          "hypothesis_index": 10,
+          "operation": "substitute",
+          "reference": "gatehouse",
+          "reference_index": 9
+        }
+      ],
+      "predicted": "have drawn three photograph the cracked pavement near the gate house.",
+      "word_error_rate": 0.3
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Send drone eight to monitor the backup generator.",
+      "id": "audio_v2_holdout_015",
+      "non_equal_operations": [
+        {
+          "hypothesis": "8",
+          "hypothesis_index": 2,
+          "operation": "substitute",
+          "reference": "eight",
+          "reference_index": 2
+        }
+      ],
+      "predicted": "Send drone 8 to monitor the backup generator.",
+      "word_error_rate": 0.125
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Map the eastern walking path using one drone.",
+      "id": "audio_v2_holdout_005",
+      "non_equal_operations": [
+        {
+          "hypothesis": "easter",
+          "hypothesis_index": 2,
+          "operation": "substitute",
+          "reference": "eastern",
+          "reference_index": 2
+        }
+      ],
+      "predicted": "map the easter walking path using one drone.",
+      "word_error_rate": 0.125
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Hold drone four above the roundabout until further notice.",
+      "id": "audio_v2_holdout_028",
+      "non_equal_operations": [
+        {
+          "hypothesis": "4",
+          "hypothesis_index": 2,
+          "operation": "substitute",
+          "reference": "four",
+          "reference_index": 2
+        }
+      ],
+      "predicted": "Hold drone 4 above the roundabout until further notice.",
+      "word_error_rate": 0.1111111111111111
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Return drone two after it completes the fence check.",
+      "id": "audio_v2_holdout_024",
+      "non_equal_operations": [
+        {
+          "hypothesis": "2",
+          "hypothesis_index": 2,
+          "operation": "substitute",
+          "reference": "two",
+          "reference_index": 2
+        }
+      ],
+      "predicted": "Return drone 2 after it completes the fence check.",
+      "word_error_rate": 0.1111111111111111
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Survey the outdoor seating area and return to the control tent.",
+      "id": "audio_v2_holdout_030",
+      "non_equal_operations": [
+        {
+          "hypothesis": "that",
+          "hypothesis_index": 1,
+          "operation": "substitute",
+          "reference": "the",
+          "reference_index": 1
+        }
+      ],
+      "predicted": "Survey that outdoor seating area and return to the control tent.",
+      "word_error_rate": 0.09090909090909091
+    },
+    {
+      "edit_distance": 1,
+      "expected": "Send two drones to scan the hotel driveway for stopped cars.",
+      "id": "audio_v2_holdout_002",
+      "non_equal_operations": [
+        {
+          "hypothesis": "scam",
+          "hypothesis_index": 4,
+          "operation": "substitute",
+          "reference": "scan",
+          "reference_index": 4
+        }
+      ],
+      "predicted": "Send two drones to scam the hotel driveway for stopped cars.",
+      "word_error_rate": 0.09090909090909091
+    }
+  ],
+  "metadata": {
+    "source_model_name": "whisper",
+    "source_model_version": "base",
+    "source_parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-05T17:34:10.967677+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\audio_v2_holdout_manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    },
+    "source_summary": {
+      "exact_match_accuracy": 0.7333333333333333,
+      "exact_matches": 22,
+      "mean_word_error_rate": 0.048468013468013466,
+      "records": 30
+    }
+  },
+  "operation_counts": {
+    "equal": 258,
+    "insert": 3,
+    "substitute": 10
+  },
+  "substitution_counts": {
+    "courtyard -> and": 1,
+    "drone -> drawn": 1,
+    "eastern -> easter": 1,
+    "eight -> 8": 1,
+    "entrance -> trim": 1,
+    "four -> 4": 1,
+    "gatehouse -> house": 1,
+    "scan -> scam": 1,
+    "the -> that": 1,
+    "two -> 2": 1
+  }
+}

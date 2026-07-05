@@ -1,0 +1,250 @@
+{
+  "metadata": {
+    "generated_at_utc": "2026-07-05T17:34:21.628679+00:00",
+    "metric_note": "Transcript text evaluation only; no speech model inference is run here.",
+    "model_name": "whisper",
+    "model_version": "base",
+    "parameters": {
+      "dataset_root": ".",
+      "device": "cuda",
+      "device_metadata": {
+        "checked_at_utc": "2026-07-05T17:34:10.967677+00:00",
+        "cuda_available": true,
+        "cuda_device_names": [
+          "NVIDIA GeForce GTX 1650 SUPER"
+        ],
+        "required_device_substring": "GTX"
+      },
+      "fp16": false,
+      "language": "en",
+      "manifest": "datasets\\sample_audio\\audio_v2_holdout_manifest.jsonl",
+      "model": "base",
+      "packages": {
+        "openai-whisper": "20250625",
+        "torch": "2.12.1+cu126"
+      },
+      "runtime": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    }
+  },
+  "records": [
+    {
+      "exact_match": true,
+      "expected": "Inspect the generator shed for smoke before sunset.",
+      "id": "audio_v2_holdout_001",
+      "predicted": "Inspect the generator shed for smoke before sunset.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Send two drones to scan the hotel driveway for stopped cars.",
+      "id": "audio_v2_holdout_002",
+      "predicted": "Send two drones to scam the hotel driveway for stopped cars.",
+      "word_error_rate": 0.09090909090909091
+    },
+    {
+      "exact_match": false,
+      "expected": "Have drone three photograph the cracked pavement near the gatehouse.",
+      "id": "audio_v2_holdout_003",
+      "predicted": "have drawn three photograph the cracked pavement near the gate house.",
+      "word_error_rate": 0.3
+    },
+    {
+      "exact_match": true,
+      "expected": "Search the picnic area for a lost backpack.",
+      "id": "audio_v2_holdout_004",
+      "predicted": "Search the picnic area for a lost backpack.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Map the eastern walking path using one drone.",
+      "id": "audio_v2_holdout_005",
+      "predicted": "map the easter walking path using one drone.",
+      "word_error_rate": 0.125
+    },
+    {
+      "exact_match": true,
+      "expected": "Return the closest drone to the control tent.",
+      "id": "audio_v2_holdout_006",
+      "predicted": "Return the closest drone to the control tent.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Monitor the courtyard entrance until the crowd clears.",
+      "id": "audio_v2_holdout_007",
+      "predicted": "Monitor the quarry out and trim until the crowd clears.",
+      "word_error_rate": 0.5
+    },
+    {
+      "exact_match": true,
+      "expected": "Capture images of the damaged light pole.",
+      "id": "audio_v2_holdout_008",
+      "predicted": "Capture images of the damaged light pole.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Scan the service garage without entering the marked zone.",
+      "id": "audio_v2_holdout_009",
+      "predicted": "Scan the service garage without entering the marked zone.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Send all drones to hold position above the command post.",
+      "id": "audio_v2_holdout_010",
+      "predicted": "Send all drones to hold position above the command post.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Inspect the bicycle racks for abandoned items.",
+      "id": "audio_v2_holdout_011",
+      "predicted": "Inspect the Bicycle Racks for abandoned items.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Dispatch one drone to check the northern staircase.",
+      "id": "audio_v2_holdout_012",
+      "predicted": "dispatch one drone to check the northern staircase.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Search the gravel path behind the library for a red suitcase.",
+      "id": "audio_v2_holdout_013",
+      "predicted": "Search the gravel path behind the library for a red suitcase.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Survey the hotel entrance after the buses leave.",
+      "id": "audio_v2_holdout_014",
+      "predicted": "Survey the hotel entrance after the buses leave.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Send drone eight to monitor the backup generator.",
+      "id": "audio_v2_holdout_015",
+      "predicted": "Send drone 8 to monitor the backup generator.",
+      "word_error_rate": 0.125
+    },
+    {
+      "exact_match": true,
+      "expected": "Scan the food court roof for loose materials.",
+      "id": "audio_v2_holdout_016",
+      "predicted": "Scan the food court roof for loose materials.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Use two drones to inspect the visitor bridge from both ends.",
+      "id": "audio_v2_holdout_017",
+      "predicted": "Use two drones to inspect the visitor bridge from both ends.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Check the fountain area for water overflow.",
+      "id": "audio_v2_holdout_018",
+      "predicted": "Check the fountain area for water overflow.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Photograph the damaged railing near the upper walkway.",
+      "id": "audio_v2_holdout_019",
+      "predicted": "Photograph the damaged railing near the upper walkway.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "id": "audio_v2_holdout_020",
+      "predicted": "Send the drone with the clearest camera feed to inspect the control booth.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Search the palm garden for signs of fire.",
+      "id": "audio_v2_holdout_021",
+      "predicted": "Search the Palm Garden for signs of fire.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "id": "audio_v2_holdout_022",
+      "predicted": "Monitor the taxi lane while keeping away from the terminal doors.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Map the storage alley and report any blocked passage.",
+      "id": "audio_v2_holdout_023",
+      "predicted": "Map the storage alley and report any blocked passage.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Return drone two after it completes the fence check.",
+      "id": "audio_v2_holdout_024",
+      "predicted": "Return drone 2 after it completes the fence check.",
+      "word_error_rate": 0.1111111111111111
+    },
+    {
+      "exact_match": true,
+      "expected": "Inspect the temporary stage for broken supports.",
+      "id": "audio_v2_holdout_025",
+      "predicted": "Inspect the temporary stage for broken supports.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Send three drones to cover the north, center, and south sections.",
+      "id": "audio_v2_holdout_026",
+      "predicted": "Send three drones to cover the north, center, and south sections.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": true,
+      "expected": "Scan the clinic entrance for people waiting outside.",
+      "id": "audio_v2_holdout_027",
+      "predicted": "Scan the clinic entrance for people waiting outside.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Hold drone four above the roundabout until further notice.",
+      "id": "audio_v2_holdout_028",
+      "predicted": "Hold drone 4 above the roundabout until further notice.",
+      "word_error_rate": 0.1111111111111111
+    },
+    {
+      "exact_match": true,
+      "expected": "Capture a wide photo of the overflow parking area.",
+      "id": "audio_v2_holdout_029",
+      "predicted": "capture a wide photo of the overflow parking area.",
+      "word_error_rate": 0.0
+    },
+    {
+      "exact_match": false,
+      "expected": "Survey the outdoor seating area and return to the control tent.",
+      "id": "audio_v2_holdout_030",
+      "predicted": "Survey that outdoor seating area and return to the control tent.",
+      "word_error_rate": 0.09090909090909091
+    }
+  ],
+  "summary": {
+    "exact_match_accuracy": 0.7333333333333333,
+    "exact_matches": 22,
+    "mean_word_error_rate": 0.048468013468013466,
+    "records": 30
+  }
+}

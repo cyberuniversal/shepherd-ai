@@ -114,6 +114,22 @@ Next pre-registered audio holdout:
 - Overlap blocklist: existing curated commands, human-verified spans, `datasets/sample_audio/manifest.jsonl`, and `datasets/sample_audio/audio_generalization_manifest.jsonl`.
 - Purpose: test whether `deterministic_v2` generalizes beyond the batch that motivated it.
 
+Recorded v2 holdout ASR run, July 5, 2026:
+
+- Manifest: `datasets/sample_audio/audio_v2_holdout_manifest.jsonl`.
+- Report: `reports/week2_audio_v2_holdout_asr_report.md`.
+- Environment: local Windows GPU run, not Google Colab.
+- Device: `NVIDIA GeForce GTX 1650 SUPER`.
+- Model: Whisper `base`.
+- Split: 10 validation and 20 test records.
+- Non-overlap audit: 0 overlaps with existing command, span, or audio transcript text.
+- Overall exact-match accuracy: `0.7333`.
+- Overall mean word error rate: `0.0485`.
+- Validation exact-match accuracy: `0.6000`; test exact-match accuracy: `0.8000`.
+- ASR-to-intent impact with `deterministic_v2`: 5 of 30 records changed semantic intent outputs.
+- Draft intent review packet: `reports/week2_audio_v2_holdout_intent_review_packet.jsonl`.
+- Gold intent accuracy: not evaluated yet because the v2 holdout intent labels are still drafts.
+
 Run Whisper in Colab/T4:
 
 ```powershell
