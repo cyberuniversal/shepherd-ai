@@ -70,7 +70,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json`: transcript exact-match and WER evaluation for that same local-GPU ASR run.
 - `outputs/evaluations/whisper_base_audio_error_analysis_local_gtx1650.json`: word-level error analysis for that same local-GPU ASR run.
 - `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`: train/validation/test ASR metrics for the retrospective seed-17 audio split.
-- `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`: comparison of downstream intent outputs on human transcripts versus Whisper transcripts.
+- `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`: comparison of downstream intent outputs on human transcripts versus Whisper transcripts, including raw and normalized semantic intent-change summaries.
 
 Generate the ASR error analysis with:
 

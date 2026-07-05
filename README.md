@@ -88,7 +88,7 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 
 The audio manifest now has a retrospective seed-17 split: 6 train, 2 validation, and 2 test records. The split-level summary shows validation and test WER `0.0` on two records each, while the single `fifty -> 50` substitution is in train. This is still not a final audio benchmark because the split was assigned after the first pooled ASR result existed.
 
-The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used. Current result: the `fifty -> 50` ASR substitution changes the extracted `constraints` field for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`.
+The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used. Current result: the `fifty -> 50` ASR substitution changes the raw extracted `constraints` string for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`, but the normalized semantic intent comparison treats the two constraints as equivalent.
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 
