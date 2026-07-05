@@ -74,6 +74,7 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`: intent accuracy on audio transcripts whose human transcript exactly matches a curated command-label record.
 - `outputs/evaluations/whisper_base_span_impact_local_gtx1650.json`: comparison of downstream span tagger outputs on human transcripts versus Whisper transcripts, plus human-transcript span accuracy for audio records that match human-verified span labels. This is not ASR span accuracy because no separate gold spans exist for the Whisper transcript text.
 - `outputs/evaluations/week2_status_summary.json`: compact machine-readable Week 2 scoreboard generated from the raw ASR, intent, span, and Colab/T4 token-classifier artifacts.
+- `outputs/evaluations/week2_performance_risk_audit.json`: machine-readable audit explaining why current Week 2 metrics can be high and which risks limit claim strength.
 
 Generate the ASR error analysis with:
 
@@ -109,6 +110,12 @@ Generate the Week 2 status summary with:
 
 ```powershell
 python scripts/summarize_week2_status.py --audio-evaluation outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json --intent-accuracy outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json --intent-impact outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json --hf-token-metrics outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json --hf-token-error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json --output-json outputs/evaluations/week2_status_summary.json --output-markdown reports/week2_status_summary.md
+```
+
+Generate the Week 2 performance-risk audit with:
+
+```powershell
+python scripts/audit_week2_performance_risks.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --status-summary outputs/evaluations/week2_status_summary.json --intent-model outputs/model_artifacts/intent_nb_human_curated_v2.json --output-json outputs/evaluations/week2_performance_risk_audit.json --output-markdown reports/week2_performance_risk_audit.md
 ```
 
 When applying reviewed command subsets, use `scripts/apply_span_review_commands.py` so unreviewed records are preserved. Do not use a subset command file as the only input to `scripts/rebuild_span_dataset_from_commands.py` unless replacing the whole dataset is intentional.

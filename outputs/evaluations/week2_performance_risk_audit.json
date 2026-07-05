@@ -1,0 +1,351 @@
+{
+  "dataset_profile": {
+    "audio_split_counts": {
+      "test": 2,
+      "train": 6,
+      "validation": 2
+    },
+    "command_label_sources": {
+      "assistant_curated_v1_from_user_text": 50
+    },
+    "command_split_counts": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "headline_metrics": {
+      "asr_exact_match_accuracy": 0.9,
+      "asr_mean_word_error_rate": 0.01,
+      "asr_raw_span_prediction_changed_records": 1,
+      "asr_semantic_span_prediction_changed_records": 0,
+      "audio_records": 10,
+      "canonical_constraint_changed_records": 0,
+      "colab_t4_distilbert_error_records": 6,
+      "colab_t4_distilbert_test_entity_f1": 0.7857142857142856,
+      "colab_t4_distilbert_test_entity_precision": 0.75,
+      "colab_t4_distilbert_test_entity_recall": 0.825,
+      "deterministic_asr_intent_exact_accuracy": 0.9,
+      "deterministic_human_intent_exact_accuracy": 1.0,
+      "span_nb_v1_audio_matched_human_entity_f1": 0.7323943661971831,
+      "trained_asr_intent_exact_accuracy": 0.9,
+      "trained_human_intent_exact_accuracy": 1.0
+    },
+    "intent_model_parameters": {
+      "alpha": 1.0,
+      "classifier": "multinomial_naive_bayes",
+      "feature_config": {
+        "alias_feature_weight": 3,
+        "include_alias_features": true,
+        "include_bigrams": true,
+        "include_unigrams": true
+      },
+      "use_rule_overrides": true
+    },
+    "span_sources": {
+      "manual_week2_span_annotation_v1": 50,
+      "manual_week2_span_annotation_v2": 35
+    },
+    "span_split_counts": {
+      "test": 10,
+      "train": 57,
+      "validation": 18
+    }
+  },
+  "metadata": {
+    "generated_at_utc": "2026-07-05T10:18:59.677347+00:00",
+    "note": "Performance-risk audit only. These findings explain why current Week 2 metrics can be high; they do not invalidate the artifacts, but they limit claim strength.",
+    "source_paths": {
+      "audio_manifest": "datasets\\sample_audio\\manifest.jsonl",
+      "commands": "datasets\\commands\\human_written_commands_curated_v1.jsonl",
+      "intent_model": "outputs\\model_artifacts\\intent_nb_human_curated_v2.json",
+      "spans": "datasets\\commands\\human_verified_span_commands.jsonl",
+      "status_summary": "outputs\\evaluations\\week2_status_summary.json"
+    }
+  },
+  "overlap": {
+    "audio_command_overlaps": [
+      {
+        "audio_id": "audio_001",
+        "matched_ids": [
+          "human_cmd_001",
+          "human_cmd_002"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_002",
+        "matched_ids": [
+          "human_cmd_003"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_003",
+        "matched_ids": [
+          "human_cmd_004"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "validation"
+      },
+      {
+        "audio_id": "audio_004",
+        "matched_ids": [
+          "human_cmd_005"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_005",
+        "matched_ids": [
+          "human_cmd_006"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "validation"
+      },
+      {
+        "audio_id": "audio_006",
+        "matched_ids": [
+          "human_cmd_007"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_007",
+        "matched_ids": [
+          "human_cmd_008",
+          "human_cmd_031"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "test"
+      },
+      {
+        "audio_id": "audio_008",
+        "matched_ids": [
+          "human_cmd_009",
+          "human_cmd_010"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_009",
+        "matched_ids": [
+          "human_cmd_011"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "test"
+      },
+      {
+        "audio_id": "audio_010",
+        "matched_ids": [
+          "human_cmd_012"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      }
+    ],
+    "audio_span_overlaps": [
+      {
+        "audio_id": "audio_001",
+        "matched_ids": [
+          "human_cmd_001",
+          "human_cmd_002"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_002",
+        "matched_ids": [
+          "human_cmd_003"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_003",
+        "matched_ids": [
+          "human_cmd_004"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "validation"
+      },
+      {
+        "audio_id": "audio_004",
+        "matched_ids": [
+          "human_cmd_005"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_005",
+        "matched_ids": [
+          "human_cmd_006"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "validation"
+      },
+      {
+        "audio_id": "audio_006",
+        "matched_ids": [
+          "human_cmd_007"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_007",
+        "matched_ids": [
+          "human_cmd_008",
+          "human_cmd_031"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "test"
+      },
+      {
+        "audio_id": "audio_008",
+        "matched_ids": [
+          "human_cmd_009",
+          "human_cmd_010"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      },
+      {
+        "audio_id": "audio_009",
+        "matched_ids": [
+          "human_cmd_011"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "test"
+      },
+      {
+        "audio_id": "audio_010",
+        "matched_ids": [
+          "human_cmd_012"
+        ],
+        "matched_splits": [
+          "train"
+        ],
+        "split": "train"
+      }
+    ],
+    "command_duplicate_texts_across_splits": [],
+    "span_duplicate_texts_across_splits": []
+  },
+  "risk_factors": [
+    {
+      "description": "Only 10 audio records are evaluated.",
+      "id": "small_audio_sample",
+      "severity": "high"
+    },
+    {
+      "description": "Only 50 curated intent records exist.",
+      "id": "small_intent_dataset",
+      "severity": "medium"
+    },
+    {
+      "description": "Only 85 span records exist.",
+      "id": "small_span_dataset",
+      "severity": "medium"
+    },
+    {
+      "description": "The current status summary notes a retrospective audio split, so ASR split metrics are not a clean final benchmark.",
+      "id": "retrospective_audio_split",
+      "severity": "high"
+    },
+    {
+      "description": "Every audio transcript matches at least one curated command-label record.",
+      "id": "audio_text_overlap",
+      "severity": "high"
+    },
+    {
+      "description": "Every audio transcript matches at least one human-verified span record.",
+      "id": "audio_span_overlap",
+      "severity": "medium"
+    },
+    {
+      "description": "The curated intent labels are assistant-curated from user text, not independently human-adjudicated labels.",
+      "id": "assistant_curated_intent_labels",
+      "severity": "medium"
+    },
+    {
+      "description": "The strongest intent model uses deterministic rule overrides, so its score is not a pure learned-model result.",
+      "id": "hybrid_intent_model",
+      "severity": "medium"
+    },
+    {
+      "description": "The expanded span dataset includes targeted follow-up records derived from earlier model errors.",
+      "id": "targeted_span_followup",
+      "severity": "medium"
+    }
+  ],
+  "summary": {
+    "audio_records": 10,
+    "audio_transcripts_matching_command_records": 10,
+    "audio_transcripts_matching_span_records": 10,
+    "command_duplicate_texts_across_splits": 0,
+    "command_records": 50,
+    "risk_factor_count": 9,
+    "span_duplicate_texts_across_splits": 0,
+    "span_records": 85
+  },
+  "what_would_make_the_claim_stronger": [
+    "Collect a larger pre-registered audio batch before running ASR.",
+    "Use commands that do not overlap existing training, validation, or test texts.",
+    "Preserve human labels from at least one reviewer instead of assistant-curated labels only.",
+    "Evaluate the Colab/T4 transformer checkpoint directly on human transcripts and ASR transcripts once checkpoint artifacts are restored.",
+    "Create a fresh held-out span test set after targeted follow-up data collection."
+  ],
+  "why_metrics_are_high": [
+    "The current command language is short, schema-like, and close to the known Week 2 fields.",
+    "All currently evaluated audio transcripts match commands already present in the curated text and span datasets.",
+    "The ASR sample is clean and tiny, so one substitution dominates the measured speech error.",
+    "The strongest intent model is hybrid: it uses deterministic rule overrides for action, location, target, count, and constraints.",
+    "The expanded span dataset includes targeted follow-up records derived from earlier error analysis, which can improve known failure modes.",
+    "The held-out span test split has only 10 records, so each record has large influence on F1."
+  ]
+}

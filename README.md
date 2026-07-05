@@ -264,6 +264,14 @@ python scripts/summarize_week2_status.py --audio-evaluation outputs/evaluations/
 
 The generated report is `reports/week2_status_summary.md`, with machine-readable output in `outputs/evaluations/week2_status_summary.json`.
 
+Performance-risk audit for interpreting the current high metrics:
+
+```powershell
+python scripts/audit_week2_performance_risks.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --audio-manifest datasets/sample_audio/manifest.jsonl --dataset-root . --status-summary outputs/evaluations/week2_status_summary.json --intent-model outputs/model_artifacts/intent_nb_human_curated_v2.json --output-json outputs/evaluations/week2_performance_risk_audit.json --output-markdown reports/week2_performance_risk_audit.md
+```
+
+The audit is `reports/week2_performance_risk_audit.md`, with machine-readable output in `outputs/evaluations/week2_performance_risk_audit.json`.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell
