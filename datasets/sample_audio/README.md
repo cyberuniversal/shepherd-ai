@@ -42,3 +42,4 @@ Current recorded ASR artifact set is from a local `NVIDIA GeForce GTX 1650 SUPER
 - `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`
 - `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`
 - `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`
+- `outputs/evaluations/whisper_base_span_impact_local_gtx1650.json`

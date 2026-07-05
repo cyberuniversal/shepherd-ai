@@ -81,6 +81,7 @@ Recorded local-GPU Whisper `base` ASR run, July 4, 2026:
 - Split summary: `outputs/evaluations/whisper_base_audio_split_summary_local_gtx1650.json`
 - Intent impact: `outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json`
 - Intent accuracy: `outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json`
+- Span impact: `outputs/evaluations/whisper_base_span_impact_local_gtx1650.json`
 - Device: `NVIDIA GeForce GTX 1650 SUPER`
 - Flags: `--device cuda --language en --required-device-substring GTX --no-fp16`
 - Exact-match accuracy: `0.9`
@@ -92,6 +93,8 @@ The audio manifest now has a retrospective seed-17 split: 6 train, 2 validation,
 The ASR-to-intent impact analysis compares intent outputs from human transcripts and Whisper transcripts. It is not intent accuracy because no gold audio-intent labels are used. Current result: the `fifty -> 50` ASR substitution changes the raw extracted `constraints` string for one record under both `deterministic_v1` and `trained_nb_human_curated_v2`, but the normalized semantic intent comparison treats the two constraints as equivalent.
 
 The audio-linked intent accuracy analysis reuses matching labels from `datasets/commands/human_written_commands_curated_v1.jsonl`; it does not create new gold labels. Current result on the 10 audio transcripts: human transcripts score exact-record accuracy `1.0`, and Whisper transcripts score `0.9` because the raw constraint string differs for `fifty` versus `50`.
+
+The ASR-to-span impact analysis reuses matching labels from `datasets/commands/human_verified_span_commands.jsonl` for human-transcript accuracy, then compares span tagger predictions on human transcripts versus Whisper transcripts. Current result on the 10 matched audio transcripts: human-transcript span entity F1 is `0.7324` with `span_nb_v1`; Whisper changes one raw predicted constraint entity because `fifty` becomes `50`, but number-normalized semantic span predictions are unchanged. This is not ASR span accuracy because no separate human gold spans exist for the Whisper transcript text.
 
 The current parser and transcript utilities are not trained models. A serious Week 2 implementation needs labeled command data, split definitions, and a trained or fine-tuned intent extraction component, with deterministic baselines retained for comparison.
 

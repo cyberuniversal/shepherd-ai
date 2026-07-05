@@ -1,0 +1,1186 @@
+{
+  "metadata": {
+    "evaluation_note": "ASR-to-span impact analysis. Human transcript span accuracy is computed only where the audio transcript exactly matches a human-verified span-labeled command. ASR transcript rows compare model predictions on human versus Whisper transcripts; they are not ASR span accuracy because no human gold spans exist for the ASR text. Semantic span comparison normalizes simple number-word variants such as fifty and 50.",
+    "generated_at_utc": "2026-07-05T09:57:38.853038+00:00",
+    "manifest": "datasets\\sample_audio\\manifest.jsonl",
+    "model_artifact": "outputs\\model_artifacts\\span_nb_v1.json",
+    "model_name": "span_nb_v1",
+    "model_version": "0.2",
+    "predictions": "outputs\\evaluations\\whisper_base_audio_predictions_local_gtx1650.jsonl",
+    "span_dataset": "datasets\\commands\\human_verified_span_commands.jsonl"
+  },
+  "records": [
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Send"
+        },
+        {
+          "end": 15,
+          "field": "count",
+          "start": 5,
+          "text": "two drones"
+        },
+        {
+          "end": 21,
+          "field": "location",
+          "start": 16,
+          "text": "north"
+        },
+        {
+          "end": 33,
+          "field": "action",
+          "start": 26,
+          "text": "inspect"
+        },
+        {
+          "end": 43,
+          "field": "target",
+          "start": 38,
+          "text": "crops"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Send",
+        "two",
+        "drones",
+        "north",
+        "and",
+        "inspect",
+        "the",
+        "crops",
+        "."
+      ],
+      "asr_transcript": "Send two drones north and inspect the crops.",
+      "human_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Send"
+        },
+        {
+          "end": 15,
+          "field": "count",
+          "start": 5,
+          "text": "two drones"
+        },
+        {
+          "end": 21,
+          "field": "location",
+          "start": 16,
+          "text": "north"
+        },
+        {
+          "end": 33,
+          "field": "action",
+          "start": 26,
+          "text": "inspect"
+        },
+        {
+          "end": 43,
+          "field": "target",
+          "start": 38,
+          "text": "crops"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Send",
+        "two",
+        "drones",
+        "north",
+        "and",
+        "inspect",
+        "the",
+        "crops",
+        "."
+      ],
+      "human_transcript": "Send two drones north and inspect the crops.",
+      "id": "audio_001",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_001",
+      "split": "train",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 8,
+          "field": "action",
+          "start": 0,
+          "text": "Dispatch"
+        },
+        {
+          "end": 21,
+          "field": "count",
+          "start": 9,
+          "text": "three drones"
+        },
+        {
+          "end": 30,
+          "field": "action",
+          "start": 26,
+          "text": "send"
+        },
+        {
+          "end": 41,
+          "field": "location",
+          "start": 36,
+          "text": "south"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-location",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Dispatch",
+        "three",
+        "drones",
+        "and",
+        "send",
+        "them",
+        "south",
+        "."
+      ],
+      "asr_transcript": "Dispatch three drones and send them south.",
+      "human_predicted_entities": [
+        {
+          "end": 8,
+          "field": "action",
+          "start": 0,
+          "text": "Dispatch"
+        },
+        {
+          "end": 21,
+          "field": "count",
+          "start": 9,
+          "text": "three drones"
+        },
+        {
+          "end": 30,
+          "field": "action",
+          "start": 26,
+          "text": "send"
+        },
+        {
+          "end": 41,
+          "field": "location",
+          "start": 36,
+          "text": "south"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-location",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Dispatch",
+        "three",
+        "drones",
+        "and",
+        "send",
+        "them",
+        "south",
+        "."
+      ],
+      "human_transcript": "Dispatch three drones and send them south.",
+      "id": "audio_002",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_003",
+      "split": "train",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Scan"
+        },
+        {
+          "end": 12,
+          "field": "target",
+          "start": 9,
+          "text": "car"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Scan",
+        "the",
+        "car",
+        "."
+      ],
+      "asr_transcript": "Scan the car.",
+      "human_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Scan"
+        },
+        {
+          "end": 12,
+          "field": "target",
+          "start": 9,
+          "text": "car"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Scan",
+        "the",
+        "car",
+        "."
+      ],
+      "human_transcript": "Scan the car.",
+      "id": "audio_003",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_004",
+      "split": "validation",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 5,
+          "field": "action",
+          "start": 0,
+          "text": "Check"
+        },
+        {
+          "end": 15,
+          "field": "target",
+          "start": 10,
+          "text": "field"
+        },
+        {
+          "end": 26,
+          "field": "action",
+          "start": 20,
+          "text": "return"
+        },
+        {
+          "end": 32,
+          "field": "location",
+          "start": 30,
+          "text": "me"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "O",
+        "B-action",
+        "O",
+        "B-location",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Check",
+        "the",
+        "field",
+        "and",
+        "return",
+        "to",
+        "me",
+        "."
+      ],
+      "asr_transcript": "Check the field and return to me.",
+      "human_predicted_entities": [
+        {
+          "end": 5,
+          "field": "action",
+          "start": 0,
+          "text": "Check"
+        },
+        {
+          "end": 15,
+          "field": "target",
+          "start": 10,
+          "text": "field"
+        },
+        {
+          "end": 26,
+          "field": "action",
+          "start": 20,
+          "text": "return"
+        },
+        {
+          "end": 32,
+          "field": "location",
+          "start": 30,
+          "text": "me"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "O",
+        "B-action",
+        "O",
+        "B-location",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Check",
+        "the",
+        "field",
+        "and",
+        "return",
+        "to",
+        "me",
+        "."
+      ],
+      "human_transcript": "Check the field and return to me.",
+      "id": "audio_004",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_005",
+      "split": "train",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Hold"
+        },
+        {
+          "end": 13,
+          "field": "target",
+          "start": 5,
+          "text": "position"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Hold",
+        "position",
+        "."
+      ],
+      "asr_transcript": "Hold position.",
+      "human_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Hold"
+        },
+        {
+          "end": 13,
+          "field": "target",
+          "start": 5,
+          "text": "Position"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Hold",
+        "Position",
+        "."
+      ],
+      "human_transcript": "Hold Position.",
+      "id": "audio_005",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_006",
+      "split": "validation",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [
+        [
+          "constraint",
+          "keep them below 50 meters"
+        ]
+      ],
+      "asr_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Send"
+        },
+        {
+          "end": 15,
+          "field": "count",
+          "start": 5,
+          "text": "two drones"
+        },
+        {
+          "end": 20,
+          "field": "location",
+          "start": 16,
+          "text": "west"
+        },
+        {
+          "end": 51,
+          "field": "constraint",
+          "start": 26,
+          "text": "keep them below 50 meters"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "O",
+        "B-constraint",
+        "I-constraint",
+        "I-constraint",
+        "I-constraint",
+        "I-constraint",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Send",
+        "two",
+        "drones",
+        "west",
+        ",",
+        "but",
+        "keep",
+        "them",
+        "below",
+        "50",
+        "meters",
+        "."
+      ],
+      "asr_transcript": "Send two drones west, but keep them below 50 meters.",
+      "human_predicted_entities": [
+        {
+          "end": 4,
+          "field": "action",
+          "start": 0,
+          "text": "Send"
+        },
+        {
+          "end": 15,
+          "field": "count",
+          "start": 5,
+          "text": "two drones"
+        },
+        {
+          "end": 20,
+          "field": "location",
+          "start": 16,
+          "text": "west"
+        },
+        {
+          "end": 53,
+          "field": "constraint",
+          "start": 25,
+          "text": "keep them below fifty meters"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "B-constraint",
+        "I-constraint",
+        "I-constraint",
+        "I-constraint",
+        "I-constraint",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Send",
+        "two",
+        "drones",
+        "west",
+        "but",
+        "keep",
+        "them",
+        "below",
+        "fifty",
+        "meters",
+        "."
+      ],
+      "human_transcript": "Send two drones west but keep them below fifty meters.",
+      "id": "audio_006",
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "removed_entity_signatures": [
+        [
+          "constraint",
+          "keep them below fifty meters"
+        ]
+      ],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": true,
+      "span_record_id": "human_cmd_007",
+      "split": "train",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 3,
+          "field": "action",
+          "start": 0,
+          "text": "Get"
+        },
+        {
+          "end": 21,
+          "field": "count",
+          "start": 8,
+          "text": "closest drone"
+        },
+        {
+          "end": 32,
+          "field": "action",
+          "start": 25,
+          "text": "inspect"
+        },
+        {
+          "end": 49,
+          "field": "target",
+          "start": 37,
+          "text": "storage area"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "O",
+        "I-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Get",
+        "the",
+        "closest",
+        "drone",
+        "to",
+        "inspect",
+        "the",
+        "storage",
+        "area",
+        "."
+      ],
+      "asr_transcript": "Get the closest drone to inspect the storage area.",
+      "human_predicted_entities": [
+        {
+          "end": 3,
+          "field": "action",
+          "start": 0,
+          "text": "Get"
+        },
+        {
+          "end": 21,
+          "field": "count",
+          "start": 8,
+          "text": "closest drone"
+        },
+        {
+          "end": 32,
+          "field": "action",
+          "start": 25,
+          "text": "inspect"
+        },
+        {
+          "end": 49,
+          "field": "target",
+          "start": 37,
+          "text": "storage area"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "O",
+        "I-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Get",
+        "the",
+        "closest",
+        "drone",
+        "to",
+        "inspect",
+        "the",
+        "storage",
+        "area",
+        "."
+      ],
+      "human_transcript": "Get the closest drone to inspect the storage area.",
+      "id": "audio_007",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_008",
+      "split": "test",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 7,
+          "field": "action",
+          "start": 0,
+          "text": "Inspect"
+        },
+        {
+          "end": 23,
+          "field": "target",
+          "start": 12,
+          "text": "north field"
+        },
+        {
+          "end": 38,
+          "field": "constraint",
+          "start": 24,
+          "text": "while avoiding"
+        },
+        {
+          "end": 55,
+          "field": "target",
+          "start": 43,
+          "text": "storage area"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "B-constraint",
+        "I-constraint",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Inspect",
+        "the",
+        "north",
+        "field",
+        "while",
+        "avoiding",
+        "the",
+        "storage",
+        "area",
+        "."
+      ],
+      "asr_transcript": "Inspect the north field while avoiding the storage area.",
+      "human_predicted_entities": [
+        {
+          "end": 7,
+          "field": "action",
+          "start": 0,
+          "text": "Inspect"
+        },
+        {
+          "end": 23,
+          "field": "target",
+          "start": 12,
+          "text": "north field"
+        },
+        {
+          "end": 38,
+          "field": "constraint",
+          "start": 24,
+          "text": "while avoiding"
+        },
+        {
+          "end": 55,
+          "field": "target",
+          "start": 43,
+          "text": "storage area"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "B-constraint",
+        "I-constraint",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Inspect",
+        "the",
+        "north",
+        "field",
+        "while",
+        "avoiding",
+        "the",
+        "storage",
+        "area",
+        "."
+      ],
+      "human_transcript": "Inspect the north field while avoiding the storage area.",
+      "id": "audio_008",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_009",
+      "split": "train",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 8,
+          "field": "action",
+          "start": 0,
+          "text": "Dispatch"
+        },
+        {
+          "end": 18,
+          "field": "count",
+          "start": 9,
+          "text": "one drone"
+        },
+        {
+          "end": 36,
+          "field": "target",
+          "start": 26,
+          "text": "greenhouse"
+        },
+        {
+          "end": 47,
+          "field": "action",
+          "start": 43,
+          "text": "send"
+        },
+        {
+          "end": 56,
+          "field": "count",
+          "start": 48,
+          "text": "two more"
+        },
+        {
+          "end": 64,
+          "field": "action",
+          "start": 60,
+          "text": "scan"
+        },
+        {
+          "end": 79,
+          "field": "target",
+          "start": 69,
+          "text": "west field"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "O",
+        "B-target",
+        "O",
+        "O",
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Dispatch",
+        "one",
+        "drone",
+        "to",
+        "the",
+        "greenhouse",
+        ",",
+        "then",
+        "send",
+        "two",
+        "more",
+        "to",
+        "scan",
+        "the",
+        "west",
+        "field",
+        "."
+      ],
+      "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
+      "human_predicted_entities": [
+        {
+          "end": 8,
+          "field": "action",
+          "start": 0,
+          "text": "Dispatch"
+        },
+        {
+          "end": 18,
+          "field": "count",
+          "start": 9,
+          "text": "one drone"
+        },
+        {
+          "end": 36,
+          "field": "target",
+          "start": 26,
+          "text": "greenhouse"
+        },
+        {
+          "end": 46,
+          "field": "action",
+          "start": 42,
+          "text": "send"
+        },
+        {
+          "end": 55,
+          "field": "count",
+          "start": 47,
+          "text": "two more"
+        },
+        {
+          "end": 63,
+          "field": "action",
+          "start": 59,
+          "text": "scan"
+        },
+        {
+          "end": 78,
+          "field": "target",
+          "start": 68,
+          "text": "west field"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "O",
+        "B-target",
+        "O",
+        "B-action",
+        "B-count",
+        "I-count",
+        "O",
+        "B-action",
+        "O",
+        "B-target",
+        "I-target",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Dispatch",
+        "one",
+        "drone",
+        "to",
+        "the",
+        "greenhouse",
+        "then",
+        "send",
+        "two",
+        "more",
+        "to",
+        "scan",
+        "the",
+        "west",
+        "field",
+        "."
+      ],
+      "human_transcript": "Dispatch one drone to the greenhouse then send two more to scan the west field.",
+      "id": "audio_009",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_011",
+      "split": "test",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "added_entity_signatures": [],
+      "asr_predicted_entities": [
+        {
+          "end": 5,
+          "field": "action",
+          "start": 0,
+          "text": "Bring"
+        },
+        {
+          "end": 9,
+          "field": "count",
+          "start": 6,
+          "text": "all"
+        },
+        {
+          "end": 20,
+          "field": "count",
+          "start": 14,
+          "text": "drones"
+        },
+        {
+          "end": 25,
+          "field": "location",
+          "start": 21,
+          "text": "back"
+        }
+      ],
+      "asr_predicted_tags": [
+        "B-action",
+        "B-count",
+        "O",
+        "I-count",
+        "B-location",
+        "O"
+      ],
+      "asr_predicted_tokens": [
+        "Bring",
+        "all",
+        "the",
+        "drones",
+        "back",
+        "."
+      ],
+      "asr_transcript": "Bring all the drones back.",
+      "human_predicted_entities": [
+        {
+          "end": 5,
+          "field": "action",
+          "start": 0,
+          "text": "Bring"
+        },
+        {
+          "end": 9,
+          "field": "count",
+          "start": 6,
+          "text": "all"
+        },
+        {
+          "end": 20,
+          "field": "count",
+          "start": 14,
+          "text": "drones"
+        },
+        {
+          "end": 25,
+          "field": "location",
+          "start": 21,
+          "text": "back"
+        }
+      ],
+      "human_predicted_tags": [
+        "B-action",
+        "B-count",
+        "O",
+        "I-count",
+        "B-location",
+        "O"
+      ],
+      "human_predicted_tokens": [
+        "Bring",
+        "all",
+        "the",
+        "drones",
+        "back",
+        "."
+      ],
+      "human_transcript": "Bring all the drones back.",
+      "id": "audio_010",
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "removed_entity_signatures": [],
+      "semantic_added_entity_signatures": [],
+      "semantic_removed_entity_signatures": [],
+      "semantic_span_prediction_changed": false,
+      "span_prediction_changed": false,
+      "span_record_id": "human_cmd_012",
+      "split": "train",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    }
+  ],
+  "summary": {
+    "ambiguous_audio_ids": [],
+    "changed_entity_field_counts": {
+      "constraint": 2
+    },
+    "evaluated_records": 10,
+    "human_transcript_span_accuracy": {
+      "entity_f1": 0.7323943661971831,
+      "entity_precision": 0.65,
+      "entity_recall": 0.8387096774193549,
+      "expected_entities": 31,
+      "matched_entities": 26,
+      "predicted_entities": 40,
+      "records": 10,
+      "token_accuracy": 0.8470588235294118,
+      "token_matches": 72,
+      "tokens": 85
+    },
+    "matched_audio_records": 10,
+    "normalized_word_changed_rate": 0.1,
+    "normalized_word_changed_records": 1,
+    "raw_transcript_changed_rate": 0.3,
+    "raw_transcript_changed_records": 3,
+    "semantic_changed_entity_field_counts": {},
+    "semantic_span_prediction_changed_rate": 0.0,
+    "semantic_span_prediction_changed_records": 0,
+    "span_prediction_changed_rate": 0.1,
+    "span_prediction_changed_records": 1,
+    "split_counts": {
+      "test": {
+        "raw_transcript_changed": 1,
+        "records": 2
+      },
+      "train": {
+        "normalized_word_changed": 1,
+        "raw_transcript_changed": 1,
+        "records": 6,
+        "span_prediction_changed": 1
+      },
+      "validation": {
+        "raw_transcript_changed": 1,
+        "records": 2
+      }
+    },
+    "unchanged_semantic_span_prediction_when_normalized_word_changed": 1,
+    "unchanged_span_prediction_when_normalized_word_changed": 0,
+    "unmatched_audio_ids": []
+  }
+}
