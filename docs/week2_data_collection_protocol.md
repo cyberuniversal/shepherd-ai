@@ -192,6 +192,18 @@ python scripts/audit_week2_audio_generalization_manifest.py `
   --fail-on-overlap
 ```
 
+After ASR evaluation, create a draft intent-label packet for human review:
+
+```powershell
+python scripts/create_week2_audio_intent_review_packet.py `
+  --manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
+  --dataset-root . `
+  --jsonl-output reports/week2_audio_generalization_intent_review_packet.jsonl `
+  --markdown-output reports/week2_audio_generalization_intent_review_packet.md
+```
+
+This packet contains parser drafts only. Correct the JSONL fields, change `review_status` to `human_reviewed`, and change `data_type` to `human_verified_audio_intent_command` before using it for intent accuracy.
+
 The command examples above are workflow examples only. Do not commit `human_written_commands.jsonl`, `manifest.jsonl`, or audio files unless the records are real, provenance is documented, and privacy/licensing requirements are satisfied.
 
 ## Research Integrity Rules

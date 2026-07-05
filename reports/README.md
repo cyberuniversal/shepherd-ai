@@ -16,3 +16,4 @@ Current generated reports:
 - `week2_performance_risk_audit.md`: claim-strength audit explaining why current Week 2 metrics can be high. Regenerate it with `scripts/audit_week2_performance_risks.py`.
 - `week2_audio_generalization_packet.md`: blank pre-registration worksheet for collecting a future non-overlapping audio validation/test batch. Regenerate it with `scripts/create_week2_audio_generalization_packet.py`.
 - `week2_audio_generalization_asr_report.md`: report for the completed 30-record non-overlapping local-GPU Whisper ASR run.
+- `week2_audio_generalization_intent_review_packet.md`: draft intent-label review packet for the 30-record audio generalization batch. Regenerate it with `scripts/create_week2_audio_intent_review_packet.py`.

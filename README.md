@@ -295,6 +295,14 @@ Completed local-GPU Whisper run on the non-overlapping 30-record audio generaliz
 - Downstream semantic intent changes: 7 of 30 records
 - Important caveat: this is local GTX, not Colab/T4, and it is ASR-to-intent impact rather than gold intent accuracy.
 
+Create draft intent labels for human review before reporting gold intent accuracy on the new audio batch:
+
+```powershell
+python scripts/create_week2_audio_intent_review_packet.py --manifest datasets/sample_audio/audio_generalization_manifest.jsonl --dataset-root . --jsonl-output reports/week2_audio_generalization_intent_review_packet.jsonl --markdown-output reports/week2_audio_generalization_intent_review_packet.md
+```
+
+The current review packet is `reports/week2_audio_generalization_intent_review_packet.md`. It has 30 draft labels, all marked `needs_human_review`; do not use them for training or accuracy reporting until corrected and marked as reviewed.
+
 After training, run record-level transformer evaluation and BIO error analysis in the same Colab T4 runtime:
 
 ```powershell
