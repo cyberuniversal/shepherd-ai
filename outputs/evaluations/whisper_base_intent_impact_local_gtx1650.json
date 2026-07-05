@@ -1,0 +1,658 @@
+{
+  "metadata": {
+    "evaluation_note": "ASR-to-intent impact analysis only. This compares extractor outputs on human transcripts and ASR transcripts; it is not intent accuracy because no gold intent labels are used.",
+    "fields": [
+      "action",
+      "count",
+      "location",
+      "target",
+      "constraints"
+    ],
+    "generated_at_utc": "2026-07-05T05:55:12.089094+00:00",
+    "manifest": "datasets\\sample_audio\\manifest.jsonl",
+    "model_artifacts": [
+      "outputs\\model_artifacts\\intent_nb_human_curated_v2.json"
+    ],
+    "predictions": "outputs\\evaluations\\whisper_base_audio_predictions_local_gtx1650.jsonl",
+    "systems": [
+      "deterministic_v1",
+      "trained_nb_human_curated_v2"
+    ]
+  },
+  "records": [
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "asr_transcript": "Send two drones north and inspect the crops.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "human_transcript": "Send two drones north and inspect the crops.",
+      "id": "audio_001",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "south",
+        "target": null
+      },
+      "asr_transcript": "Dispatch three drones and send them south.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "south",
+        "target": null
+      },
+      "human_transcript": "Dispatch three drones and send them south.",
+      "id": "audio_002",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "car"
+      },
+      "asr_transcript": "Scan the car.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "car"
+      },
+      "human_transcript": "Scan the car.",
+      "id": "audio_003",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "validation",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "field"
+      },
+      "asr_transcript": "Check the field and return to me.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "field"
+      },
+      "human_transcript": "Check the field and return to me.",
+      "id": "audio_004",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Hold position.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Hold Position.",
+      "id": "audio_005",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "split": "validation",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "send",
+        "constraints": [
+          "keep them below 50 meters"
+        ],
+        "count": 2,
+        "location": "west",
+        "target": null
+      },
+      "asr_transcript": "Send two drones west, but keep them below 50 meters.",
+      "field_changes": {
+        "constraints": {
+          "asr": [
+            "keep them below 50 meters"
+          ],
+          "human": [
+            "keep them below fifty meters"
+          ]
+        }
+      },
+      "human_intent": {
+        "action": "send",
+        "constraints": [
+          "keep them below fifty meters"
+        ],
+        "count": 2,
+        "location": "west",
+        "target": null
+      },
+      "human_transcript": "Send two drones west but keep them below fifty meters.",
+      "id": "audio_006",
+      "intent_changed": true,
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage area"
+      },
+      "asr_transcript": "Get the closest drone to inspect the storage area.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage area"
+      },
+      "human_transcript": "Get the closest drone to inspect the storage area.",
+      "id": "audio_007",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "test",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "while avoiding the storage area"
+        ],
+        "count": null,
+        "location": "north",
+        "target": "storage area"
+      },
+      "asr_transcript": "Inspect the north field while avoiding the storage area.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "while avoiding the storage area"
+        ],
+        "count": null,
+        "location": "north",
+        "target": "storage area"
+      },
+      "human_transcript": "Inspect the north field while avoiding the storage area.",
+      "id": "audio_008",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 3,
+        "location": "west",
+        "target": "greenhouse"
+      },
+      "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 3,
+        "location": "west",
+        "target": "greenhouse"
+      },
+      "human_transcript": "Dispatch one drone to the greenhouse then send two more to scan the west field.",
+      "id": "audio_009",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "split": "test",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": null,
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Bring all the drones back.",
+      "field_changes": {},
+      "human_intent": {
+        "action": null,
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Bring all the drones back.",
+      "id": "audio_010",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "deterministic_v1",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "asr_transcript": "Send two drones north and inspect the crops.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "human_transcript": "Send two drones north and inspect the crops.",
+      "id": "audio_001",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "south",
+        "target": null
+      },
+      "asr_transcript": "Dispatch three drones and send them south.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 3,
+        "location": "south",
+        "target": null
+      },
+      "human_transcript": "Dispatch three drones and send them south.",
+      "id": "audio_002",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "car"
+      },
+      "asr_transcript": "Scan the car.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "car"
+      },
+      "human_transcript": "Scan the car.",
+      "id": "audio_003",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "field"
+      },
+      "asr_transcript": "Check the field and return to me.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "field"
+      },
+      "human_transcript": "Check the field and return to me.",
+      "id": "audio_004",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Hold position.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "hold",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Hold Position.",
+      "id": "audio_005",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "split": "validation",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "send",
+        "constraints": [
+          "keep them below 50 meters"
+        ],
+        "count": 2,
+        "location": "west",
+        "target": null
+      },
+      "asr_transcript": "Send two drones west, but keep them below 50 meters.",
+      "field_changes": {
+        "constraints": {
+          "asr": [
+            "keep them below 50 meters"
+          ],
+          "human": [
+            "keep them below fifty meters"
+          ]
+        }
+      },
+      "human_intent": {
+        "action": "send",
+        "constraints": [
+          "keep them below fifty meters"
+        ],
+        "count": 2,
+        "location": "west",
+        "target": null
+      },
+      "human_transcript": "Send two drones west but keep them below fifty meters.",
+      "id": "audio_006",
+      "intent_changed": true,
+      "normalized_word_changed": true,
+      "raw_transcript_changed": true,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 1,
+      "transcript_word_error_rate": 0.1
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage area"
+      },
+      "asr_transcript": "Get the closest drone to inspect the storage area.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": null,
+        "location": null,
+        "target": "storage area"
+      },
+      "human_transcript": "Get the closest drone to inspect the storage area.",
+      "id": "audio_007",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "inspect",
+        "constraints": [
+          "while avoiding the storage area"
+        ],
+        "count": null,
+        "location": "north",
+        "target": "storage area"
+      },
+      "asr_transcript": "Inspect the north field while avoiding the storage area.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "inspect",
+        "constraints": [
+          "while avoiding the storage area"
+        ],
+        "count": null,
+        "location": "north",
+        "target": "storage area"
+      },
+      "human_transcript": "Inspect the north field while avoiding the storage area.",
+      "id": "audio_008",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 3,
+        "location": "west",
+        "target": "greenhouse"
+      },
+      "asr_transcript": "Dispatch one drone to the greenhouse, then send two more to scan the west field.",
+      "field_changes": {},
+      "human_intent": {
+        "action": "scan",
+        "constraints": [],
+        "count": 3,
+        "location": "west",
+        "target": "greenhouse"
+      },
+      "human_transcript": "Dispatch one drone to the greenhouse then send two more to scan the west field.",
+      "id": "audio_009",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": true,
+      "split": "test",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    },
+    {
+      "asr_intent": {
+        "action": null,
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "asr_transcript": "Bring all the drones back.",
+      "field_changes": {},
+      "human_intent": {
+        "action": null,
+        "constraints": [],
+        "count": "all",
+        "location": null,
+        "target": null
+      },
+      "human_transcript": "Bring all the drones back.",
+      "id": "audio_010",
+      "intent_changed": false,
+      "normalized_word_changed": false,
+      "raw_transcript_changed": false,
+      "split": "train",
+      "system": "trained_nb_human_curated_v2",
+      "transcript_edit_distance": 0,
+      "transcript_word_error_rate": 0.0
+    }
+  ],
+  "summary": {
+    "deterministic_v1": {
+      "changed_field_counts": {
+        "constraints": 1
+      },
+      "intent_changed_rate": 0.1,
+      "intent_changed_records": 1,
+      "normalized_word_changed_rate": 0.1,
+      "normalized_word_changed_records": 1,
+      "raw_transcript_changed_rate": 0.3,
+      "raw_transcript_changed_records": 3,
+      "records": 10,
+      "split_counts": {
+        "test": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        },
+        "train": {
+          "intent_changed": 1,
+          "normalized_word_changed": 1,
+          "raw_transcript_changed": 1,
+          "records": 6
+        },
+        "validation": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        }
+      },
+      "unchanged_intent_when_normalized_word_changed": 0
+    },
+    "trained_nb_human_curated_v2": {
+      "changed_field_counts": {
+        "constraints": 1
+      },
+      "intent_changed_rate": 0.1,
+      "intent_changed_records": 1,
+      "normalized_word_changed_rate": 0.1,
+      "normalized_word_changed_records": 1,
+      "raw_transcript_changed_rate": 0.3,
+      "raw_transcript_changed_records": 3,
+      "records": 10,
+      "split_counts": {
+        "test": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        },
+        "train": {
+          "intent_changed": 1,
+          "normalized_word_changed": 1,
+          "raw_transcript_changed": 1,
+          "records": 6
+        },
+        "validation": {
+          "raw_transcript_changed": 1,
+          "records": 2
+        }
+      },
+      "unchanged_intent_when_normalized_word_changed": 0
+    }
+  }
+}

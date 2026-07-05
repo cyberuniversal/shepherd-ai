@@ -36,6 +36,7 @@ TARGET_STOP_MARKERS: tuple[str, ...] = (
     "avoid",
     "using",
     "then",
+    "below",
 )
 
 ACTION_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
@@ -299,6 +300,12 @@ def _extract_constraints(text: str) -> list[str]:
     constraints: list[str] = []
     if _contains_word_or_phrase(text, "highest battery") or _contains_word_or_phrase(text, "most battery"):
         constraints.append("highest battery")
+    for match in re.finditer(r"\bkeep\s+(?:them|the\s+drones|drones)\s+below\s+([a-z0-9-]+)\s+(?:meters|metres)\b", text):
+        constraints.append(f"keep them below {match.group(1)} meters")
+    for match in re.finditer(r"\bbelow\s+([a-z0-9-]+)\s+(?:meters|metres)\b", text):
+        altitude_constraint = f"below {match.group(1)} meters"
+        if not any(altitude_constraint in constraint for constraint in constraints):
+            constraints.append(altitude_constraint)
     split_match = re.search(r"\bsplit\s+(.+?)\s+into\s+(.+?)(?:\s+and\b|$)", text)
     if split_match:
         constraints.append(f"split {split_match.group(1).strip()} into {split_match.group(2).strip()}")

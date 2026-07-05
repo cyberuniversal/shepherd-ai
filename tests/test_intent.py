@@ -159,6 +159,16 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(intent.target, "loading dock")
         self.assertEqual(intent.constraints, ["without crossing the road"])
 
+    def test_altitude_limit_constraint_is_preserved(self) -> None:
+        spoken = parse_intent("Send two drones west but keep them below fifty meters.")
+        digit = parse_intent("Send two drones west, but keep them below 50 meters.")
+        target_altitude = parse_intent("Send two drones to inspect the tower below forty meters.")
+
+        self.assertEqual(spoken.constraints, ["keep them below fifty meters"])
+        self.assertEqual(digit.constraints, ["keep them below 50 meters"])
+        self.assertEqual(target_altitude.target, "tower")
+        self.assertEqual(target_altitude.constraints, ["below forty meters"])
+
 
 if __name__ == "__main__":
     unittest.main()
