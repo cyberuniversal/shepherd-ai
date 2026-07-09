@@ -251,6 +251,49 @@ The current draft packet intentionally fails this check. After applying a fully 
 
 The command examples above are workflow examples only. Do not commit `human_written_commands.jsonl`, `manifest.jsonl`, or audio files unless the records are real, provenance is documented, and privacy/licensing requirements are satisfied.
 
+## Deterministic V3 Follow-Up Holdout
+
+The `deterministic_v3` parser was revised after inspecting the v2 holdout. Its same-holdout result is useful development feedback, but it is not a clean generalization benchmark. Use the pre-registered v3 packet for the next fresh evaluation:
+
+```powershell
+python scripts/create_week2_audio_generalization_packet.py `
+  --commands datasets/commands/human_written_commands_curated_v1.jsonl `
+  --spans datasets/commands/human_verified_span_commands.jsonl `
+  --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl `
+  --dataset-root . `
+  --jsonl-output reports/week2_audio_v3_holdout_packet.jsonl `
+  --markdown-output reports/week2_audio_v3_holdout_packet.md `
+  --validation-count 10 `
+  --test-count 20 `
+  --record-prefix audio_v3_holdout `
+  --source manual_week2_audio_v3_holdout_v1
+```
+
+Current v3 packet:
+
+- Packet: `reports/week2_audio_v3_holdout_packet.jsonl`
+- Human-readable worksheet: `reports/week2_audio_v3_holdout_packet.md`
+- Slots: 30 blank slots, 10 validation and 20 test.
+- Existing normalized texts blocked for overlap: 141.
+- Status: no records collected yet.
+
+After filling a future `datasets/sample_audio/audio_v3_holdout_manifest.jsonl`, audit it before ASR:
+
+```powershell
+python scripts/audit_week2_audio_generalization_manifest.py `
+  --candidate-manifest datasets/sample_audio/audio_v3_holdout_manifest.jsonl `
+  --commands datasets/commands/human_written_commands_curated_v1.jsonl `
+  --spans datasets/commands/human_verified_span_commands.jsonl `
+  --existing-audio-manifest datasets/sample_audio/manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl `
+  --existing-audio-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl `
+  --dataset-root . `
+  --output outputs/evaluations/week2_audio_v3_holdout_manifest_audit.json `
+  --fail-on-overlap
+```
+
 ## Research Integrity Rules
 
 - Keep synthetic, human-written, human-recorded, and ASR-generated records distinguishable.

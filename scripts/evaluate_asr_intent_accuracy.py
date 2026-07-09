@@ -35,6 +35,20 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Optional saved trained intent model JSON. May be passed more than once.",
     )
+    parser.add_argument(
+        "--documented-negative-system",
+        action="append",
+        default=[],
+        help=(
+            "Optional system name to include as a documented negative-result path. "
+            "This records coverage for a required path without fabricating metrics."
+        ),
+    )
+    parser.add_argument(
+        "--documented-negative-note",
+        default="not evaluated on this fresh audio manifest; prior negative result is preserved separately",
+        help="Note attached to documented negative-result systems.",
+    )
     return parser.parse_args()
 
 
@@ -49,6 +63,8 @@ def main() -> None:
         predictions=predictions,
         gold_index=gold_index,
         systems=systems,
+        documented_negative_systems=args.documented_negative_system,
+        documented_negative_note=args.documented_negative_note,
     )
     evaluation["metadata"]["manifest"] = args.manifest
     evaluation["metadata"]["predictions"] = args.predictions
@@ -112,6 +128,8 @@ def evaluate_audio_intent_accuracy(
     predictions: list[dict[str, Any]],
     gold_index: dict[str, dict[str, Any]],
     systems: dict[str, Predictor],
+    documented_negative_systems: list[str] | None = None,
+    documented_negative_note: str = "not evaluated on this fresh audio manifest",
 ) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     unmatched_audio_ids: list[str] = []
@@ -152,6 +170,8 @@ def evaluate_audio_intent_accuracy(
                     }
                 )
 
+    evaluated_systems = list(systems)
+    negative_systems = list(documented_negative_systems or [])
     return {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -161,10 +181,30 @@ def evaluate_audio_intent_accuracy(
                 "evaluation."
             ),
             "fields": list(EVAL_FIELDS),
-            "systems": list(systems),
+            "evaluated_systems": evaluated_systems,
+            "documented_negative_systems": negative_systems,
+            "systems": [*evaluated_systems, *negative_systems],
             "unmatched_audio_ids": unmatched_audio_ids,
         },
-        "summary": _summarize(rows),
+        "systems": [*evaluated_systems, *negative_systems],
+        "results_by_system": _summarize(rows),
+        "documented_negative_results": {
+            system: {
+                "records": len(manifest_records),
+                "evaluated": False,
+                "exact_record_accuracy": None,
+                "field_accuracy": None,
+                "note": documented_negative_note,
+            }
+            for system in negative_systems
+        },
+        "summary": {
+            "records": len({row["id"] for row in rows}),
+            "evaluated_record_rows": len(rows),
+            "evaluated_systems": evaluated_systems,
+            "documented_negative_systems": negative_systems,
+            **_summarize(rows),
+        },
         "records": rows,
     }
 

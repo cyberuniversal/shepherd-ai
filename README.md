@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains project source documents, typed-command intent baselines, supervised span extraction baselines, a Colab/T4 DistilBERT token-classifier workflow, and a speech-input scaffold with a Whisper transcription script. It is not an end-to-end prototype, does not control physical drones, and does not yet implement grounding, planning, scheduling, vision, safety validation, or integrated mission execution.
+Current status: this repository contains project source documents, typed-command intent baselines, supervised span extraction baselines, a Colab/T4 DistilBERT token-classifier workflow, a speech-input scaffold with a Whisper transcription script, a deterministic Week 3 grounding slice over a synthetic map dataset, and an initial deterministic Week 4 mission-planning slice. It is not an end-to-end prototype, does not control physical drones, and does not yet implement multi-drone scheduling, vision, safety validation, or integrated mission execution.
 
 ## Project Rule
 
@@ -25,6 +25,12 @@ The current source of truth is:
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`
 - `docs/week2_span_annotation.md`
+- `docs/week3_grounding.md`
+- `docs/week4_mission_planning.md`
+- `docs/week4_acceptance_criteria.md`
+- `docs/week4_research_deferrals.md`
+- `docs/roadmap_status.md`
+- `docs/repository_hygiene.md`
 
 The roadmap path is `docs/roadmap.pdf`; there is currently no `docs/roadmap/` directory.
 
@@ -53,11 +59,318 @@ Dataset and artifact locations:
 - `outputs/`
 - `reports/`
 
+GitHub hygiene: source code, tests, docs, notebooks, and small curated fixtures
+are tracked. Generated `outputs/` and `reports/` are ignored by default unless a
+specific artifact is deliberately promoted. See `docs/repository_hygiene.md`.
+Roadmap-to-repository mapping is tracked in `docs/roadmap_status.md`.
+
+## Week 3 Grounding
+
+The initial grounding slice maps `deterministic_v3` intent JSON into explicit synthetic map records. It uses exact normalized map names and aliases, and returns structured `grounded`, `ambiguous`, `unresolved`, or `not_provided` statuses for location, target, and map references inside parsed constraints. It also renders a Folium HTML map for inspection. It does not use learned semantic grounding, image retrieval, routing, planning, or safety validation.
+
+The map schema now includes circular-region metadata for `map_role`, `flyable`, and `requires_clearance`. Those fields prepare grounded records for later planner and safety modules, but they are not a safety validator.
+
+The map loader supports CSV and a limited GeoJSON format. Current GeoJSON support covers `FeatureCollection` files containing `Point` features with `radius_m` properties and basic `Polygon` exterior rings. Polygon holes, multipolygons, and route/safety geometry are not implemented.
+
+Run one grounding example:
+
+Validate the map dataset:
+
+```powershell
+python scripts/validate_map_dataset.py --map datasets/maps/shepherd_test_map_v1.csv --json-output outputs/evaluations/map_validation_shepherd_test_map_v1.json --markdown-output reports/week3_map_validation_report.md
+```
+
+Validate the synthetic region GeoJSON map:
+
+```powershell
+python scripts/validate_map_dataset.py --map datasets/maps/shepherd_test_map_regions_v1.geojson --json-output outputs/evaluations/map_validation_shepherd_test_map_regions_v1.json --markdown-output reports/week3_region_geojson_map_validation_report.md
+```
+
+Run one grounding example:
+
+```powershell
+python scripts/ground_intent.py --command "Send two drones north and inspect the crops." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/grounded_intent_example.json
+```
+
+Create clarification reports for blocked grounding:
+
+```powershell
+python scripts/create_grounding_clarification_report.py --command "Monitor the road until the ambulance arrives." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/grounding_clarification_ambiguous_road.json
+python scripts/create_grounding_clarification_report.py --command "Capture images of the red pickup truck." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/grounding_clarification_unresolved_pickup.json
+```
+
+Apply explicit operator choices to an ambiguous grounding artifact:
+
+```powershell
+python scripts/apply_grounding_clarification.py --grounded-json outputs/evaluations/grounding_clarification_ambiguous_road.json --map datasets/maps/shepherd_test_map_v1.csv --choice location=loc_service_road --choice target=loc_service_road --output outputs/evaluations/grounding_resolution_ambiguous_road_service_road.json
+```
+
+Summarize Week 3 grounding status:
+
+```powershell
+python scripts/summarize_week3_grounding_status.py --map-validation outputs/evaluations/map_validation_shepherd_test_map_v1.json --grounding-evaluation outputs/evaluations/grounding_examples_v1.json --grounding-evaluation outputs/evaluations/grounding_diagnostics_v1.json --grounding-evaluation outputs/evaluations/grounding_holdout_synthetic_v1.json --clarification-report outputs/evaluations/grounding_clarification_ambiguous_road.json --clarification-report outputs/evaluations/grounding_clarification_unresolved_pickup.json --applied-resolution outputs/evaluations/grounding_resolution_ambiguous_road_service_road.json --output-json outputs/evaluations/week3_grounding_status.json --output-markdown reports/week3_grounding_status.md
+```
+
+Run the synthetic development smoke evaluation:
+
+```powershell
+python scripts/evaluate_grounding.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_examples_v1.jsonl --output outputs/evaluations/grounding_examples_v1.json
+```
+
+Validate the synthetic development grounding labels:
+
+```powershell
+python scripts/validate_grounding_dataset.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_examples_v1.jsonl --summary-output outputs/evaluations/grounding_examples_v1_validation.json
+```
+
+Render the current map and highlighted grounded command:
+
+```powershell
+python scripts/render_grounding_map.py --map datasets/maps/shepherd_test_map_v1.csv --command "Send two drones north and inspect the crops." --output outputs/maps/shepherd_test_map_v1_grounded_example.html
+```
+
+Render the synthetic region GeoJSON polygon example:
+
+```powershell
+python scripts/render_grounding_map.py --map datasets/maps/shepherd_test_map_regions_v1.geojson --command "Inspect the polygon zone." --output outputs/maps/shepherd_test_map_regions_v1_polygon_example.html
+```
+
+Run the diagnostic failure-mode set:
+
+```powershell
+python scripts/evaluate_grounding.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_diagnostics_v1.jsonl --output outputs/evaluations/grounding_diagnostics_v1.json
+```
+
+Validate the diagnostic grounding labels:
+
+```powershell
+python scripts/validate_grounding_dataset.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_diagnostics_v1.jsonl --summary-output outputs/evaluations/grounding_diagnostics_v1_validation.json
+```
+
+Run the larger synthetic holdout-style set:
+
+```powershell
+python scripts/evaluate_grounding.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_holdout_synthetic_v1.jsonl --output outputs/evaluations/grounding_holdout_synthetic_v1.json
+```
+
+Validate the synthetic holdout-style grounding labels:
+
+```powershell
+python scripts/validate_grounding_dataset.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_holdout_synthetic_v1.jsonl --summary-output outputs/evaluations/grounding_holdout_synthetic_v1_validation.json
+```
+
+Audit synthetic map coverage across all current grounding datasets:
+
+```powershell
+python scripts/audit_grounding_coverage.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/grounding_examples_v1.jsonl --dataset datasets/maps/grounding_diagnostics_v1.jsonl --dataset datasets/maps/grounding_holdout_synthetic_v1.jsonl --json-output outputs/evaluations/grounding_map_coverage_v1.json --markdown-output reports/week3_grounding_map_coverage.md
+```
+
+Audit Week 3 completion gates:
+
+```powershell
+python scripts/audit_week3_completion.py --map-validation outputs/evaluations/map_validation_shepherd_test_map_v1.json --region-map-validation outputs/evaluations/map_validation_shepherd_test_map_regions_v1.json --grounding-evaluation outputs/evaluations/grounding_examples_v1.json --grounding-evaluation outputs/evaluations/grounding_diagnostics_v1.json --grounding-evaluation outputs/evaluations/grounding_holdout_synthetic_v1.json --grounding-dataset-validation outputs/evaluations/grounding_examples_v1_validation.json --grounding-dataset-validation outputs/evaluations/grounding_diagnostics_v1_validation.json --grounding-dataset-validation outputs/evaluations/grounding_holdout_synthetic_v1_validation.json --coverage-report outputs/evaluations/grounding_map_coverage_v1.json --week3-status outputs/evaluations/week3_grounding_status.json --acceptance-criteria docs/week3_acceptance_criteria.json --research-deferrals docs/week3_research_deferrals.json --json-output outputs/evaluations/week3_completion_gate_audit.json --markdown-output reports/week3_completion_gate_audit.md
+```
+
+Create the blank human-collection packet for the remaining Week 3 grounding benchmark gate:
+
+```powershell
+python scripts/create_week3_human_grounding_packet.py --map datasets/maps/shepherd_test_map_v1.csv --jsonl-output reports/week3_human_grounding_packet.jsonl --markdown-output reports/week3_human_grounding_packet.md
+```
+
+This packet creates 22 blank slots: one for each main synthetic map record, one ambiguous `road` slot, and one unresolved-object slot. It is a collection worksheet only. It must not be moved into `datasets/maps/` or treated as benchmark evidence until a human fills every `text` field and the completed JSONL passes grounding-dataset validation and evaluation.
+
+After the packet is human-filled, finalize it into a dataset:
+
+```powershell
+python scripts/finalize_week3_human_grounding_packet.py --packet reports/week3_human_grounding_packet.jsonl --output datasets/maps/human_grounding_benchmark_v1.jsonl
+```
+
+The finalizer fails on blank `text` fields and writes records with `data_type` set to `human_written_grounding_benchmark`. The resulting dataset still must be validated and evaluated before the Week 3 completion audit can accept it.
+
+Create a constraint-grounding example:
+
+```powershell
+python scripts/ground_intent.py --command "Inspect the greenhouse and avoid the power lines." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/grounded_intent_constraint_example.json
+```
+
+Create a polygon-grounding example:
+
+```powershell
+python scripts/ground_intent.py --command "Inspect the polygon zone." --map datasets/maps/shepherd_test_map_regions_v1.geojson --output outputs/evaluations/grounded_intent_polygon_example.json
+```
+
+Current smoke-check result: 6 / 6 exact records and 12 / 12 reference matches on `datasets/maps/grounding_examples_v1.jsonl`. This is not real-world grounding accuracy; it only verifies the current synthetic map, examples, parser, and exact-alias grounder are internally consistent.
+
+Current diagnostic result: 5 / 5 exact records and 10 / 10 reference matches on `datasets/maps/grounding_diagnostics_v1.jsonl`. This checks expected `ambiguous`, `unresolved`, `not_provided`, and restricted-area metadata behavior; it is not held-out research evidence.
+
+Current synthetic holdout-style result: 20 / 20 exact records and 44 / 44 reference matches on `datasets/maps/grounding_holdout_synthetic_v1.jsonl`. This is still synthetic evidence over the same custom map, not real-world grounding accuracy.
+
+Current grounding dataset validation outputs: `outputs/evaluations/grounding_examples_v1_validation.json`, `outputs/evaluations/grounding_diagnostics_v1_validation.json`, and `outputs/evaluations/grounding_holdout_synthetic_v1_validation.json`. These validate record IDs, splits, provenance fields, expected statuses, map IDs, and ambiguous candidate IDs.
+
+Current grounding coverage output: `reports/week3_grounding_map_coverage.md` and `outputs/evaluations/grounding_map_coverage_v1.json`. Across the current synthetic development, diagnostic, and holdout-style datasets, the report shows 31 dataset records, 66 expected references, 20 / 20 synthetic map records covered, and 0 coverage warnings. This is synthetic coverage, not real-world accuracy.
+
+Current Week 3 acceptance criteria: `docs/week3_acceptance_criteria.md` and `docs/week3_acceptance_criteria.json`. These define the synthetic Week 3 gate only; they are not real-world grounding thresholds.
+
+Current Week 3 deferrals: `docs/week3_research_deferrals.md` and `docs/week3_research_deferrals.json`. Real/public map provenance is explicitly deferred for Week 3 because the roadmap uses a custom simulation map; this does not permit real-world grounding claims.
+
+Current Week 3 human benchmark protocol: `docs/week3_human_grounding_benchmark_protocol.md`. The filled packet is `reports/week3_human_grounding_packet.jsonl` and `reports/week3_human_grounding_packet.md`; the finalized benchmark dataset is `datasets/maps/human_grounding_benchmark_v1.jsonl`.
+
+Current Week 3 human benchmark outputs: `outputs/evaluations/human_grounding_benchmark_v1_validation.json` and `outputs/evaluations/human_grounding_benchmark_v1.json`. Current result: 22 / 22 exact records and 22 / 22 reference matches. This is human-written command evidence over the custom synthetic map, not real-world map evidence.
+
+Current Week 3 completion-gate output: `reports/week3_completion_gate_audit.md` and `outputs/evaluations/week3_completion_gate_audit.json`. The synthetic roadmap gates, synthetic acceptance thresholds, real/public map deferral, and human-written grounding benchmark gate now pass; advancement is currently `true`.
+
+Current map-rendering outputs include `outputs/maps/shepherd_test_map_v1_grounded_example.html`, `outputs/maps/shepherd_test_map_v1_ambiguous_road.html`, and `outputs/maps/shepherd_test_map_v1_restricted_area.html`. These are inspection artifacts, not evaluation metrics.
+
+Current map validation output: `reports/week3_map_validation_report.md` and `outputs/evaluations/map_validation_shepherd_test_map_v1.json`. The report currently shows 20 map records, 1 restricted record, 1 obstacle record, and 1 expected warning for ambiguous aliases.
+
+Current synthetic region GeoJSON validation output: `reports/week3_region_geojson_map_validation_report.md` and `outputs/evaluations/map_validation_shepherd_test_map_regions_v1.json`. The report currently shows 3 map records, 2 polygon records, 1 circle record, 1 restricted record, and 0 warnings.
+
+Current clarification outputs: `outputs/evaluations/grounding_clarification_ambiguous_road.json` and `outputs/evaluations/grounding_clarification_unresolved_pickup.json`. These are operator-facing review artifacts, not planner execution.
+
+Current applied-clarification output: `outputs/evaluations/grounding_resolution_ambiguous_road_service_road.json`. This records explicit operator choices and preserves the original command text.
+
+Current Week 3 status output: `reports/week3_grounding_status.md` and `outputs/evaluations/week3_grounding_status.json`. It is now treated as a synthetic development-readiness artifact, not permission to move weeks.
+
+Current Week 3 completion audit: `docs/week3_completion_audit.md`. The audit says Week 3 is complete enough to move to Week 4 under the current custom synthetic-map scope.
+
+## Week 4 Mission Planning
+
+The initial Week 4 slice converts grounded Week 3 outputs into inspectable task sequences and explicit NetworkX-backed dependency graphs. It is deterministic and does not schedule drones, optimize routes, execute simulation, run the actual Week 6 vision model, or validate safety. Observation commands explicitly include the roadmap sequence: takeoff, fly-to, capture images, plan a downstream vision-model task, save results, and return. Commands with grounded constraints include a `review_constraints` step before takeoff, and restricted or clearance-related map metadata is preserved as planner issues for later safety work.
+
+Plan one command:
+
+```powershell
+python scripts/plan_mission.py --command "Scan the crops in the north field." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/week4_plan_north_field_example.json
+```
+
+Create a blocked plan for ambiguous grounding:
+
+```powershell
+python scripts/plan_mission.py --command "Check if there is any traffic on the road." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/week4_plan_ambiguous_road_blocked.json
+```
+
+Create a constrained plan that carries obstacle metadata forward:
+
+```powershell
+python scripts/plan_mission.py --command "Inspect the greenhouse and avoid the power lines." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/evaluations/week4_plan_constraint_greenhouse_power_lines.json
+```
+
+Evaluate the planner over the human-written Week 3 grounding benchmark:
+
+```powershell
+python scripts/evaluate_mission_planning.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/human_grounding_benchmark_v1.jsonl --output outputs/evaluations/week4_planning_human_grounding_benchmark_v1.json
+```
+
+Evaluate focused Week 4 planning cases:
+
+```powershell
+python scripts/evaluate_mission_planning.py --map datasets/maps/shepherd_test_map_v1.csv --dataset datasets/maps/week4_planning_cases_v1.jsonl --output outputs/evaluations/week4_planning_cases_v1.json
+```
+
+Render a mission-flow diagram:
+
+```powershell
+python scripts/render_mission_flow.py --command "Scan the crops in the north field." --map datasets/maps/shepherd_test_map_v1.csv --output outputs/diagrams/week4_plan_north_field_flow.md
+```
+
+Audit Week 4 completion gates:
+
+```powershell
+python scripts/audit_week4_completion.py --human-planning-evaluation outputs/evaluations/week4_planning_human_grounding_benchmark_v1.json --focused-planning-evaluation outputs/evaluations/week4_planning_cases_v1.json --flow-diagram outputs/diagrams/week4_plan_north_field_flow.md --acceptance-criteria docs/week4_acceptance_criteria.json --research-deferrals docs/week4_research_deferrals.json --json-output outputs/evaluations/week4_completion_gate_audit.json --markdown-output reports/week4_completion_gate_audit.md
+```
+
+Current Week 4 planning output:
+
+- Example plan: `outputs/evaluations/week4_plan_north_field_example.json`
+- Blocked ambiguous-road plan: `outputs/evaluations/week4_plan_ambiguous_road_blocked.json`
+- Constraint example plan: `outputs/evaluations/week4_plan_constraint_greenhouse_power_lines.json`
+- Mission-flow diagram: `outputs/diagrams/week4_plan_north_field_flow.md`
+- Planning evaluation: `outputs/evaluations/week4_planning_human_grounding_benchmark_v1.json`
+- Focused planning-case evaluation: `outputs/evaluations/week4_planning_cases_v1.json`
+- Completion gate audit: `outputs/evaluations/week4_completion_gate_audit.json` and `reports/week4_completion_gate_audit.md`
+- Human grounding benchmark result: 22 records, 20 planned, 2 blocked, 22 / 22 expected plan-status matches, 22 / 22 required action matches, 22 / 22 required issue matches, and 22 / 22 valid plan contracts.
+- Focused planning-case result: 7 records, 5 planned, 2 blocked, 7 / 7 expected plan-status matches, 7 / 7 required action matches, 7 / 7 required issue matches, and 7 / 7 valid plan contracts.
+- Week 4 completion audit result: advancement allowed is `true`; decision is `week4_complete_for_advancement_to_week5_scheduling`; blockers: none. The stricter audit checks that the scan plan includes `takeoff`, `fly_to`, `capture_images`, `run_vision_model`, `save_observation_results`, and `return_to_launch_area`, and that a Mermaid flow diagram exists.
+- Required caveat: this is high-level mission planning over grounded synthetic-map commands. It is not scheduling, actual computer-vision inference, execution, route feasibility, or safety validation.
+
+## Week 5 Multi-Drone Scheduling
+
+The Week 5 slice allocates Week 4 planned tasks across a simulated three-drone fleet and compares deterministic assignment strategies. It uses classical scheduling baselines, not LLM assignment, and keeps scheduling separate from route optimization, safety validation, mission execution, and physical-drone control.
+
+Run the default scheduling simulation:
+
+```powershell
+python scripts/schedule_missions.py
+```
+
+Audit Week 5 completion gates:
+
+```powershell
+python scripts/audit_week5_completion.py
+```
+
+Current Week 5 outputs:
+
+- Strategy comparison JSON: `outputs/evaluations/week5_schedule_comparison_v1.json`
+- Assignment report: `reports/week5_schedule_comparison_v1.md`
+- Assignment CSV table: `outputs/tables/week5_assignments_least_loaded.csv`
+- Allocation visualization: `outputs/visualizations/week5_drone_allocation_least_loaded.html`
+- Completion gate audit: `outputs/evaluations/week5_completion_gate_audit.json` and `reports/week5_completion_gate_audit.md`
+- Scheduler notebook: `notebooks/Notebook5_Scheduler.ipynb`
+
+Current default example status: six schedulable tasks are assigned across three simulated drones, with no unassigned tasks. The compared strategies are `round_robin`, `least_loaded`, and `nearest_available`. The current synthetic example selects `least_loaded` as best by makespan, tied with `nearest_available`; this is not a general task-allocation claim.
+
+## Week 6 Computer Vision Foundation
+
+The Week 6 foundation validates licensed aerial-image manifests and provides a YOLO inference runner. It does not yet include a selected public aerial dataset, committed image subset, labels, mAP evaluation, or mission-level vision result.
+
+Validate a manifest after adding real image records:
+
+```powershell
+python scripts/validate_vision_manifest.py --manifest datasets/aerial_images/manifest.jsonl --dataset-root . --summary-output outputs/evaluations/week6_vision_manifest_summary.json
+```
+
+Install optional vision dependencies and run YOLO:
+
+```powershell
+python -m pip install -e .[vision]
+python scripts/run_yolo_detection.py --manifest datasets/aerial_images/manifest.jsonl --dataset-root . --model yolov8n.pt --predictions-output outputs/evaluations/week6_yolo_detections.jsonl --summary-output outputs/evaluations/week6_yolo_detection_summary.json --annotated-dir outputs/visualizations/week6_yolo
+```
+
+Required caveat: detection counts are not detection performance. Do not report mAP, precision, recall, or mission success until labeled data, split definitions, and an evaluation protocol exist.
+
 ## First Milestone
 
 The first implemented milestone is a typed-command intent extraction baseline from Week 2 of the roadmap. It accepts simple typed mission commands and emits JSON fields aligned with the roadmap: `action`, `count`, `location`, `target`, and `constraints`.
 
 Audio model evaluation is separate from text intent extraction. The repository has 10 self-recorded WAV command records under `datasets/sample_audio/`. A local-GPU Whisper ASR result has been recorded, but a Colab/T4 ASR result has not, because the WAV files are intentionally not tracked in the public GitHub repository.
+
+Current corrective status: Week 2 is not research-complete. The repository now has a Week 2 completion gate that blocks advancement until a clean post-development benchmark exists.
+
+Run the Week 2 completion audit:
+
+```powershell
+python scripts/audit_week2_completion.py
+```
+
+Create the blank post-development audio packet:
+
+```powershell
+python scripts/create_week2_audio_generalization_packet.py --commands datasets/commands/human_written_commands_curated_v1.jsonl --spans datasets/commands/human_verified_span_commands.jsonl --existing-audio-manifest datasets/sample_audio/manifest.jsonl --existing-audio-manifest datasets/sample_audio/audio_generalization_manifest.jsonl --existing-audio-manifest datasets/sample_audio/audio_v2_holdout_manifest.jsonl --dataset-root . --jsonl-output reports/week2_post_development_audio_packet.jsonl --markdown-output reports/week2_post_development_audio_packet.md --record-prefix audio_postdev --source manual_week2_post_development_audio_v1 --validation-count 10 --test-count 20
+```
+
+After filling the packet and placing WAV files at the packet paths, build the manifest:
+
+```powershell
+python scripts/build_audio_manifest_from_packet.py --packet reports/week2_post_development_audio_packet.jsonl --dataset-root . --manifest-output datasets/sample_audio/audio_post_development_manifest.jsonl --summary-output outputs/evaluations/audio_post_development_manifest_summary.json
+```
+
+Current Week 2 completion blockers:
+
+- Fresh post-development manifest non-overlap audit is missing.
+- Fresh audio-intent labels are not yet human-reviewed.
+- Fresh ASR evaluation is missing.
+- Fresh intent evaluation across competing systems is missing.
 
 ## Speech Input Scaffold
 
@@ -256,10 +569,85 @@ Completed expanded 85-record Colab/T4 DistilBERT retrain, July 4, 2026:
 
 This is the strongest Week 2 text-command span result so far, but it is not an ASR result and not end-to-end mission performance.
 
+Evaluate whether token-classifier spans assemble into the roadmap intent JSON fields:
+
+```powershell
+python scripts/evaluate_span_intent_assembly.py --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_intent_assembly.json
+```
+
+Current span-to-intent assembly result:
+
+- Report: `reports/week2_span_intent_assembly_report.md`
+- Output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_intent_assembly.json`
+- Exact assembled-intent accuracy: 5 / 10 = 0.5000
+- Field accuracy: 43 / 50 = 0.8600
+- Field errors: `constraints`: 4, `location`: 2, `target`: 1
+- Predicted intents with deterministic validation warnings: 4 / 10
+- Validation warnings: `missing_expected_location`: 3, `suspicious_short_constraint`: 1
+- Path comparison output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_intent_path_comparison.json`
+- On the same span-derived benchmark, `deterministic_v3` scores 1 / 10 exact and 0.5800 field accuracy, `span_intent_assembly` scores 5 / 10 exact and 0.8600 field accuracy, and post-hoc `hybrid_span_parser` scores 10 / 10 exact and 1.0000 field accuracy.
+- This is a span-schema comparison, not audio-intent accuracy. The hybrid result was developed after inspecting the same 10 span-test errors, so treat it as Week 2 development evidence, not a clean generalization benchmark. It shows that the trained token classifier is useful, but that trained spans still need deterministic assembly and validation before later grounding or planning modules consume them.
+
+Measure whether ASR transcript differences change span-assembled intent JSON:
+
+```powershell
+python scripts/analyze_asr_span_intent_impact.py --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json --output outputs/evaluations/whisper_base_span_intent_impact_local_gtx1650.json
+```
+
+Current ASR span-to-intent impact result on the 10-record local audio sample:
+
+- Output: `outputs/evaluations/whisper_base_span_intent_impact_local_gtx1650.json`
+- `span_intent_assembly`: 1 / 10 intent changes from human transcript to Whisper transcript
+- `hybrid_span_parser`: 1 / 10 intent changes from human transcript to Whisper transcript
+- The changed record is a raw constraint-string difference: `below fifty meters` versus `below 50 meters`. This is impact analysis, not gold ASR intent accuracy.
+
+Run the saved Colab/T4 transformer checkpoint directly on transcript records:
+
+```powershell
+python scripts/predict_hf_token_classifier_transcripts.py --input-jsonl outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 --transcript-field expected_transcript --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_human_transcript_predictions.json --required-device-substring T4
+python scripts/predict_hf_token_classifier_transcripts.py --input-jsonl outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 --transcript-field predicted_transcript --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_asr_transcript_predictions.json --required-device-substring T4
+```
+
+The checkpoint directory is intentionally ignored by git because it contains generated model weights. These commands must be run in the same Colab/T4 environment after training or after restoring the checkpoint directory into `outputs/model_artifacts/`.
+
+Imported checkpoint and transcript-intent evaluation, July 6, 2026:
+
+- Downloaded checkpoint zip: `D:\Users\momoa\Downloads\hf_token_classifier_distilbert_colab_t4_expanded85.zip`
+- Imported checkpoint directory: `outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85`
+- Report: `reports/week2_transformer_transcript_intent_report.md`
+- Human/reference transcript intent evaluation on `audio_v2_holdout`: `deterministic_v3` exact accuracy 30 / 30 = 1.0000, `hybrid_span_parser` 6 / 30 = 0.2000, `span_intent_assembly` 5 / 30 = 0.1667.
+- ASR/Whisper transcript intent evaluation on `audio_v2_holdout`: `deterministic_v3` exact accuracy 27 / 30 = 0.9000, `hybrid_span_parser` 5 / 30 = 0.1667, `span_intent_assembly` 4 / 30 = 0.1333.
+- Interpretation: the imported transformer span model is not currently competitive with the deterministic parser for final intent JSON on this audio-linked benchmark. This is a useful negative result and a target for improving span-to-intent assembly, not evidence that training was useless.
+- Error analysis: `reports/week2_transformer_transcript_intent_error_analysis.md`
+- Human span-remediation worksheet: `reports/week2_audio_v2_span_remediation_packet.md`; this has blank spans and is not gold data until reviewed.
+
+Week 2 to Week 3 NLP handoff:
+
+- Handoff report: `reports/week2_to_week3_nlp_handoff.md`
+- Machine-readable handoff: `outputs/evaluations/week2_to_week3_nlp_handoff.json`
+- Provisional Week 3 input path: `deterministic_v3` intent JSON.
+- Required caveat: this is a development handoff, not a claim that Week 2 NLP is solved or that `deterministic_v3` has clean final benchmark evidence.
+
+Package the trained checkpoint for download from Colab:
+
+```powershell
+python scripts/package_hf_checkpoint.py --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 --output-zip /content/hf_token_classifier_distilbert_colab_t4_expanded85.zip --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_validation_metrics.json --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json
+```
+
+Then download `/content/hf_token_classifier_distilbert_colab_t4_expanded85.zip` from the Colab Files pane. The zip should contain `hf_token_classifier_distilbert_colab_t4_expanded85/model.safetensors`, `config.json`, tokenizer files, and `checkpoint_manifest.json`.
+
+Import the downloaded checkpoint zip locally:
+
+```powershell
+python scripts/import_hf_checkpoint.py --checkpoint-zip D:\Users\momoa\Downloads\hf_token_classifier_distilbert_colab_t4_expanded85.zip --output-dir outputs/model_artifacts --expected-name hf_token_classifier_distilbert_colab_t4_expanded85 --overwrite
+```
+
+Do not pass the downloaded `.ipynb` or `.py` notebook export to this command; those files confirm the run and metrics but do not contain model weights.
+
 Current Week 2 status summary:
 
 ```powershell
-python scripts/summarize_week2_status.py --audio-evaluation outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json --intent-accuracy outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json --intent-impact outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json --hf-token-metrics outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json --hf-token-error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json --output-json outputs/evaluations/week2_status_summary.json --output-markdown reports/week2_status_summary.md
+python scripts/summarize_week2_status.py --audio-evaluation outputs/evaluations/whisper_base_audio_evaluation_local_gtx1650.json --intent-accuracy outputs/evaluations/whisper_base_intent_accuracy_local_gtx1650.json --intent-impact outputs/evaluations/whisper_base_intent_impact_local_gtx1650.json --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json --hf-token-metrics outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json --hf-token-error-analysis outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json --span-intent-comparison outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_intent_path_comparison.json --asr-span-intent-impact outputs/evaluations/whisper_base_span_intent_impact_local_gtx1650.json --hf-transcript-human-intent-accuracy outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_intent_accuracy.json --hf-transcript-asr-intent-accuracy outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_asr_transcript_intent_accuracy.json --output-json outputs/evaluations/week2_status_summary.json --output-markdown reports/week2_status_summary.md
 ```
 
 The generated report is `reports/week2_status_summary.md`, with machine-readable output in `outputs/evaluations/week2_status_summary.json`.
@@ -295,14 +683,30 @@ Completed local-GPU Whisper run on the fresh v2 audio holdout:
 - Validation exact transcript accuracy: 6 / 10 = 0.6000
 - Test exact transcript accuracy: 16 / 20 = 0.8000
 - ASR-to-intent semantic changes with `deterministic_v2`: 5 / 30 records
-- Gold intent accuracy: not evaluated yet because the v2 holdout intent labels are still drafts.
+- Human-reviewed intent labels: `datasets/commands/audio_v2_holdout_human_verified_intents.jsonl`
+- Human-reviewed label summary: `outputs/evaluations/audio_v2_holdout_human_verified_intents_summary.json`
+- Human-reviewed intent accuracy: `outputs/evaluations/whisper_base_audio_v2_holdout_intent_accuracy_human_verified_local_gtx1650.json`
+- `deterministic_v2` exact intent accuracy: 16 / 30 = 0.5333 on human transcripts; 14 / 30 = 0.4667 on Whisper transcripts
+- `trained_nb_human_curated_v2` exact intent accuracy: 16 / 30 = 0.5333 on human transcripts; 14 / 30 = 0.4667 on Whisper transcripts
+- Post-hoc `deterministic_v3` development accuracy: `outputs/evaluations/whisper_base_audio_v2_holdout_intent_accuracy_human_verified_v3_local_gtx1650.json`
+- `deterministic_v3` exact intent accuracy on the same reviewed holdout: 30 / 30 = 1.0000 on human transcripts; 27 / 30 = 0.9000 on Whisper transcripts
+- Caveat: the `deterministic_v3` result is same-holdout parser development after error inspection, not a clean generalization benchmark.
 
-Draft intent labels for the v2 holdout are ready for human review:
+The v2 holdout intent labels were applied from the human-reviewed command file:
 
 - Draft packet: `reports/week2_audio_v2_holdout_intent_review_packet.jsonl`
 - Editable review file: `reports/week2_audio_v2_holdout_intent_review_commands.jsonl`
-- Readiness summary: `outputs/evaluations/week2_audio_v2_holdout_intent_review_packet_summary.json`
-- Current readiness: 30 draft records, 30 not reviewed, not ready for gold evaluation.
+- Applied labels: `datasets/commands/audio_v2_holdout_human_verified_intents.jsonl`
+- Current readiness: 30 reviewed records, 0 draft records, ready for gold evaluation.
+
+Pre-registered follow-up packet for clean `deterministic_v3` validation:
+
+- Packet: `reports/week2_audio_v3_holdout_packet.jsonl`
+- Worksheet: `reports/week2_audio_v3_holdout_packet.md`
+- Slots: 30 blank slots, 10 validation and 20 test
+- Source for future records: `manual_week2_audio_v3_holdout_v1`
+- Existing normalized texts blocked for overlap: 141
+- Current status: no audio, transcripts, ASR output, intent labels, or evaluation result exists for this packet yet.
 
 Completed local-GPU Whisper run on the non-overlapping 30-record audio generalization batch:
 

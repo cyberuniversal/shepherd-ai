@@ -51,7 +51,7 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(payload["action"], "scan")
         self.assertEqual(payload["location"], "west")
         self.assertEqual(payload["target"], "field")
-        self.assertEqual(payload["parser"], "deterministic_v2")
+        self.assertEqual(payload["parser"], "deterministic_v3")
 
     def test_empty_command_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
@@ -230,6 +230,53 @@ class IntentParserTests(unittest.TestCase):
         self.assertEqual(divided.count, 3)
         self.assertEqual(divided.target, "campus")
         self.assertEqual(divided.constraints, ["divide the campus into separate search areas"])
+
+    def test_audio_v2_holdout_reviewed_error_patterns(self) -> None:
+        cracked_pavement = parse_intent("Have drone three photograph the cracked pavement near the gatehouse.")
+        mapped_path = parse_intent("Map the eastern walking path using one drone.")
+        closest_return = parse_intent("Return the closest drone to the control tent.")
+        held_command_post = parse_intent("Send all drones to hold position above the command post.")
+        both_ends = parse_intent("Use two drones to inspect the visitor bridge from both ends.")
+        clearest_feed = parse_intent("Send the drone with the clearest camera feed to inspect the control booth.")
+        taxi_lane = parse_intent("Monitor the taxi lane while keeping away from the terminal doors.")
+        return_after_check = parse_intent("Return drone two after it completes the fence check.")
+        covered_sections = parse_intent("Send three drones to cover the north, center, and south sections.")
+        wide_photo = parse_intent("Capture a wide photo of the overflow parking area.")
+
+        self.assertEqual(cracked_pavement.location, "gatehouse")
+        self.assertEqual(cracked_pavement.target, "cracked pavement")
+        self.assertEqual(mapped_path.action, "scan")
+        self.assertEqual(mapped_path.constraints, [])
+        self.assertEqual(closest_return.action, "return")
+        self.assertEqual(closest_return.location, "control tent")
+        self.assertEqual(closest_return.target, "drones")
+        self.assertEqual(held_command_post.location, "command post")
+        self.assertEqual(both_ends.constraints, ["from both ends"])
+        self.assertEqual(clearest_feed.constraints, ["drone with the clearest camera feed"])
+        self.assertEqual(taxi_lane.location, "taxi lane")
+        self.assertEqual(taxi_lane.target, "taxi lane")
+        self.assertEqual(return_after_check.action, "return")
+        self.assertEqual(return_after_check.target, "drones")
+        self.assertEqual(covered_sections.location, "north, center, and south sections")
+        self.assertEqual(wide_photo.target, "overflow parking area")
+        self.assertEqual(wide_photo.constraints, ["wide photo"])
+
+    def test_week3_human_grounding_command_patterns(self) -> None:
+        looking = parse_intent("Look for blocked paths on the east field.")
+        checking = parse_intent("Check if there is any traffic on the road.")
+        holding = parse_intent("Stay above the command post.")
+        returning = parse_intent("Return all drones to the launch area.")
+
+        self.assertEqual(looking.action, "inspect")
+        self.assertEqual(looking.location, "east")
+        self.assertEqual(looking.target, "blocked paths on the east field")
+        self.assertEqual(checking.action, "inspect")
+        self.assertEqual(checking.target, "traffic on the road")
+        self.assertEqual(holding.action, "hold")
+        self.assertEqual(holding.location, "command post")
+        self.assertEqual(returning.action, "return")
+        self.assertEqual(returning.location, "launch area")
+        self.assertEqual(returning.target, "drones")
 
 
 if __name__ == "__main__":

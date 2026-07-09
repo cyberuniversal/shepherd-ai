@@ -76,7 +76,7 @@ class TrainIntentModelCliTests(unittest.TestCase):
         self.assertEqual(metrics["summary"]["field_error_counts"], {})
         self.assertEqual(validation["metadata"]["split"], "validation")
         self.assertEqual(validation["summary"]["records"], 4)
-        self.assertIn("deterministic_v2", comparison["systems"])
+        self.assertIn("deterministic_v3", comparison["systems"])
         self.assertIn("trained_nb_v1", comparison["systems"])
 
 

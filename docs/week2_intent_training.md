@@ -490,11 +490,178 @@ Expanded 85-record Colab/T4 retrain, July 4, 2026:
 
 Interpretation: the expanded-dataset transformer retrain is the strongest Week 2 slot-extraction result so far. Held-out test entity F1 improved from 0.6047 to 0.7857 after adding the 35 targeted follow-up span records. This is still not a solved intent extractor: the held-out test split has only 10 records, the result is text-command-only, and ASR/Whisper performance is still not evaluated.
 
+### Span-To-Intent Assembly
+
+The roadmap requires intent JSON fields, not only BIO tags. To measure whether the trained span extractor can support that interface, run:
+
+```powershell
+python scripts/evaluate_span_intent_assembly.py `
+  --evaluation outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json `
+  --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_span_intent_assembly.json
+```
+
+Current result:
+
+- Report: `reports/week2_span_intent_assembly_report.md`.
+- Records: 10 held-out test commands.
+- Exact assembled-intent accuracy: 5 / 10 = 0.5000.
+- Field accuracy: 43 / 50 = 0.8600.
+- Field errors: `constraints`: 4, `location`: 2, `target`: 1.
+- Predicted intents with deterministic validation warnings: 4 / 10.
+- Validation warnings: `missing_expected_location`: 3, `suspicious_short_constraint`: 1.
+- Path comparison output: `outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_intent_path_comparison.json`.
+- On the same span-derived benchmark, `deterministic_v3` scores 1 / 10 exact and 0.5800 field accuracy, `span_intent_assembly` scores 5 / 10 exact and 0.8600 field accuracy, and post-hoc `hybrid_span_parser` scores 10 / 10 exact and 1.0000 field accuracy.
+
+Interpretation: the trained span model preserves much of the structure, but location, target, and constraint boundary errors still prevent reliable JSON intent assembly. The conservative hybrid shows why the training was useful: the trained route captures schema fields that the deterministic parser misses on this benchmark, while deterministic validation can filter or repair some bad model spans. Because the hybrid was developed after inspecting these same 10 span-test errors, the 10 / 10 result is development evidence only, not a clean final benchmark. This supports keeping deterministic validation between NLP output and later grounding/planning modules.
+
+### ASR Span-To-Intent Impact
+
+The local audio artifacts can also be used to measure whether Whisper transcript differences change span-assembled intent JSON:
+
+```powershell
+python scripts/analyze_asr_span_intent_impact.py `
+  --span-impact outputs/evaluations/whisper_base_span_impact_local_gtx1650.json `
+  --output outputs/evaluations/whisper_base_span_intent_impact_local_gtx1650.json
+```
+
+Current result on the 10-record local audio sample:
+
+- Output: `outputs/evaluations/whisper_base_span_intent_impact_local_gtx1650.json`.
+- `span_intent_assembly`: 1 / 10 intent changes from human transcript to Whisper transcript.
+- `hybrid_span_parser`: 1 / 10 intent changes from human transcript to Whisper transcript.
+- The changed record is `audio_006`, where the raw constraint changes from `keep them below fifty meters` to `keep them below 50 meters`.
+
+Interpretation: this is ASR-to-span-intent impact analysis, not gold ASR intent accuracy. No human-verified span labels exist for the Whisper transcript text, so this measures whether model predictions change between transcript versions.
+
+### Transformer Transcript Inference
+
+The stronger Colab/T4 token classifier should also be run directly on transcript JSONL files after the checkpoint directory is restored in Colab:
+
+```powershell
+python scripts/predict_hf_token_classifier_transcripts.py `
+  --input-jsonl outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl `
+  --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --transcript-field expected_transcript `
+  --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_human_transcript_predictions.json `
+  --required-device-substring T4
+
+python scripts/predict_hf_token_classifier_transcripts.py `
+  --input-jsonl outputs/evaluations/whisper_base_audio_predictions_local_gtx1650.jsonl `
+  --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --transcript-field predicted_transcript `
+  --output outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_asr_transcript_predictions.json `
+  --required-device-substring T4
+```
+
+These commands produce model-generated spans, raw span-assembled intents, hybrid span-parser intents, and validation issues for each transcript. They do not produce accuracy by themselves. The Hugging Face checkpoint directory is generated output and is ignored by git, so this step must run in Colab after training or after restoring the checkpoint artifact.
+
+Package the trained checkpoint before leaving Colab:
+
+```powershell
+python scripts/package_hf_checkpoint.py `
+  --model-dir outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --output-zip /content/hf_token_classifier_distilbert_colab_t4_expanded85.zip `
+  --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_metrics.json `
+  --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_validation_metrics.json `
+  --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_predictions.json `
+  --include outputs/evaluations/hf_token_classifier_distilbert_colab_t4_expanded85_test_error_analysis.json
+```
+
+Download `/content/hf_token_classifier_distilbert_colab_t4_expanded85.zip` from the Colab Files pane or by running `files.download(...)` in the notebook packaging cell. The local notebook downloads in `D:\Users\momoa\Downloads` confirm the run and metrics, but they do not contain model weights.
+
+After the zip is downloaded, import it locally:
+
+```powershell
+python scripts/import_hf_checkpoint.py `
+  --checkpoint-zip D:\Users\momoa\Downloads\hf_token_classifier_distilbert_colab_t4_expanded85.zip `
+  --output-dir outputs/model_artifacts `
+  --expected-name hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --overwrite
+```
+
+The importer rejects notebook exports and incomplete archives. A valid zip must contain at least `config.json`, a supported weight file such as `model.safetensors`, and tokenizer files.
+
+Imported checkpoint result, July 6, 2026:
+
+- Downloaded checkpoint zip: `D:\Users\momoa\Downloads\hf_token_classifier_distilbert_colab_t4_expanded85.zip`.
+- Local imported checkpoint directory: `outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85`.
+- Imported files include `config.json`, `model.safetensors`, `tokenizer.json`, `tokenizer_config.json`, `training_args.bin`, `checkpoint_manifest.json`, and `local_import_manifest.json`.
+- The checkpoint directory is ignored by git and must not be committed.
+- Local inference used `.venv312` with `torch` 2.12.1+cu126, `transformers` 5.13.0, `accelerate` 1.14.0, and `datasets` 5.0.0 recorded via package metadata. This was inference only, not local training.
+
+Evaluate the imported transformer on the 30-record `audio_v2_holdout` transcript benchmark:
+
+```powershell
+.\.venv312\Scripts\python.exe scripts\predict_hf_token_classifier_transcripts.py `
+  --input-jsonl outputs\evaluations\whisper_base_audio_v2_holdout_predictions_local_gtx1650.jsonl `
+  --model-dir outputs\model_artifacts\hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --transcript-field expected_transcript `
+  --output outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_predictions.json
+
+.\.venv312\Scripts\python.exe scripts\predict_hf_token_classifier_transcripts.py `
+  --input-jsonl outputs\evaluations\whisper_base_audio_v2_holdout_predictions_local_gtx1650.jsonl `
+  --model-dir outputs\model_artifacts\hf_token_classifier_distilbert_colab_t4_expanded85 `
+  --transcript-field predicted_transcript `
+  --output outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_asr_transcript_predictions.json
+
+python scripts\evaluate_hf_transcript_intent_accuracy.py `
+  --predictions outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_predictions.json `
+  --gold-commands datasets\commands\audio_v2_holdout_human_verified_intents.jsonl `
+  --output outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_intent_accuracy.json `
+  --include-deterministic
+
+python scripts\evaluate_hf_transcript_intent_accuracy.py `
+  --predictions outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_asr_transcript_predictions.json `
+  --gold-commands datasets\commands\audio_v2_holdout_human_verified_intents.jsonl `
+  --output outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_asr_transcript_intent_accuracy.json `
+  --include-deterministic
+```
+
+Current `audio_v2_holdout` transformer transcript-intent result:
+
+- Report: `reports/week2_transformer_transcript_intent_report.md`.
+- Error analysis: `reports/week2_transformer_transcript_intent_error_analysis.md`.
+- Human/reference transcripts: `deterministic_v3` exact intent accuracy 30 / 30 = 1.0000; `hybrid_span_parser` 6 / 30 = 0.2000; `span_intent_assembly` 5 / 30 = 0.1667.
+- ASR/Whisper transcripts: `deterministic_v3` exact intent accuracy 27 / 30 = 0.9000; `hybrid_span_parser` 5 / 30 = 0.1667; `span_intent_assembly` 4 / 30 = 0.1333.
+- Interpretation: the imported transformer span model is not currently competitive with the deterministic parser for final intent JSON on the `audio_v2_holdout` benchmark. This is a useful negative result, not a failed training run. The model remains useful as a trainable span extractor, but the final intent assembly layer needs better supervision or design before it can replace the deterministic baseline.
+
+Generate the paired failure analysis:
+
+```powershell
+python scripts\analyze_hf_transcript_intent_errors.py `
+  --human-evaluation outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_intent_accuracy.json `
+  --asr-evaluation outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_asr_transcript_intent_accuracy.json `
+  --json-output outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_transcript_intent_error_analysis.json `
+  --markdown-output reports\week2_transformer_transcript_intent_error_analysis.md
+```
+
+Current paired failure analysis: `span_intent_assembly` has 25 human-transcript error records and 26 ASR-transcript error records; `hybrid_span_parser` has 24 human-transcript error records and 25 ASR-transcript error records. ASR adds only 1 extra failure for each transformer span path, while `deterministic_v3` has 0 human-transcript failures and 3 ASR-added failures. The immediate bottleneck is therefore the trained span-to-intent path itself, not Whisper.
+
+Create a human span-labeling remediation packet from the clean-transcript failures:
+
+```powershell
+python scripts\create_audio_span_remediation_packet.py `
+  --evaluation outputs\evaluations\hf_token_classifier_distilbert_colab_t4_expanded85_audio_v2_holdout_human_transcript_intent_accuracy.json `
+  --gold-commands datasets\commands\audio_v2_holdout_human_verified_intents.jsonl `
+  --system hybrid_span_parser `
+  --jsonl-output reports\week2_audio_v2_span_remediation_packet.jsonl `
+  --markdown-output reports\week2_audio_v2_span_remediation_packet.md `
+  --source manual_week2_audio_v2_span_remediation_v1
+```
+
+Current remediation packet:
+
+- Records needing human span review: 24.
+- Split counts: validation 7, test 17.
+- Failed field counts: `location`: 15, `target`: 11, `constraints`: 8, `action`: 5.
+- Important: this packet has blank `spans` lists. It is a worksheet, not a dataset. If used for training or assembly tuning, these records should be marked as development data and not reused as a clean final benchmark.
+
 ## Not Implemented
 
-- No final human-verified command benchmark.
-- No ASR-derived intent dataset.
-- No Whisper ASR evaluation.
+- No final clean human-verified command benchmark.
+- No final clean ASR-derived intent benchmark for the current post-hoc parser state.
+- No Colab/T4 Whisper ASR evaluation.
+- No clean post-`deterministic_v3` fresh audio benchmark; `audio_v2_holdout` is now a diagnostic/development benchmark with human-reviewed labels.
 - No spaCy fine-tuning result yet.
 - No grounding, planning, scheduling, vision, safety validation, or end-to-end mission evaluation.
 

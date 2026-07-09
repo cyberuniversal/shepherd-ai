@@ -37,5 +37,20 @@ outputs/model_artifacts/hf_token_classifier*/
 *.onnx
 *.safetensors
 
+# Generated experiment outputs and reports stay local by default. Force-add a
+# specific artifact only when it is intentionally part of the research record.
+outputs/**
+!outputs/
+!outputs/README.md
+reports/**
+!reports/
+!reports/README.md
+
+# One-off local helpers and backups.
+fill_postdev_packet.py
+*.backup.jsonl
+*.bak
+*.bak-*
+
 *.env
 .env*

@@ -71,7 +71,7 @@ class AnalyzeAsrIntentImpactCliTests(unittest.TestCase):
 
             impact = json.loads(output.read_text(encoding="utf-8"))
 
-        summary = impact["summary"]["deterministic_v2"]
+        summary = impact["summary"]["deterministic_v3"]
         self.assertIn('"intent_changed_records"', completed.stdout)
         self.assertEqual(summary["raw_transcript_changed_records"], 1)
         self.assertEqual(summary["normalized_word_changed_records"], 1)

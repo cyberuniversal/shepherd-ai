@@ -2,6 +2,10 @@
 
 Use this directory for raw experimental outputs and generated artifacts.
 
+Git policy: generated files under this directory are ignored by default. Commit
+only this README unless a specific small artifact is intentionally promoted with
+`git add -f` and documented in the commit message.
+
 Rules:
 
 - Keep raw outputs separate from analysis.
@@ -83,6 +87,8 @@ Current Week 2 artifacts:
 - `outputs/evaluations/whisper_base_audio_generalization_split_summary_local_gtx1650.json`: validation/test ASR metrics for the pre-registered generalization batch.
 - `outputs/evaluations/whisper_base_audio_generalization_intent_impact_local_gtx1650.json`: ASR-to-intent impact analysis for the generalization batch; not gold intent accuracy.
 - `outputs/evaluations/week2_audio_generalization_intent_review_packet_summary.json`: readiness validation summary for the draft audio intent review packet.
+- `outputs/evaluations/week2_completion_gate_audit.json`: Week 2 completion-gate audit. Current expected state is blocked until fresh post-development benchmark artifacts exist.
+- `outputs/evaluations/audio_post_development_manifest_summary.json`: planned summary output after the filled post-development packet is converted into a real audio manifest. This file does not exist until the packet is filled with verified transcripts and WAV paths.
 
 Generate the ASR error analysis with:
 
@@ -137,3 +143,10 @@ When applying reviewed command subsets, use `scripts/apply_span_review_commands.
 Generated Hugging Face checkpoint/model directories under `outputs/model_artifacts/hf_token_classifier*/` are ignored and should not be committed. Preserve small raw metrics JSON files for provenance, and record whether a run was Colab/T4 or exploratory local output.
 
 Collection worksheets under `reports/`, such as `reports/week2_targeted_span_collection_packet.jsonl`, are not datasets. They may contain blank slots and collection guidance, but they must not be used for training until real command text and human-verified spans are added to a validated dataset file.
+
+Current Week 5 artifacts:
+
+- `outputs/evaluations/week5_schedule_comparison_v1.json`: raw scheduling comparison over the default simulated three-drone fleet and Week 4-derived tasks.
+- `outputs/tables/week5_assignments_least_loaded.csv`: primary assignment table for the default `least_loaded` strategy.
+- `outputs/visualizations/week5_drone_allocation_least_loaded.html`: generated allocation timeline visualization.
+- `outputs/evaluations/week5_completion_gate_audit.json`: machine-readable Week 5 completion-gate audit.

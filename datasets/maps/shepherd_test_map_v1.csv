@@ -1,0 +1,21 @@
+id,name,category,latitude,longitude,radius_m,geometry_type,map_role,flyable,requires_clearance,aliases,source,split
+loc_north_field,North Field,field,24.0000,46.0000,120,circle,mission_area,true,false,north|north field|northern field|crops|crop,custom_week3_synthetic_map_v1,development
+loc_south_field,South Field,field,23.9978,46.0000,120,circle,mission_area,true,false,south|south field|southern field,custom_week3_synthetic_map_v1,development
+loc_east_field,East Field,field,23.9990,46.0030,100,circle,mission_area,true,false,east|east field|eastern field,custom_week3_synthetic_map_v1,development
+loc_west_field,West Field,field,23.9990,45.9970,100,circle,mission_area,true,false,west|west field|western field,custom_week3_synthetic_map_v1,development
+loc_open_field,Open Field,field,23.9960,46.0012,140,circle,mission_area,true,false,open field|field,custom_week3_synthetic_map_v1,development
+loc_greenhouse,Greenhouse,structure,24.0013,46.0022,35,circle,inspection_target,true,false,greenhouse|green house,custom_week3_synthetic_map_v1,development
+loc_irrigation_canal,Irrigation Canal,waterway,24.0006,45.9981,45,circle,inspection_target,true,false,irrigation canal|canal|irrigation,custom_week3_synthetic_map_v1,development
+loc_storage_area,Storage Area,structure,23.9984,46.0028,40,circle,inspection_target,true,false,storage area|storage,custom_week3_synthetic_map_v1,development
+loc_water_tank,Water Tank,structure,24.0021,45.9994,25,circle,inspection_target,true,false,water tank,custom_week3_synthetic_map_v1,development
+loc_service_road,Service Road,road,23.9972,45.9986,60,circle,corridor,true,false,service road|road,custom_week3_synthetic_map_v1,development
+loc_main_road,Main Road,road,24.0026,46.0010,80,circle,corridor,true,false,main road|road,custom_week3_synthetic_map_v1,development
+loc_gatehouse,Gatehouse,structure,23.9968,46.0036,25,circle,inspection_target,true,false,gatehouse|gate house,custom_week3_synthetic_map_v1,development
+loc_control_tent,Control Tent,structure,24.0019,46.0035,20,circle,base,true,false,control tent,custom_week3_synthetic_map_v1,development
+loc_command_post,Command Post,structure,24.0024,46.0028,25,circle,base,true,false,command post,custom_week3_synthetic_map_v1,development
+loc_visitor_bridge,Visitor Bridge,structure,23.9965,45.9990,30,circle,inspection_target,true,false,visitor bridge|bridge,custom_week3_synthetic_map_v1,development
+loc_taxi_lane,Taxi Lane,road,24.0030,46.0040,45,circle,corridor,true,false,taxi lane,custom_week3_synthetic_map_v1,development
+loc_overflow_parking,Overflow Parking Area,parking,23.9958,46.0045,70,circle,inspection_target,true,false,overflow parking area|parking lot|parking area,custom_week3_synthetic_map_v1,development
+loc_launch_area,Launch Area,base,24.0008,46.0048,30,circle,base,true,false,launch area|launch point|base,custom_week3_synthetic_map_v1,development
+zone_maintenance_yard,Maintenance Yard,restricted_area,24.0034,45.9987,55,circle,restricted_area,false,true,maintenance yard|restricted area|restricted zone,custom_week3_synthetic_map_v1,development
+obs_power_lines,Power Lines,obstacle,24.0011,45.9972,65,circle,obstacle,false,true,power lines|power line|overhead wires,custom_week3_synthetic_map_v1,development

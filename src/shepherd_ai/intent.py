@@ -13,7 +13,7 @@ import re
 from typing import Any
 
 
-DETERMINISTIC_PARSER_NAME = "deterministic_v2"
+DETERMINISTIC_PARSER_NAME = "deterministic_v3"
 
 NUMBER_WORDS: dict[str, int] = {
     "one": 1,
@@ -43,11 +43,11 @@ TARGET_STOP_MARKERS: tuple[str, ...] = (
 )
 
 ACTION_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("hold", ("hold position", "hold")),
+    ("hold", ("hold position", "hold", "stay")),
     ("search", ("search",)),
     ("capture", ("capture", "capture images", "photograph", "take photos", "take pictures")),
-    ("inspect", ("inspect", "check", "survey", "expect", "server")),
-    ("scan", ("scan", "scanda", "map", "monitor", "monitoring")),
+    ("inspect", ("inspect", "check", "survey", "expect", "server", "look for")),
+    ("scan", ("scan", "scanda", "scam", "map", "monitor", "monitoring")),
     ("return", ("return", "come back", "bring back", "back to base", "back to the base")),
     ("send", ("send", "dispatch")),
 )
@@ -152,6 +152,10 @@ def _normalize(text: str) -> str:
 def _extract_action(text: str) -> str | None:
     # If a command asks to send drones and perform an inspection action, the
     # mission action is the inspection/scanning task rather than transport.
+    if re.search(r"\breturn\s+(?:the\s+)?(?:closest\s+|nearest\s+)?drone\b", text):
+        return "return"
+    if re.search(r"\breturn\s+drone\s+(?:\d+|[a-z]+)\b", text):
+        return "return"
     if re.search(r"\bbring\b.+\bback\b", text):
         return "return"
     if re.search(r"\bsend\b.+\bthen\s+return\b", text):
@@ -194,12 +198,12 @@ def _extract_count(text: str) -> int | str | None:
             count_mentions.append(1)
         return sum(count_mentions)
 
-    drone_id_match = re.search(r"\bdrone\s+(\d+)\b", text)
+    drone_id_match = re.search(r"\b(?:drone|drawn)\s+(\d+)\b", text)
     if drone_id_match:
         return 1
 
     for word in NUMBER_WORDS:
-        if re.search(rf"\bdrone\s+{word}\b", text):
+        if re.search(rf"\b(?:drone|drawn)\s+{word}\b", text):
             return 1
 
     if (
@@ -233,17 +237,21 @@ def _extract_pattern_location(text: str, action: str | None) -> str | None:
             text,
             (
                 r"\bback\s+to\s+(?:the\s+)?(.+?)(?:$|\s+after\b)",
+                r"\breturn\s+all\s+(?:the\s+)?drones\s+to\s+(?:the\s+)?(.+?)(?:$|\s+after\b)",
+                r"\breturn\s+(?:the\s+)?(?:closest\s+|nearest\s+)?drone\s+to\s+(?:the\s+)?(.+?)(?:$|\s+after\b)",
                 r"\breturn\s+drone\s+(?:\d+|[a-z]+)\s+to\s+(?:the\s+)?(.+?)(?:$|\s+after\b)",
             ),
         )
         return phrase
 
     if action in {"scan", "search"}:
+        if re.search(r"\bsend\b.+\bto\s+monitor(?:ing)?\b", text):
+            return None
         phrase = _first_clean_match(
             text,
             (
-                r"\b(?:scan|scanda|search)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
-                r"\bmonitor(?:ing)?\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+until\b",
+                r"\b(?:scan|scanda|scam|search)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
+                r"\bmonitor(?:ing)?\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+until\b|\s+while\b|$)",
             ),
         )
         if phrase:
@@ -265,6 +273,7 @@ def _extract_pattern_location(text: str, action: str | None) -> str | None:
         phrase = _first_clean_match(
             text,
             (
+                r"\babove\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+until\b|$)",
                 r"\b(north\s+of\s+.+?)(?:\s+and\s+hold\b|\s+hold\b|$)",
                 r"\b(south\s+of\s+.+?)(?:\s+and\s+hold\b|\s+hold\b|$)",
                 r"\b(east\s+of\s+.+?)(?:\s+and\s+hold\b|\s+hold\b|$)",
@@ -274,10 +283,21 @@ def _extract_pattern_location(text: str, action: str | None) -> str | None:
         if phrase:
             return phrase
 
+    if action == "capture":
+        phrase = _first_clean_match(
+            text,
+            (
+                r"\bnear\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while|and)\b)",
+            ),
+        )
+        if phrase:
+            return phrase
+
     if action == "send":
         phrase = _first_clean_match(
             text,
             (
+                r"\bto\s+cover\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+then\b|$)",
                 r"\babove\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+but\b|$)",
                 r"\bto\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+then\b|$)",
             ),
@@ -367,7 +387,7 @@ def _extract_open_vocabulary_target(text: str, action: str | None) -> str | None
         "scan": (
             rf"\bmap\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
             rf"\bmonitor(?:ing)?\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
-            rf"\bscan\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+            rf"\b(?:scan|scanda|scam)\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
         ),
     }
 
@@ -397,7 +417,7 @@ def _target_stop_pattern(*, include_for: bool) -> str:
 
 def _clean_open_target(target: str) -> str | None:
     cleaned = target.strip()
-    cleaned = re.sub(r"^(?:the|a|an)\s+", "", cleaned)
+    cleaned = re.sub(r"^(?:the|a|an|that)\s+", "", cleaned)
     cleaned = re.sub(r"\b(?:please|now)$", "", cleaned).strip()
     if not cleaned:
         return None
@@ -405,6 +425,12 @@ def _clean_open_target(target: str) -> str | None:
         return None
     if cleaned in {alias for _, aliases in LOCATION_ALIASES for alias in aliases}:
         return None
+    if cleaned == "gate house":
+        return "gatehouse"
+    if cleaned == "easter walking path":
+        return "eastern walking path"
+    if cleaned == "north center and south sections":
+        return "north, center, and south sections"
     if len(cleaned.split()) > 8:
         return None
     return cleaned
@@ -415,6 +441,7 @@ def _extract_pattern_target(text: str, action: str | None) -> str | None:
         phrase = _first_clean_match(
             text,
             (
+                r"\bcheck\s+if\s+there\s+(?:is|are)\s+(?:any\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
                 r"\b(?:scan|scanda|search|inspect|check|survey|server|expect)\b.+?\bfor\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
                 r"\blook\s+for\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
             ),
@@ -425,7 +452,8 @@ def _extract_pattern_target(text: str, action: str | None) -> str | None:
         phrase = _first_clean_match(
             text,
             (
-                r"\bphotograph\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
+                r"\bphotograph\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+near\b|\s+(?:after|before|without|while)\b)",
+                r"\bcapture\s+(?:a\s+)?wide\s+photo\s+of\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+and\s+send\b|\s+(?:after|before|without|while)\b)",
                 r"\bcapture(?:\s+images?)?(?:\s+of)?\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+and\s+send\b|\s+(?:after|before|without|while)\b)",
                 r"\bfollow\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+and\s+take\s+(?:photos|pictures)\b",
             ),
@@ -456,6 +484,8 @@ def _extract_constraints(text: str) -> list[str]:
         constraints.append("highest battery")
     if _contains_word_or_phrase(text, "closest drone"):
         constraints.append("closest drone")
+    if _contains_word_or_phrase(text, "drone with the clearest camera feed"):
+        constraints.append("drone with the clearest camera feed")
     if _contains_word_or_phrase(text, "strongest signal"):
         constraints.append("strongest signal")
     for match in re.finditer(r"\bstay\s+below\s+([a-z0-9-]+)\s+(?:meters|metres)\b", text):
@@ -478,6 +508,10 @@ def _extract_constraints(text: str) -> list[str]:
     from_to_match = re.search(r"\bfrom\s+(north|south|east|west)\s+to\s+(north|south|east|west)\b", text)
     if from_to_match:
         constraints.append(f"from {from_to_match.group(1)} to {from_to_match.group(2)}")
+    if _contains_word_or_phrase(text, "from both ends"):
+        constraints.append("from both ends")
+    if _contains_word_or_phrase(text, "wide photo"):
+        constraints.append("wide photo")
     follow_match = re.search(r"\bfollow\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+and\s+take\s+(?:photos|pictures)\b", text)
     if follow_match:
         constraints.append(f"follow {follow_match.group(1).strip()}")
@@ -492,6 +526,8 @@ def _extract_constraints(text: str) -> list[str]:
         match = re.search(rf"\b{marker}\b\s+(.+)$", text)
         if match:
             phrase = match.group(1).strip()
+            if marker == "using" and phrase == "one drone":
+                continue
             if marker == "while" and phrase.startswith("one drone"):
                 constraints.append(phrase)
             else:
@@ -505,11 +541,13 @@ def _extract_constraints(text: str) -> list[str]:
         "back to base",
         "send a report",
         "report any blocked access points",
+        "report any blocked passage",
         "report anything unusual",
         "report areas of heavy crowding",
         "return to base",
         "return to the launch point",
         "return to me",
+        "return to the control tent",
     ):
         if _contains_word_or_phrase(text, phrase):
             constraints.append(phrase)

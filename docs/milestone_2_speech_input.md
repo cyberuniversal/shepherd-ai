@@ -128,7 +128,13 @@ Recorded v2 holdout ASR run, July 5, 2026:
 - Validation exact-match accuracy: `0.6000`; test exact-match accuracy: `0.8000`.
 - ASR-to-intent impact with `deterministic_v2`: 5 of 30 records changed semantic intent outputs.
 - Draft intent review packet: `reports/week2_audio_v2_holdout_intent_review_packet.jsonl`.
-- Gold intent accuracy: not evaluated yet because the v2 holdout intent labels are still drafts.
+- Human-reviewed intent labels: `datasets/commands/audio_v2_holdout_human_verified_intents.jsonl`.
+- Human-reviewed label summary: `outputs/evaluations/audio_v2_holdout_human_verified_intents_summary.json`.
+- Human-reviewed intent accuracy: `outputs/evaluations/whisper_base_audio_v2_holdout_intent_accuracy_human_verified_local_gtx1650.json`.
+- `deterministic_v2` exact intent accuracy: `0.5333` on human transcripts and `0.4667` on Whisper transcripts.
+- `trained_nb_human_curated_v2` exact intent accuracy: `0.5333` on human transcripts and `0.4667` on Whisper transcripts; this artifact still matches the rule-gated baseline on this holdout.
+- Post-hoc `deterministic_v3` development accuracy: `outputs/evaluations/whisper_base_audio_v2_holdout_intent_accuracy_human_verified_v3_local_gtx1650.json`.
+- `deterministic_v3` exact intent accuracy on the same reviewed holdout: `1.0000` on human transcripts and `0.9000` on Whisper transcripts. This is a same-holdout development result, not a clean final benchmark.
 
 Run Whisper in Colab/T4:
 
@@ -162,4 +168,16 @@ The full speech-to-text milestone is not complete until the project defines a re
 - Audio recording conditions are not stated.
 - Language/accent/noise coverage is not stated.
 - The current train/validation/test audio split is retrospective and therefore not a clean final held-out benchmark.
+- The current single-action intent schema is lossy for compound and allocation-like commands in the v2 holdout.
+- The `deterministic_v3` result was tuned after inspecting v2 holdout errors and must be checked on a new non-overlapping packet before claiming generalization.
 - Acceptance threshold for speech accuracy is not stated.
+
+Next pre-registered `deterministic_v3` validation packet, July 6, 2026:
+
+- Blank packet: `reports/week2_audio_v3_holdout_packet.md` and `reports/week2_audio_v3_holdout_packet.jsonl`.
+- Slots: 10 validation and 20 test records.
+- Source for future records: `manual_week2_audio_v3_holdout_v1`.
+- Existing normalized texts blocked for overlap: 141.
+- Overlap blocklist: curated commands, human-verified span commands, the original 10-record audio manifest, the first 30-record audio-generalization manifest, and the v2 holdout manifest.
+- Purpose: test whether the post-hoc `deterministic_v3` parser generalizes beyond the v2 holdout that motivated it.
+- Current status: blank pre-registration packet only; no audio, transcripts, ASR output, intent labels, or evaluation result exists for this packet yet.

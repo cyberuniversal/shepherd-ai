@@ -77,6 +77,52 @@ class SummarizeWeek2StatusCliTests(unittest.TestCase):
                     "worst_records": [{"id": "cmd_001"}],
                 },
             )
+            span_intent_comparison = _write_json(
+                root / "span_intent_comparison.json",
+                {
+                    "summary": {
+                        "span_intent_assembly": {
+                            "exact_record_accuracy": 0.5,
+                            "field_accuracy": 0.86,
+                        },
+                        "hybrid_span_parser": {
+                            "exact_record_accuracy": 1.0,
+                            "field_accuracy": 1.0,
+                        },
+                    }
+                },
+            )
+            asr_span_intent_impact = _write_json(
+                root / "asr_span_intent_impact.json",
+                {
+                    "summary": {
+                        "hybrid_span_parser": {
+                            "intent_changed_records": 1,
+                            "intent_changed_rate": 0.5,
+                        }
+                    }
+                },
+            )
+            hf_transcript_human_intent = _write_json(
+                root / "hf_transcript_human_intent.json",
+                {
+                    "summary": {
+                        "span_intent_assembly": {"exact_record_accuracy": 0.2},
+                        "hybrid_span_parser": {"exact_record_accuracy": 0.3},
+                        "deterministic_v3": {"exact_record_accuracy": 1.0},
+                    }
+                },
+            )
+            hf_transcript_asr_intent = _write_json(
+                root / "hf_transcript_asr_intent.json",
+                {
+                    "summary": {
+                        "span_intent_assembly": {"exact_record_accuracy": 0.1},
+                        "hybrid_span_parser": {"exact_record_accuracy": 0.2},
+                        "deterministic_v3": {"exact_record_accuracy": 0.9},
+                    }
+                },
+            )
             output_json = root / "summary.json"
             output_markdown = root / "summary.md"
 
@@ -96,6 +142,14 @@ class SummarizeWeek2StatusCliTests(unittest.TestCase):
                     str(hf_metrics),
                     "--hf-token-error-analysis",
                     str(hf_errors),
+                    "--span-intent-comparison",
+                    str(span_intent_comparison),
+                    "--asr-span-intent-impact",
+                    str(asr_span_intent_impact),
+                    "--hf-transcript-human-intent-accuracy",
+                    str(hf_transcript_human_intent),
+                    "--hf-transcript-asr-intent-accuracy",
+                    str(hf_transcript_asr_intent),
                     "--output-json",
                     str(output_json),
                     "--output-markdown",
@@ -113,7 +167,14 @@ class SummarizeWeek2StatusCliTests(unittest.TestCase):
         self.assertIn('"asr_exact_match_accuracy"', completed.stdout)
         self.assertEqual(summary["headline"]["audio_records"], 2)
         self.assertEqual(summary["headline"]["colab_t4_distilbert_error_records"], 1)
+        self.assertEqual(summary["headline"]["hybrid_span_intent_exact_accuracy"], 1.0)
+        self.assertEqual(summary["headline"]["asr_hybrid_span_intent_changed_records"], 1)
+        self.assertEqual(summary["headline"]["hf_transcript_human_hybrid_intent_exact_accuracy"], 0.3)
+        self.assertEqual(summary["headline"]["hf_transcript_asr_deterministic_intent_exact_accuracy"], 0.9)
         self.assertIn("Week 2 Status Summary", markdown)
+        self.assertIn("Post-hoc hybrid span intent exact accuracy", markdown)
+        self.assertIn("ASR-caused hybrid span-intent changes", markdown)
+        self.assertIn("Transformer ASR-transcript intent exact accuracy", markdown)
         self.assertIn("not a final benchmark", summary["metadata"]["status_note"])
 
 

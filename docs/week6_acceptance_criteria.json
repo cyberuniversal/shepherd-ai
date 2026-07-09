@@ -1,0 +1,24 @@
+{
+  "scope": "week6_vision_foundation_gate_v1",
+  "not_detection_performance_benchmark": true,
+  "thresholds": {
+    "manifest_records_min_for_full_week6": 1,
+    "required_manifest_provenance_fields": [
+      "id",
+      "image_path",
+      "split",
+      "source",
+      "data_type",
+      "license",
+      "provenance_url"
+    ],
+    "raw_detection_rows_required_for_full_week6": true,
+    "model_metadata_required_for_full_week6": true,
+    "annotated_outputs_required_for_full_week6": true
+  },
+  "notes": [
+    "These criteria define the Week 6 vision foundation and the missing conditions for full Week 6 completion.",
+    "Detection counts are not detection-performance metrics unless labeled data and a formal evaluation protocol are added.",
+    "No public aerial dataset has been selected or committed yet."
+  ]
+}
