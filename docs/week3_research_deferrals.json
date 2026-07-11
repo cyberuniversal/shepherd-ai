@@ -1,0 +1,19 @@
+{
+  "scope": "week3_research_deferrals_v1",
+  "deferrals": {
+    "real_map_or_public_benchmark_provenance_exists": {
+      "status": "deferred_for_week3",
+      "reason": "The roadmap defines Week 3 around command grounding over a custom CSV or GeoJSON simulation map. Real or public map provenance is required before claiming real-world grounding performance, but is not required for the current synthetic Week 3 gate.",
+      "not_implemented": [
+        "real map dataset",
+        "public map benchmark",
+        "real-world grounding accuracy"
+      ],
+      "revisit_before_claims": [
+        "real-world grounding performance",
+        "external validity",
+        "deployment relevance"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "scope": "week2_clean_post_development_completion_gate_v1",
+  "not_final_end_to_end_benchmark": true,
+  "thresholds": {
+    "fresh_audio_records_min": 30,
+    "fresh_manifest_overlap_records_max": 0,
+    "fresh_manifest_duplicate_transcripts_max": 0,
+    "fresh_intent_review_ready_required": true,
+    "fresh_asr_records_min": 30,
+    "fresh_intent_eval_records_min": 30,
+    "fresh_intent_systems_min": 3
+  },
+  "required_systems": [
+    "deterministic parser",
+    "trained Naive Bayes or equivalent text baseline",
+    "Colab/T4 transformer span-to-intent path or documented negative result path"
+  ],
+  "notes": [
+    "These criteria are for a clean Week 2 speech-and-intent handoff, not an end-to-end mission benchmark.",
+    "The fresh benchmark must be collected after the current parser/model state and must not overlap existing command, span, or audio transcript text.",
+    "Passing this gate does not mean language understanding is solved; it means Week 2 has a cleaner frozen benchmark for downstream modules."
+  ]
+}

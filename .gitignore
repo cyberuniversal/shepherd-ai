@@ -10,6 +10,7 @@ __pycache__/
 htmlcov/
 
 .venv/
+.venv*/
 venv/
 env/
 
@@ -21,7 +22,8 @@ dist/
 
 # Keep small, documented samples in the repository. Do not commit private data,
 # model weights, downloaded public datasets, or large generated artifacts.
-datasets/aerial_images/
+datasets/aerial_images/*
+!datasets/aerial_images/README.md
 datasets/sample_audio/**/*.wav
 datasets/sample_audio/**/*.mp3
 datasets/sample_audio/**/*.flac
@@ -29,9 +31,26 @@ datasets/sample_audio/**/*.m4a
 datasets/sample_audio/**/*.ogg
 datasets/sample_audio/**/*.webm
 models/
+outputs/model_artifacts/hf_token_classifier*/
 *.pt
 *.pth
 *.onnx
+*.safetensors
+
+# Generated experiment outputs and reports stay local by default. Force-add a
+# specific artifact only when it is intentionally part of the research record.
+outputs/**
+!outputs/
+!outputs/README.md
+reports/**
+!reports/
+!reports/README.md
+
+# One-off local helpers and backups.
+fill_postdev_packet.py
+*.backup.jsonl
+*.bak
+*.bak-*
 
 *.env
 .env*
