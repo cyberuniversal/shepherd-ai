@@ -327,7 +327,7 @@ The Week 6 foundation selects Agriculture-Vision CVPR 2020 for the first non-com
 After reviewing and accepting the official Agriculture-Vision terms, prepare an extracted local subset:
 
 ```powershell
-python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
+python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --split-json datasets/aerial_images/agriculture-vision/data2017_splits.json --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
 ```
 
 Validate a manifest after adding real image records:

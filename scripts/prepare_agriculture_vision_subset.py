@@ -34,6 +34,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset-dir", required=True, help="Extracted Agriculture-Vision directory.")
     parser.add_argument("--dataset-root", required=True, help="Root used for manifest-relative paths.")
     parser.add_argument("--output", required=True, help="Manifest JSONL output path.")
+    parser.add_argument(
+        "--split-json",
+        help="Official Agriculture-Vision JSON mapping train/val/test to farmland IDs.",
+    )
     parser.add_argument("--max-per-split", type=int, default=10, help="Deterministic RGB-image limit per split.")
     parser.add_argument(
         "--accept-terms",
@@ -57,11 +61,12 @@ def main() -> None:
     except ValueError as exc:
         raise SystemExit("--dataset-dir must stay within --dataset-root") from exc
 
+    field_splits = _load_field_splits(Path(args.split_json)) if args.split_json else {}
     grouped: dict[str, list[Path]] = {"train": [], "validation": [], "test": []}
     for image in sorted(path for path in dataset_dir.rglob("*") if path.suffix.lower() in IMAGE_SUFFIXES):
         if "rgb" not in {part.lower() for part in image.parts}:
             continue
-        split = _infer_split(image, dataset_dir)
+        split = field_splits.get(_field_id(image)) if field_splits else _infer_split(image, dataset_dir)
         if split is not None:
             grouped[split].append(image)
 
@@ -104,6 +109,29 @@ def _infer_split(image: Path, dataset_dir: Path) -> str | None:
         if split is not None:
             return split
     return None
+
+
+def _load_field_splits(path: Path) -> dict[str, str]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    field_splits: dict[str, str] = {}
+    for raw_split, field_ids in payload.items():
+        split = SPLIT_ALIASES.get(str(raw_split).lower())
+        if split is None:
+            continue
+        if not isinstance(field_ids, list):
+            raise SystemExit(f"split {raw_split!r} must contain a list of farmland IDs")
+        for field_id in field_ids:
+            normalized_id = str(field_id).strip()
+            if normalized_id in field_splits:
+                raise SystemExit(f"farmland ID appears in multiple splits: {normalized_id}")
+            field_splits[normalized_id] = split
+    if not field_splits:
+        raise SystemExit("split JSON did not contain train/val/test farmland IDs")
+    return field_splits
+
+
+def _field_id(image: Path) -> str:
+    return image.stem.split("_", maxsplit=1)[0]
 
 
 if __name__ == "__main__":

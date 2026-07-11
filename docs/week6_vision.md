@@ -77,7 +77,7 @@ After an official Agriculture-Vision archive has been downloaded and extracted,
 build a deterministic RGB subset manifest:
 
 ```powershell
-python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
+python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --split-json datasets/aerial_images/agriculture-vision/data2017_splits.json --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
 ```
 
 Install the optional vision dependencies before real inference:
