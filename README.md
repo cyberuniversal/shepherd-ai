@@ -322,7 +322,13 @@ Current default example status: six schedulable tasks are assigned across three 
 
 ## Week 6 Computer Vision Foundation
 
-The Week 6 foundation validates licensed aerial-image manifests and provides a YOLO inference runner. It does not yet include a selected public aerial dataset, committed image subset, labels, mAP evaluation, or mission-level vision result.
+The Week 6 foundation selects Agriculture-Vision CVPR 2020 for the first non-commercial research experiment, validates provenance-aware aerial-image manifests, and provides a YOLO inference runner. Raw images are not committed because the dataset terms prohibit redistribution. No real image subset has been downloaded or evaluated yet, and generic YOLO inference is only a smoke test because Agriculture-Vision is a semantic-segmentation benchmark.
+
+After reviewing and accepting the official Agriculture-Vision terms, prepare an extracted local subset:
+
+```powershell
+python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
+```
 
 Validate a manifest after adding real image records:
 

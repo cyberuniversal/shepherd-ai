@@ -25,8 +25,11 @@ are added.
 
 ## Current Data Status
 
-No public aerial dataset has been selected, downloaded, licensed, split, or
-preprocessed in the repository.
+Agriculture-Vision CVPR 2020 is selected for the first experiment. The dataset
+has not been downloaded or redistributed by the repository. Its official terms
+allow limited non-commercial research use and prohibit redistribution; the user
+must review and accept those terms before downloading. See
+`docs/week6_dataset_decision.md`.
 
 Supported manifest location:
 
@@ -46,6 +49,8 @@ Optional fields:
 
 - `labels_path`
 - `notes`
+- `sha256`
+- `terms_url`
 
 Allowed image suffixes:
 
@@ -66,6 +71,13 @@ Validate an aerial-image manifest:
 
 ```powershell
 python scripts/validate_vision_manifest.py --manifest datasets/aerial_images/manifest.jsonl --dataset-root . --summary-output outputs/evaluations/week6_vision_manifest_summary.json
+```
+
+After an official Agriculture-Vision archive has been downloaded and extracted,
+build a deterministic RGB subset manifest:
+
+```powershell
+python scripts/prepare_agriculture_vision_subset.py --dataset-dir datasets/aerial_images/agriculture-vision --dataset-root . --output datasets/aerial_images/manifest.jsonl --max-per-split 10 --accept-terms
 ```
 
 Install the optional vision dependencies before real inference:
@@ -90,6 +102,7 @@ Primary scripts:
 
 - `scripts/validate_vision_manifest.py`
 - `scripts/run_yolo_detection.py`
+- `scripts/prepare_agriculture_vision_subset.py`
 
 Tests:
 
@@ -124,5 +137,7 @@ This initial Week 6 foundation is complete when:
 - detection summaries state that they are not benchmark performance,
 - tests cover manifest validation and detection-summary behavior.
 
-The full Week 6 roadmap slice is not complete until a licensed aerial-image
-subset exists and at least one documented inference run is recorded.
+The full Week 6 roadmap slice is not complete until the terms have been accepted
+by the user, an official aerial-image subset exists locally, and at least one
+documented inference run is recorded. YOLO inference on Agriculture-Vision is a
+smoke test, not its semantic-segmentation benchmark.

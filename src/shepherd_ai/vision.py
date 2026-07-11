@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import asdict, dataclass
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -45,6 +46,8 @@ class VisionManifestRecord:
     provenance_url: str
     labels_path: Path | None = None
     notes: str | None = None
+    sha256: str | None = None
+    terms_url: str | None = None
 
     def to_dict(self, *, root: Path | None = None) -> dict[str, Any]:
         payload = asdict(self)
@@ -103,6 +106,14 @@ def load_vision_manifest(path: str | Path, *, dataset_root: str | Path) -> list[
             )
         if not image_path.exists():
             raise VisionManifestError(f"line {line_number}: image file does not exist: {image_path}")
+        declared_sha256 = _optional_sha256(raw.get("sha256"), line_number)
+        if declared_sha256 is not None:
+            actual_sha256 = sha256_file(image_path)
+            if actual_sha256 != declared_sha256:
+                raise VisionManifestError(
+                    f"line {line_number}: sha256 mismatch for {image_path}: "
+                    f"expected {declared_sha256}, got {actual_sha256}"
+                )
         labels_path = None
         if raw.get("labels_path") not in (None, ""):
             labels_path = _resolve_path(root, raw["labels_path"], "labels_path", line_number)
@@ -120,6 +131,8 @@ def load_vision_manifest(path: str | Path, *, dataset_root: str | Path) -> list[
                 provenance_url=_required_text(raw["provenance_url"], "provenance_url", line_number),
                 labels_path=labels_path,
                 notes=str(raw["notes"]) if raw.get("notes") is not None else None,
+                sha256=declared_sha256,
+                terms_url=str(raw["terms_url"]).strip() if raw.get("terms_url") else None,
             )
         )
     return records
@@ -135,6 +148,7 @@ def summarize_vision_manifest(records: list[VisionManifestRecord]) -> dict[str, 
         "data_type_counts": _count(record.data_type for record in records),
         "license_counts": _count(record.license for record in records),
         "records_with_labels": sum(1 for record in records if record.labels_path is not None),
+        "records_with_sha256": sum(1 for record in records if record.sha256 is not None),
     }
 
 
@@ -171,6 +185,29 @@ def _required_text(value: Any, field_name: str, line_number: int) -> str:
     if not isinstance(value, str) or not value.strip():
         raise VisionManifestError(f"line {line_number}: {field_name} must be a non-empty string")
     return value.strip()
+
+
+def _optional_sha256(value: Any, line_number: int) -> str | None:
+    if value in (None, ""):
+        return None
+    valid = (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdefABCDEF" for character in value)
+    )
+    if not valid:
+        raise VisionManifestError(f"line {line_number}: sha256 must be 64 hexadecimal characters")
+    return value.lower()
+
+
+def sha256_file(path: str | Path, *, chunk_size: int = 1024 * 1024) -> str:
+    """Return a streaming SHA-256 digest for a research input file."""
+
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(chunk_size), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _display_path(path: Path, *, root: Path | None) -> str:

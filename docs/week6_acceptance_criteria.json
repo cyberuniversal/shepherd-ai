@@ -14,11 +14,14 @@
     ],
     "raw_detection_rows_required_for_full_week6": true,
     "model_metadata_required_for_full_week6": true,
-    "annotated_outputs_required_for_full_week6": true
+    "annotated_outputs_required_for_full_week6": true,
+    "input_sha256_required_for_selected_subset": true,
+    "user_terms_acceptance_required_before_download": true
   },
   "notes": [
     "These criteria define the Week 6 vision foundation and the missing conditions for full Week 6 completion.",
     "Detection counts are not detection-performance metrics unless labeled data and a formal evaluation protocol are added.",
-    "No public aerial dataset has been selected or committed yet."
+    "Agriculture-Vision CVPR 2020 is selected, but no image subset has been downloaded or evaluated yet.",
+    "Generic YOLO detections are a smoke test and are not Agriculture-Vision semantic-segmentation performance."
   ]
 }

@@ -14,6 +14,7 @@ from shepherd_ai.vision import (  # noqa: E402
     load_vision_manifest,
     summarize_detections,
     summarize_vision_manifest,
+    sha256_file,
 )
 
 
@@ -119,6 +120,60 @@ class VisionManifestTests(unittest.TestCase):
         self.assertEqual(summary["detections"], 1)
         self.assertEqual(summary["class_counts"], {"person": 1})
         self.assertIn("not mAP", summary["evaluation_note"])
+
+    def test_validates_declared_image_checksum(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            image = root / "sample.jpg"
+            image.write_bytes(b"research-image-fixture")
+            expected_sha256 = sha256_file(image)
+            manifest = root / "manifest.jsonl"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "aerial_001",
+                        "image_path": "sample.jpg",
+                        "split": "validation",
+                        "source": "unit_test_fixture",
+                        "data_type": "synthetic_manifest_fixture",
+                        "license": "test_fixture_not_for_research",
+                        "provenance_url": "local_test_fixture",
+                        "sha256": expected_sha256,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            records = load_vision_manifest(manifest, dataset_root=root)
+
+        self.assertEqual(records[0].sha256, expected_sha256)
+
+    def test_rejects_checksum_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            image = root / "sample.jpg"
+            image.write_bytes(b"research-image-fixture")
+            manifest = root / "manifest.jsonl"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "aerial_001",
+                        "image_path": "sample.jpg",
+                        "split": "validation",
+                        "source": "unit_test_fixture",
+                        "data_type": "synthetic_manifest_fixture",
+                        "license": "test_fixture_not_for_research",
+                        "provenance_url": "local_test_fixture",
+                        "sha256": "0" * 64,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(VisionManifestError, "sha256 mismatch"):
+                load_vision_manifest(manifest, dataset_root=root)
 
 
 if __name__ == "__main__":

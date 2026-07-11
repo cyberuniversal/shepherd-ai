@@ -3,18 +3,18 @@
 The current Week 6 work is a vision-inference foundation, not a completed
 computer-vision benchmark.
 
-Deferred until a dataset decision is made:
+Agriculture-Vision CVPR 2020 is now selected. Deferred until the user reviews
+and accepts its terms and a real subset is prepared:
 
-- public aerial-image dataset selection,
-- license/access verification,
-- train/validation/test split definition,
 - label-schema mapping,
-- mAP/precision/recall evaluation,
+- semantic-segmentation model training,
+- modified mIoU evaluation using the official overlapping masks,
 - comparison across YOLO model sizes or other detectors,
 - integration of detections into mission reports,
 - safety use of detections.
 
 The roadmap names public imagery families such as VisDrone, UAVDT, DOTA, xView,
-and Agriculture-Vision, but the repository does not yet choose one. Do not claim
-that any of those datasets has been downloaded, licensed, preprocessed, or
-evaluated until the corresponding manifest and outputs exist.
+and Agriculture-Vision. Do not claim that Agriculture-Vision has been
+downloaded, preprocessed, or evaluated until the corresponding manifest and
+outputs exist. Do not report generic YOLO output as Agriculture-Vision
+segmentation performance.

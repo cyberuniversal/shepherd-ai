@@ -2,6 +2,11 @@
 
 Store small manifests or documentation for aerial image datasets here.
 
+The selected first source is Agriculture-Vision CVPR 2020. Review
+`docs/week6_dataset_decision.md` and the official terms before downloading.
+Raw Agriculture-Vision files must remain untracked because redistribution is
+prohibited.
+
 Do not commit large downloaded datasets or model outputs. For VisDrone, UAVDT, DOTA, xView, Agriculture-Vision, or any other public dataset, record:
 
 - official source URL,
@@ -25,6 +30,11 @@ Required JSONL fields:
 - `data_type`
 - `license`
 - `provenance_url`
+
+Recommended integrity fields:
+
+- `sha256`
+- `terms_url`
 
 Validate it with:
 
