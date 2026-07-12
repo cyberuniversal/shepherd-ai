@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from shepherd_ai.vision import (  # noqa: E402
     DetectionRecord,
     load_vision_manifest,
+    require_cuda_device,
     summarize_detections,
     summarize_vision_manifest,
 )
@@ -27,6 +28,10 @@ def main() -> None:
     parser.add_argument("--model", default="yolov8n.pt", help="Ultralytics YOLO model name or local weights path.")
     parser.add_argument("--confidence", type=float, default=0.25, help="YOLO confidence threshold.")
     parser.add_argument("--device", help="Optional Ultralytics device string, for example '0' or 'cpu'.")
+    parser.add_argument(
+        "--required-device-substring",
+        help="Require an available CUDA device name containing this text, for example T4.",
+    )
     parser.add_argument("--limit", type=int, help="Optional maximum number of manifest records to process.")
     parser.add_argument("--predictions-output", required=True, help="Detection JSONL output path.")
     parser.add_argument("--summary-output", required=True, help="Detection summary JSON output path.")
@@ -37,6 +42,22 @@ def main() -> None:
     if args.limit is not None:
         records = records[: args.limit]
     yolo_cls = _load_yolo()
+    import torch
+
+    device_metadata = (
+        require_cuda_device(args.required_device_substring, torch)
+        if args.required_device_substring
+        else {
+            "cuda_available": bool(torch.cuda.is_available()),
+            "cuda_device_count": torch.cuda.device_count() if torch.cuda.is_available() else 0,
+            "cuda_device_names": [
+                str(torch.cuda.get_device_name(index)) for index in range(torch.cuda.device_count())
+            ]
+            if torch.cuda.is_available()
+            else [],
+            "required_device_substring": None,
+        }
+    )
     model = yolo_cls(args.model)
 
     detections: list[DetectionRecord] = []
@@ -71,6 +92,7 @@ def main() -> None:
             "parameters": {
                 "confidence": args.confidence,
                 "device": args.device or "ultralytics_default",
+                "device_metadata": device_metadata,
                 "limit": args.limit,
             },
             "manifest_summary": summarize_vision_manifest(records),

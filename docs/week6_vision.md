@@ -89,7 +89,7 @@ python -m pip install -e .[vision]
 Run YOLO detection on the validated manifest:
 
 ```powershell
-python scripts/run_yolo_detection.py --manifest datasets/aerial_images/manifest.jsonl --dataset-root . --model yolov8n.pt --predictions-output outputs/evaluations/week6_yolo_detections.jsonl --summary-output outputs/evaluations/week6_yolo_detection_summary.json --annotated-dir outputs/visualizations/week6_yolo
+python scripts/run_yolo_detection.py --manifest datasets/aerial_images/manifest.jsonl --dataset-root . --model yolov8n.pt --device 0 --required-device-substring T4 --predictions-output outputs/evaluations/week6_yolo_detections.jsonl --summary-output outputs/evaluations/week6_yolo_detection_summary.json --annotated-dir outputs/visualizations/week6_yolo
 ```
 
 ## Current Implementation

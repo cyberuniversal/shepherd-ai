@@ -210,6 +210,28 @@ def sha256_file(path: str | Path, *, chunk_size: int = 1024 * 1024) -> str:
     return digest.hexdigest()
 
 
+def require_cuda_device(required_substring: str, torch_module: Any) -> dict[str, Any]:
+    """Return CUDA metadata and fail unless the requested device is present."""
+
+    cuda_available = bool(torch_module.cuda.is_available())
+    device_names = (
+        [str(torch_module.cuda.get_device_name(index)) for index in range(torch_module.cuda.device_count())]
+        if cuda_available
+        else []
+    )
+    metadata = {
+        "cuda_available": cuda_available,
+        "cuda_device_count": len(device_names),
+        "cuda_device_names": device_names,
+        "required_device_substring": required_substring,
+    }
+    if not cuda_available or not any(required_substring in name for name in device_names):
+        raise RuntimeError(
+            f"required CUDA device containing {required_substring!r} is unavailable: {device_names}"
+        )
+    return metadata
+
+
 def _display_path(path: Path, *, root: Path | None) -> str:
     if root is None:
         return str(path)

@@ -12,6 +12,7 @@ from shepherd_ai.vision import (  # noqa: E402
     DetectionRecord,
     VisionManifestError,
     load_vision_manifest,
+    require_cuda_device,
     summarize_detections,
     summarize_vision_manifest,
     sha256_file,
@@ -174,6 +175,44 @@ class VisionManifestTests(unittest.TestCase):
 
             with self.assertRaisesRegex(VisionManifestError, "sha256 mismatch"):
                 load_vision_manifest(manifest, dataset_root=root)
+
+    def test_requires_named_cuda_device(self) -> None:
+        class FakeCuda:
+            @staticmethod
+            def is_available() -> bool:
+                return True
+
+            @staticmethod
+            def device_count() -> int:
+                return 1
+
+            @staticmethod
+            def get_device_name(index: int) -> str:
+                self.assertEqual(index, 0)
+                return "Tesla T4"
+
+        class FakeTorch:
+            cuda = FakeCuda()
+
+        metadata = require_cuda_device("T4", FakeTorch())
+
+        self.assertEqual(metadata["cuda_device_names"], ["Tesla T4"])
+
+    def test_rejects_cpu_when_cuda_is_required(self) -> None:
+        class FakeCuda:
+            @staticmethod
+            def is_available() -> bool:
+                return False
+
+            @staticmethod
+            def device_count() -> int:
+                return 0
+
+        class FakeTorch:
+            cuda = FakeCuda()
+
+        with self.assertRaisesRegex(RuntimeError, "required CUDA device"):
+            require_cuda_device("T4", FakeTorch())
 
 
 if __name__ == "__main__":
