@@ -115,11 +115,13 @@ Primary scripts:
 - `scripts/validate_vision_manifest.py`
 - `scripts/run_yolo_detection.py`
 - `scripts/prepare_agriculture_vision_subset.py`
+- `scripts/inspect_agriculture_vision_layout.py`
 
 Tests:
 
 - `tests/test_vision.py`
 - `tests/test_validate_vision_manifest_cli.py`
+- `tests/test_inspect_agriculture_vision_layout_cli.py`
 
 ## Evaluation
 
