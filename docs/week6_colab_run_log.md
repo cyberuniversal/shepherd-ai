@@ -98,3 +98,50 @@ Interpretation:
 - the generic COCO-pretrained YOLO smoke test does not address the semantic
   segmentation task defined by Agriculture-Vision,
 - no model training or fine-tuning occurred in this run.
+
+## Run 2026-07-12 - 2017 Label Layout Audit
+
+Status: completed; non-image layout summary preserved in the repository.
+
+Repository commit:
+
+- `5fe4aba42b752dd8c2f4ff152f8e90bc19af7d8a`
+
+Runtime and source:
+
+- accelerator: NVIDIA Tesla T4,
+- observed PyTorch: `2.11.0+cu128`,
+- archive SHA-256: `2b4bf0b2357ba982fe6d81da55841874afdd721a867bb8fddede9e04e4914027`,
+- terms acknowledgment was entered by the user for this Colab session.
+
+Observed layout:
+
+- 8,345 aligned tiles,
+- RGB: 8,345 JPEG files, mode `RGB`, shape 512 x 512,
+- NIR: 8,345 JPEG files, mode `L`, shape 512 x 512,
+- field boundaries: 8,345 binary PNG files,
+- field masks: 8,345 binary PNG files,
+- nine anomaly directories with 8,345 binary PNG files each,
+- observed mask values: `0` and `255`.
+
+Observed anomaly directories:
+
+- `double_plant`,
+- `drydown`,
+- `endrow`,
+- `nutrient_deficiency`,
+- `planter_skip`,
+- `storm_damage`,
+- `water`,
+- `waterway`,
+- `weed_cluster`.
+
+Interpretation:
+
+- all modalities and masks align by image stem,
+- background is derived where no anomaly mask is active,
+- evaluation-valid pixels are the intersection of `field_bounds` and
+  `field_masks`,
+- overlapping anomaly masks must remain multilabel ground truth,
+- no segmentation model was trained and no dataset-backed mIoU was calculated
+  in this audit.

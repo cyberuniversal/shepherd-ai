@@ -43,6 +43,11 @@ archive label-directory mapping is not implemented yet because the temporary
 Colab runtime containing the extracted archive expired before that mapping was
 recorded.
 
+The 2017 layout audit is preserved at
+`outputs/evaluations/week6_agriculture_vision_layout_summary.json`. It records
+8,345 aligned RGB, NIR, boundary, valid-mask, and nine-class anomaly-mask files.
+It contains no licensed image pixels.
+
 Supported manifest location:
 
 - `datasets/aerial_images/manifest.jsonl`

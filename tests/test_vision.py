@@ -4,6 +4,7 @@ import tempfile
 import unittest
 
 import numpy as np
+from PIL import Image
 
 import sys
 
@@ -11,9 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from shepherd_ai.vision import (  # noqa: E402
+    AGRICULTURE_VISION_2017_CLASSES,
     DetectionRecord,
     VisionManifestError,
     load_vision_manifest,
+    load_agriculture_vision_2017_target,
     modified_multilabel_iou,
     require_cuda_device,
     summarize_detections,
@@ -270,6 +273,48 @@ class VisionManifestTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "class IDs in the range"):
             modified_multilabel_iou(predictions, targets)
+
+    def test_loads_aligned_agriculture_vision_2017_masks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stem = "FIELD_0-0-2-2"
+            self._write_binary_mask(root / "field_bounds" / f"{stem}.png", [[255, 255], [0, 255]])
+            self._write_binary_mask(root / "field_masks" / f"{stem}.png", [[255, 255], [255, 0]])
+            for class_name in AGRICULTURE_VISION_2017_CLASSES[1:]:
+                values = [[0, 0], [0, 0]]
+                if class_name == "double_plant":
+                    values[0][0] = 255
+                if class_name == "waterway":
+                    values[0][0] = 255
+                self._write_binary_mask(root / "field_labels" / class_name / f"{stem}.png", values)
+
+            loaded = load_agriculture_vision_2017_target(root, stem)
+
+        np.testing.assert_array_equal(loaded.valid_mask, [[True, True], [False, False]])
+        self.assertEqual(loaded.class_names, AGRICULTURE_VISION_2017_CLASSES)
+        self.assertEqual(loaded.targets.shape, (10, 2, 2))
+        self.assertTrue(loaded.targets[0, 0, 1])
+        self.assertFalse(loaded.targets[0, 1, 0])
+        self.assertFalse(loaded.targets[0, 0, 0])
+        self.assertTrue(loaded.targets[1, 0, 0])
+        self.assertTrue(loaded.targets[8, 0, 0])
+
+    def test_rejects_nonbinary_agriculture_vision_mask(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stem = "FIELD_0-0-1-1"
+            self._write_binary_mask(root / "field_bounds" / f"{stem}.png", [[255]])
+            self._write_binary_mask(root / "field_masks" / f"{stem}.png", [[128]])
+            for class_name in AGRICULTURE_VISION_2017_CLASSES[1:]:
+                self._write_binary_mask(root / "field_labels" / class_name / f"{stem}.png", [[0]])
+
+            with self.assertRaisesRegex(ValueError, "binary 0/255"):
+                load_agriculture_vision_2017_target(root, stem)
+
+    @staticmethod
+    def _write_binary_mask(path: Path, values: list[list[int]]) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        Image.fromarray(np.asarray(values, dtype=np.uint8), mode="L").save(path)
 
 
 if __name__ == "__main__":

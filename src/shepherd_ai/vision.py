@@ -20,6 +20,18 @@ import numpy as np
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 ALLOWED_SPLITS = {"train", "validation", "test", "demo"}
+AGRICULTURE_VISION_2017_CLASSES = (
+    "background",
+    "double_plant",
+    "drydown",
+    "endrow",
+    "nutrient_deficiency",
+    "planter_skip",
+    "storm_damage",
+    "water",
+    "waterway",
+    "weed_cluster",
+)
 REQUIRED_MANIFEST_FIELDS = (
     "id",
     "image_path",
@@ -94,6 +106,46 @@ class SegmentationMetricResult:
             "mean_iou": self.mean_iou,
             "valid_pixels": self.valid_pixels,
         }
+
+
+@dataclass(frozen=True)
+class AgricultureVisionTarget:
+    """One aligned Agriculture-Vision 2017 multilabel target stack."""
+
+    image_id: str
+    class_names: tuple[str, ...]
+    targets: np.ndarray
+    valid_mask: np.ndarray
+
+
+def load_agriculture_vision_2017_target(
+    dataset_dir: str | Path,
+    image_id: str,
+) -> AgricultureVisionTarget:
+    """Load the observed 2017 binary masks for one aligned 512x512 tile."""
+
+    root = Path(dataset_dir)
+    boundary = _load_binary_mask(root / "field_bounds" / f"{image_id}.png")
+    field_mask = _load_binary_mask(root / "field_masks" / f"{image_id}.png", shape=boundary.shape)
+    anomaly_masks = np.stack(
+        [
+            _load_binary_mask(
+                root / "field_labels" / class_name / f"{image_id}.png",
+                shape=boundary.shape,
+            )
+            for class_name in AGRICULTURE_VISION_2017_CLASSES[1:]
+        ]
+    )
+    valid_mask = boundary & field_mask
+    background = ~anomaly_masks.any(axis=0)
+    targets = np.concatenate((background[np.newaxis, ...], anomaly_masks), axis=0)
+    targets[:, ~valid_mask] = False
+    return AgricultureVisionTarget(
+        image_id=image_id,
+        class_names=AGRICULTURE_VISION_2017_CLASSES,
+        targets=targets,
+        valid_mask=valid_mask,
+    )
 
 
 def modified_multilabel_iou(
@@ -324,3 +376,22 @@ def _display_path(path: Path, *, root: Path | None) -> str:
         return str(path.resolve().relative_to(root.resolve())).replace("\\", "/")
     except ValueError:
         return str(path)
+
+
+def _load_binary_mask(path: Path, *, shape: tuple[int, ...] | None = None) -> np.ndarray:
+    try:
+        from PIL import Image
+    except ImportError as exc:
+        raise RuntimeError("Pillow is required to load Agriculture-Vision masks") from exc
+    if not path.is_file():
+        raise FileNotFoundError(f"required Agriculture-Vision mask does not exist: {path}")
+    with Image.open(path) as image:
+        values = np.asarray(image)
+    if values.ndim != 2:
+        raise ValueError(f"Agriculture-Vision mask must be single-channel: {path}")
+    if shape is not None and values.shape != shape:
+        raise ValueError(f"Agriculture-Vision mask shape mismatch: {path}: {values.shape} != {shape}")
+    unique_values = set(int(value) for value in np.unique(values))
+    if not unique_values.issubset({0, 255}):
+        raise ValueError(f"Agriculture-Vision mask must use binary 0/255 values: {path}: {sorted(unique_values)}")
+    return values == 255
