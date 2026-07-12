@@ -16,8 +16,8 @@ This is not mission success, safety validation, tracking, route planning,
 physical-drone perception, or a detection-performance benchmark.
 
 The first Colab attempt attached a CPU-only backend and was rejected before
-inference. The negative infrastructure result is preserved in
-`docs/week6_colab_run_log.md`.
+inference. A later T4 run processed 30 images and preserved its raw non-image
+outputs. Both runs are recorded in `docs/week6_colab_run_log.md`.
 
 ## Literature-Driven Rules
 
@@ -29,11 +29,19 @@ are added.
 
 ## Current Data Status
 
-Agriculture-Vision CVPR 2020 is selected for the first experiment. The dataset
-has not been downloaded or redistributed by the repository. Its official terms
-allow limited non-commercial research use and prohibit redistribution; the user
-must review and accept those terms before downloading. See
-`docs/week6_dataset_decision.md`.
+Agriculture-Vision CVPR 2020 is selected for the first experiment. It was
+downloaded into a temporary Colab session after the user accepted the official
+terms. The repository does not redistribute the dataset or annotated images.
+Its terms allow limited non-commercial research use and prohibit
+redistribution. See `docs/week6_dataset_decision.md`.
+
+The repository now implements the official overlap-aware modified-mIoU rule in
+`modified_multilabel_iou`. It accepts a single predicted class map, a stack of
+potentially overlapping target masks, and an optional valid-pixel mask. Empty
+classes are reported explicitly and excluded from the mean. The exact 2017
+archive label-directory mapping is not implemented yet because the temporary
+Colab runtime containing the extracted archive expired before that mapping was
+recorded.
 
 Supported manifest location:
 
@@ -120,8 +128,10 @@ Current available metrics:
 - manifest record counts,
 - split/source/data-type/license counts,
 - detection counts by class after YOLO inference.
+- overlap-aware per-class IoU and modified mIoU for supplied class maps and
+  overlapping target-mask stacks.
 
-Not evaluated:
+Not evaluated on Agriculture-Vision labels:
 
 - mAP,
 - precision,
@@ -141,7 +151,9 @@ This initial Week 6 foundation is complete when:
 - detection summaries state that they are not benchmark performance,
 - tests cover manifest validation and detection-summary behavior.
 
-The full Week 6 roadmap slice is not complete until the terms have been accepted
-by the user, an official aerial-image subset exists locally, and at least one
-documented inference run is recorded. YOLO inference on Agriculture-Vision is a
-smoke test, not its semantic-segmentation benchmark.
+The original foundation gate has been exercised on a T4 and its non-image raw
+outputs are preserved. Week 6 remains incomplete as a research-quality vision
+milestone until the 2017 label schema is mapped, a segmentation baseline is
+trained with recorded configuration and seed, and modified mIoU is reported on
+an official held-out split. YOLO inference on Agriculture-Vision is a smoke
+test, not its semantic-segmentation benchmark.

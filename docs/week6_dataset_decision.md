@@ -52,7 +52,9 @@ therefore a pipeline smoke test only:
 
 A research-valid Agriculture-Vision experiment requires a segmentation model,
 the official masks, the official split policy, and modified mIoU evaluation.
-That experiment is not implemented yet.
+The overlap-aware metric implementation now exists and is unit tested, but the
+2017 archive label mapping, model training, and dataset-backed evaluation are
+not implemented yet.
 
 ## Initial Experiment
 

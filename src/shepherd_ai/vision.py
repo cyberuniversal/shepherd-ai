@@ -15,6 +15,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 ALLOWED_SPLITS = {"train", "validation", "test", "demo"}
@@ -74,6 +76,89 @@ class DetectionRecord:
         payload = asdict(self)
         payload["bbox_xyxy"] = list(self.bbox_xyxy)
         return payload
+
+
+@dataclass(frozen=True)
+class SegmentationMetricResult:
+    """Overlap-aware semantic-segmentation evaluation output."""
+
+    confusion_matrix: np.ndarray
+    per_class_iou: tuple[float | None, ...]
+    mean_iou: float
+    valid_pixels: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "confusion_matrix": self.confusion_matrix.tolist(),
+            "per_class_iou": list(self.per_class_iou),
+            "mean_iou": self.mean_iou,
+            "valid_pixels": self.valid_pixels,
+        }
+
+
+def modified_multilabel_iou(
+    predictions: np.ndarray,
+    targets: np.ndarray,
+    *,
+    valid_mask: np.ndarray | None = None,
+) -> SegmentationMetricResult:
+    """Compute Agriculture-Vision's overlap-aware modified mean IoU.
+
+    ``predictions`` is a two-dimensional integer class map. ``targets`` is a
+    boolean ``(classes, height, width)`` stack because Agriculture-Vision
+    anomalies may overlap. Pixels excluded by ``valid_mask`` do not contribute.
+    Classes with no prediction or target union are reported as ``None`` and are
+    excluded from the mean.
+    """
+
+    predicted = np.asarray(predictions)
+    target_stack = np.asarray(targets, dtype=bool)
+    if predicted.ndim != 2:
+        raise ValueError("predictions must have shape (height, width)")
+    if target_stack.ndim != 3 or target_stack.shape[1:] != predicted.shape:
+        raise ValueError("targets must have shape (classes, height, width)")
+    if target_stack.shape[0] < 1:
+        raise ValueError("targets must contain at least one class")
+    if not np.issubdtype(predicted.dtype, np.integer):
+        raise ValueError("predictions must contain integer class IDs")
+
+    class_count = target_stack.shape[0]
+    if np.any(predicted < 0) or np.any(predicted >= class_count):
+        raise ValueError(f"predictions must contain class IDs in the range 0..{class_count - 1}")
+
+    included = np.ones(predicted.shape, dtype=bool)
+    if valid_mask is not None:
+        included = np.asarray(valid_mask, dtype=bool)
+        if included.shape != predicted.shape:
+            raise ValueError("valid_mask must match the prediction shape")
+    if np.any(included & ~target_stack.any(axis=0)):
+        raise ValueError("every valid pixel must have at least one target class")
+
+    confusion = np.zeros((class_count, class_count), dtype=np.int64)
+    for row, column in np.argwhere(included):
+        predicted_class = int(predicted[row, column])
+        target_classes = np.flatnonzero(target_stack[:, row, column])
+        if target_stack[predicted_class, row, column]:
+            confusion[target_classes, target_classes] += 1
+        else:
+            confusion[predicted_class, target_classes] += 1
+
+    true_positive = np.diag(confusion)
+    prediction_count = confusion.sum(axis=1)
+    target_count = confusion.sum(axis=0)
+    union = prediction_count + target_count - true_positive
+    per_class = tuple(
+        None if class_union == 0 else float(true_positive[index] / class_union)
+        for index, class_union in enumerate(union)
+    )
+    evaluated = [score for score in per_class if score is not None]
+    mean_iou = float(np.mean(evaluated)) if evaluated else 0.0
+    return SegmentationMetricResult(
+        confusion_matrix=confusion,
+        per_class_iou=per_class,
+        mean_iou=mean_iou,
+        valid_pixels=int(included.sum()),
+    )
 
 
 def load_vision_manifest(path: str | Path, *, dataset_root: str | Path) -> list[VisionManifestRecord]:

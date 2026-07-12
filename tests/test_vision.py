@@ -3,6 +3,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+import numpy as np
+
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +14,7 @@ from shepherd_ai.vision import (  # noqa: E402
     DetectionRecord,
     VisionManifestError,
     load_vision_manifest,
+    modified_multilabel_iou,
     require_cuda_device,
     summarize_detections,
     summarize_vision_manifest,
@@ -213,6 +216,60 @@ class VisionManifestTests(unittest.TestCase):
 
         with self.assertRaisesRegex(RuntimeError, "required CUDA device"):
             require_cuda_device("T4", FakeTorch())
+
+    def test_modified_iou_credits_all_overlapping_targets_when_prediction_matches(self) -> None:
+        predictions = np.array([[1, 0]], dtype=np.int64)
+        targets = np.zeros((3, 1, 2), dtype=bool)
+        targets[[1, 2], 0, 0] = True
+        targets[0, 0, 1] = True
+
+        result = modified_multilabel_iou(predictions, targets)
+
+        np.testing.assert_array_equal(result.confusion_matrix, np.diag([1, 1, 1]))
+        self.assertEqual(result.per_class_iou, (1.0, 1.0, 1.0))
+        self.assertEqual(result.mean_iou, 1.0)
+        self.assertEqual(result.valid_pixels, 2)
+
+    def test_modified_iou_penalizes_wrong_prediction_for_each_overlapping_target(self) -> None:
+        predictions = np.array([[0]], dtype=np.int64)
+        targets = np.zeros((3, 1, 1), dtype=bool)
+        targets[[1, 2], 0, 0] = True
+
+        result = modified_multilabel_iou(predictions, targets)
+
+        np.testing.assert_array_equal(
+            result.confusion_matrix,
+            np.array([[0, 1, 1], [0, 0, 0], [0, 0, 0]]),
+        )
+        self.assertEqual(result.per_class_iou, (0.0, 0.0, 0.0))
+        self.assertEqual(result.mean_iou, 0.0)
+
+    def test_modified_iou_excludes_invalid_pixels_and_reports_empty_classes(self) -> None:
+        predictions = np.array([[1, 2]], dtype=np.int64)
+        targets = np.zeros((3, 1, 2), dtype=bool)
+        targets[1, 0, 0] = True
+        targets[2, 0, 1] = True
+        valid_mask = np.array([[True, False]])
+
+        result = modified_multilabel_iou(predictions, targets, valid_mask=valid_mask)
+
+        self.assertEqual(result.per_class_iou, (None, 1.0, None))
+        self.assertEqual(result.mean_iou, 1.0)
+        self.assertEqual(result.valid_pixels, 1)
+
+    def test_modified_iou_rejects_pixels_without_a_target_label(self) -> None:
+        predictions = np.array([[0]], dtype=np.int64)
+        targets = np.zeros((2, 1, 1), dtype=bool)
+
+        with self.assertRaisesRegex(ValueError, "at least one target class"):
+            modified_multilabel_iou(predictions, targets)
+
+    def test_modified_iou_rejects_prediction_outside_class_range(self) -> None:
+        predictions = np.array([[2]], dtype=np.int64)
+        targets = np.ones((2, 1, 1), dtype=bool)
+
+        with self.assertRaisesRegex(ValueError, "class IDs in the range"):
+            modified_multilabel_iou(predictions, targets)
 
 
 if __name__ == "__main__":
