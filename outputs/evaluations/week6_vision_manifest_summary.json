@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "dataset_root": ".",
+    "manifest": "datasets/aerial_images/manifest.jsonl",
+    "research_note": "Manifest validation checks provenance and file availability only. It is not detection-performance evidence."
+  },
+  "summary": {
+    "data_type_counts": {
+      "public_human_annotated_aerial_imagery": 30
+    },
+    "license_counts": {
+      "IntelinAir limited non-commercial research license; redistribution prohibited": 30
+    },
+    "records": 30,
+    "records_with_labels": 0,
+    "records_with_sha256": 30,
+    "source_counts": {
+      "Agriculture-Vision CVPR 2020 dataset": 30
+    },
+    "split_counts": {
+      "test": 10,
+      "train": 10,
+      "validation": 10
+    }
+  }
+}
