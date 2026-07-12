@@ -145,3 +145,29 @@ Interpretation:
 - overlapping anomaly masks must remain multilabel ground truth,
 - no segmentation model was trained and no dataset-backed mIoU was calculated
   in this audit.
+
+## Run 2026-07-12 - Label Audit Blocked By Recycled Runtime
+
+Status: failed before label audit; preserved negative infrastructure result.
+
+Requested operation:
+
+- update the Colab checkout to commit `aa673c2`,
+- audit the 10 train and 10 validation manifest records,
+- exclude all 10 test records.
+
+Observed failures:
+
+- the first ad hoc command ran outside the repository and Git rejected it,
+- the corrected command used `/content/shepherd-ai` explicitly,
+- Colab then reported that `/content/shepherd-ai` no longer existed,
+- therefore the temporary dataset, manifest, and generated outputs had been
+  removed when the runtime was recycled.
+
+Interpretation:
+
+- no train, validation, or test labels were audited in this attempt,
+- no prevalence or overlap result was produced,
+- no model training occurred,
+- the acquisition and terms-acknowledgment workflow must be rerun in a fresh
+  T4 session before executing the committed label-audit command.
