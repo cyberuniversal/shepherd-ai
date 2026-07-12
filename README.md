@@ -324,6 +324,8 @@ Current default example status: six schedulable tasks are assigned across three 
 
 The Week 6 foundation selects Agriculture-Vision CVPR 2020 for the first non-commercial research experiment, validates provenance-aware aerial-image manifests, and provides a YOLO inference runner. Raw images are not committed because the dataset terms prohibit redistribution. No real image subset has been downloaded or evaluated yet, and generic YOLO inference is only a smoke test because Agriculture-Vision is a semantic-segmentation benchmark.
 
+`notebooks/Notebook6_Vision.ipynb` uses a private Google Drive cache at `MyDrive/shepherd-ai-private/week6/` for the licensed archive, extracted pixels, and future checkpoints. The notebook links that cache into the repository layout during each Colab session, recalculates the archive SHA-256, and writes non-image provenance metadata under `outputs/evaluations/`. GitHub remains the source of truth for code, configurations, manifests, checksums, logs, and metrics; licensed pixels and large model state remain private and are not redistributed.
+
 After reviewing and accepting the official Agriculture-Vision terms, prepare an extracted local subset:
 
 ```powershell
