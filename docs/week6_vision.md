@@ -15,6 +15,10 @@ aerial-image detection:
 This is not mission success, safety validation, tracking, route planning,
 physical-drone perception, or a detection-performance benchmark.
 
+The first Colab attempt attached a CPU-only backend and was rejected before
+inference. The negative infrastructure result is preserved in
+`docs/week6_colab_run_log.md`.
+
 ## Literature-Driven Rules
 
 The literature review warns that perception and vision-language demos can look
