@@ -162,8 +162,11 @@ This initial Week 6 foundation is complete when:
 - tests cover manifest validation and detection-summary behavior.
 
 The original foundation gate has been exercised on a T4 and its non-image raw
-outputs are preserved. Week 6 remains incomplete as a research-quality vision
-milestone until the segmentation development baseline is trained with its
-recorded configuration and seed, scaled beyond the initial development subset,
-and evaluated under a fixed held-out protocol. YOLO inference on
-Agriculture-Vision is a smoke test, not its semantic-segmentation benchmark.
+outputs are preserved. The first segmentation development baseline was also
+trained on a T4 using 64 train and 64 validation tiles, three epochs, and seed
+17. Its best validation modified mIoU was `0.0965`, dominated by background;
+most anomaly classes remained at zero. Week 6 remains incomplete as a
+research-quality vision milestone until the development experiment is scaled,
+class imbalance is addressed through recorded comparisons, and a fixed
+held-out protocol is evaluated. YOLO inference on Agriculture-Vision is a smoke
+test, not its semantic-segmentation benchmark.

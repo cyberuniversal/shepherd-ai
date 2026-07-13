@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains project source documents, typed-command intent baselines, supervised span extraction baselines, a Colab/T4 DistilBERT token-classifier workflow, a speech-input scaffold with a Whisper transcription script, a deterministic Week 3 grounding slice over a synthetic map dataset, and an initial deterministic Week 4 mission-planning slice. It is not an end-to-end prototype, does not control physical drones, and does not yet implement multi-drone scheduling, vision, safety validation, or integrated mission execution.
+Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, and Week 6 computer vision. The vision work includes a generic YOLO smoke test and a T4-trained compact U-Net development baseline on a licensed Agriculture-Vision subset. It is not an end-to-end prototype, does not control physical drones, and does not yet implement Week 7 safety validation or integrated mission execution.
 
 ## Project Rule
 
@@ -322,9 +322,9 @@ Current default example status: six schedulable tasks are assigned across three 
 
 ## Week 6 Computer Vision Foundation
 
-The Week 6 foundation selects Agriculture-Vision CVPR 2020 for the first non-commercial research experiment, validates provenance-aware aerial-image manifests, and provides a YOLO inference runner. Raw images are not committed because the dataset terms prohibit redistribution. No real image subset has been downloaded or evaluated yet, and generic YOLO inference is only a smoke test because Agriculture-Vision is a semantic-segmentation benchmark.
+The Week 6 foundation selects Agriculture-Vision CVPR 2020 for the first non-commercial research experiment, validates provenance-aware aerial-image manifests, and provides a YOLO inference runner. Raw images are not committed because the dataset terms prohibit redistribution. Generic YOLO inference is only a smoke test because Agriculture-Vision is a semantic-segmentation benchmark.
 
-The trainable Week 6 development baseline is a compact U-Net with ten output channels, masked multilabel BCE loss, official train/validation separation, seeded training, resumable checkpoints, and overlap-aware modified-mIoU evaluation. Its initial protocol uses 64 train and 64 validation tiles for three epochs while loading zero test masks. See `docs/week6_segmentation_protocol.md`. A configured protocol is not a completed training result; metrics must come from the recorded Colab run.
+The trainable Week 6 development baseline is a compact U-Net with ten output channels, masked multilabel BCE loss, official train/validation separation, seeded training, resumable checkpoints, and overlap-aware modified-mIoU evaluation. The initial T4 run used 64 train and 64 validation tiles for three epochs while loading zero test masks. It reached validation modified mIoU `0.0965`, dominated by background IoU `0.8022`; most anomaly classes remained at zero. This is a development and class-imbalance result, not final benchmark performance. See `docs/week6_segmentation_protocol.md` and `docs/week6_colab_run_log.md`.
 
 `notebooks/Notebook6_Vision.ipynb` uses a private Google Drive cache at `MyDrive/shepherd-ai-private/week6/` for the licensed archive, extracted pixels, and future checkpoints. The notebook links that cache into the repository layout during each Colab session, recalculates the archive SHA-256, and writes non-image provenance metadata under `outputs/evaluations/`. GitHub remains the source of truth for code, configurations, manifests, checksums, logs, and metrics; licensed pixels and large model state remain private and are not redistributed.
 

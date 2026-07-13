@@ -1,0 +1,65 @@
+{
+  "best_validation_modified_miou": 0.09651361447267072,
+  "generated_at_utc": "2026-07-13T14:38:53.604932+00:00",
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 0.7426913268864155,
+      "validation_loss": 0.7106842882931232,
+      "validation_modified_miou": 0.0,
+      "validation_per_class_iou": {
+        "background": 0.0,
+        "double_plant": 0.0,
+        "drydown": 0.0,
+        "endrow": 0.0,
+        "nutrient_deficiency": null,
+        "planter_skip": null,
+        "storm_damage": null,
+        "water": null,
+        "waterway": 0.0,
+        "weed_cluster": 0.0
+      },
+      "validation_valid_pixels": 14698298
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.6774852834641933,
+      "validation_loss": 0.6397605687379837,
+      "validation_modified_miou": 0.07101630642882416,
+      "validation_per_class_iou": {
+        "background": 0.7101630642882416,
+        "double_plant": 0.0,
+        "drydown": 0.0,
+        "endrow": 0.0,
+        "nutrient_deficiency": 0.0,
+        "planter_skip": 0.0,
+        "storm_damage": 0.0,
+        "water": 0.0,
+        "waterway": 0.0,
+        "weed_cluster": 0.0
+      },
+      "validation_valid_pixels": 14698298
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6403237991034985,
+      "validation_loss": 0.6043057106435299,
+      "validation_modified_miou": 0.09651361447267072,
+      "validation_per_class_iou": {
+        "background": 0.8022135341731719,
+        "double_plant": 0.0,
+        "drydown": 0.06640899608086455,
+        "endrow": 0.0,
+        "nutrient_deficiency": 0.0,
+        "planter_skip": 0.0,
+        "storm_damage": 0.0,
+        "water": null,
+        "waterway": 0.0,
+        "weed_cluster": 0.0
+      },
+      "validation_valid_pixels": 14698298
+    }
+  ],
+  "research_note": "Validation-only development result. Test labels were not loaded. Confusion matrices remain in the private Drive copy of metrics.json; this tracked summary preserves scalar and per-class results. Do not report as final Agriculture-Vision benchmark performance.",
+  "status": "development_baseline_not_final_benchmark"
+}

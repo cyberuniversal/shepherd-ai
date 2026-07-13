@@ -211,3 +211,62 @@ Interpretation:
 - this is a detection-count pipeline check, not Agriculture-Vision anomaly
   segmentation performance,
 - no segmentation model was trained or evaluated in this run.
+
+## Run 2026-07-13 - Agriculture-Vision Segmentation Development Baseline
+
+Status: completed; development result, not a final benchmark.
+
+Repository commit:
+
+- `7b0f5d1` (`Add Week 6 segmentation development baseline`)
+
+Runtime and configuration:
+
+- accelerator: NVIDIA Tesla T4,
+- PyTorch: `2.11.0+cu128`,
+- NumPy: `2.0.2`,
+- model: compact U-Net trained from scratch,
+- outputs: background plus nine Agriculture-Vision anomaly channels,
+- loss: masked multilabel BCE with logits,
+- split: 64 train tiles, 64 validation tiles, zero test masks,
+- epochs: 3,
+- batch size: 4,
+- learning rate: `0.001`,
+- base channels: 16,
+- random seed: 17,
+- input normalization: RGB values divided by 255.
+
+Observed validation result:
+
+- train loss by epoch: `0.742691`, `0.677485`, `0.640324`,
+- validation loss by epoch: `0.710684`, `0.639761`, `0.604306`,
+- modified mIoU by epoch: `0.000000`, `0.071016`, `0.096514`,
+- best validation modified mIoU: `0.09651361447267072`,
+- final background IoU: `0.8022135341731719`,
+- final drydown IoU: `0.06640899608086455`,
+- all other evaluated anomaly classes: `0.0`,
+- water IoU: not evaluated because no water target pixels occurred in this
+  validation subset,
+- valid validation pixels per epoch: 14,698,298.
+
+Tracked non-image evidence:
+
+- `outputs/evaluations/week6_segmentation_dev64_training_config.json`,
+- `outputs/evaluations/week6_segmentation_dev64_metrics_summary.json`.
+
+Private Drive artifacts and SHA-256:
+
+- `training_config.json`: `7813f8c556778c8c9ae4b2399dab62d05d7d3c26d8bcc57c1e371f3fecd93c65`,
+- `metrics.json`: `88aedd6c83934caefaf46be2437aa7e31e840d61662b33ddf5f2b303559616f2`,
+- `best.pt`: `b1638133c9b043b9e713dda1509d815c05d6309abf6c374bafbe4260c6f59095`,
+- `last.pt`: `1124ef177d55042927904f040694cfdd1ecf012553e859d37e0c651803bb689d`.
+
+Interpretation:
+
+- the full train/checkpoint/evaluate path ran successfully on a T4,
+- decreasing train and validation losses confirm optimization occurred,
+- performance is dominated by background and the model has not learned most
+  anomaly classes on this small, imbalanced three-epoch subset,
+- this negative class-level result motivates class-aware sampling, loss
+  comparison, and a larger development split before fixed held-out evaluation,
+- no test labels were loaded, so the held-out test protocol remains untouched.
