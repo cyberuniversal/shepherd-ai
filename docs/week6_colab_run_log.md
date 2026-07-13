@@ -270,3 +270,35 @@ Interpretation:
 - this negative class-level result motivates class-aware sampling, loss
   comparison, and a larger development split before fixed held-out evaluation,
 - no test labels were loaded, so the held-out test protocol remains untouched.
+
+## Run 2026-07-13 - Seeded Development Audit Blocked
+
+Status: blocked before data access; preserved infrastructure result.
+
+Repository commit:
+
+- `d69d448` (`Add reproducible Week 6 subset sampling`)
+
+Requested operation:
+
+- build a deterministic hash-ranked sample with seed 17,
+- select up to 256 records from each official split,
+- audit only the 256 train and 256 validation label sets,
+- use the observed class coverage to choose the next controlled training
+  comparison.
+
+Observed blockers:
+
+- Colab rejected a new GPU runtime because the account had reached its current
+  GPU usage limit,
+- a CPU runtime was connected only for preprocessing and label audit,
+- the private Google Drive cache remount timed out after two minutes with
+  `ValueError: mount failed`.
+
+Interpretation:
+
+- no seeded manifest or label-audit result was produced in this attempt,
+- no model training was attempted on CPU,
+- the completed 64/64 T4 baseline and checkpoints remain preserved in Drive,
+- rerun Notebook 6 section 12 after Drive access succeeds; inspect its class
+  coverage before adding loss weighting or launching another T4 run.
