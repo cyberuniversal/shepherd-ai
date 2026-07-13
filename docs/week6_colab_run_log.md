@@ -171,3 +171,43 @@ Interpretation:
 - no model training occurred,
 - the acquisition and terms-acknowledgment workflow must be rerun in a fresh
   T4 session before executing the committed label-audit command.
+
+## Run 2026-07-13 - Drive-Backed T4 Smoke Test Reproduced
+
+Status: completed; raw non-image outputs preserved in the operator's private
+Google Drive cache.
+
+Repository commit:
+
+- `fa069d5730edfc1736f4cfa6795e26bcdafe63d0`
+
+Runtime and input:
+
+- accelerator: NVIDIA Tesla T4,
+- observed PyTorch: `2.11.0+cu128`,
+- manifest records: 30,
+- split counts: 10 train, 10 validation, 10 test,
+- records with image SHA-256: 30,
+- model: `yolov8n.pt`,
+- confidence threshold: `0.25`,
+- device: CUDA device `0`,
+- generated at: `2026-07-13T13:55:56.508883+00:00`.
+
+Observed output:
+
+- images processed: 30,
+- detections: 1,
+- detected class: `person`,
+- raw predictions: `week6_yolo_detections.jsonl`,
+- summary: `week6_yolo_detection_summary.json`,
+- persistent location: private Google Drive directory
+  `MyDrive/shepherd-ai-private/week6/`.
+
+Interpretation:
+
+- the Drive-backed cache avoided another dataset download,
+- the manifest and T4 device gates passed,
+- the result reproduces the prior generic YOLO smoke-test behavior,
+- this is a detection-count pipeline check, not Agriculture-Vision anomaly
+  segmentation performance,
+- no segmentation model was trained or evaluated in this run.
