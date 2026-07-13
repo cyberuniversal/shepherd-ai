@@ -350,3 +350,46 @@ Interpretation:
 - class weighting must use train-only counts and exclude absent channels,
 - CPU is suitable for these audits; training speed must be measured separately
   before using CPU for optimization runs.
+
+## Run 2026-07-13 - Controlled CPU Training Comparison
+
+Status: completed validation-only development comparison; not a final benchmark.
+
+Runtime and configuration:
+
+- Google Colab Python 3 CPU runtime,
+- Agriculture-Vision 2017 miniscale data in temporary Colab storage,
+- the same sorted-prefix 64-train/64-validation selection used by the initial
+  development baseline,
+- three epochs, batch size 4, learning rate `0.001`, U-Net base channels 16,
+  and random seed 17,
+- test labels were not loaded.
+
+CPU timing checks:
+
+- an 8-train/8-validation, one-epoch, base-channel-4 weighted smoke run took
+  `14.099980399999822` seconds,
+- the same smoke run with base channels 16 took `19.270197500999984` seconds,
+- the 64/64 unweighted three-epoch run took `430.3362569859996` seconds,
+- the matched train-pixel-weighted run took `459.02466035199996` seconds.
+
+Comparison:
+
+- unweighted best validation modified mIoU: `0.09445727757198079`,
+- weight-cap-20 best validation modified mIoU: `0.02358394564401981`,
+- the weighted run excluded the train-absent `nutrient_deficiency` and
+  `waterway` channels from its objective,
+- the weighted run improved its own modified mIoU over its three epochs, but
+  did not outperform the matched unweighted run.
+
+Interpretation:
+
+- CPU training is technically valid and is practical for small controlled
+  development comparisons,
+- T4 remains preferable for larger subsets and longer sweeps because even this
+  64/64 pair required about 14.8 minutes in total,
+- simple capped negative-to-positive pixel weighting is not adopted: it harmed
+  the selected validation metric in this comparison,
+- the unfavorable result is preserved rather than discarded,
+- the exact summary and artifact hashes are in
+  `outputs/evaluations/week6_segmentation_cpu_compare64_summary.json`.
