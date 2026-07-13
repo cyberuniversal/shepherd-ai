@@ -1,0 +1,34 @@
+{
+  "excluded_splits": ["test"],
+  "overlap_pixel_fraction": 4.578288852915909e-05,
+  "overlap_pixels": 68958,
+  "positive_pixel_fraction": {
+    "background": 0.7598635212610807,
+    "double_plant": 0.019778836580862817,
+    "drydown": 0.16904182535690068,
+    "endrow": 0.0015389319318579327,
+    "nutrient_deficiency": 0.0,
+    "planter_skip": 0.000850039481118712,
+    "storm_damage": 1.2925277326570798e-05,
+    "water": 0.002838857108524292,
+    "waterway": 0.0,
+    "weed_cluster": 0.046120845890857486
+  },
+  "positive_pixels": {
+    "background": 1144503337,
+    "double_plant": 29790803,
+    "drydown": 254610108,
+    "endrow": 2317933,
+    "nutrient_deficiency": 0,
+    "planter_skip": 1280326,
+    "storm_damage": 19468,
+    "water": 4275875,
+    "waterway": 0,
+    "weed_cluster": 69467030
+  },
+  "records": 6553,
+  "research_note": "Structural and prevalence audit only. Test labels are excluded. These counts are not model-performance results.",
+  "selected_splits": ["train", "validation"],
+  "split_counts": {"train": 4505, "validation": 2048},
+  "valid_pixels": 1506195922
+}

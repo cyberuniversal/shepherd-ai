@@ -21,6 +21,9 @@ class SegmentationCliTests(unittest.TestCase):
         self.assertIn("--seed", completed.stdout)
         self.assertIn("--resume", completed.stdout)
         self.assertIn("--required-device-substring", completed.stdout)
+        self.assertIn("--device", completed.stdout)
+        self.assertIn("--train-label-audit", completed.stdout)
+        self.assertIn("--positive-weight-cap", completed.stdout)
 
 
 if __name__ == "__main__":

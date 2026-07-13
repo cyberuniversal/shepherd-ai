@@ -19,7 +19,8 @@ consume additional T4 time.
 - Development prediction map: maximum-logit class at each pixel.
 - Metric: the repository's overlap-aware modified mIoU.
 - Seed: 17.
-- Device gate: a CUDA device whose name contains `T4`.
+- Device: CUDA/T4 is the default for research training. Explicit `--device
+  cpu` is allowed for bounded timing/debug runs and must be recorded as CPU.
 - Checkpoints: `last.pt` after every epoch and `best.pt` when validation
   modified mIoU improves.
 
@@ -42,6 +43,27 @@ rule while keeping the exact sample reproducible. It does not guarantee class
 balance, so the recorded audit determines whether sampling or loss changes are
 needed.
 
+## Observed Class Distribution
+
+The complete official train partition contains 4,505 records and
+1,027,983,041 valid pixels. Its positive-pixel fractions are highly imbalanced:
+
+- background: `0.7620465`,
+- drydown: `0.1698631`,
+- weed cluster: `0.0436414`,
+- double plant: `0.0213851`,
+- water: `0.00222135`,
+- planter skip: `0.000808185`,
+- endrow: `0.0000610273`,
+- storm damage: `0.0000189381`,
+- nutrient deficiency and waterway: `0.0`.
+
+The two absent channels cannot be learned from this dataset version and are
+excluded from an imbalance-aware loss. Positive weights are derived only from
+the train audit as capped negative-to-positive pixel ratios. The cap is an
+explicit experiment parameter; the first comparison uses 20. Validation labels
+must never be used to calculate weights.
+
 ## Leakage Controls
 
 - Official farmland-level split metadata remains authoritative.
@@ -61,7 +83,8 @@ needed.
 
 ## Success Criteria
 
-The development run succeeds when all epochs complete on a T4, resumable
-checkpoints and metrics are written to private Drive storage, test masks remain
-unused, and validation loss and modified mIoU are finite. The repository does
-not state a minimum performance threshold.
+The development run succeeds when all epochs complete on the explicitly
+recorded device, resumable checkpoints and metrics are written to persistent
+storage for research runs, test masks remain unused, and validation loss and
+modified mIoU are finite. A CPU timing run is not a model-performance result.
+The repository does not state a minimum performance threshold.

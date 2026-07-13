@@ -302,3 +302,51 @@ Interpretation:
 - the completed 64/64 T4 baseline and checkpoints remain preserved in Drive,
 - rerun Notebook 6 section 12 after Drive access succeeds; inspect its class
   coverage before adding loss weighting or launching another T4 run.
+
+## Run 2026-07-13 - CPU Label-Distribution Audits
+
+Status: completed preprocessing audits; no CPU model training performed.
+
+Runtime and recovery:
+
+- Colab GPU access remained unavailable because of usage limits,
+- a Python 3 CPU runtime was selected explicitly,
+- Google Drive mounting failed again after 120 seconds,
+- the official archive was downloaded to temporary Colab storage instead,
+- archive SHA-256 matched the recorded value
+  `2b4bf0b2357ba982fe6d81da55841874afdd721a867bb8fddede9e04e4914027`,
+- all 8,345 RGB tiles were extracted successfully.
+
+Seeded 256/256 development audit:
+
+- records: 512,
+- valid pixels: 117,914,492,
+- background fraction: `0.7438144414004684`,
+- drydown fraction: `0.18750074418333584`,
+- nutrient deficiency, storm damage, and waterway had zero positive pixels.
+
+Complete train/validation audit:
+
+- records: 6,553 (4,505 train and 2,048 validation),
+- valid pixels: 1,506,195,922,
+- nutrient deficiency and waterway had zero positive pixels,
+- storm damage fraction: `1.2925277326570798e-05`.
+
+Train-only audit for loss design:
+
+- records: 4,505,
+- valid pixels: 1,027,983,041,
+- background fraction: `0.7620465102595014`,
+- drydown fraction: `0.16986311158415307`,
+- weed-cluster fraction: `0.043641380461256075`,
+- storm-damage fraction: `1.8938055613312397e-05`,
+- nutrient deficiency and waterway: zero positive pixels.
+
+Interpretation:
+
+- subset ordering was not the sole cause of background dominance,
+- two configured channels are absent from the complete train/validation data
+  and cannot be learned in this experiment,
+- class weighting must use train-only counts and exclude absent channels,
+- CPU is suitable for these audits; training speed must be measured separately
+  before using CPU for optimization runs.

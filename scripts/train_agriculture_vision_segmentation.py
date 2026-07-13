@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from shepherd_ai.segmentation import (  # noqa: E402
     AgricultureVisionDataset,
     build_small_unet,
+    class_balance_from_label_audit,
     masked_multilabel_bce,
 )
 from shepherd_ai.vision import (  # noqa: E402
@@ -40,7 +41,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base-channels", type=int, default=16)
     parser.add_argument("--seed", type=int, default=17)
     parser.add_argument("--num-workers", type=int, default=2)
+    parser.add_argument(
+        "--device",
+        choices=("cuda", "cpu"),
+        default="cuda",
+        help="Training device. CUDA remains the default for research runs.",
+    )
     parser.add_argument("--required-device-substring", default="T4")
+    parser.add_argument(
+        "--train-label-audit",
+        help="Train-only label-audit JSON used to derive class balance weights.",
+    )
+    parser.add_argument(
+        "--positive-weight-cap",
+        type=float,
+        default=20.0,
+        help="Maximum negative-to-positive ratio when a train label audit is supplied.",
+    )
     parser.add_argument("--resume", action="store_true")
     return parser.parse_args()
 
@@ -54,7 +71,20 @@ def main() -> None:
     from torch.utils.data import DataLoader
 
     _set_seed(args.seed, torch)
-    device_metadata = require_cuda_device(args.required_device_substring, torch)
+    if args.device == "cuda":
+        device_metadata = require_cuda_device(args.required_device_substring, torch)
+        device = torch.device("cuda:0")
+    else:
+        device_metadata = {
+            "cuda_available": torch.cuda.is_available(),
+            "cuda_device_count": torch.cuda.device_count(),
+            "cuda_device_names": [
+                torch.cuda.get_device_name(index) for index in range(torch.cuda.device_count())
+            ],
+            "required_device_substring": None,
+            "selected_device": "cpu",
+        }
+        device = torch.device("cpu")
     records = load_vision_manifest(args.manifest, dataset_root=args.dataset_root)
     train_records = [record for record in records if record.split == "train"]
     validation_records = [record for record in records if record.split == "validation"]
@@ -67,7 +97,7 @@ def main() -> None:
         batch_size=args.batch_size,
         shuffle=True,
         num_workers=args.num_workers,
-        pin_memory=True,
+        pin_memory=device.type == "cuda",
         generator=generator,
     )
     validation_loader = DataLoader(
@@ -75,9 +105,24 @@ def main() -> None:
         batch_size=args.batch_size,
         shuffle=False,
         num_workers=args.num_workers,
-        pin_memory=True,
+        pin_memory=device.type == "cuda",
     )
-    device = torch.device("cuda:0")
+    class_balance = None
+    positive_weights = None
+    class_weights = None
+    if args.train_label_audit:
+        audit = json.loads(Path(args.train_label_audit).read_text(encoding="utf-8"))
+        class_balance = class_balance_from_label_audit(
+            audit,
+            class_names=AGRICULTURE_VISION_2017_CLASSES,
+            positive_weight_cap=args.positive_weight_cap,
+        )
+        positive_weights = torch.tensor(
+            class_balance["positive_weights"], dtype=torch.float32, device=device
+        )
+        class_weights = torch.tensor(
+            class_balance["class_weights"], dtype=torch.float32, device=device
+        )
     model = build_small_unet(
         class_count=len(AGRICULTURE_VISION_2017_CLASSES),
         base_channels=args.base_channels,
@@ -116,8 +161,11 @@ def main() -> None:
         "dataset_root": args.dataset_root,
         "labels_dir": args.labels_dir,
         "device": device_metadata,
+        "selected_device": str(device),
         "torch_version": torch.__version__,
         "numpy_version": np.__version__,
+        "class_balance": class_balance,
+        "train_label_audit": args.train_label_audit,
     }
     (output_dir / "training_config.json").write_text(
         json.dumps(config, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -133,13 +181,26 @@ def main() -> None:
             valid_mask = batch["valid_mask"].to(device, non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
             logits = model(images)
-            loss = masked_multilabel_bce(logits, targets, valid_mask)
+            loss = masked_multilabel_bce(
+                logits,
+                targets,
+                valid_mask,
+                positive_weights=positive_weights,
+                class_weights=class_weights,
+            )
             loss.backward()
             optimizer.step()
             train_loss_sum += float(loss.detach().cpu())
             batches += 1
 
-        validation = _evaluate(model, validation_loader, device, torch)
+        validation = _evaluate(
+            model,
+            validation_loader,
+            device,
+            torch,
+            positive_weights=positive_weights,
+            class_weights=class_weights,
+        )
         epoch_record = {
             "epoch": epoch,
             "train_loss": train_loss_sum / max(batches, 1),
@@ -175,13 +236,22 @@ def main() -> None:
         print(json.dumps(epoch_record, sort_keys=True), flush=True)
 
 
-def _evaluate(model, data_loader, device, torch_module) -> dict:
+def _evaluate(
+    model,
+    data_loader,
+    device,
+    torch_module,
+    *,
+    positive_weights=None,
+    class_weights=None,
+) -> dict:
     model.eval()
     confusion = np.zeros(
         (len(AGRICULTURE_VISION_2017_CLASSES), len(AGRICULTURE_VISION_2017_CLASSES)),
         dtype=np.int64,
     )
     loss_sum = 0.0
+    objective_loss_sum = 0.0
     batches = 0
     valid_pixels = 0
     with torch_module.no_grad():
@@ -191,6 +261,15 @@ def _evaluate(model, data_loader, device, torch_module) -> dict:
             valid_mask = batch["valid_mask"].to(device, non_blocking=True)
             logits = model(images)
             loss_sum += float(masked_multilabel_bce(logits, targets, valid_mask).cpu())
+            objective_loss_sum += float(
+                masked_multilabel_bce(
+                    logits,
+                    targets,
+                    valid_mask,
+                    positive_weights=positive_weights,
+                    class_weights=class_weights,
+                ).cpu()
+            )
             predictions = logits.argmax(dim=1).cpu().numpy()
             target_values = targets.cpu().numpy().astype(bool)
             valid_values = valid_mask.cpu().numpy().astype(bool)
@@ -207,6 +286,7 @@ def _evaluate(model, data_loader, device, torch_module) -> dict:
     evaluated = [value for value in per_class if value is not None]
     return {
         "validation_loss": loss_sum / max(batches, 1),
+        "validation_objective_loss": objective_loss_sum / max(batches, 1),
         "validation_modified_miou": float(np.mean(evaluated)) if evaluated else 0.0,
         "validation_per_class_iou": dict(zip(AGRICULTURE_VISION_2017_CLASSES, per_class)),
         "validation_confusion_matrix": confusion.tolist(),
