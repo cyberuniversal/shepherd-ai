@@ -35,13 +35,13 @@ terms. The repository does not redistribute the dataset or annotated images.
 Its terms allow limited non-commercial research use and prohibit
 redistribution. See `docs/week6_dataset_decision.md`.
 
-The repository now implements the official overlap-aware modified-mIoU rule in
+The repository implements the overlap-aware modified-mIoU rule in
 `modified_multilabel_iou`. It accepts a single predicted class map, a stack of
 potentially overlapping target masks, and an optional valid-pixel mask. Empty
 classes are reported explicitly and excluded from the mean. The exact 2017
-archive label-directory mapping is not implemented yet because the temporary
-Colab runtime containing the extracted archive expired before that mapping was
-recorded.
+archive label-directory mapping is implemented for the observed miniscale
+layout. The trainable development protocol is documented in
+`docs/week6_segmentation_protocol.md`.
 
 The 2017 layout audit is preserved at
 `outputs/evaluations/week6_agriculture_vision_layout_summary.json`. It records
@@ -122,6 +122,7 @@ Primary scripts:
 - `scripts/prepare_agriculture_vision_subset.py`
 - `scripts/inspect_agriculture_vision_layout.py`
 - `scripts/validate_agriculture_vision_labels.py`
+- `scripts/train_agriculture_vision_segmentation.py`
 
 Tests:
 
@@ -162,7 +163,7 @@ This initial Week 6 foundation is complete when:
 
 The original foundation gate has been exercised on a T4 and its non-image raw
 outputs are preserved. Week 6 remains incomplete as a research-quality vision
-milestone until the 2017 label schema is mapped, a segmentation baseline is
-trained with recorded configuration and seed, and modified mIoU is reported on
-an official held-out split. YOLO inference on Agriculture-Vision is a smoke
-test, not its semantic-segmentation benchmark.
+milestone until the segmentation development baseline is trained with its
+recorded configuration and seed, scaled beyond the initial development subset,
+and evaluated under a fixed held-out protocol. YOLO inference on
+Agriculture-Vision is a smoke test, not its semantic-segmentation benchmark.

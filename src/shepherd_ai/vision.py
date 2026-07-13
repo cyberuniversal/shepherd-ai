@@ -187,13 +187,16 @@ def modified_multilabel_iou(
         raise ValueError("every valid pixel must have at least one target class")
 
     confusion = np.zeros((class_count, class_count), dtype=np.int64)
-    for row, column in np.argwhere(included):
-        predicted_class = int(predicted[row, column])
-        target_classes = np.flatnonzero(target_stack[:, row, column])
-        if target_stack[predicted_class, row, column]:
-            confusion[target_classes, target_classes] += 1
-        else:
-            confusion[predicted_class, target_classes] += 1
+    prediction_matches_target = np.take_along_axis(
+        target_stack, predicted[np.newaxis, ...], axis=0
+    )[0]
+    for target_class in range(class_count):
+        target_pixels = included & target_stack[target_class]
+        correct_pixels = target_pixels & prediction_matches_target
+        confusion[target_class, target_class] += int(correct_pixels.sum())
+        wrong_predictions = predicted[target_pixels & ~prediction_matches_target]
+        if wrong_predictions.size:
+            confusion[:, target_class] += np.bincount(wrong_predictions, minlength=class_count)
 
     true_positive = np.diag(confusion)
     prediction_count = confusion.sum(axis=1)

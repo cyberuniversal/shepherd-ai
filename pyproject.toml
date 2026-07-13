@@ -17,6 +17,7 @@ dependencies = [
 [project.optional-dependencies]
 vision = [
     "pillow>=10",
+    "torch>=2.2",
     "ultralytics>=8.0",
 ]
 
