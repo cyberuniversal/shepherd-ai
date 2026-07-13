@@ -7,6 +7,7 @@ Run it only after downloading from the official source and reviewing the terms.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -40,6 +41,18 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--max-per-split", type=int, default=10, help="Deterministic RGB-image limit per split.")
     parser.add_argument(
+        "--selection-strategy",
+        choices=("sorted-prefix", "seeded-hash"),
+        default="sorted-prefix",
+        help="Select the sorted prefix or a deterministic hash-ranked sample.",
+    )
+    parser.add_argument(
+        "--selection-seed",
+        type=int,
+        default=17,
+        help="Seed included in hash ranking when --selection-strategy=seeded-hash.",
+    )
+    parser.add_argument(
         "--accept-terms",
         action="store_true",
         help="Confirm that you reviewed and accept the official Agriculture-Vision terms.",
@@ -72,7 +85,14 @@ def main() -> None:
 
     rows = []
     for split in sorted(grouped):
-        for image in grouped[split][: args.max_per_split]:
+        selected = _select_images(
+            grouped[split],
+            limit=args.max_per_split,
+            strategy=args.selection_strategy,
+            seed=args.selection_seed,
+            dataset_dir=dataset_dir,
+        )
+        for image in selected:
             relative = image.relative_to(dataset_root).as_posix()
             rows.append(
                 {
@@ -100,7 +120,40 @@ def main() -> None:
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8")
-    print(json.dumps({"records": len(rows), "split_counts": {key: len(value[: args.max_per_split]) for key, value in grouped.items()}}, indent=2))
+    print(
+        json.dumps(
+            {
+                "records": len(rows),
+                "selection_strategy": args.selection_strategy,
+                "selection_seed": args.selection_seed,
+                "split_counts": {
+                    key: min(len(value), args.max_per_split) for key, value in grouped.items()
+                },
+            },
+            indent=2,
+        )
+    )
+
+
+def _select_images(
+    images: list[Path],
+    *,
+    limit: int,
+    strategy: str,
+    seed: int,
+    dataset_dir: Path,
+) -> list[Path]:
+    if strategy == "sorted-prefix":
+        return images[:limit]
+    if strategy == "seeded-hash":
+        ranked = sorted(
+            images,
+            key=lambda image: hashlib.sha256(
+                f"{seed}:{image.relative_to(dataset_dir).as_posix()}".encode("utf-8")
+            ).digest(),
+        )
+        return ranked[:limit]
+    raise ValueError(f"unsupported selection strategy: {strategy}")
 
 
 def _infer_split(image: Path, dataset_dir: Path) -> str | None:

@@ -34,6 +34,14 @@ consume additional T4 time.
 
 This is a pipeline-validation run, not final benchmark performance.
 
+The initial run used the manifest builder's sorted-prefix selection and showed
+strong background dominance. Follow-up development manifests must use
+`--selection-strategy seeded-hash --selection-seed 17`, then run the label
+audit before training. This removes filesystem ordering as the subset-selection
+rule while keeping the exact sample reproducible. It does not guarantee class
+balance, so the recorded audit determines whether sampling or loss changes are
+needed.
+
 ## Leakage Controls
 
 - Official farmland-level split metadata remains authoritative.

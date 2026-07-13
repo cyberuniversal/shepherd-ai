@@ -112,6 +112,51 @@ class PrepareAgricultureVisionSubsetCliTests(unittest.TestCase):
 
         self.assertEqual([row["split"] for row in rows], ["test", "train", "validation"])
 
+    def test_seeded_hash_selection_is_reproducible_and_not_sorted_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "agriculture-vision"
+            rgb = dataset / "train" / "images" / "rgb"
+            rgb.mkdir(parents=True)
+            for index in range(12):
+                (rgb / f"field_{index:02d}.jpg").write_bytes(str(index).encode("ascii"))
+
+            selected_ids = []
+            for output_name in ("first.jsonl", "second.jsonl"):
+                output = root / output_name
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(SCRIPT),
+                        "--dataset-dir",
+                        str(dataset),
+                        "--dataset-root",
+                        str(root),
+                        "--output",
+                        str(output),
+                        "--accept-terms",
+                        "--max-per-split",
+                        "4",
+                        "--selection-strategy",
+                        "seeded-hash",
+                        "--selection-seed",
+                        "17",
+                    ],
+                    cwd=ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                selected_ids.append(
+                    [json.loads(line)["id"] for line in output.read_text(encoding="utf-8").splitlines()]
+                )
+
+        self.assertEqual(selected_ids[0], selected_ids[1])
+        self.assertNotEqual(
+            selected_ids[0],
+            [f"agriculture_vision_train_field_{index:02d}" for index in range(4)],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
