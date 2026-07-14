@@ -393,3 +393,44 @@ Interpretation:
 - the unfavorable result is preserved rather than discarded,
 - the exact summary and artifact hashes are in
   `outputs/evaluations/week6_segmentation_cpu_compare64_summary.json`.
+
+## Run 2026-07-14 - Imbalance-Aware T4 Comparison
+
+Status: completed validation-only development comparison; not a final
+benchmark.
+
+Runtime and configuration:
+
+- Google Colab NVIDIA T4 runtime,
+- Agriculture-Vision 2017 miniscale data,
+- the same sorted-prefix 64-train/64-validation development selection,
+- three epochs, batch size 4, learning rate `0.001`, U-Net base channels 16,
+  and random seed 17,
+- positive class weights derived only from the complete train-label audit and
+  capped at 20,
+- train-absent `nutrient_deficiency` and `waterway` channels excluded from the
+  weighted objective,
+- test labels were not loaded,
+- checkpoints and full metrics saved in the private Google Drive experiment
+  directory, not committed to GitHub.
+
+Result:
+
+- epoch validation modified mIoU: `0.0`, `0.011110586335664899`,
+  `0.03748389352181541`,
+- best validation modified mIoU: `0.03748389352181541`,
+- prior T4 unweighted development baseline: `0.09651361447267072`,
+- matched CPU unweighted development baseline: `0.09445727757198079`,
+- matched CPU weight-cap-20 result: `0.02358394564401981`.
+
+Interpretation:
+
+- the weighted T4 run learned across its three epochs and exceeded the matched
+  CPU weighted result,
+- it did not outperform either unweighted development baseline,
+- capped negative-to-positive pixel weighting remains a preserved negative
+  result and is not adopted as the next model configuration,
+- these are validation-only development results and must not be presented as
+  final Agriculture-Vision benchmark performance,
+- the tracked result summary is
+  `outputs/evaluations/week6_segmentation_t4_weightcap20_summary.json`.

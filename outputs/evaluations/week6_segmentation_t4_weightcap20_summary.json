@@ -1,0 +1,60 @@
+{
+  "status": "t4_validation_comparison_not_final_benchmark",
+  "generated_at_utc": "2026-07-14T15:53:22.246423+00:00",
+  "runtime": "Google Colab NVIDIA T4",
+  "dataset": "Agriculture-Vision 2017 miniscale",
+  "selection_strategy": "sorted-prefix",
+  "train_records": 64,
+  "validation_records": 64,
+  "test_labels_loaded": false,
+  "seed": 17,
+  "epochs": 3,
+  "batch_size": 4,
+  "learning_rate": 0.001,
+  "base_channels": 16,
+  "positive_weight_cap": 20.0,
+  "excluded_absent_classes": [
+    "nutrient_deficiency",
+    "waterway"
+  ],
+  "best_validation_modified_miou": 0.03748389352181541,
+  "epoch_train_loss": [
+    0.7598891519010067,
+    0.6707695834338665,
+    0.6220098584890366
+  ],
+  "epoch_validation_loss": [
+    0.726524829864502,
+    0.7385321594774723,
+    0.6877745352685452
+  ],
+  "epoch_validation_objective_loss": [
+    0.926647987216711,
+    0.9097965508699417,
+    0.8198590464890003
+  ],
+  "epoch_validation_modified_miou": [
+    0.0,
+    0.011110586335664899,
+    0.03748389352181541
+  ],
+  "best_epoch_validation_per_class_iou": {
+    "background": 6.641617805114677e-07,
+    "double_plant": null,
+    "drydown": 0.14575612042784591,
+    "endrow": 0.0,
+    "nutrient_deficiency": 0.0,
+    "planter_skip": null,
+    "storm_damage": null,
+    "water": null,
+    "waterway": 0.0,
+    "weed_cluster": 0.07914657654126599
+  },
+  "comparisons": {
+    "prior_t4_unweighted_best_validation_modified_miou": 0.09651361447267072,
+    "matched_cpu_unweighted_best_validation_modified_miou": 0.09445727757198079,
+    "matched_cpu_weightcap20_best_validation_modified_miou": 0.02358394564401981
+  },
+  "interpretation": "The capped train-pixel-weighted T4 run improved over its own epochs and exceeded the matched CPU weighted result, but it did not outperform either unweighted development baseline. This weighting configuration is retained as a negative result and is not adopted as an improvement.",
+  "research_note": "Validation-only development comparison. Test labels were not loaded. Do not report as final Agriculture-Vision benchmark performance. Checkpoints and full metrics remain in the private Google Drive experiment directory; large model files are not committed to GitHub."
+}
