@@ -176,3 +176,10 @@ its best T4 validation modified mIoU was `0.03748389352181541`, below the
 unweighted 64/64 T4 result. The next preregistered experiment is the unweighted
 seed-17 256-train/256-validation T4 baseline defined in
 `docs/week6_fixed_holdout_protocol.md` and Notebook 6 Section 15.
+
+That fixed run has now completed. Its best validation modified mIoU was
+`0.0925782719754147`, slightly below the 64/64 T4 baseline, and its best epoch
+reported zero IoU for every evaluated anomaly class. Loss convergence therefore
+did not translate into anomaly segmentation. The exact result and artifact
+hashes are recorded in
+`outputs/evaluations/week6_segmentation_seed17_dev256_t4_summary.json`.

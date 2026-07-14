@@ -434,3 +434,44 @@ Interpretation:
   final Agriculture-Vision benchmark performance,
 - the tracked result summary is
   `outputs/evaluations/week6_segmentation_t4_weightcap20_summary.json`.
+
+## Run 2026-07-14 - Fixed Seed-17 256/256 T4 Baseline
+
+Status: completed validation-only development comparison; not a final
+benchmark.
+
+Protocol and configuration:
+
+- preregistered in `docs/week6_fixed_holdout_protocol.md`,
+- Google Colab NVIDIA T4 runtime,
+- deterministic SHA-256-ranked Agriculture-Vision subset with seed 17,
+- 256 official training records and 256 held-out official validation records,
+- five epochs, batch size 4, learning rate `0.001`, U-Net base channels 16,
+  and random seed 17,
+- unweighted binary cross-entropy,
+- the manifest contained 256 test references, but test labels were not loaded,
+- checkpoints and complete metrics saved in private Google Drive.
+
+Result:
+
+- epoch validation modified mIoU: `0.04295363769610412`,
+  `0.07348724998159521`, `0.07345180489710658`,
+  `0.09257792955527273`, `0.0925782719754147`,
+- best validation modified mIoU: `0.0925782719754147`,
+- prior unweighted 64/64 T4 result: `0.09651361447267072`,
+- absolute difference from the prior result: `-0.00393534249725602`,
+- final background IoU: `0.7406261758033176`,
+- final IoU for every evaluated anomaly class: `0.0`,
+- `nutrient_deficiency` and `waterway` had no validation positives and their
+  IoUs were undefined.
+
+Interpretation:
+
+- training and validation losses decreased across all five epochs,
+- scaling the same small unweighted U-Net configuration did not improve the
+  selected metric,
+- the modified mIoU remained dominated by background, so numerical convergence
+  did not produce useful anomaly segmentation,
+- scale alone is not adopted as the next improvement,
+- the tracked result and artifact hashes are in
+  `outputs/evaluations/week6_segmentation_seed17_dev256_t4_summary.json`.
