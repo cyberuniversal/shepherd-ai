@@ -5,6 +5,8 @@ import sys
 import tempfile
 import unittest
 
+from PIL import Image
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "prepare_agriculture_vision_subset.py"
@@ -156,6 +158,58 @@ class PrepareAgricultureVisionSubsetCliTests(unittest.TestCase):
             selected_ids[0],
             [f"agriculture_vision_train_field_{index:02d}" for index in range(4)],
         )
+
+    def test_train_label_stratified_selection_reserves_rare_positive_records(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "agriculture-vision"
+            rgb = dataset / "train" / "images" / "rgb"
+            labels = dataset / "labels" / "field_labels"
+            rgb.mkdir(parents=True)
+            for index in range(8):
+                (rgb / f"field_{index:02d}.jpg").write_bytes(str(index).encode("ascii"))
+            for class_name, indices in {"endrow": (6,), "water": (7,)}.items():
+                class_dir = labels / class_name
+                class_dir.mkdir(parents=True)
+                for index in indices:
+                    Image.new("L", (2, 2), color=255).save(class_dir / f"field_{index:02d}.png")
+            output = root / "manifest.jsonl"
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--dataset-dir",
+                    str(dataset),
+                    "--dataset-root",
+                    str(root),
+                    "--output",
+                    str(output),
+                    "--accept-terms",
+                    "--max-per-split",
+                    "4",
+                    "--selection-strategy",
+                    "train-label-stratified",
+                    "--selection-seed",
+                    "17",
+                    "--labels-dir",
+                    str(dataset / "labels"),
+                    "--min-positive-records-per-class",
+                    "1",
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            rows = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
+            summary = json.loads(completed.stdout)
+
+        selected_ids = {row["id"] for row in rows}
+        self.assertIn("agriculture_vision_train_field_06", selected_ids)
+        self.assertIn("agriculture_vision_train_field_07", selected_ids)
+        self.assertEqual(summary["selected_train_positive_records"]["endrow"], 1)
+        self.assertEqual(summary["selected_train_positive_records"]["water"], 1)
 
 
 if __name__ == "__main__":

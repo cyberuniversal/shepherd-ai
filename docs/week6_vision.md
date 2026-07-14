@@ -195,3 +195,9 @@ That comparison improved best validation modified mIoU from
 BCE-Dice is therefore the leading development objective, but Week 6 remains
 incomplete until broader anomaly coverage and the remaining completion evidence
 are addressed.
+
+The fixed training subset audit showed zero training positives for `endrow`,
+`storm_damage`, and `water`. The next controlled comparison is therefore the
+train-label-stratified 256-record protocol in
+`docs/week6_stratified_subset_protocol.md`, with the validation subset and
+BCE-Dice configuration held fixed.
