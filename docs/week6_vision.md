@@ -170,3 +170,9 @@ research-quality vision milestone until the development experiment is scaled,
 class imbalance is addressed through recorded comparisons, and a fixed
 held-out protocol is evaluated. YOLO inference on Agriculture-Vision is a smoke
 test, not its semantic-segmentation benchmark.
+
+The cap-20 train-pixel-weighted comparison is now recorded as a negative result:
+its best T4 validation modified mIoU was `0.03748389352181541`, below the
+unweighted 64/64 T4 result. The next preregistered experiment is the unweighted
+seed-17 256-train/256-validation T4 baseline defined in
+`docs/week6_fixed_holdout_protocol.md` and Notebook 6 Section 15.
