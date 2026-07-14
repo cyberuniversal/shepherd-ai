@@ -183,3 +183,8 @@ reported zero IoU for every evaluated anomaly class. Loss convergence therefore
 did not translate into anomaly segmentation. The exact result and artifact
 hashes are recorded in
 `outputs/evaluations/week6_segmentation_seed17_dev256_t4_summary.json`.
+
+The next controlled comparison is preregistered in
+`docs/week6_bce_dice_protocol.md`. It keeps the fixed 256/256 setup and adds
+anomaly-only soft Dice to unweighted BCE to test whether direct overlap
+optimization reduces background collapse.

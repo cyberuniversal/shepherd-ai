@@ -20,6 +20,7 @@ from shepherd_ai.segmentation import (  # noqa: E402
     build_small_unet,
     class_balance_from_label_audit,
     masked_multilabel_bce,
+    masked_multilabel_soft_dice_loss,
 )
 from shepherd_ai.vision import (  # noqa: E402
     AGRICULTURE_VISION_2017_CLASSES,
@@ -58,6 +59,18 @@ def parse_args() -> argparse.Namespace:
         default=20.0,
         help="Maximum negative-to-positive ratio when a train label audit is supplied.",
     )
+    parser.add_argument(
+        "--loss",
+        choices=("bce", "bce-dice"),
+        default="bce",
+        help="Training objective. bce-dice requires a train-only label audit.",
+    )
+    parser.add_argument(
+        "--dice-weight",
+        type=float,
+        default=1.0,
+        help="Multiplier for anomaly-only soft Dice when --loss=bce-dice.",
+    )
     parser.add_argument("--resume", action="store_true")
     return parser.parse_args()
 
@@ -66,6 +79,10 @@ def main() -> None:
     args = parse_args()
     if args.epochs < 1 or args.batch_size < 1 or args.learning_rate <= 0:
         raise SystemExit("epochs, batch-size, and learning-rate must be positive")
+    if args.dice_weight <= 0:
+        raise SystemExit("dice-weight must be positive")
+    if args.loss == "bce-dice" and not args.train_label_audit:
+        raise SystemExit("--loss=bce-dice requires --train-label-audit")
 
     import torch
     from torch.utils.data import DataLoader
@@ -110,6 +127,7 @@ def main() -> None:
     class_balance = None
     positive_weights = None
     class_weights = None
+    dice_class_weights = None
     if args.train_label_audit:
         audit = json.loads(Path(args.train_label_audit).read_text(encoding="utf-8"))
         class_balance = class_balance_from_label_audit(
@@ -123,6 +141,11 @@ def main() -> None:
         class_weights = torch.tensor(
             class_balance["class_weights"], dtype=torch.float32, device=device
         )
+        if args.loss == "bce-dice":
+            dice_class_weights = class_weights.clone()
+            dice_class_weights[0] = 0.0
+            positive_weights = None
+            class_weights = None
     model = build_small_unet(
         class_count=len(AGRICULTURE_VISION_2017_CLASSES),
         base_channels=args.base_channels,
@@ -146,7 +169,9 @@ def main() -> None:
     config = {
         "model": "small_unet_from_scratch",
         "class_names": list(AGRICULTURE_VISION_2017_CLASSES),
-        "loss": "masked_multilabel_bce_with_logits",
+        "loss": args.loss,
+        "dice_weight": args.dice_weight if args.loss == "bce-dice" else None,
+        "dice_scope": "train-present_anomaly_classes" if args.loss == "bce-dice" else None,
         "input_normalization": "uint8_rgb_divided_by_255",
         "epochs_requested": args.epochs,
         "batch_size": args.batch_size,
@@ -181,12 +206,15 @@ def main() -> None:
             valid_mask = batch["valid_mask"].to(device, non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
             logits = model(images)
-            loss = masked_multilabel_bce(
+            loss = _training_objective(
                 logits,
                 targets,
                 valid_mask,
+                loss_name=args.loss,
+                dice_weight=args.dice_weight,
                 positive_weights=positive_weights,
                 class_weights=class_weights,
+                dice_class_weights=dice_class_weights,
             )
             loss.backward()
             optimizer.step()
@@ -200,6 +228,9 @@ def main() -> None:
             torch,
             positive_weights=positive_weights,
             class_weights=class_weights,
+            loss_name=args.loss,
+            dice_weight=args.dice_weight,
+            dice_class_weights=dice_class_weights,
         )
         epoch_record = {
             "epoch": epoch,
@@ -244,6 +275,9 @@ def _evaluate(
     *,
     positive_weights=None,
     class_weights=None,
+    loss_name="bce",
+    dice_weight=1.0,
+    dice_class_weights=None,
 ) -> dict:
     model.eval()
     confusion = np.zeros(
@@ -262,12 +296,15 @@ def _evaluate(
             logits = model(images)
             loss_sum += float(masked_multilabel_bce(logits, targets, valid_mask).cpu())
             objective_loss_sum += float(
-                masked_multilabel_bce(
+                _training_objective(
                     logits,
                     targets,
                     valid_mask,
+                    loss_name=loss_name,
+                    dice_weight=dice_weight,
                     positive_weights=positive_weights,
                     class_weights=class_weights,
+                    dice_class_weights=dice_class_weights,
                 ).cpu()
             )
             predictions = logits.argmax(dim=1).cpu().numpy()
@@ -292,6 +329,37 @@ def _evaluate(
         "validation_confusion_matrix": confusion.tolist(),
         "validation_valid_pixels": valid_pixels,
     }
+
+
+def _training_objective(
+    logits,
+    targets,
+    valid_mask,
+    *,
+    loss_name,
+    dice_weight,
+    positive_weights,
+    class_weights,
+    dice_class_weights,
+):
+    bce = masked_multilabel_bce(
+        logits,
+        targets,
+        valid_mask,
+        positive_weights=positive_weights,
+        class_weights=class_weights,
+    )
+    if loss_name == "bce":
+        return bce
+    if loss_name != "bce-dice":
+        raise ValueError(f"unsupported loss: {loss_name}")
+    dice = masked_multilabel_soft_dice_loss(
+        logits,
+        targets,
+        valid_mask,
+        class_weights=dice_class_weights,
+    )
+    return bce + (dice_weight * dice)
 
 
 def _set_seed(seed: int, torch_module) -> None:

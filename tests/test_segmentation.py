@@ -55,6 +55,50 @@ class SegmentationTests(unittest.TestCase):
 
         self.assertAlmostEqual(float(loss), 1.0397208, places=5)
 
+    def test_masked_soft_dice_rewards_correct_anomaly_overlap(self) -> None:
+        import torch
+
+        from shepherd_ai.segmentation import masked_multilabel_soft_dice_loss
+
+        targets = torch.tensor([[[[0.0, 0.0]], [[1.0, 0.0]], [[0.0, 1.0]]]])
+        valid_mask = torch.tensor([[[True, True]]])
+        active_classes = torch.tensor([0.0, 1.0, 1.0])
+        correct_logits = torch.tensor([[[[-10.0, -10.0]], [[10.0, -10.0]], [[-10.0, 10.0]]]])
+        wrong_logits = torch.tensor([[[[-10.0, -10.0]], [[-10.0, 10.0]], [[10.0, -10.0]]]])
+
+        correct = masked_multilabel_soft_dice_loss(
+            correct_logits, targets, valid_mask, class_weights=active_classes
+        )
+        wrong = masked_multilabel_soft_dice_loss(
+            wrong_logits, targets, valid_mask, class_weights=active_classes
+        )
+
+        self.assertLess(float(correct), 0.001)
+        self.assertGreater(float(wrong), 0.99)
+
+    def test_masked_soft_dice_ignores_invalid_pixels_and_inactive_classes(self) -> None:
+        import torch
+
+        from shepherd_ai.segmentation import masked_multilabel_soft_dice_loss
+
+        logits = torch.tensor(
+            [[[[10.0, 10.0]], [[10.0, -10.0]], [[-10.0, 10.0]]]], requires_grad=True
+        )
+        targets = torch.tensor([[[[1.0, 0.0]], [[1.0, 0.0]], [[0.0, 1.0]]]])
+        valid_mask = torch.tensor([[[True, False]]])
+
+        loss = masked_multilabel_soft_dice_loss(
+            logits,
+            targets,
+            valid_mask,
+            class_weights=torch.tensor([0.0, 1.0, 0.0]),
+        )
+        loss.backward()
+
+        self.assertLess(float(loss.detach()), 0.001)
+        self.assertEqual(float(logits.grad[0, 1, 0, 1]), 0.0)
+        self.assertEqual(float(logits.grad[0, 0, 0, 0]), 0.0)
+
     def test_class_balance_uses_train_labels_and_excludes_absent_classes(self) -> None:
         from shepherd_ai.segmentation import class_balance_from_label_audit
 

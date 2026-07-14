@@ -134,6 +134,43 @@ def masked_multilabel_bce(
     return (losses * included).sum() / denominator
 
 
+def masked_multilabel_soft_dice_loss(
+    logits,
+    targets,
+    valid_mask,
+    *,
+    class_weights=None,
+    smooth: float = 1.0,
+):
+    """Average soft Dice loss over active classes and valid pixels."""
+
+    import torch
+
+    if logits.shape != targets.shape:
+        raise ValueError("logits and targets must have identical shapes")
+    if valid_mask.shape != logits.shape[:1] + logits.shape[2:]:
+        raise ValueError("valid_mask must have shape (batch, height, width)")
+    if smooth <= 0:
+        raise ValueError("smooth must be positive")
+    if class_weights is None:
+        class_weight_tensor = logits.new_ones((logits.shape[1],))
+    else:
+        if class_weights.shape != (logits.shape[1],):
+            raise ValueError("class_weights must have shape (classes,)")
+        class_weight_tensor = class_weights.to(dtype=logits.dtype, device=logits.device)
+    if torch.count_nonzero(class_weight_tensor).item() == 0:
+        raise ValueError("at least one class must be active")
+
+    included = valid_mask[:, None].to(dtype=logits.dtype)
+    probabilities = torch.sigmoid(logits) * included
+    included_targets = targets * included
+    reduce_dims = (0, 2, 3)
+    intersection = (probabilities * included_targets).sum(dim=reduce_dims)
+    denominator = probabilities.sum(dim=reduce_dims) + included_targets.sum(dim=reduce_dims)
+    class_losses = 1.0 - ((2.0 * intersection + smooth) / (denominator + smooth))
+    return (class_losses * class_weight_tensor).sum() / class_weight_tensor.sum()
+
+
 def class_balance_from_label_audit(
     audit: Mapping[str, object],
     *,
