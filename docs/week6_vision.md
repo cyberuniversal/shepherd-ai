@@ -188,3 +188,10 @@ The next controlled comparison is preregistered in
 `docs/week6_bce_dice_protocol.md`. It keeps the fixed 256/256 setup and adds
 anomaly-only soft Dice to unweighted BCE to test whether direct overlap
 optimization reduces background collapse.
+
+That comparison improved best validation modified mIoU from
+`0.0925782719754147` to `0.15387379872696982` and produced drydown IoU
+`0.327905255318418`. Other evaluated anomaly classes remained at zero IoU.
+BCE-Dice is therefore the leading development objective, but Week 6 remains
+incomplete until broader anomaly coverage and the remaining completion evidence
+are addressed.

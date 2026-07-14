@@ -475,3 +475,49 @@ Interpretation:
 - scale alone is not adopted as the next improvement,
 - the tracked result and artifact hashes are in
   `outputs/evaluations/week6_segmentation_seed17_dev256_t4_summary.json`.
+
+## Run 2026-07-14 - Fixed 256/256 BCE-Dice T4 Comparison
+
+Status: completed validation-only development comparison; not a final
+benchmark.
+
+Controlled change:
+
+- retained the fixed seed-17 256-train/256-validation subset, small U-Net,
+  optimizer, learning rate, batch size, five epochs, and evaluation metric,
+- replaced the BCE-only objective with unweighted masked BCE plus anomaly-only
+  soft Dice at weight `1.0`,
+- excluded background and train-absent classes from the Dice term,
+- used only the complete train-label audit to determine active Dice classes,
+- loaded no test labels.
+
+Verification:
+
+- Colab/T4 PyTorch objective and CLI tests: 8 passed,
+- all five epochs completed,
+- metrics, training configuration, best checkpoint, and last checkpoint were
+  preserved in private Google Drive and hashed.
+
+Result:
+
+- epoch validation modified mIoU: `0.041749587399769264`,
+  `0.08292709386185898`, `0.09194819946870963`,
+  `0.11316651470693569`, `0.15387379872696982`,
+- best validation modified mIoU: `0.15387379872696982`,
+- matched BCE result: `0.0925782719754147`,
+- absolute improvement: `0.06129552675155513`,
+- relative improvement: approximately `66.2%`,
+- final background IoU: `0.7492113357703707`,
+- final drydown IoU: `0.327905255318418`,
+- all other evaluated anomaly-class IoUs remained `0.0`.
+
+Interpretation:
+
+- this is the first fixed-subset objective comparison to improve the aggregate
+  metric and produce nonzero IoU for an anomaly class,
+- the result is still narrow and does not establish useful segmentation across
+  the remaining anomaly classes,
+- BCE-Dice becomes the leading development objective for the next controlled
+  experiment, not a final model or benchmark claim,
+- exact settings and artifact hashes are recorded in
+  `outputs/evaluations/week6_segmentation_seed17_dev256_bce_dice_t4_summary.json`.
