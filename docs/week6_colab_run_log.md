@@ -521,3 +521,51 @@ Interpretation:
   experiment, not a final model or benchmark claim,
 - exact settings and artifact hashes are recorded in
   `outputs/evaluations/week6_segmentation_seed17_dev256_bce_dice_t4_summary.json`.
+
+## Run 2026-07-14 - Stratified-Subset Preprocessing Attempt
+
+Status: selector implemented and tested; Colab preprocessing blocked before a
+manifest was produced.
+
+Evidence motivating the experiment:
+
+- a train-only audit of the fixed seed-17 256-record training subset contained
+  58,333,634 valid pixels,
+- `endrow`, `storm_damage`, `water`, `nutrient_deficiency`, and `waterway` had
+  zero positive training pixels,
+- the subset did contain `double_plant`, `drydown`, `planter_skip`, and
+  `weed_cluster` positives,
+- zero-positive training classes cannot be learned in that experiment.
+
+Implemented preparation:
+
+- deterministic `train-label-stratified` selection in
+  `scripts/prepare_agriculture_vision_subset.py`,
+- up to four positive training records reserved per available anomaly class,
+- rarest available classes selected first and remaining capacity filled by the
+  seed-17 hash ranking,
+- fixed validation selection preserved,
+- selector-focused tests passed and the full local suite reported 257 passed
+  and 7 optional-PyTorch skips,
+- protocol recorded in `docs/week6_stratified_subset_protocol.md` and Notebook
+  6 Section 17.
+
+Infrastructure blockers:
+
+- the active T4 runtime reached its maximum duration during the complete
+  training-mask scan,
+- Colab then rejected a fresh GPU runtime because the account had reached its
+  current GPU usage limit,
+- a fresh CPU runtime was connected for preprocessing only,
+- private Google Drive mounting timed out with `ValueError: mount failed`,
+- the fallback official archive download stalled at approximately 160 MB and
+  was not treated as complete,
+- no stratified manifest, model training, or evaluation result is claimed.
+
+Next execution point:
+
+- rerun Notebook 6 Section 17 when the private Drive cache mounts successfully,
+- inspect and preserve the selector's available/selected class counts and the
+  train-only pixel audit before starting T4 training,
+- compare the resulting BCE-Dice run only against the fixed 256/256 BCE-Dice
+  reference.
