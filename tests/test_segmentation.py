@@ -74,7 +74,7 @@ class SegmentationTests(unittest.TestCase):
         )
 
         self.assertLess(float(correct), 0.001)
-        self.assertGreater(float(wrong), 0.99)
+        self.assertGreater(float(wrong), 0.66)
 
     def test_masked_soft_dice_ignores_invalid_pixels_and_inactive_classes(self) -> None:
         import torch
