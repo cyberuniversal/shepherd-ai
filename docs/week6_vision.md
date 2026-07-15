@@ -201,3 +201,15 @@ The fixed training subset audit showed zero training positives for `endrow`,
 train-label-stratified 256-record protocol in
 `docs/week6_stratified_subset_protocol.md`, with the validation subset and
 BCE-Dice configuration held fixed.
+
+The matched stratified T4 comparison reached modified mIoU `0.1485206285212343`,
+below the fixed BCE-Dice T4 reference `0.15387379872696982`, and did not learn
+an additional anomaly class. Stratified sampling is not adopted under that
+configuration.
+
+Week 6 also requires a labeled YOLO-compatible detection experiment. The
+roadmap recommends several datasets rather than one mandatory source;
+Agriculture-Vision addressed agricultural segmentation, while VisDrone-DET
+directly supports bounding-box detection, confidence values, annotated outputs,
+and detection-performance metrics. The preregistered VisDrone baseline is in
+`docs/week6_visdrone_detection_protocol.md`.

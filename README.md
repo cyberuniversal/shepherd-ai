@@ -328,6 +328,8 @@ The trainable Week 6 development baseline is a compact U-Net with ten output cha
 
 The current leading development objective is BCE-Dice. On the fixed seed-17 256/256 T4 split it reached modified mIoU `0.15387`. A train-label-stratified 256/256 CPU diagnostic reached `0.15617`, but the required matched T4 run reached only `0.14852`; drydown remained the sole anomaly class with nonzero IoU. Stratified sampling is therefore not adopted under this configuration, the fixed-split T4 result remains the leading aggregate development result, and neither result is a final Agriculture-Vision benchmark.
 
+Agriculture-Vision is one of five datasets recommended by the roadmap, not the only Week 6 dataset. Because it is a semantic-segmentation benchmark, it cannot by itself provide a labeled YOLO detection evaluation. The next registered experiment uses VisDrone2019-DET for a YOLOv8n aerial-object-detection baseline with official splits and bounding-box mAP, precision, recall, confidence-bearing predictions, and annotated validation examples. See `docs/week6_visdrone_detection_protocol.md`.
+
 `notebooks/Notebook6_Vision.ipynb` uses a private Google Drive cache at `MyDrive/shepherd-ai-private/week6/` for the licensed archive, extracted pixels, and future checkpoints. The notebook links that cache into the repository layout during each Colab session, recalculates the archive SHA-256, and writes non-image provenance metadata under `outputs/evaluations/`. GitHub remains the source of truth for code, configurations, manifests, checksums, logs, and metrics; licensed pixels and large model state remain private and are not redistributed.
 
 After reviewing and accepting the official Agriculture-Vision terms, prepare an extracted local subset:
