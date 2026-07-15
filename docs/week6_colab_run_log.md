@@ -637,3 +637,57 @@ Private Drive artifact SHA-256:
 - `metrics.json`: `fa96b53307cc4b32e5ba994db3eb21ee697e1e5a3d49bbbceda7e8236f44baaf`,
 - `best.pt`: `c1fcc9a7ddb54b68845430128c351f4db86022b071d30d581adc26cf21abf992`,
 - `last.pt`: `bc8563be8b161fc52a15b08d2d4534e390b8f71f19684eb5632bea1a54b4e3c0`.
+
+## Run 2026-07-15 - Matched Stratified 256/256 T4 BCE-Dice Comparison
+
+Status: completed validation-only T4 development comparison; not a final
+benchmark.
+
+Controlled comparison:
+
+- retained the stratified 256-training/256-validation manifest, train-only
+  audit, compact U-Net, BCE-Dice objective, positive-weight cap, optimizer,
+  learning rate, batch size, five epochs, and seed from the CPU diagnostic,
+- changed the execution device to an NVIDIA Tesla T4,
+- required `T4` in the CUDA device name before training,
+- loaded zero test records.
+
+Result:
+
+- validation modified mIoU by epoch: `0.06064946266498883`,
+  `0.1173047774166516`, `0.1485206285212343`,
+  `0.1358870013245196`, `0.14743792242130035`,
+- best checkpoint: zero-based epoch 2,
+- best validation modified mIoU: `0.1485206285212343`,
+- best background IoU: `0.6942199276413978`,
+- best drydown IoU: `0.3454244720072422`,
+- every other evaluated anomaly class had IoU `0.0`,
+- nutrient deficiency, storm damage, and waterway IoUs were undefined at the
+  selected epoch.
+
+Decision:
+
+- fixed 256/256 BCE-Dice T4 reference: `0.15387379872696982`,
+- absolute difference from the fixed T4 reference:
+  `-0.00535317020573552`,
+- stratified CPU diagnostic: `0.15617330565477813`,
+- absolute difference from the stratified CPU diagnostic:
+  `-0.00765267713354383`,
+- train-label-stratified sampling is not adopted under this configuration
+  because the matched T4 run did not improve the selected aggregate metric or
+  learn an additional anomaly class,
+- the fixed 256/256 BCE-Dice T4 configuration remains the leading aggregate
+  development result.
+
+Tracked evidence:
+
+- `outputs/evaluations/week6_segmentation_stratified_dev256_t4_bce_dice_summary.json`,
+- complete metrics, configuration, and checkpoints remain in the operator's
+  private Google Drive Week 6 checkpoint directory.
+
+Private Drive artifact SHA-256:
+
+- `training_config.json`: `44b602909fc6b446a36657b21f3ce530eed5ee29c6742c2088ed9940120875f7`,
+- `metrics.json`: `8d294708f677f288e185ce23ef56edfd735692e8d312cbffe4b2374f98050f53`,
+- `best.pt`: `40d746ce3b699ff18abd3a48cde4a8f4ea62fb1eb6bf45827befdf381919ad10`,
+- `last.pt`: `d6e721b394ef20c6c6739a38bffbe790def152eb2c8c1e292be9a209caaf1fe2`.

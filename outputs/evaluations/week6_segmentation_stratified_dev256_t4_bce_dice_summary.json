@@ -1,0 +1,63 @@
+{
+  "status": "development_baseline_not_final_benchmark",
+  "runtime": {
+    "accelerator": "NVIDIA Tesla T4",
+    "selected_device": "cuda"
+  },
+  "configuration": {
+    "model": "small_unet_from_scratch",
+    "selection_strategy": "train-label-stratified",
+    "train_records": 256,
+    "validation_records": 256,
+    "test_records_used": 0,
+    "epochs": 5,
+    "batch_size": 4,
+    "learning_rate": 0.001,
+    "base_channels": 16,
+    "seed": 17,
+    "loss": "bce-dice",
+    "dice_weight": 1.0,
+    "positive_weight_cap": 20,
+    "class_weights_source": "train-only stratified-subset label audit"
+  },
+  "result": {
+    "best_epoch_zero_based": 2,
+    "best_validation_modified_miou": 0.1485206285212343,
+    "best_epoch_validation_loss": 0.2798469732515514,
+    "best_epoch_validation_objective_loss": 1.222319945693016,
+    "best_epoch_per_class_iou": {
+      "background": 0.6942199276413978,
+      "double_plant": 0.0,
+      "drydown": 0.3454244720072422,
+      "endrow": 0.0,
+      "nutrient_deficiency": null,
+      "planter_skip": 0.0,
+      "storm_damage": null,
+      "water": 0.0,
+      "waterway": null,
+      "weed_cluster": 0.0
+    },
+    "validation_modified_miou_by_epoch": [
+      0.06064946266498883,
+      0.1173047774166516,
+      0.1485206285212343,
+      0.1358870013245196,
+      0.14743792242130035
+    ]
+  },
+  "comparison": {
+    "fixed_dev256_bce_dice_t4_modified_miou": 0.15387379872696982,
+    "absolute_difference_from_fixed_t4": -0.00535317020573552,
+    "stratified_dev256_cpu_modified_miou": 0.15617330565477813,
+    "absolute_difference_from_stratified_cpu": -0.00765267713354383,
+    "decision": "do_not_adopt_stratified_sampling_under_this_configuration",
+    "interpretation": "The matched T4 run did not improve aggregate modified mIoU or produce nonzero IoU for an additional anomaly class."
+  },
+  "private_artifact_sha256": {
+    "training_config.json": "44b602909fc6b446a36657b21f3ce530eed5ee29c6742c2088ed9940120875f7",
+    "metrics.json": "8d294708f677f288e185ce23ef56edfd735692e8d312cbffe4b2374f98050f53",
+    "best.pt": "40d746ce3b699ff18abd3a48cde4a8f4ea62fb1eb6bf45827befdf381919ad10",
+    "last.pt": "d6e721b394ef20c6c6739a38bffbe790def152eb2c8c1e292be9a209caaf1fe2"
+  },
+  "research_note": "Validation-only T4 development comparison. Test labels were not loaded. Do not report as final Agriculture-Vision benchmark performance."
+}
