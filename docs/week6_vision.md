@@ -214,9 +214,9 @@ directly supports bounding-box detection, confidence values, annotated outputs,
 and detection-performance metrics. The preregistered VisDrone baseline is in
 `docs/week6_visdrone_detection_protocol.md`.
 
-The first registered VisDrone run was interrupted during epoch 17 after Colab
-exhausted the account's current GPU allocation. The terminal showed no model
-exception, but a subsequent CPU-only checkpoint audit was blocked because
-Google Drive failed to mount. The run is incomplete and no VisDrone performance
-result is claimed. Resume is allowed only after the Drive artifacts and saved
-configuration are verified against the registered protocol.
+The first registered VisDrone run was interrupted after Colab exhausted the
+account's current GPU allocation. A later CPU-only audit verified that 20 epochs
+had completed and that `last.pt`, `best.pt`, `results.csv`, and `args.yaml` were
+intact in Drive. Epoch 20 had validation mAP50-95 `0.14527`, but the registered
+50-epoch run remains incomplete. Resume must use the verified epoch-20
+`last.pt`; the intermediate metric is not the final VisDrone baseline.

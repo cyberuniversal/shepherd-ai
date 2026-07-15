@@ -719,20 +719,35 @@ Observed execution:
   reported that the account had reached Colab GPU usage limits,
 - no Python exception or model-training error was shown before the disconnect.
 
-Checkpoint-verification attempt:
+Checkpoint verification:
 
-- a CPU runtime was connected only to inspect the private Drive run directory,
-- Google Drive mounting failed with `ValueError: mount failed`,
-- therefore the expected epoch-16 `last.pt`, `best.pt`, `results.csv`, metrics,
-  and hashes were not independently verified in this session,
-- no CPU training was attempted,
-- no incomplete-run performance claim is made.
+- the first CPU-only audit attempt was blocked by `ValueError: mount failed`,
+- a later retry mounted Drive successfully and verified `last.pt`, `best.pt`,
+  `results.csv`, and `args.yaml`,
+- the backend had completed 20 epochs before shutdown; `last.pt` records
+  zero-based epoch 19 and `results.csv` contains 20 result rows,
+- `best.pt` and `last.pt` have the same SHA-256, so epoch 20 was also the
+  selected best checkpoint among completed epochs,
+- epoch-20 intermediate validation metrics were precision `0.38547`, recall
+  `0.29879`, mAP50 `0.26185`, and mAP50-95 `0.14527`,
+- these are checkpoint-state metrics from an interrupted run, not the completed
+  registered 50-epoch baseline,
+- no CPU training was attempted.
+
+Verified private artifact SHA-256:
+
+- `weights/last.pt`: `29993968d1317502e88da0d657c1507120ffd911f860c1c2bf63c9c40ff33791`,
+- `weights/best.pt`: `29993968d1317502e88da0d657c1507120ffd911f860c1c2bf63c9c40ff33791`,
+- `results.csv`: `f3e3020ebf4b1de29c0084cc2d00fdef464983da60d6751f79e73bee0c51bc20`,
+- `args.yaml`: `05719b4e0e38ec866dfa0157f8c05cc59b769612120254da9a410e419c4f2411`.
+
+Tracked summary:
+
+- `outputs/evaluations/week6_visdrone_yolov8n_seed17_e50_interrupted_epoch20_summary.json`.
 
 Next execution point:
 
-- when T4 access and Drive mounting both work, verify `last.pt`, `best.pt`,
-  `results.csv`, and `args.yaml`,
-- if the saved configuration matches the registered protocol, resume from
-  `last.pt` rather than restarting,
+- when T4 access returns, resume from the verified epoch-20 `last.pt` rather
+  than restarting,
 - preserve the resumed run under the same experiment identity and complete the
   remaining epoch budget before reporting detection performance.

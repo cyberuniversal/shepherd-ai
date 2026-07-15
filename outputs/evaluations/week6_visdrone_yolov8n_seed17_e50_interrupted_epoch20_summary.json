@@ -1,0 +1,43 @@
+{
+  "status": "interrupted_checkpoint_verified_not_final",
+  "requested_epochs": 50,
+  "completed_epochs": 20,
+  "checkpoint_epoch_zero_based": 19,
+  "interruption_reason": "Google Colab GPU usage limit",
+  "runtime": {
+    "training_device": "NVIDIA Tesla T4",
+    "checkpoint_audit_device": "cpu"
+  },
+  "configuration": {
+    "dataset": "VisDrone2019-DET",
+    "model": "yolov8n.pt",
+    "image_size": 640,
+    "batch_size": 16,
+    "seed": 17,
+    "deterministic": true,
+    "workers": 2,
+    "test_dev_used_for_selection": false
+  },
+  "best_completed_epoch": {
+    "epoch_one_based": 20,
+    "elapsed_seconds": 3264.28,
+    "train_box_loss": 1.58968,
+    "train_cls_loss": 1.15246,
+    "train_dfl_loss": 0.92133,
+    "validation_precision": 0.38547,
+    "validation_recall": 0.29879,
+    "validation_map50": 0.26185,
+    "validation_map50_95": 0.14527,
+    "validation_box_loss": 1.53682,
+    "validation_cls_loss": 1.12612,
+    "validation_dfl_loss": 0.91785
+  },
+  "private_artifact_sha256": {
+    "weights/last.pt": "29993968d1317502e88da0d657c1507120ffd911f860c1c2bf63c9c40ff33791",
+    "weights/best.pt": "29993968d1317502e88da0d657c1507120ffd911f860c1c2bf63c9c40ff33791",
+    "results.csv": "f3e3020ebf4b1de29c0084cc2d00fdef464983da60d6751f79e73bee0c51bc20",
+    "args.yaml": "05719b4e0e38ec866dfa0157f8c05cc59b769612120254da9a410e419c4f2411"
+  },
+  "resume_checkpoint": "week6/checkpoints/visdrone_yolov8n_seed17_e50/weights/last.pt",
+  "research_note": "Intermediate validation evidence from an interrupted registered run. Resume the same experiment to 50 epochs before reporting the registered baseline as complete."
+}
