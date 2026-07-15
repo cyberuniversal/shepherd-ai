@@ -1,0 +1,62 @@
+{
+  "status": "development_baseline_not_final_benchmark",
+  "generated_at_utc": "2026-07-15T11:01:28.418836+00:00",
+  "runtime": {
+    "accelerator": "cpu",
+    "torch_version": "2.11.0+cpu",
+    "numpy_version": "2.0.2"
+  },
+  "configuration": {
+    "model": "small_unet_from_scratch",
+    "selection_strategy": "train-label-stratified",
+    "train_records": 256,
+    "validation_records": 256,
+    "test_records_used": 0,
+    "epochs": 5,
+    "batch_size": 4,
+    "learning_rate": 0.001,
+    "base_channels": 16,
+    "seed": 17,
+    "loss": "bce-dice",
+    "dice_weight": 1.0,
+    "positive_weight_cap": 20,
+    "class_weights_source": "train-only stratified-subset label audit"
+  },
+  "result": {
+    "best_epoch_zero_based": 2,
+    "best_validation_modified_miou": 0.15617330565477813,
+    "best_epoch_validation_loss": 0.2780357056763023,
+    "best_epoch_validation_objective_loss": 1.2242166865617037,
+    "best_epoch_per_class_iou": {
+      "background": 0.7601654430926474,
+      "double_plant": 0.0,
+      "drydown": 0.33304769649079946,
+      "endrow": 0.0,
+      "nutrient_deficiency": null,
+      "planter_skip": 0.0,
+      "storm_damage": null,
+      "water": 0.0,
+      "waterway": null,
+      "weed_cluster": 0.0
+    },
+    "validation_modified_miou_by_epoch": [
+      0.06045434064509052,
+      0.11737403274855605,
+      0.15617330565477813,
+      0.13116293051684477,
+      0.11503574074816661
+    ]
+  },
+  "comparison": {
+    "fixed_dev256_bce_dice_t4_modified_miou": 0.15387379872696982,
+    "absolute_difference": 0.00229950692780831,
+    "interpretation": "The stratified CPU diagnostic slightly improved the aggregate metric and drydown IoU, but no additional anomaly class achieved nonzero IoU. It is not a device-matched replacement for the T4 reference."
+  },
+  "private_artifact_sha256": {
+    "training_config.json": "2ea6919df63b4ea2a92c18a6eb2e40cc35188124ddf579d81a8d5c1d8c6c1e87",
+    "metrics.json": "fa96b53307cc4b32e5ba994db3eb21ee697e1e5a3d49bbbceda7e8236f44baaf",
+    "best.pt": "c1fcc9a7ddb54b68845430128c351f4db86022b071d30d581adc26cf21abf992",
+    "last.pt": "bc8563be8b161fc52a15b08d2d4534e390b8f71f19684eb5632bea1a54b4e3c0"
+  },
+  "research_note": "Validation-only CPU development diagnostic. Test labels were not loaded. Do not report as final Agriculture-Vision benchmark performance."
+}

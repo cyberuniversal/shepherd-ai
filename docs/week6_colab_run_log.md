@@ -581,3 +581,59 @@ Next execution point:
   train-only pixel audit before starting T4 training,
 - compare the resulting BCE-Dice run only against the fixed 256/256 BCE-Dice
   reference.
+
+## Run 2026-07-15 - Stratified 256/256 CPU BCE-Dice Diagnostic
+
+Status: completed validation-only CPU development diagnostic; not a final
+benchmark or a device-matched replacement for the T4 reference.
+
+Runtime and configuration:
+
+- Google Colab Python 3 CPU runtime,
+- PyTorch `2.11.0+cpu` and NumPy `2.0.2`,
+- deterministic train-label-stratified selection with seed 17,
+- 256 official training records and the fixed 256 official validation records,
+- five epochs, batch size 4, learning rate `0.001`, U-Net base channels 16,
+- BCE-Dice loss with Dice weight `1.0`,
+- positive class weights derived from the train-only stratified-subset audit and
+  capped at 20,
+- zero test records loaded.
+
+Result:
+
+- validation modified mIoU by epoch: `0.06045434064509052`,
+  `0.11737403274855605`, `0.15617330565477813`,
+  `0.13116293051684477`, `0.11503574074816661`,
+- best checkpoint: zero-based epoch 2,
+- best validation modified mIoU: `0.15617330565477813`,
+- best background IoU: `0.7601654430926474`,
+- best drydown IoU: `0.33304769649079946`,
+- every other evaluated anomaly class had IoU `0.0`,
+- nutrient deficiency, storm damage, and waterway IoUs were undefined at the
+  selected epoch because the validation confusion matrix contained no target
+  pixels for those classes.
+
+Comparison and interpretation:
+
+- fixed 256/256 BCE-Dice T4 reference: `0.15387379872696982`,
+- absolute difference: `+0.00229950692780831`,
+- stratification produced a small aggregate improvement but did not yield
+  nonzero IoU for an additional anomaly class,
+- validation quality peaked at epoch 2 and declined afterward, so the selected
+  checkpoint is `best.pt`, not the final epoch,
+- CPU and T4 results are not treated as a strict device-matched comparison,
+- a T4 rerun of the same stratified configuration is required before deciding
+  whether stratified sampling is adopted.
+
+Tracked evidence:
+
+- `outputs/evaluations/week6_segmentation_stratified_dev256_cpu_bce_dice_summary.json`,
+- complete metrics, configuration, manifest, audits, and resumable checkpoints
+  remain in the operator's private Google Drive Week 6 directories.
+
+Private Drive artifact SHA-256:
+
+- `training_config.json`: `2ea6919df63b4ea2a92c18a6eb2e40cc35188124ddf579d81a8d5c1d8c6c1e87`,
+- `metrics.json`: `fa96b53307cc4b32e5ba994db3eb21ee697e1e5a3d49bbbceda7e8236f44baaf`,
+- `best.pt`: `c1fcc9a7ddb54b68845430128c351f4db86022b071d30d581adc26cf21abf992`,
+- `last.pt`: `bc8563be8b161fc52a15b08d2d4534e390b8f71f19684eb5632bea1a54b4e3c0`.
