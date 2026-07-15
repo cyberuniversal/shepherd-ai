@@ -26,6 +26,18 @@ model architecture, optimization, loss, seed, and evaluation remain fixed.
 Classes absent from the complete training data are reported with zero available
 records and are not synthesized.
 
+The first successful scan writes
+`outputs/evaluations/week6_agriculture_vision_train_label_presence.json`. This
+index contains only image IDs and names of classes with positive training masks;
+it contains no pixels or masks. Sixteen parallel readers are used when building
+the missing index. Subsequent runs validate the cached class schema and exact
+candidate image-ID set before reuse, avoiding repeated mask reads across Colab
+runtimes.
+
+The manifest builder also reports a SHA-256 digest of the sorted selected IDs
+for each split. The stratified and fixed experiments must have identical
+validation digests before their metrics are compared.
+
 ## Controlled Training
 
 - Small U-Net from scratch, base channels 16.
@@ -39,6 +51,7 @@ records and are not synthesized.
 
 - Selector tests pass.
 - Selection summary records available and selected positive-image counts.
+- The reusable label-presence index passes schema and candidate-ID validation.
 - A train-only pixel audit confirms the selected class coverage.
 - The fixed validation IDs match the prior 256/256 experiments.
 - Five training epochs complete or the failure is preserved.

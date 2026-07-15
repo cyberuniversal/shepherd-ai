@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -210,6 +211,109 @@ class PrepareAgricultureVisionSubsetCliTests(unittest.TestCase):
         self.assertIn("agriculture_vision_train_field_07", selected_ids)
         self.assertEqual(summary["selected_train_positive_records"]["endrow"], 1)
         self.assertEqual(summary["selected_train_positive_records"]["water"], 1)
+        self.assertEqual(len(summary["split_id_sha256"]["train"]), 64)
+
+    def test_train_label_presence_cache_reproduces_selection_without_mask_reads(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "agriculture-vision"
+            rgb = dataset / "train" / "images" / "rgb"
+            labels = dataset / "labels" / "field_labels" / "water"
+            rgb.mkdir(parents=True)
+            labels.mkdir(parents=True)
+            for index in range(6):
+                (rgb / f"field_{index:02d}.jpg").write_bytes(str(index).encode("ascii"))
+            Image.new("L", (2, 2), color=255).save(labels / "field_05.png")
+            cache = root / "presence.json"
+            outputs = []
+
+            for run in range(2):
+                output = root / f"manifest_{run}.jsonl"
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(SCRIPT),
+                        "--dataset-dir",
+                        str(dataset),
+                        "--dataset-root",
+                        str(root),
+                        "--output",
+                        str(output),
+                        "--accept-terms",
+                        "--max-per-split",
+                        "3",
+                        "--selection-strategy",
+                        "train-label-stratified",
+                        "--labels-dir",
+                        str(dataset / "labels"),
+                        "--label-presence-cache",
+                        str(cache),
+                    ],
+                    cwd=ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                outputs.append(output.read_text(encoding="utf-8"))
+                if run == 0:
+                    shutil.rmtree(dataset / "labels")
+
+        self.assertEqual(outputs[0], outputs[1])
+
+    def test_train_label_presence_cache_rejects_candidate_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "agriculture-vision"
+            rgb = dataset / "train" / "images" / "rgb"
+            rgb.mkdir(parents=True)
+            (rgb / "field_00.jpg").write_bytes(b"rgb")
+            cache = root / "presence.json"
+            cache.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "class_names": [
+                            "double_plant",
+                            "drydown",
+                            "endrow",
+                            "nutrient_deficiency",
+                            "planter_skip",
+                            "storm_damage",
+                            "water",
+                            "waterway",
+                            "weed_cluster",
+                        ],
+                        "positive_classes_by_image_id": {"wrong_id": []},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--dataset-dir",
+                    str(dataset),
+                    "--dataset-root",
+                    str(root),
+                    "--output",
+                    str(root / "manifest.jsonl"),
+                    "--accept-terms",
+                    "--selection-strategy",
+                    "train-label-stratified",
+                    "--labels-dir",
+                    str(dataset / "labels"),
+                    "--label-presence-cache",
+                    str(cache),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("candidate image IDs", completed.stderr)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ Run it only after downloading from the official source and reviewing the terms.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 from pathlib import Path
@@ -57,6 +58,16 @@ def parse_args() -> argparse.Namespace:
         help="Training-record reservation target per anomaly class for stratified selection.",
     )
     parser.add_argument(
+        "--label-presence-cache",
+        help="Reusable JSON index of positive anomaly classes by training image ID.",
+    )
+    parser.add_argument(
+        "--label-scan-workers",
+        type=int,
+        default=8,
+        help="Parallel mask readers used only when building a missing presence cache.",
+    )
+    parser.add_argument(
         "--selection-seed",
         type=int,
         default=17,
@@ -78,6 +89,8 @@ def main() -> None:
         raise SystemExit("--max-per-split must be at least 1")
     if args.min_positive_records_per_class < 1:
         raise SystemExit("--min-positive-records-per-class must be at least 1")
+    if args.label_scan_workers < 1:
+        raise SystemExit("--label-scan-workers must be at least 1")
     if args.selection_strategy == "train-label-stratified" and not args.labels_dir:
         raise SystemExit("train-label-stratified selection requires --labels-dir")
 
@@ -117,6 +130,10 @@ def main() -> None:
                     dataset_dir=dataset_dir,
                     labels_dir=labels_dir,
                     minimum_per_class=args.min_positive_records_per_class,
+                    presence_cache=(
+                        Path(args.label_presence_cache) if args.label_presence_cache else None
+                    ),
+                    scan_workers=args.label_scan_workers,
                 )
             )
         else:
@@ -173,8 +190,22 @@ def main() -> None:
                 ),
                 "available_train_positive_records": available_train_positive_records,
                 "selected_train_positive_records": selected_train_positive_records,
+                "label_presence_cache": args.label_presence_cache,
+                "label_scan_workers": (
+                    args.label_scan_workers
+                    if args.selection_strategy == "train-label-stratified"
+                    else None
+                ),
                 "split_counts": {
                     key: min(len(value), args.max_per_split) for key, value in grouped.items()
+                },
+                "split_id_sha256": {
+                    split: hashlib.sha256(
+                        "\n".join(
+                            sorted(row["id"] for row in rows if row["split"] == split)
+                        ).encode("utf-8")
+                    ).hexdigest()
+                    for split in sorted(grouped)
                 },
             },
             indent=2,
@@ -211,6 +242,8 @@ def _select_label_stratified_train_images(
     dataset_dir: Path,
     labels_dir: Path,
     minimum_per_class: int,
+    presence_cache: Path | None = None,
+    scan_workers: int = 8,
 ) -> tuple[list[Path], dict[str, int], dict[str, int]]:
     anomaly_classes = AGRICULTURE_VISION_2017_CLASSES[1:]
     ranked = _select_images(
@@ -220,14 +253,13 @@ def _select_label_stratified_train_images(
         seed=seed,
         dataset_dir=dataset_dir,
     )
-    positives = {
-        image: {
-            class_name
-            for class_name in anomaly_classes
-            if _mask_has_positive_pixel(labels_dir / "field_labels" / class_name / f"{image.stem}.png")
-        }
-        for image in ranked
-    }
+    positives = _load_or_build_label_presence(
+        ranked,
+        labels_dir=labels_dir,
+        anomaly_classes=anomaly_classes,
+        cache_path=presence_cache,
+        scan_workers=scan_workers,
+    )
     available = {
         class_name: sum(class_name in image_classes for image_classes in positives.values())
         for class_name in anomaly_classes
@@ -256,6 +288,68 @@ def _select_label_stratified_train_images(
         for present_class in positives[image]:
             selected_counts[present_class] += 1
     return selected, available, selected_counts
+
+
+def _load_or_build_label_presence(
+    images: list[Path],
+    *,
+    labels_dir: Path,
+    anomaly_classes: tuple[str, ...],
+    cache_path: Path | None,
+    scan_workers: int,
+) -> dict[Path, set[str]]:
+    image_by_id = {image.stem: image for image in images}
+    if len(image_by_id) != len(images):
+        raise ValueError("training image stems must be unique for label-presence indexing")
+    if cache_path is not None and cache_path.is_file():
+        payload = json.loads(cache_path.read_text(encoding="utf-8"))
+        if payload.get("schema_version") != 1:
+            raise ValueError("label-presence cache schema_version must be 1")
+        if payload.get("class_names") != list(anomaly_classes):
+            raise ValueError("label-presence cache class_names do not match configured classes")
+        cached = payload.get("positive_classes_by_image_id")
+        if not isinstance(cached, dict) or set(cached) != set(image_by_id):
+            raise ValueError("label-presence cache candidate image IDs do not match training data")
+        positives: dict[Path, set[str]] = {}
+        for image_id, class_names in cached.items():
+            if not isinstance(class_names, list) or not set(class_names).issubset(anomaly_classes):
+                raise ValueError(f"invalid cached classes for training image {image_id}")
+            positives[image_by_id[image_id]] = set(class_names)
+        return positives
+
+    def inspect(image: Path) -> tuple[Path, set[str]]:
+        return image, {
+            class_name
+            for class_name in anomaly_classes
+            if _mask_has_positive_pixel(
+                labels_dir / "field_labels" / class_name / f"{image.stem}.png"
+            )
+        }
+
+    with ThreadPoolExecutor(max_workers=scan_workers) as executor:
+        positives = dict(executor.map(inspect, images))
+    if cache_path is not None:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "class_names": list(anomaly_classes),
+                    "positive_classes_by_image_id": {
+                        image.stem: sorted(positives[image]) for image in sorted(images)
+                    },
+                    "research_note": (
+                        "Training-label presence only; contains no image pixels or masks. "
+                        "Validation and test labels are excluded."
+                    ),
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    return positives
 
 
 def _mask_has_positive_pixel(path: Path) -> bool:

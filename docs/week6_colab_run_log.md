@@ -562,6 +562,18 @@ Infrastructure blockers:
   was not treated as complete,
 - no stratified manifest, model training, or evaluation result is claimed.
 
+Follow-up engineering after the blocked attempt:
+
+- the selector now supports a reusable, non-pixel training-label presence
+  index,
+- missing indexes are built with configurable parallel mask readers,
+- cached indexes must match the configured class list and exact candidate image
+  IDs before reuse,
+- Notebook 6 Section 17 uses 16 readers and writes the index to
+  `outputs/evaluations/week6_agriculture_vision_train_label_presence.json`,
+- tests cover index creation, reuse without mask reads, and stale-index
+  rejection.
+
 Next execution point:
 
 - rerun Notebook 6 Section 17 when the private Drive cache mounts successfully,
