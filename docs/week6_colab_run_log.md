@@ -691,3 +691,48 @@ Private Drive artifact SHA-256:
 - `metrics.json`: `8d294708f677f288e185ce23ef56edfd735692e8d312cbffe4b2374f98050f53`,
 - `best.pt`: `40d746ce3b699ff18abd3a48cde4a8f4ea62fb1eb6bf45827befdf381919ad10`,
 - `last.pt`: `d6e721b394ef20c6c6739a38bffbe790def152eb2c8c1e292be9a209caaf1fe2`.
+
+## Run 2026-07-15 - VisDrone YOLOv8n T4 Run Interrupted
+
+Status: interrupted by Colab GPU usage limits; not a completed training or
+evaluation result.
+
+Registered configuration:
+
+- protocol: `docs/week6_visdrone_detection_protocol.md`,
+- dataset: VisDrone2019-DET through Ultralytics `VisDrone.yaml`,
+- model: pretrained `yolov8n.pt`,
+- official 6,471-image training and 548-image validation splits,
+- 50 requested epochs, image size 640, batch size 16, seed 17,
+- NVIDIA Tesla T4,
+- checkpoints requested every epoch in the private Google Drive directory
+  `week6/checkpoints/visdrone_yolov8n_seed17_e50`,
+- test-dev was not used for model selection.
+
+Observed execution:
+
+- automatic dataset download and YOLO conversion completed,
+- training advanced to epoch 17 at approximately 87% of its training batches,
+- the browser connection had previously dropped during epoch 5, but reconnecting
+  showed the same backend process continuing at epoch 6,
+- the later disconnect displayed `Cannot connect to GPU backend` and explicitly
+  reported that the account had reached Colab GPU usage limits,
+- no Python exception or model-training error was shown before the disconnect.
+
+Checkpoint-verification attempt:
+
+- a CPU runtime was connected only to inspect the private Drive run directory,
+- Google Drive mounting failed with `ValueError: mount failed`,
+- therefore the expected epoch-16 `last.pt`, `best.pt`, `results.csv`, metrics,
+  and hashes were not independently verified in this session,
+- no CPU training was attempted,
+- no incomplete-run performance claim is made.
+
+Next execution point:
+
+- when T4 access and Drive mounting both work, verify `last.pt`, `best.pt`,
+  `results.csv`, and `args.yaml`,
+- if the saved configuration matches the registered protocol, resume from
+  `last.pt` rather than restarting,
+- preserve the resumed run under the same experiment identity and complete the
+  remaining epoch budget before reporting detection performance.

@@ -213,3 +213,10 @@ Agriculture-Vision addressed agricultural segmentation, while VisDrone-DET
 directly supports bounding-box detection, confidence values, annotated outputs,
 and detection-performance metrics. The preregistered VisDrone baseline is in
 `docs/week6_visdrone_detection_protocol.md`.
+
+The first registered VisDrone run was interrupted during epoch 17 after Colab
+exhausted the account's current GPU allocation. The terminal showed no model
+exception, but a subsequent CPU-only checkpoint audit was blocked because
+Google Drive failed to mount. The run is incomplete and no VisDrone performance
+result is claimed. Resume is allowed only after the Drive artifacts and saved
+configuration are verified against the registered protocol.
