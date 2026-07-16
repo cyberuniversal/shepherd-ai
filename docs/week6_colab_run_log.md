@@ -751,3 +751,34 @@ Next execution point:
   than restarting,
 - preserve the resumed run under the same experiment identity and complete the
   remaining epoch budget before reporting detection performance.
+
+## Run 2026-07-16 - VisDrone Resume Started From Verified Epoch 20
+
+Status: training in progress; no completed 50-epoch result is claimed.
+
+Resume verification:
+
+- an initial resume attempt imported Ultralytics `8.4.96` and was interrupted
+  during epoch 21 before that epoch checkpointed,
+- the verified epoch-20 checkpoint and its tracked hashes remained unchanged,
+- the Colab Python runtime was restarted to clear the imported package cache,
+- the clean resume imported Ultralytics `8.4.92`, matching epochs 1-20,
+- observed PyTorch: `2.11.0+cu128`,
+- observed device: NVIDIA Tesla T4,
+- `last.pt` reported 20 completed epochs before training was allowed to start,
+- Ultralytics reported resuming from epoch 21 to the registered total of 50.
+
+Interpretation:
+
+- epoch 21 completed after all version, device, argument, and checkpoint guards
+  passed; Colab displayed precision `0.383`, recall `0.303`, mAP50 `0.262`, and
+  mAP50-95 `0.146` rounded to three decimals,
+- epoch 22 then began under the same resumed process,
+- the resumed process writes checkpoints to the existing private Google Drive
+  experiment directory,
+- exact epoch-21 values must be read from the preserved raw `results.csv`; the
+  rounded display values are not the final 50-epoch result,
+- the committed notebook now pins Ultralytics `8.4.92` before import and is
+  intended to be run from a fresh Colab runtime; it permits later checkpoints
+  from completed epoch 20 through 50 so subsequent quota interruptions can
+  resume rather than restart.
