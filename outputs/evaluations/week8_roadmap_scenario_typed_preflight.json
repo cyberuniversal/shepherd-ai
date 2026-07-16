@@ -1,0 +1,928 @@
+{
+  "metadata": {
+    "fleet": "datasets/drones/week5_three_drone_fleet_v1.json",
+    "generated_at_utc": "2026-07-16T18:23:49.584779+00:00",
+    "input_mode": "typed_development",
+    "input_sha256": {
+      "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
+      "map": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95",
+      "policy": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc"
+    },
+    "map": "datasets/maps/shepherd_test_map_v1.csv",
+    "policy": "datasets/safety/week7_safety_policy_v1.json",
+    "python_version": "3.14.3",
+    "random_seed": null,
+    "research_note": "Typed Week 8 preparation evidence only. A blocked result is retained as a negative result and is not end-to-end mission success.",
+    "scenario_source": "roadmap_week8_fixed_scenario",
+    "strategy": "least_loaded"
+  },
+  "pipeline_result": {
+    "blocking_clauses": [
+      "clause_002"
+    ],
+    "clause_results": [
+      {
+        "clause_id": "clause_001",
+        "grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "crops",
+            "text": "Send two drones north to inspect crops"
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "location",
+              "location": {
+                "aliases": [
+                  "north",
+                  "north field",
+                  "northern field",
+                  "crops",
+                  "crop"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_north_field",
+                "latitude": 24.0,
+                "longitude": 46.0,
+                "map_role": "mission_area",
+                "name": "North Field",
+                "radius_m": 120.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "north",
+              "status": "grounded"
+            },
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "north",
+                  "north field",
+                  "northern field",
+                  "crops",
+                  "crop"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_north_field",
+                "latitude": 24.0,
+                "longitude": 46.0,
+                "map_role": "mission_area",
+                "name": "North Field",
+                "radius_m": 120.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "crops",
+              "status": "grounded"
+            }
+          ]
+        },
+        "intent": {
+          "action": "inspect",
+          "constraints": [],
+          "count": 2,
+          "location": "north",
+          "notes": [],
+          "parser": "deterministic_v3",
+          "target": "crops",
+          "text": "Send two drones north to inspect crops"
+        },
+        "issues": [],
+        "mission_plan": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "crops",
+            "text": "Send two drones north to inspect crops"
+          },
+          "issues": [],
+          "notes": [
+            "Week 4 deterministic mission plan; not scheduling, execution, or safety validation."
+          ],
+          "primary_map_object": {
+            "boundary": [],
+            "category": "field",
+            "center": {
+              "latitude": 24.0,
+              "longitude": 46.0
+            },
+            "flyable": true,
+            "geometry_type": "circle",
+            "location_id": "loc_north_field",
+            "map_role": "mission_area",
+            "name": "North Field",
+            "phrase": "crops",
+            "radius_m": 120.0,
+            "reference_field": "target",
+            "requires_clearance": false
+          },
+          "ready_for_scheduling": true,
+          "referenced_map_objects": [
+            {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 24.0,
+                "longitude": 46.0
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_north_field",
+              "map_role": "mission_area",
+              "name": "North Field",
+              "phrase": "north",
+              "radius_m": 120.0,
+              "reference_field": "location",
+              "requires_clearance": false
+            },
+            {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 24.0,
+                "longitude": 46.0
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_north_field",
+              "map_role": "mission_area",
+              "name": "North Field",
+              "phrase": "crops",
+              "radius_m": 120.0,
+              "reference_field": "target",
+              "requires_clearance": false
+            }
+          ],
+          "status": "planned",
+          "steps": [
+            {
+              "action": "validate_grounding",
+              "depends_on": [],
+              "description": "Confirm grounded map object loc_north_field is available to the planner.",
+              "expected_output": "validated_grounded_map_object",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_001"
+            },
+            {
+              "action": "takeoff",
+              "depends_on": [
+                "step_001"
+              ],
+              "description": "Prepare a simulated drone takeoff task for later scheduling.",
+              "expected_output": "airborne_simulated_drone",
+              "map_object": null,
+              "notes": [],
+              "step_id": "step_002"
+            },
+            {
+              "action": "fly_to",
+              "depends_on": [
+                "step_002"
+              ],
+              "description": "Navigate to North Field using the grounded center coordinates.",
+              "expected_output": "drone_at_grounded_location",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_003"
+            },
+            {
+              "action": "inspect_area",
+              "depends_on": [
+                "step_003"
+              ],
+              "description": "Inspect North Field and collect simulated observations.",
+              "expected_output": "inspect_area_complete",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_004"
+            },
+            {
+              "action": "capture_images",
+              "depends_on": [
+                "step_004"
+              ],
+              "description": "Capture simulated imagery at North Field for later vision processing.",
+              "expected_output": "captured_image_batch_reference",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_005"
+            },
+            {
+              "action": "run_vision_model",
+              "depends_on": [
+                "step_005"
+              ],
+              "description": "Create a planned downstream vision-inference task for the captured imagery.",
+              "expected_output": "vision_inference_task_record",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [
+                "Week 4 plans this task; Week 6 implements actual YOLO inference."
+              ],
+              "step_id": "step_006"
+            },
+            {
+              "action": "save_observation_results",
+              "depends_on": [
+                "step_006"
+              ],
+              "description": "Store simulated observation outputs for later reporting and evaluation.",
+              "expected_output": "saved_observation_record",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_007"
+            },
+            {
+              "action": "return_to_launch_area",
+              "depends_on": [
+                "step_007"
+              ],
+              "description": "Return the simulated drone to the launch area after the observation task.",
+              "expected_output": "return_task_for_scheduler",
+              "map_object": null,
+              "notes": [],
+              "step_id": "step_008"
+            }
+          ],
+          "task_graph": {
+            "edges": [
+              {
+                "from": "step_001",
+                "to": "step_002"
+              },
+              {
+                "from": "step_002",
+                "to": "step_003"
+              },
+              {
+                "from": "step_003",
+                "to": "step_004"
+              },
+              {
+                "from": "step_004",
+                "to": "step_005"
+              },
+              {
+                "from": "step_005",
+                "to": "step_006"
+              },
+              {
+                "from": "step_006",
+                "to": "step_007"
+              },
+              {
+                "from": "step_007",
+                "to": "step_008"
+              }
+            ],
+            "nodes": [
+              {
+                "action": "validate_grounding",
+                "expected_output": "validated_grounded_map_object",
+                "id": "step_001"
+              },
+              {
+                "action": "takeoff",
+                "expected_output": "airborne_simulated_drone",
+                "id": "step_002"
+              },
+              {
+                "action": "fly_to",
+                "expected_output": "drone_at_grounded_location",
+                "id": "step_003"
+              },
+              {
+                "action": "inspect_area",
+                "expected_output": "inspect_area_complete",
+                "id": "step_004"
+              },
+              {
+                "action": "capture_images",
+                "expected_output": "captured_image_batch_reference",
+                "id": "step_005"
+              },
+              {
+                "action": "run_vision_model",
+                "expected_output": "vision_inference_task_record",
+                "id": "step_006"
+              },
+              {
+                "action": "save_observation_results",
+                "expected_output": "saved_observation_record",
+                "id": "step_007"
+              },
+              {
+                "action": "return_to_launch_area",
+                "expected_output": "return_task_for_scheduler",
+                "id": "step_008"
+              }
+            ]
+          }
+        },
+        "mission_plan_validation": {
+          "issues": [],
+          "valid": true,
+          "warnings": []
+        },
+        "text": "Send two drones north to inspect crops"
+      },
+      {
+        "clause_id": "clause_002",
+        "grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 1,
+            "location": "east",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "irrigation canal",
+            "text": "one drone east to inspect irrigation"
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "location",
+              "location": {
+                "aliases": [
+                  "east",
+                  "east field",
+                  "eastern field"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_east_field",
+                "latitude": 23.999,
+                "longitude": 46.003,
+                "map_role": "mission_area",
+                "name": "East Field",
+                "radius_m": 100.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "east",
+              "status": "grounded"
+            },
+            {
+              "candidates": [],
+              "confidence": 1.0,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "irrigation canal",
+                  "canal",
+                  "irrigation"
+                ],
+                "boundary": [],
+                "category": "waterway",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_irrigation_canal",
+                "latitude": 24.0006,
+                "longitude": 45.9981,
+                "map_role": "inspection_target",
+                "name": "Irrigation Canal",
+                "radius_m": 45.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "irrigation canal",
+              "status": "grounded"
+            }
+          ]
+        },
+        "intent": {
+          "action": "inspect",
+          "constraints": [],
+          "count": 1,
+          "location": "east",
+          "notes": [],
+          "parser": "deterministic_v3",
+          "target": "irrigation canal",
+          "text": "one drone east to inspect irrigation"
+        },
+        "issues": [
+          "clause_002_distinct_location_and_target"
+        ],
+        "text": "one drone east to inspect irrigation"
+      }
+    ],
+    "decomposition": {
+      "clauses": [
+        {
+          "clause_id": "clause_001",
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "crops",
+            "text": "Send two drones north to inspect crops"
+          },
+          "text": "Send two drones north to inspect crops"
+        },
+        {
+          "clause_id": "clause_002",
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 1,
+            "location": "east",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "irrigation canal",
+            "text": "one drone east to inspect irrigation"
+          },
+          "text": "one drone east to inspect irrigation"
+        }
+      ],
+      "decomposer": "bounded_explicit_drone_clause_decomposer_v1",
+      "issues": [],
+      "source_text": "Send two drones north to inspect crops and one drone east to inspect irrigation.",
+      "status": "decomposed",
+      "total_requested_drones": 3
+    },
+    "issues": [
+      "clause_002_distinct_location_and_target"
+    ],
+    "limitations": [
+      "Software-simulation preparation only; no physical drones are controlled.",
+      "No mission is successful until ASR, mission imagery, vision, supervision, and reporting evidence are stored.",
+      "Distinct grounded references are blocked because the custom map has no relation model that can reconcile them."
+    ],
+    "missing_evidence": [],
+    "pipeline": "week8_compound_mission_preparation_v1",
+    "plans": [
+      {
+        "mission_plan": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "crops",
+            "text": "Send two drones north to inspect crops"
+          },
+          "issues": [],
+          "notes": [
+            "Week 4 deterministic mission plan; not scheduling, execution, or safety validation."
+          ],
+          "primary_map_object": {
+            "boundary": [],
+            "category": "field",
+            "center": {
+              "latitude": 24.0,
+              "longitude": 46.0
+            },
+            "flyable": true,
+            "geometry_type": "circle",
+            "location_id": "loc_north_field",
+            "map_role": "mission_area",
+            "name": "North Field",
+            "phrase": "crops",
+            "radius_m": 120.0,
+            "reference_field": "target",
+            "requires_clearance": false
+          },
+          "ready_for_scheduling": true,
+          "referenced_map_objects": [
+            {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 24.0,
+                "longitude": 46.0
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_north_field",
+              "map_role": "mission_area",
+              "name": "North Field",
+              "phrase": "north",
+              "radius_m": 120.0,
+              "reference_field": "location",
+              "requires_clearance": false
+            },
+            {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 24.0,
+                "longitude": 46.0
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_north_field",
+              "map_role": "mission_area",
+              "name": "North Field",
+              "phrase": "crops",
+              "radius_m": 120.0,
+              "reference_field": "target",
+              "requires_clearance": false
+            }
+          ],
+          "status": "planned",
+          "steps": [
+            {
+              "action": "validate_grounding",
+              "depends_on": [],
+              "description": "Confirm grounded map object loc_north_field is available to the planner.",
+              "expected_output": "validated_grounded_map_object",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_001"
+            },
+            {
+              "action": "takeoff",
+              "depends_on": [
+                "step_001"
+              ],
+              "description": "Prepare a simulated drone takeoff task for later scheduling.",
+              "expected_output": "airborne_simulated_drone",
+              "map_object": null,
+              "notes": [],
+              "step_id": "step_002"
+            },
+            {
+              "action": "fly_to",
+              "depends_on": [
+                "step_002"
+              ],
+              "description": "Navigate to North Field using the grounded center coordinates.",
+              "expected_output": "drone_at_grounded_location",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_003"
+            },
+            {
+              "action": "inspect_area",
+              "depends_on": [
+                "step_003"
+              ],
+              "description": "Inspect North Field and collect simulated observations.",
+              "expected_output": "inspect_area_complete",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_004"
+            },
+            {
+              "action": "capture_images",
+              "depends_on": [
+                "step_004"
+              ],
+              "description": "Capture simulated imagery at North Field for later vision processing.",
+              "expected_output": "captured_image_batch_reference",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_005"
+            },
+            {
+              "action": "run_vision_model",
+              "depends_on": [
+                "step_005"
+              ],
+              "description": "Create a planned downstream vision-inference task for the captured imagery.",
+              "expected_output": "vision_inference_task_record",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [
+                "Week 4 plans this task; Week 6 implements actual YOLO inference."
+              ],
+              "step_id": "step_006"
+            },
+            {
+              "action": "save_observation_results",
+              "depends_on": [
+                "step_006"
+              ],
+              "description": "Store simulated observation outputs for later reporting and evaluation.",
+              "expected_output": "saved_observation_record",
+              "map_object": {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              "notes": [],
+              "step_id": "step_007"
+            },
+            {
+              "action": "return_to_launch_area",
+              "depends_on": [
+                "step_007"
+              ],
+              "description": "Return the simulated drone to the launch area after the observation task.",
+              "expected_output": "return_task_for_scheduler",
+              "map_object": null,
+              "notes": [],
+              "step_id": "step_008"
+            }
+          ],
+          "task_graph": {
+            "edges": [
+              {
+                "from": "step_001",
+                "to": "step_002"
+              },
+              {
+                "from": "step_002",
+                "to": "step_003"
+              },
+              {
+                "from": "step_003",
+                "to": "step_004"
+              },
+              {
+                "from": "step_004",
+                "to": "step_005"
+              },
+              {
+                "from": "step_005",
+                "to": "step_006"
+              },
+              {
+                "from": "step_006",
+                "to": "step_007"
+              },
+              {
+                "from": "step_007",
+                "to": "step_008"
+              }
+            ],
+            "nodes": [
+              {
+                "action": "validate_grounding",
+                "expected_output": "validated_grounded_map_object",
+                "id": "step_001"
+              },
+              {
+                "action": "takeoff",
+                "expected_output": "airborne_simulated_drone",
+                "id": "step_002"
+              },
+              {
+                "action": "fly_to",
+                "expected_output": "drone_at_grounded_location",
+                "id": "step_003"
+              },
+              {
+                "action": "inspect_area",
+                "expected_output": "inspect_area_complete",
+                "id": "step_004"
+              },
+              {
+                "action": "capture_images",
+                "expected_output": "captured_image_batch_reference",
+                "id": "step_005"
+              },
+              {
+                "action": "run_vision_model",
+                "expected_output": "vision_inference_task_record",
+                "id": "step_006"
+              },
+              {
+                "action": "save_observation_results",
+                "expected_output": "saved_observation_record",
+                "id": "step_007"
+              },
+              {
+                "action": "return_to_launch_area",
+                "expected_output": "return_task_for_scheduler",
+                "id": "step_008"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "preparation_elapsed_seconds": 0.008683199994266033,
+    "safety_report": null,
+    "schedule": null,
+    "status": "clarification_required"
+  }
+}

@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 7 now includes stateful clarification, route-aware straight-line geofencing, inter-drone separation monitoring, event-driven supervision, prior-module interface integration, and threshold-sensitivity evidence. It is not a Week 8 end-to-end result, does not control physical drones, and does not provide a physical-flight safety guarantee.
+Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 8 is now in progress: the exact roadmap command is decomposed into two inspectable clauses requesting three drones, but the first stored typed preflight correctly stops because the custom map grounds `east` and `irrigation` to different locations. This is not an end-to-end success result, does not control physical drones, and does not provide a physical-flight safety guarantee.
 
 ## Project Rule
 
@@ -29,6 +29,8 @@ The current source of truth is:
 - `docs/week4_mission_planning.md`
 - `docs/week4_acceptance_criteria.md`
 - `docs/week4_research_deferrals.md`
+- `docs/week8_protocol.md`
+- `docs/week8_acceptance_criteria.json`
 - `docs/roadmap_status.md`
 - `docs/repository_hygiene.md`
 
@@ -406,6 +408,31 @@ collision-avoidance control, weather, communications, dynamics,
 mission-specific imagery, and Week 8 mission success remain unevaluated. See
 `docs/week7_safety_protocol.md` and
 `docs/week7_gap_audit.md`.
+
+## Week 8 End-to-End Demonstration
+
+Week 8 is in progress and follows `docs/week8_protocol.md`. The first slice
+adds bounded compound-command decomposition and a shared multi-intent
+preparation pipeline. It does not silently collapse the roadmap's two clauses
+into one three-drone intent.
+
+Run and store the exact typed roadmap preflight:
+
+```powershell
+python scripts/run_week8_preflight.py --output outputs/evaluations/week8_roadmap_scenario_typed_preflight.json
+```
+
+The current expected result is `clarification_required`. The first clause
+grounds `north` and `crops` to North Field. The second grounds `east` to East
+Field and `irrigation` to Irrigation Canal, which are distinct records in the
+custom map. The pipeline preserves that contradiction as a negative result and
+does not schedule the mission until the intended map relation is resolved.
+
+Week 8 also remains blocked on a human-recorded WAV of the exact scenario and a
+mission-image manifest with source, split, and file provenance. Existing Week 6
+development summaries are not relabeled as mission observations. Notebook 8
+orchestrates this preflight in Colab; later cells will be added only as the
+required inputs and stage evidence exist.
 
 ## First Milestone
 

@@ -15,6 +15,7 @@ Active work branches should use milestone-oriented names:
 - `codex/week5-scheduling`
 - `codex/week6-vision`
 - `codex/week7-safety-integration`
+- `codex/week8-end-to-end`
 - `codex/repo-hygiene`
 
 Old branches should be deleted after their work is merged and traceable through
@@ -54,7 +55,7 @@ See `docs/repository_hygiene.md`.
 | Week 5 | Multi-drone scheduling | `src/shepherd_ai/scheduling.py`, `scripts/schedule_missions.py`, `scripts/audit_week5_completion.py` | `notebooks/Notebook5_Scheduler.ipynb` | `datasets/drones/week5_three_drone_fleet_v1.json` | `outputs/evaluations/week5_completion_gate_audit.json`; scheduling gate passed locally |
 | Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision and VisDrone2019-DET; licensed imagery and checkpoints remain outside Git | Complete for roadmap advancement; registered 50-epoch VisDrone YOLOv8n validation baseline and Agriculture-Vision segmentation development comparisons recorded |
 | Week 7 | Safety, feedback, and integration | `src/shepherd_ai/safety.py`, `feedback.py`, `integration.py`, `clarification_dialogue.py`, `mission_supervision.py`, `integrated_prototype.py`; Week 7 evaluation and audit scripts | `notebooks/Notebook7_Safety.ipynb` | Synthetic policy plus preflight, dialogue, route, supervision, integration, and sensitivity cases under `datasets/safety/` | Complete for roadmap advancement under the corrected gate; all registered evaluations pass and the audit has no blockers |
-| Week 8 | End-to-end demo and evaluation | Not implemented | `notebooks/Notebook8_FinalDemo.ipynb`, `notebooks/Notebook9_Evaluation.ipynb` | Depends on Weeks 2-7 | Not started |
+| Week 8 | End-to-end demo and evaluation | `src/shepherd_ai/mission_decomposition.py`, `src/shepherd_ai/week8_pipeline.py`, `scripts/run_week8_preflight.py` | `notebooks/Notebook8_FinalDemo.ipynb`, `notebooks/Notebook9_Evaluation.ipynb` | Existing map/fleet/policy; exact-scenario WAV and mission imagery still required | In progress; typed exact-scenario preflight stored as a blocked negative result |
 | Week 9 | Research paper draft | Not implemented | Not stated | Evaluation artifacts and figures | Not started |
 | Week 10 | Final paper and presentation | Not implemented | Not stated | Final reports/slides | Not started |
 
@@ -78,3 +79,8 @@ See `docs/repository_hygiene.md`.
   route, `8/8` supervision, `3/3` integration, and `4/4` sensitivity results.
   These are registered development cases, not physical safety or Week 8
   end-to-end mission performance.
+- Week 8 has started but is not complete. The bounded decomposer preserves two
+  clauses and three requested drones. The exact typed preflight stops because
+  East Field and Irrigation Canal are separate map records. Exact-scenario ASR,
+  mission-assigned imagery and vision results, final supervision, all roadmap
+  metrics, a mission report, logs, and screenshots are still missing.

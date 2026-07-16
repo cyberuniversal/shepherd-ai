@@ -1,0 +1,42 @@
+{
+  "milestone": "Week 8 - End-to-End Demonstration and Experimental Evaluation",
+  "roadmap_scenario": "Send two drones north to inspect crops and one drone east to inspect irrigation.",
+  "completion_rule": "Every required stage must have stored, reproducible evidence; format-valid intermediate output alone is insufficient.",
+  "required_stages": [
+    "speech_to_text",
+    "compound_intent_extraction",
+    "map_grounding",
+    "mission_planning",
+    "three_drone_assignment",
+    "preflight_and_runtime_safety",
+    "mission_assigned_image_processing",
+    "mission_report"
+  ],
+  "required_metrics": [
+    "intent_extraction_accuracy",
+    "grounding_accuracy",
+    "scheduling_quality",
+    "detection_performance",
+    "overall_execution_time"
+  ],
+  "required_artifacts": [
+    "raw_end_to_end_run_json",
+    "evaluation_summary_json",
+    "mission_report",
+    "demonstration_log",
+    "demonstration_screenshots"
+  ],
+  "evidence_constraints": [
+    "The speech stage must reference an actual WAV file and a stored ASR prediction with model provenance.",
+    "The exact roadmap command must be represented as two mission clauses requesting three drones in total.",
+    "Distinct grounded location and target references must be spatially reconciled or explicitly clarified.",
+    "Vision results must reference images assigned to this simulated mission; a Week 6 development summary alone is insufficient.",
+    "Raw outputs must remain separate from derived analysis.",
+    "Failures, unresolved inputs, package/model versions, parameters, splits, and random seeds must be retained.",
+    "No physical-flight, safety-guarantee, or novelty claim may be inferred from this software-simulation run."
+  ],
+  "thresholds": {
+    "status": "not_stated_in_roadmap",
+    "rule": "Report measured values without inventing pass thresholds."
+  }
+}
