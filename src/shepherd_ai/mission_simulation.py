@@ -266,6 +266,11 @@ def render_simulation_map(
     output_path = Path(output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     map_view.save(str(output_path))
+    rendered = output_path.read_text(encoding="utf-8")
+    output_path.write_text(
+        "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n",
+        encoding="utf-8",
+    )
     return output_path
 
 

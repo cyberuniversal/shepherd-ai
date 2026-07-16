@@ -1,7 +1,7 @@
 {
   "metadata": {
     "artifact_sha256": {
-      "animated_map": "d113727ad68ca6e15a92115337d0d28885216e0be9940034606f0d3d905ae26a",
+      "animated_map": "bbc3c107401bebf606060e81c2b59106e282d070b1f5bc709a6d332ff1258452",
       "telemetry": "3c0d56ec8594b3fa85556268ea2fcac2f95b92031063ff902d684dd1a420b165"
     },
     "command_sha256": "3c631acc81d03a93115ee07009d43cc72bfe6dcb9c8f6944e5fb0942c1013548",
@@ -10,7 +10,7 @@
     },
     "destination_resolution_source": "explicit_operator_confirmation",
     "fleet": "datasets/drones/week5_three_drone_fleet_v1.json",
-    "generated_at_utc": "2026-07-16T18:51:25.488273+00:00",
+    "generated_at_utc": "2026-07-16T18:53:54.084579+00:00",
     "input_mode": "typed_development",
     "input_sha256": {
       "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
@@ -1696,7 +1696,7 @@
         }
       }
     ],
-    "preparation_elapsed_seconds": 0.00821539998287335,
+    "preparation_elapsed_seconds": 0.007934900000691414,
     "safety_report": {
       "altitude_source": "operator_or_workflow_input",
       "assignment_results": [
@@ -2916,6 +2916,6 @@
     "telemetry_output": "outputs/evaluations/week8_roadmap_scenario_telemetry.jsonl",
     "telemetry_records": 43,
     "time_step_min": 0.25,
-    "wall_clock_seconds": 0.011771000048611313
+    "wall_clock_seconds": 0.011456000036559999
   }
 }
