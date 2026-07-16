@@ -19,9 +19,10 @@
     "user_terms_acceptance_required_before_download": true
   },
   "notes": [
-    "These criteria define the Week 6 vision foundation and the missing conditions for full Week 6 completion.",
+    "These criteria define the Week 6 vision foundation gate; the gate is now satisfied.",
     "Detection counts are not detection-performance metrics unless labeled data and a formal evaluation protocol are added.",
-    "Agriculture-Vision CVPR 2020 is selected, but no image subset has been downloaded or evaluated yet.",
-    "Generic YOLO detections are a smoke test and are not Agriculture-Vision semantic-segmentation performance."
+    "Agriculture-Vision CVPR 2020 was processed under its terms and evaluated through a separate segmentation development protocol; licensed pixels remain outside Git.",
+    "Generic YOLO detections on Agriculture-Vision remain a smoke test and are not Agriculture-Vision semantic-segmentation performance.",
+    "A separate registered VisDrone2019-DET YOLOv8n experiment now provides labeled detection precision, recall, and mAP on the official validation split."
   ]
 }

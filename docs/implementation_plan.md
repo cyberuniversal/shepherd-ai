@@ -170,6 +170,21 @@ Completion criteria: A documented dataset subset can be processed reproducibly.
 
 Known uncertainties: Dataset selection, license/access notes, labels, splits, and model weights are not yet specified.
 
+Current status: Week 6 is complete for roadmap advancement. Agriculture-Vision
+provides the licensed, provenance-tracked semantic-segmentation development
+path, including fixed train/validation subsets, negative class-imbalance
+results, and a leading fixed-subset BCE-Dice result with modified mIoU
+`0.15387`. VisDrone2019-DET provides the labeled YOLO-compatible detection
+path. Its registered YOLOv8n run completed 50 epochs on the official training
+split and produced validation precision `0.43116`, recall `0.32034`, mAP50
+`0.29677`, and mAP50-95 `0.16724` from `best.pt`; test-dev was not used for
+selection. The completion evidence is recorded in
+`docs/week6_completion_assessment.md` and
+`outputs/evaluations/week6_visdrone_yolov8n_seed17_e50_completed_summary.json`.
+This completes the roadmap milestone, not the broader research problem:
+Agriculture-Vision anomaly performance remains narrow and vision is not yet
+integrated into mission execution.
+
 ## Milestone 7: Safety, Feedback, And Integration
 
 Objective: Add clarification dialogue, status updates, safety validation, and integrate previous modules.

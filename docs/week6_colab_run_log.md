@@ -782,3 +782,56 @@ Interpretation:
   intended to be run from a fresh Colab runtime; it permits later checkpoints
   from completed epoch 20 through 50 so subsequent quota interruptions can
   resume rather than restart.
+
+## Run 2026-07-16 - Registered VisDrone YOLOv8n Baseline Completed
+
+Status: completed 50-epoch validation baseline.
+
+Runtime and protocol:
+
+- resumed the verified epoch-20 checkpoint and completed epochs 21 through 50,
+- NVIDIA Tesla T4, Python `3.12.13`, PyTorch `2.11.0+cu128`, and Ultralytics
+  `8.4.92`,
+- pretrained `yolov8n.pt`, image size 640, batch size 16, seed 17,
+  deterministic mode, and two data-loader workers,
+- official VisDrone training split: 6,471 images,
+- official VisDrone validation split: 548 images and 38,759 instances,
+- test-dev was not used for model selection,
+- `results.csv` contains exactly 50 epoch rows and selects epoch 50 as the best
+  recorded epoch by validation mAP50-95.
+
+Best epoch row in `results.csv`:
+
+- precision: `0.43081`,
+- recall: `0.32027`,
+- mAP50: `0.29659`,
+- mAP50-95: `0.16727`,
+- training losses: box `1.41942`, class `0.97017`, DFL `0.89527`,
+- validation losses: box `1.47682`, class `1.05456`, DFL `0.90346`.
+
+Post-training validation of `best.pt`:
+
+- precision: `0.4311579746662367`,
+- recall: `0.3203436146826227`,
+- mAP50: `0.29676968245417856`,
+- mAP50-95: `0.1672366961928156`,
+- fitness: `0.1672366961928156`.
+
+Verified private artifact SHA-256:
+
+- `weights/last.pt`: `921b273179e919ee9d9f3aef1f71b2b0e271f63a84b4b1b32b36360fd98ce1be`,
+- `weights/best.pt`: `8e3ecd7b1094a9f639d2cf86bb421bf17f1036e6b26b01e3ed051b0cee1fb438`,
+- `results.csv`: `c7c94c3fd0cdbbbe9367e407ab61d15c5aecf67f3071b2117f8795a21f6d5214`,
+- `args.yaml`: `4b737e2e83244bfccc9346d5f5ef2dc2c6f105843a1dde19fbcd6bab35d19d5c`.
+
+Interpretation:
+
+- the registered YOLO-compatible detection baseline is complete,
+- the final epoch is also the selected best epoch under the registered
+  validation metric,
+- this is VisDrone object-detection performance, not Agriculture-Vision
+  anomaly-segmentation performance and not end-to-end Shepherd-AI mission
+  performance,
+- the completed non-image summary is tracked at
+  `outputs/evaluations/week6_visdrone_yolov8n_seed17_e50_completed_summary.json`;
+  checkpoints and raw training artifacts remain in private Google Drive.

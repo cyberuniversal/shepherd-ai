@@ -52,7 +52,7 @@ See `docs/repository_hygiene.md`.
 | Week 3 | Command grounding and map representation | `src/shepherd_ai/grounding.py`, `grounding_dataset.py`, `grounding_coverage.py`, `grounding_clarification.py`, `map_validation.py`, `map_visualization.py`, `week3_*` | `notebooks/Notebook3_Grounding.ipynb` | `datasets/maps/` | `outputs/evaluations/week3_completion_gate_audit.json`; synthetic-map gate passed locally |
 | Week 4 | Mission planning | `src/shepherd_ai/mission_planning.py`, `scripts/plan_mission.py`, `scripts/evaluate_mission_planning.py`, `scripts/render_mission_flow.py`, `scripts/audit_week4_completion.py` | `notebooks/Notebook4_Planner.ipynb` | `datasets/maps/week4_planning_cases_v1.jsonl` | `outputs/evaluations/week4_completion_gate_audit.json`; planning gate passed locally |
 | Week 5 | Multi-drone scheduling | `src/shepherd_ai/scheduling.py`, `scripts/schedule_missions.py`, `scripts/audit_week5_completion.py` | `notebooks/Notebook5_Scheduler.ipynb` | `datasets/drones/week5_three_drone_fleet_v1.json` | `outputs/evaluations/week5_completion_gate_audit.json`; scheduling gate passed locally |
-| Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision selected; licensed imagery and checkpoints remain outside Git | T4 smoke test and 64/64 segmentation development run recorded; scaling, imbalance experiments, and fixed held-out evaluation remain |
+| Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision and VisDrone2019-DET; licensed imagery and checkpoints remain outside Git | Complete for roadmap advancement; registered 50-epoch VisDrone YOLOv8n validation baseline and Agriculture-Vision segmentation development comparisons recorded |
 | Week 7 | Safety, feedback, and integration | Not implemented | `notebooks/Notebook7_Safety.ipynb` | Not specified | Not started |
 | Week 8 | End-to-end demo and evaluation | Not implemented | `notebooks/Notebook8_FinalDemo.ipynb`, `notebooks/Notebook9_Evaluation.ipynb` | Depends on Weeks 2-7 | Not started |
 | Week 9 | Research paper draft | Not implemented | Not stated | Evaluation artifacts and figures | Not started |
@@ -68,6 +68,8 @@ See `docs/repository_hygiene.md`.
 - Completion gates under `outputs/` are regenerated artifacts. If a gate result
   must be included in a paper or review, promote the specific artifact
   deliberately with `git add -f` and explain why.
-- Week 6 has a dataset-backed validation-only development result. It is not a
-  final benchmark: the 64/64 run reached modified mIoU `0.0965`, mostly from
-  background, and did not learn most anomaly classes.
+- Week 6 is complete at the roadmap milestone level. The registered VisDrone
+  detector reached validation mAP50-95 `0.16724`; this is a completed baseline,
+  not a state-of-the-art claim. Agriculture-Vision remains development-only:
+  the leading fixed 256/256 BCE-Dice result reached modified mIoU `0.15387`,
+  with drydown as the only anomaly class with nonzero IoU.
