@@ -12,7 +12,7 @@ Notebook sequence:
 4. `Notebook4_Planner.ipynb` - task decomposition and mission task graph.
 5. `Notebook5_Scheduler.ipynb` - multi-drone allocation baselines.
 6. `Notebook6_Vision.ipynb` - aerial image inference and detection summaries.
-7. `Notebook7_Safety.ipynb` - deterministic safety validation and feedback.
+7. `Notebook7_Safety.ipynb` - clarification, deterministic safety, event-driven supervision, integration, and sensitivity evaluation.
 8. `Notebook8_FinalDemo.ipynb` - integrated scenario demo.
 9. `Notebook9_Evaluation.ipynb` - evaluation tables, figures, and research outputs.
 

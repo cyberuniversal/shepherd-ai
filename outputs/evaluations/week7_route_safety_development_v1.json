@@ -1,0 +1,498 @@
+{
+  "cases": [
+    {
+      "actual_decision": "rejected",
+      "actual_intersections": [
+        "restricted_circle"
+      ],
+      "case_id": "week7_route_circle_crossing_001",
+      "case_input": {
+        "case_id": "week7_route_circle_crossing_001",
+        "expected_decision": "rejected",
+        "expected_intersections": [
+          "restricted_circle"
+        ],
+        "notes": [
+          "synthetic_straight_line_route_case"
+        ],
+        "restricted_locations": [
+          {
+            "geometry_type": "circle",
+            "id": "restricted_circle",
+            "latitude": 24.0,
+            "longitude": 46.001,
+            "name": "Restricted Circle",
+            "radius_m": 30.0
+          }
+        ],
+        "start": {
+          "latitude": 24.0,
+          "longitude": 46.0
+        },
+        "target": {
+          "latitude": 24.0,
+          "longitude": 46.002
+        }
+      },
+      "data_type": "synthetic_week7_route_safety_case",
+      "decision_matches_expected": true,
+      "expected_decision": "rejected",
+      "expected_intersections": [
+        "restricted_circle"
+      ],
+      "intersections_match_expected": true,
+      "notes": [
+        "synthetic_straight_line_route_case"
+      ],
+      "safety_report": {
+        "altitude_source": "operator_or_workflow_input",
+        "assignment_results": [
+          {
+            "checks": [
+              {
+                "category": "availability",
+                "evidence": {
+                  "allowed_statuses": [
+                    "idle"
+                  ],
+                  "drone_id": "drone_1",
+                  "drone_status": "idle"
+                },
+                "reason": "drone_status_allowed",
+                "status": "passed"
+              },
+              {
+                "category": "battery",
+                "evidence": {
+                  "battery_percent": 100.0,
+                  "drone_id": "drone_1",
+                  "minimum_battery_percent": 25.0
+                },
+                "reason": "battery_at_or_above_threshold",
+                "status": "passed"
+              },
+              {
+                "category": "altitude",
+                "evidence": {
+                  "command_altitude_ceiling_m": null,
+                  "maximum_altitude_m": 60.0,
+                  "minimum_altitude_exclusive_m": 0.0,
+                  "mission_altitude_m": 30.0
+                },
+                "reason": "altitude_within_policy_and_command_constraint",
+                "status": "passed"
+              },
+              {
+                "category": "restricted_area",
+                "evidence": {
+                  "blocked_map_roles": [
+                    "obstacle",
+                    "restricted_area"
+                  ],
+                  "flyable": true,
+                  "map_role": "mission_area",
+                  "requires_clearance": false,
+                  "route_clearance_margin_m": 0.0,
+                  "route_intersections": [
+                    {
+                      "geometry_type": "circle",
+                      "location_id": "restricted_circle",
+                      "map_role": "restricted_area",
+                      "name": "Restricted Circle"
+                    }
+                  ],
+                  "route_model": "straight_line_center_to_center",
+                  "target_location_id": "target"
+                },
+                "reason": "straight_line_route_intersects_restricted_area",
+                "status": "failed"
+              }
+            ],
+            "decision": "rejected",
+            "drone_id": "drone_1",
+            "task_id": "task_1"
+          }
+        ],
+        "command_altitude_ceiling_m": null,
+        "issues": [],
+        "limitations": [
+          "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+          "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+        ],
+        "mission_altitude_m": 30.0,
+        "policy": {
+          "allowed_drone_statuses": [
+            "idle"
+          ],
+          "blocked_map_roles": [
+            "obstacle",
+            "restricted_area"
+          ],
+          "data_type": "synthetic_simulation_safety_policy",
+          "default_mission_altitude_m": 30.0,
+          "maximum_altitude_m": 60.0,
+          "minimum_battery_percent": 25.0,
+          "minimum_inter_drone_separation_m": 20.0,
+          "notes": [
+            "The roadmap requires battery and altitude checks but does not state thresholds.",
+            "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+            "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+            "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+            "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+          ],
+          "policy_id": "week7_synthetic_safety_policy_v1",
+          "route_clearance_margin_m": 0.0,
+          "source": "custom_week7_development_policy_v1"
+        },
+        "safe_to_execute": false,
+        "status": "rejected",
+        "summary": {
+          "assignments": 1,
+          "failed_checks": 1,
+          "not_evaluated_checks": 0,
+          "passed_checks": 3,
+          "roadmap_checks_per_assignment": 4
+        },
+        "validator": "deterministic_week7_safety_v1"
+      }
+    },
+    {
+      "actual_decision": "approved",
+      "actual_intersections": [],
+      "case_id": "week7_route_circle_clear_001",
+      "case_input": {
+        "case_id": "week7_route_circle_clear_001",
+        "expected_decision": "approved",
+        "expected_intersections": [],
+        "notes": [
+          "synthetic_straight_line_route_case"
+        ],
+        "restricted_locations": [
+          {
+            "geometry_type": "circle",
+            "id": "restricted_circle",
+            "latitude": 24.002,
+            "longitude": 46.001,
+            "name": "Restricted Circle",
+            "radius_m": 30.0
+          }
+        ],
+        "start": {
+          "latitude": 24.0,
+          "longitude": 46.0
+        },
+        "target": {
+          "latitude": 24.0,
+          "longitude": 46.002
+        }
+      },
+      "data_type": "synthetic_week7_route_safety_case",
+      "decision_matches_expected": true,
+      "expected_decision": "approved",
+      "expected_intersections": [],
+      "intersections_match_expected": true,
+      "notes": [
+        "synthetic_straight_line_route_case"
+      ],
+      "safety_report": {
+        "altitude_source": "operator_or_workflow_input",
+        "assignment_results": [
+          {
+            "checks": [
+              {
+                "category": "availability",
+                "evidence": {
+                  "allowed_statuses": [
+                    "idle"
+                  ],
+                  "drone_id": "drone_1",
+                  "drone_status": "idle"
+                },
+                "reason": "drone_status_allowed",
+                "status": "passed"
+              },
+              {
+                "category": "battery",
+                "evidence": {
+                  "battery_percent": 100.0,
+                  "drone_id": "drone_1",
+                  "minimum_battery_percent": 25.0
+                },
+                "reason": "battery_at_or_above_threshold",
+                "status": "passed"
+              },
+              {
+                "category": "altitude",
+                "evidence": {
+                  "command_altitude_ceiling_m": null,
+                  "maximum_altitude_m": 60.0,
+                  "minimum_altitude_exclusive_m": 0.0,
+                  "mission_altitude_m": 30.0
+                },
+                "reason": "altitude_within_policy_and_command_constraint",
+                "status": "passed"
+              },
+              {
+                "category": "restricted_area",
+                "evidence": {
+                  "blocked_map_roles": [
+                    "obstacle",
+                    "restricted_area"
+                  ],
+                  "flyable": true,
+                  "map_role": "mission_area",
+                  "requires_clearance": false,
+                  "route_clearance_margin_m": 0.0,
+                  "route_intersections": [],
+                  "route_model": "straight_line_center_to_center",
+                  "target_location_id": "target"
+                },
+                "reason": "target_and_straight_line_route_are_clear",
+                "status": "passed"
+              }
+            ],
+            "decision": "approved",
+            "drone_id": "drone_1",
+            "task_id": "task_1"
+          }
+        ],
+        "command_altitude_ceiling_m": null,
+        "issues": [],
+        "limitations": [
+          "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+          "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+        ],
+        "mission_altitude_m": 30.0,
+        "policy": {
+          "allowed_drone_statuses": [
+            "idle"
+          ],
+          "blocked_map_roles": [
+            "obstacle",
+            "restricted_area"
+          ],
+          "data_type": "synthetic_simulation_safety_policy",
+          "default_mission_altitude_m": 30.0,
+          "maximum_altitude_m": 60.0,
+          "minimum_battery_percent": 25.0,
+          "minimum_inter_drone_separation_m": 20.0,
+          "notes": [
+            "The roadmap requires battery and altitude checks but does not state thresholds.",
+            "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+            "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+            "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+            "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+          ],
+          "policy_id": "week7_synthetic_safety_policy_v1",
+          "route_clearance_margin_m": 0.0,
+          "source": "custom_week7_development_policy_v1"
+        },
+        "safe_to_execute": true,
+        "status": "approved",
+        "summary": {
+          "assignments": 1,
+          "failed_checks": 0,
+          "not_evaluated_checks": 0,
+          "passed_checks": 4,
+          "roadmap_checks_per_assignment": 4
+        },
+        "validator": "deterministic_week7_safety_v1"
+      }
+    },
+    {
+      "actual_decision": "rejected",
+      "actual_intersections": [
+        "restricted_polygon"
+      ],
+      "case_id": "week7_route_polygon_crossing_001",
+      "case_input": {
+        "case_id": "week7_route_polygon_crossing_001",
+        "expected_decision": "rejected",
+        "expected_intersections": [
+          "restricted_polygon"
+        ],
+        "notes": [
+          "synthetic_straight_line_route_case"
+        ],
+        "restricted_locations": [
+          {
+            "boundary": [
+              {
+                "latitude": 23.9998,
+                "longitude": 46.0009
+              },
+              {
+                "latitude": 23.9998,
+                "longitude": 46.0011
+              },
+              {
+                "latitude": 24.0002,
+                "longitude": 46.0011
+              },
+              {
+                "latitude": 24.0002,
+                "longitude": 46.0009
+              }
+            ],
+            "geometry_type": "polygon",
+            "id": "restricted_polygon",
+            "latitude": 24.0,
+            "longitude": 46.001,
+            "name": "Restricted Polygon",
+            "radius_m": 0.0
+          }
+        ],
+        "start": {
+          "latitude": 24.0,
+          "longitude": 46.0
+        },
+        "target": {
+          "latitude": 24.0,
+          "longitude": 46.002
+        }
+      },
+      "data_type": "synthetic_week7_route_safety_case",
+      "decision_matches_expected": true,
+      "expected_decision": "rejected",
+      "expected_intersections": [
+        "restricted_polygon"
+      ],
+      "intersections_match_expected": true,
+      "notes": [
+        "synthetic_straight_line_route_case"
+      ],
+      "safety_report": {
+        "altitude_source": "operator_or_workflow_input",
+        "assignment_results": [
+          {
+            "checks": [
+              {
+                "category": "availability",
+                "evidence": {
+                  "allowed_statuses": [
+                    "idle"
+                  ],
+                  "drone_id": "drone_1",
+                  "drone_status": "idle"
+                },
+                "reason": "drone_status_allowed",
+                "status": "passed"
+              },
+              {
+                "category": "battery",
+                "evidence": {
+                  "battery_percent": 100.0,
+                  "drone_id": "drone_1",
+                  "minimum_battery_percent": 25.0
+                },
+                "reason": "battery_at_or_above_threshold",
+                "status": "passed"
+              },
+              {
+                "category": "altitude",
+                "evidence": {
+                  "command_altitude_ceiling_m": null,
+                  "maximum_altitude_m": 60.0,
+                  "minimum_altitude_exclusive_m": 0.0,
+                  "mission_altitude_m": 30.0
+                },
+                "reason": "altitude_within_policy_and_command_constraint",
+                "status": "passed"
+              },
+              {
+                "category": "restricted_area",
+                "evidence": {
+                  "blocked_map_roles": [
+                    "obstacle",
+                    "restricted_area"
+                  ],
+                  "flyable": true,
+                  "map_role": "mission_area",
+                  "requires_clearance": false,
+                  "route_clearance_margin_m": 0.0,
+                  "route_intersections": [
+                    {
+                      "geometry_type": "polygon",
+                      "location_id": "restricted_polygon",
+                      "map_role": "restricted_area",
+                      "name": "Restricted Polygon"
+                    }
+                  ],
+                  "route_model": "straight_line_center_to_center",
+                  "target_location_id": "target"
+                },
+                "reason": "straight_line_route_intersects_restricted_area",
+                "status": "failed"
+              }
+            ],
+            "decision": "rejected",
+            "drone_id": "drone_1",
+            "task_id": "task_1"
+          }
+        ],
+        "command_altitude_ceiling_m": null,
+        "issues": [],
+        "limitations": [
+          "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+          "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+        ],
+        "mission_altitude_m": 30.0,
+        "policy": {
+          "allowed_drone_statuses": [
+            "idle"
+          ],
+          "blocked_map_roles": [
+            "obstacle",
+            "restricted_area"
+          ],
+          "data_type": "synthetic_simulation_safety_policy",
+          "default_mission_altitude_m": 30.0,
+          "maximum_altitude_m": 60.0,
+          "minimum_battery_percent": 25.0,
+          "minimum_inter_drone_separation_m": 20.0,
+          "notes": [
+            "The roadmap requires battery and altitude checks but does not state thresholds.",
+            "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+            "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+            "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+            "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+          ],
+          "policy_id": "week7_synthetic_safety_policy_v1",
+          "route_clearance_margin_m": 0.0,
+          "source": "custom_week7_development_policy_v1"
+        },
+        "safe_to_execute": false,
+        "status": "rejected",
+        "summary": {
+          "assignments": 1,
+          "failed_checks": 1,
+          "not_evaluated_checks": 0,
+          "passed_checks": 3,
+          "roadmap_checks_per_assignment": 4
+        },
+        "validator": "deterministic_week7_safety_v1"
+      }
+    }
+  ],
+  "metadata": {
+    "data_scope": "synthetic_route_geometry_development_evaluation",
+    "evaluator": "deterministic_week7_straight_line_route_safety_evaluator_v1",
+    "generated_at_utc": "2026-07-16T17:55:31.555860+00:00",
+    "input_sha256": {
+      "cases": "82596efcada78497ae84bc1f6b55a597df391a50e142c7f1eeaf96c4386cdcca",
+      "policy": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc"
+    },
+    "python_version": "3.14.3",
+    "random_seed": null,
+    "research_note": "This is a straight-line geometric baseline over synthetic circles and polygons. It is not trajectory optimization or continuous geofence enforcement.",
+    "route_model": "straight_line_center_to_center",
+    "safety_capabilities": [
+      "route_restricted_area_intersection"
+    ]
+  },
+  "summary": {
+    "case_count": 3,
+    "expected_decision_matches": 3,
+    "expected_intersection_matches": 3
+  }
+}

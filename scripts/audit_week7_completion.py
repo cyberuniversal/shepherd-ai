@@ -19,6 +19,11 @@ from shepherd_ai.week7_completion import (  # noqa: E402
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_safety_development_v1.json")
+    parser.add_argument("--supervision-evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_supervision_development_v1.json")
+    parser.add_argument("--clarification-evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_clarification_development_v1.json")
+    parser.add_argument("--route-evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_route_safety_development_v1.json")
+    parser.add_argument("--integration-evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_integration_development_v1.json")
+    parser.add_argument("--sensitivity-evaluation", type=Path, default=ROOT / "outputs/evaluations/week7_policy_sensitivity_v1.json")
     parser.add_argument("--policy", type=Path, default=ROOT / "datasets/safety/week7_safety_policy_v1.json")
     parser.add_argument("--acceptance-criteria", type=Path, default=ROOT / "docs/week7_acceptance_criteria.json")
     parser.add_argument("--research-deferrals", type=Path, default=ROOT / "docs/week7_research_deferrals.json")
@@ -29,6 +34,11 @@ def main() -> None:
 
     audit = build_week7_completion_audit(
         evaluation=_read_json(args.evaluation),
+        supervision_evaluation=_read_json(args.supervision_evaluation),
+        clarification_evaluation=_read_json(args.clarification_evaluation),
+        route_evaluation=_read_json(args.route_evaluation),
+        integration_evaluation=_read_json(args.integration_evaluation),
+        sensitivity_evaluation=_read_json(args.sensitivity_evaluation),
         policy=_read_json(args.policy),
         acceptance_criteria=_read_json(args.acceptance_criteria),
         research_deferrals=_read_json(args.research_deferrals),

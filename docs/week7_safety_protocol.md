@@ -1,115 +1,88 @@
-# Week 7 Safety, Feedback, and Integration Protocol
+# Week 7 Safety, Feedback, And Integration Protocol
 
-## Why This Comes Next
+## Scope
 
-The roadmap places feedback, safety, and integration immediately after the
-vision milestone. Weeks 2 through 6 now expose bounded intent, grounding,
-planning, scheduling, and perception artifacts. Week 7 must gate scheduled
-missions before any simulated execution and must not delegate safety decisions
-to a language model.
+Week 7 implements the roadmap's clarification dialogue, simulated mission
+status updates, battery/restricted-area/altitude/availability checks, and
+integration of prior modules. The literature review controls the technical
+boundary: semantic interpretation remains separate from deterministic safety
+and event-driven supervision, and failures preserve unfinished work.
 
-The literature review supports this separation. TACOS uses a supervisor over
-current swarm state, Swarm-Steward validates proposed actions against external
-constraints, CommandSwarm blocks malformed or unauthorized actions, and
-SkySim separates high-level language reasoning from deterministic safety
-enforcement.
+This is a Python software simulation. It does not control physical drones or
+provide a physical-flight safety guarantee.
 
-## Objective
+## Architecture
 
-Implement a deterministic pre-execution gate that:
+1. `src/shepherd_ai/clarification_dialogue.py` validates operator choices and
+   records response, confirmation, cancellation, retry, and timeout states.
+2. `src/shepherd_ai/safety.py` applies the four roadmap checks, a straight-line
+   circle/polygon restricted-area intersection baseline, and pairwise current
+   separation checks.
+3. `src/shepherd_ai/mission_supervision.py` owns mission/task lifecycle,
+   confirmation, pause/resume/cancel, telemetry safety rechecks, completion,
+   low-battery return requests, and hold/replan requests.
+4. `src/shepherd_ai/integrated_prototype.py` connects typed or stored Whisper
+   input, the selected deterministic or trained intent interface, grounding,
+   planning, scheduling, safety, a bounded Week 6 artifact reference, and
+   supervision.
 
-- turns ambiguous or unresolved grounding into an operator clarification,
-- emits ordered workflow feedback,
-- validates battery, restricted-area, altitude, and availability evidence for
-  every scheduled assignment,
-- blocks execution when a check fails or cannot be evaluated,
-- stores the complete workflow, raw checks, and aggregate evaluation results.
+The original schedule-derived status helper remains a projection and is not
+used as completion evidence. Supervisor status comes from explicit simulated
+events and telemetry snapshots.
 
-## Baseline and Data
+## Policy
 
-The baseline is the existing deterministic pipeline:
+`datasets/safety/week7_safety_policy_v1.json` records the synthetic assumptions:
 
-1. `deterministic_v3` typed-command intent extraction,
-2. explicit-map grounding and clarification,
-3. Week 4 mission planning,
-4. Week 5 `least_loaded` scheduling,
-5. the Week 7 deterministic safety policy.
+- minimum battery: `25%`,
+- maximum altitude: `60 m`,
+- default altitude: `30 m`,
+- route clearance margin: `0 m`,
+- minimum inter-drone separation: `20 m`.
 
-Development inputs are synthetic and explicitly labeled:
+These are not legal limits or hardware specifications. Command-specific
+altitude ceilings are enforced in addition to the policy maximum. The policy
+sensitivity study changes one threshold at a time and records decision
+sequences; it does not claim to identify optimal or physically safe values.
 
-- map: `datasets/maps/shepherd_test_map_v1.csv`,
-- fleet: `datasets/drones/week5_three_drone_fleet_v1.json`,
-- policy: `datasets/safety/week7_safety_policy_v1.json`,
-- cases: `datasets/safety/week7_safety_cases_v1.jsonl`.
+## Stored Evidence
 
-The roadmap does not specify battery or altitude thresholds. The tracked policy
-therefore records `25%` minimum battery, `60 m` maximum altitude, and `30 m`
-default mission altitude as synthetic development assumptions. They are not
-legal limits, hardware specifications, or safety guarantees. Command-specific
-altitude ceilings are enforced in addition to the policy maximum.
+- Preflight: 12 registered cases, all expected workflow statuses and failed
+  categories matched.
+- Clarification: 4 registered stateful dialogue cases, all expected terminal
+  statuses and event sequences matched.
+- Route geometry: 3 registered straight-line circle/polygon cases, all expected
+  decisions and intersections matched.
+- Supervision: 8 registered event-driven cases, all expected final states,
+  event sequences, and interventions matched. One case accepts a safe snapshot
+  and rejects a later separation violation.
+- Integration: 3 registered cases cover typed selected-primary intent, typed
+  trained intent, and a stored Whisper prediction. All reach active supervision
+  and bind the Week 6 result as development evidence only.
+- Sensitivity: 4 dimensions cover battery, altitude, route margin, and
+  separation. All registered decision sequences and monotonicity checks matched.
 
-## Checks
+Raw inputs are under `datasets/safety/`. Full outputs are under
+`outputs/evaluations/`; human-readable analyses are under `reports/`.
 
-Each assignment receives exactly four roadmap checks:
+## Completion Decision
 
-- `availability`: the assigned drone exists in current state and has an allowed
-  status,
-- `battery`: current battery is at or above the policy threshold,
-- `altitude`: the requested/default altitude satisfies the policy and any
-  normalized command ceiling,
-- `restricted_area`: the target exists, is flyable, does not require clearance,
-  and does not have a blocked map role.
+The corrected completion gate permits Week 8 advancement with no blockers.
+This decision differs from the superseded preflight-only audit: a documented
+deferral no longer counts as evidence that a capability exists.
 
-Missing current drone or map evidence produces `not_evaluated`, never a pass.
-Failed checks produce `rejected`; unavailable evidence or unassigned tasks
-produce `incomplete`. Both block progress.
+## Limitations
 
-## Evaluation
-
-The 12 registered development cases cover:
-
-- a safe two-drone mission,
-- low battery after scheduling,
-- the exact battery threshold,
-- a restricted target,
-- altitude above policy,
-- the exact policy altitude boundary,
-- a command-specific altitude ceiling,
-- a post-schedule availability change,
-- no idle scheduling resource,
-- ambiguous and unresolved grounding that require clarification,
-- a flyable target with a referenced obstacle, while explicitly recording that
-  route intersection is not evaluated.
-
-Metrics are expected-status accuracy, failed-category agreement, and counts of
-passed, failed, and unavailable checks. These are synthetic branch-coverage
-metrics, not physical safety performance.
-
-## Completion Criteria
-
-This initial Week 7 slice succeeds when:
-
-- all 12 registered cases produce their expected workflow status,
-- every scheduled assignment contains all four roadmap check categories,
-- ambiguous grounding stops before planning,
-- failed or unavailable safety evidence stops before simulated execution,
-- schedule-based status updates are labeled as simulated,
-- raw case outputs and aggregate summaries are stored separately from claims.
-
-Week 7 is complete for roadmap advancement only when the separate completion
-audit also passes and preserves the research limitations below. The current
-stored development evaluation matches all 12 expected statuses and failure
-categories. The completion audit permits advancement with no blockers while
-deferring mission-specific imagery to the roadmap's Week 8 scenario rather
-than fabricating observations.
-
-## Known Limitations
-
-- No route geometry or restricted-area intersection test exists because the
-  current planner does not generate trajectories.
-- No collision avoidance, weather, communications, dynamics, or physical
-  flight validation exists.
-- Schedule-derived status updates are simulation records, not observed flight
-  telemetry.
-- Mission-specific vision execution and final mission reporting remain Week 8
-  work unless a bounded Week 7 integration contract is added first.
+- Straight-line center-to-center routes are a baseline, not route planning or
+  continuous geofence enforcement.
+- Pairwise position checks detect a separation violation but do not implement
+  an active collision-avoidance controller or vehicle dynamics.
+- Return and hold/replan outputs are intervention requests; no trajectory
+  executor carries them out.
+- The stored Whisper and Week 6 artifacts are consumed without rerunning their
+  heavy models. The vision artifact is not imagery captured by the simulated
+  mission.
+- Weather, communications loss, sensor noise, and physical flight remain
+  unevaluated.
+- Mission-specific imagery, the complete roadmap scenario, overall execution
+  time, and final mission reporting remain Week 8 work.

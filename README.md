@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and a completed roadmap-level Week 7 deterministic pre-execution safety/feedback workflow. It is not an end-to-end prototype, does not control physical drones, and does not provide a physical-flight safety guarantee.
+Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 7 now includes stateful clarification, route-aware straight-line geofencing, inter-drone separation monitoring, event-driven supervision, prior-module interface integration, and threshold-sensitivity evidence. It is not a Week 8 end-to-end result, does not control physical drones, and does not provide a physical-flight safety guarantee.
 
 ## Project Rule
 
@@ -370,21 +370,42 @@ Run one workflow and store the complete result:
 python scripts/run_week7_workflow.py --command "Send two drones north and scan the crops." --output outputs/evaluations/week7_safe_example.json
 ```
 
-Run the registered seven-case development evaluation:
+Run the registered 12-case preflight development evaluation:
 
 ```powershell
 python scripts/evaluate_week7_safety.py
 ```
 
-The registered 12-case development evaluation matched all expected workflow
-statuses and failed categories, and the completion audit permits Week 8
-advancement with no blockers. This is deterministic synthetic case coverage,
-not a measured physical safety rate.
+Run the registered eight-case event-driven supervision evaluation:
 
-The resulting status events are schedule-based simulation records, not flight
-telemetry. Route geometry, collision avoidance, weather, communications,
-dynamics, mission-specific vision execution, and Week 8 mission success remain
-unevaluated. See `docs/week7_safety_protocol.md`.
+```powershell
+python scripts/evaluate_week7_supervision.py
+```
+
+Run the remaining Week 7 evaluations and corrected completion audit:
+
+```powershell
+python scripts/evaluate_week7_clarification.py
+python scripts/evaluate_week7_route_safety.py
+python scripts/evaluate_week7_integration.py
+python scripts/evaluate_week7_policy_sensitivity.py
+python scripts/audit_week7_completion.py
+```
+
+The corrected evidence contains 12 preflight cases, 4 dialogue cases, 3
+route-geometry cases, 8 event-driven supervision cases, 3 prior-module
+integration cases, and 4 sensitivity dimensions. All registered expectations
+and monotonicity checks match, and the corrected audit permits Week 8
+advancement with no blockers. Unlike the earlier incorrect audit, documented
+deferrals do not count as completed capabilities.
+
+Supervisor events are driven by explicit synthetic telemetry snapshots, not
+physical flight telemetry. Straight-line route checks and pairwise distance
+monitoring are deterministic baselines; trajectory optimization, active
+collision-avoidance control, weather, communications, dynamics,
+mission-specific imagery, and Week 8 mission success remain unevaluated. See
+`docs/week7_safety_protocol.md` and
+`docs/week7_gap_audit.md`.
 
 ## First Milestone
 

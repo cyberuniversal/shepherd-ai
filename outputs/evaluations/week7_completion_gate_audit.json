@@ -14,18 +14,33 @@
       "passed": true
     },
     {
-      "detail": "route-geometry limitation is recorded",
-      "name": "route_geometry_limit_recorded",
+      "detail": "event_types=['mission_created', 'operator_cancelled', 'operator_confirmed', 'operator_paused', 'operator_resumed', 'preflight_blocked', 'task_completed', 'telemetry_accepted', 'telemetry_safety_intervention']",
+      "name": "operator_lifecycle_controls_evaluated",
       "passed": true
     },
     {
-      "detail": "collision-avoidance limitation is recorded",
-      "name": "collision_avoidance_limit_recorded",
+      "detail": "failed or held work must remain inspectable for return or replanning",
+      "name": "unfinished_work_preserved_after_intervention",
       "passed": true
     },
     {
-      "detail": "mission-specific imagery is deferred rather than fabricated",
-      "name": "mission_specific_vision_deferred_to_week8",
+      "detail": "cases=3, expected=3, safety_capabilities=['inter_drone_separation', 'route_restricted_area_intersection', 'runtime_availability', 'runtime_battery']",
+      "name": "route_aware_restricted_area_enforcement_evaluated",
+      "passed": true
+    },
+    {
+      "detail": "safety_capabilities=['inter_drone_separation', 'route_restricted_area_intersection', 'runtime_availability', 'runtime_battery']",
+      "name": "inter_drone_separation_or_collision_handling_evaluated",
+      "passed": true
+    },
+    {
+      "detail": "requires a registered safe-to-unsafe telemetry sequence",
+      "name": "multi_snapshot_telemetry_sequence_evaluated",
+      "passed": true
+    },
+    {
+      "detail": "dimensions=['maximum_altitude_m', 'minimum_battery_percent', 'minimum_inter_drone_separation_m', 'route_clearance_margin_m'], expected=4",
+      "name": "synthetic_policy_threshold_sensitivity_evaluated",
       "passed": true
     }
   ],
@@ -62,12 +77,27 @@
       "passed": true
     },
     {
-      "detail": "updates=10",
-      "name": "simulated_status_updates_present",
+      "detail": "cases=4, expected=4",
+      "name": "stateful_clarification_dialogue_evaluated",
       "passed": true
     },
     {
-      "detail": "Notebook7 must run the workflow, evaluation, and completion audit scripts",
+      "detail": "cases=8, expected=8, events=26",
+      "name": "event_driven_mission_status_evaluated",
+      "passed": true
+    },
+    {
+      "detail": "runtime_failed_categories=['availability', 'battery', 'inter_drone_separation']",
+      "name": "runtime_safety_rechecks_evaluated",
+      "passed": true
+    },
+    {
+      "detail": "cases=3, expected=3, integrated_stages=['grounding', 'planning', 'safety', 'scheduling', 'selected_intent_interface', 'speech_or_text_input', 'supervision', 'trained_intent_interface', 'vision_result_binding']",
+      "name": "previous_modules_integrated",
+      "passed": true
+    },
+    {
+      "detail": "Notebook7 must run preflight, supervision, and completion-audit scripts",
       "name": "notebook_runs_workflow_and_evaluation",
       "passed": true
     }

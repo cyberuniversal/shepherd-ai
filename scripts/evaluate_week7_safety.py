@@ -196,7 +196,7 @@ def _render_report(payload: dict[str, Any]) -> str:
             "## Limitations",
             "",
             "- Thresholds are explicit synthetic development assumptions.",
-            "- Route geometry, collisions, weather, communications, and dynamics are not evaluated.",
+            "- Routes use a straight-line geometry baseline; active collision avoidance, weather, communications, and dynamics are not evaluated.",
             "- Mission-specific vision execution and full mission reports remain Week 8 work.",
         ]
     )

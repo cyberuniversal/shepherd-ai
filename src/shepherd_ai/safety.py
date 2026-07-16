@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 import json
+from math import cos, radians
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -27,6 +28,8 @@ class SafetyPolicy:
     default_mission_altitude_m: float
     allowed_drone_statuses: tuple[str, ...]
     blocked_map_roles: tuple[str, ...]
+    route_clearance_margin_m: float = 0.0
+    minimum_inter_drone_separation_m: float = 0.0
     notes: tuple[str, ...] = field(default_factory=tuple)
 
     def to_dict(self) -> dict[str, Any]:
@@ -130,6 +133,12 @@ def load_safety_policy(path: str | Path) -> SafetyPolicy:
         raise ValueError("default_mission_altitude_m must be positive and within the maximum")
     statuses = _nonempty_text_tuple(payload["allowed_drone_statuses"], "allowed_drone_statuses")
     blocked_roles = _nonempty_text_tuple(payload["blocked_map_roles"], "blocked_map_roles")
+    route_clearance_margin_m = float(payload.get("route_clearance_margin_m", 0.0))
+    if route_clearance_margin_m < 0.0:
+        raise ValueError("route_clearance_margin_m must be non-negative")
+    minimum_separation_m = float(payload.get("minimum_inter_drone_separation_m", 0.0))
+    if minimum_separation_m <= 0.0:
+        raise ValueError("minimum_inter_drone_separation_m must be positive")
     return SafetyPolicy(
         policy_id=str(payload["policy_id"]),
         data_type=str(payload["data_type"]),
@@ -139,6 +148,8 @@ def load_safety_policy(path: str | Path) -> SafetyPolicy:
         default_mission_altitude_m=default_altitude,
         allowed_drone_statuses=statuses,
         blocked_map_roles=blocked_roles,
+        route_clearance_margin_m=route_clearance_margin_m,
+        minimum_inter_drone_separation_m=minimum_separation_m,
         notes=tuple(str(note) for note in payload.get("notes", [])),
     )
 
@@ -202,7 +213,7 @@ def validate_schedule_safety(
         issues=tuple(issues),
         limitations=(
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated.",
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated.",
         ),
     )
 
@@ -221,7 +232,7 @@ def _validate_assignment(
         _availability_check(assignment, drone, policy),
         _battery_check(assignment, drone, policy),
         _altitude_check(altitude_m, policy, command_altitude_ceiling_m),
-        _restricted_area_check(assignment, location, policy),
+        _restricted_area_check(assignment, drone, location, locations, policy),
     )
     if any(check.status == "not_evaluated" for check in checks):
         decision = "incomplete"
@@ -318,7 +329,9 @@ def _altitude_check(
 
 def _restricted_area_check(
     assignment: Assignment,
+    drone: DroneState | None,
     location: MapLocation | None,
+    locations: Mapping[str, MapLocation],
     policy: SafetyPolicy,
 ) -> SafetyCheck:
     if location is None:
@@ -328,22 +341,289 @@ def _restricted_area_check(
             reason="assignment_target_missing_from_map",
             evidence={"target_location_id": assignment.target_location_id},
         )
-    blocked = (
+    target_blocked = (
         not location.flyable
         or location.requires_clearance
         or location.map_role in policy.blocked_map_roles
     )
+    if target_blocked:
+        return SafetyCheck(
+            category="restricted_area",
+            status="failed",
+            reason="target_is_restricted_or_requires_clearance",
+            evidence={
+                "target_location_id": location.id,
+                "map_role": location.map_role,
+                "flyable": location.flyable,
+                "requires_clearance": location.requires_clearance,
+                "blocked_map_roles": list(policy.blocked_map_roles),
+                "route_model": "straight_line_center_to_center",
+                "route_intersections": [],
+            },
+        )
+    if drone is None:
+        return SafetyCheck(
+            category="restricted_area",
+            status="not_evaluated",
+            reason="route_origin_missing_from_current_drone_state",
+            evidence={"target_location_id": assignment.target_location_id},
+        )
+    intersections = _route_intersections(
+        drone,
+        location,
+        locations.values(),
+        policy,
+    )
+    if intersections:
+        return SafetyCheck(
+            category="restricted_area",
+            status="failed",
+            reason="straight_line_route_intersects_restricted_area",
+            evidence={
+                "target_location_id": location.id,
+                "map_role": location.map_role,
+                "flyable": location.flyable,
+                "requires_clearance": location.requires_clearance,
+                "blocked_map_roles": list(policy.blocked_map_roles),
+                "route_model": "straight_line_center_to_center",
+                "route_clearance_margin_m": policy.route_clearance_margin_m,
+                "route_intersections": intersections,
+            },
+        )
     return SafetyCheck(
         category="restricted_area",
-        status="failed" if blocked else "passed",
-        reason="target_is_restricted_or_requires_clearance" if blocked else "target_is_flyable",
+        status="passed",
+        reason="target_and_straight_line_route_are_clear",
         evidence={
             "target_location_id": location.id,
             "map_role": location.map_role,
             "flyable": location.flyable,
             "requires_clearance": location.requires_clearance,
             "blocked_map_roles": list(policy.blocked_map_roles),
+            "route_model": "straight_line_center_to_center",
+            "route_clearance_margin_m": policy.route_clearance_margin_m,
+            "route_intersections": [],
         },
+    )
+
+
+def validate_inter_drone_separation(
+    drones: Iterable[DroneState],
+    policy: SafetyPolicy,
+) -> SafetyCheck:
+    """Check current simulated positions against the configured pair distance."""
+
+    drone_list = sorted(tuple(drones), key=lambda drone: drone.drone_id)
+    if len(drone_list) < 2:
+        return SafetyCheck(
+            category="inter_drone_separation",
+            status="passed",
+            reason="fewer_than_two_drones_to_compare",
+            evidence={
+                "minimum_inter_drone_separation_m": policy.minimum_inter_drone_separation_m,
+                "pair_distances": [],
+                "violating_pairs": [],
+            },
+        )
+    pairs: list[dict[str, Any]] = []
+    for index, first in enumerate(drone_list):
+        for second in drone_list[index + 1 :]:
+            second_xy = _local_xy(
+                second.current_latitude,
+                second.current_longitude,
+                first.current_latitude,
+                first.current_longitude,
+            )
+            distance_m = (second_xy[0] ** 2 + second_xy[1] ** 2) ** 0.5
+            pairs.append(
+                {
+                    "drone_ids": [first.drone_id, second.drone_id],
+                    "distance_m": round(distance_m, 6),
+                }
+            )
+    violating = [
+        pair
+        for pair in pairs
+        if pair["distance_m"] < policy.minimum_inter_drone_separation_m
+    ]
+    return SafetyCheck(
+        category="inter_drone_separation",
+        status="failed" if violating else "passed",
+        reason=(
+            "inter_drone_distance_below_threshold"
+            if violating
+            else "all_inter_drone_distances_at_or_above_threshold"
+        ),
+        evidence={
+            "minimum_inter_drone_separation_m": policy.minimum_inter_drone_separation_m,
+            "pair_distances": pairs,
+            "violating_pairs": violating,
+        },
+    )
+
+
+def _route_intersections(
+    drone: DroneState,
+    target: MapLocation,
+    locations: Iterable[MapLocation],
+    policy: SafetyPolicy,
+) -> list[dict[str, Any]]:
+    intersections: list[dict[str, Any]] = []
+    for candidate in locations:
+        if candidate.id == target.id:
+            continue
+        blocked = (
+            not candidate.flyable
+            or candidate.requires_clearance
+            or candidate.map_role in policy.blocked_map_roles
+        )
+        if not blocked:
+            continue
+        if _segment_intersects_location(
+            drone.current_latitude,
+            drone.current_longitude,
+            target.latitude,
+            target.longitude,
+            candidate,
+            policy.route_clearance_margin_m,
+        ):
+            intersections.append(
+                {
+                    "location_id": candidate.id,
+                    "name": candidate.name,
+                    "geometry_type": candidate.geometry_type,
+                    "map_role": candidate.map_role,
+                }
+            )
+    return sorted(intersections, key=lambda item: item["location_id"])
+
+
+def _segment_intersects_location(
+    start_lat: float,
+    start_lon: float,
+    end_lat: float,
+    end_lon: float,
+    location: MapLocation,
+    margin_m: float,
+) -> bool:
+    start = (0.0, 0.0)
+    end = _local_xy(end_lat, end_lon, start_lat, start_lon)
+    center = _local_xy(location.latitude, location.longitude, start_lat, start_lon)
+    if location.geometry_type == "polygon" and location.boundary:
+        polygon = [
+            _local_xy(latitude, longitude, start_lat, start_lon)
+            for latitude, longitude in location.boundary
+        ]
+        return _segment_intersects_polygon(start, end, polygon, margin_m)
+    return _point_to_segment_distance(center, start, end) <= location.radius_m + margin_m
+
+
+def _local_xy(
+    latitude: float,
+    longitude: float,
+    origin_latitude: float,
+    origin_longitude: float,
+) -> tuple[float, float]:
+    radius_m = 6_371_000.0
+    x = radians(longitude - origin_longitude) * radius_m * cos(radians(origin_latitude))
+    y = radians(latitude - origin_latitude) * radius_m
+    return x, y
+
+
+def _point_to_segment_distance(
+    point: tuple[float, float],
+    start: tuple[float, float],
+    end: tuple[float, float],
+) -> float:
+    dx = end[0] - start[0]
+    dy = end[1] - start[1]
+    if dx == 0.0 and dy == 0.0:
+        return ((point[0] - start[0]) ** 2 + (point[1] - start[1]) ** 2) ** 0.5
+    projection = (
+        ((point[0] - start[0]) * dx + (point[1] - start[1]) * dy)
+        / (dx * dx + dy * dy)
+    )
+    projection = max(0.0, min(1.0, projection))
+    closest = (start[0] + projection * dx, start[1] + projection * dy)
+    return ((point[0] - closest[0]) ** 2 + (point[1] - closest[1]) ** 2) ** 0.5
+
+
+def _segment_intersects_polygon(
+    start: tuple[float, float],
+    end: tuple[float, float],
+    polygon: list[tuple[float, float]],
+    margin_m: float,
+) -> bool:
+    if _point_in_polygon(start, polygon) or _point_in_polygon(end, polygon):
+        return True
+    edges = list(zip(polygon, polygon[1:] + polygon[:1]))
+    if any(_segments_intersect(start, end, edge_start, edge_end) for edge_start, edge_end in edges):
+        return True
+    if margin_m <= 0.0:
+        return False
+    return any(
+        min(
+            _point_to_segment_distance(edge_start, start, end),
+            _point_to_segment_distance(edge_end, start, end),
+            _point_to_segment_distance(start, edge_start, edge_end),
+            _point_to_segment_distance(end, edge_start, edge_end),
+        )
+        <= margin_m
+        for edge_start, edge_end in edges
+    )
+
+
+def _point_in_polygon(point: tuple[float, float], polygon: list[tuple[float, float]]) -> bool:
+    inside = False
+    j = len(polygon) - 1
+    for i, vertex in enumerate(polygon):
+        previous = polygon[j]
+        crosses = (vertex[1] > point[1]) != (previous[1] > point[1])
+        if crosses:
+            x_at_y = (previous[0] - vertex[0]) * (point[1] - vertex[1]) / (
+                previous[1] - vertex[1]
+            ) + vertex[0]
+            if point[0] < x_at_y:
+                inside = not inside
+        j = i
+    return inside
+
+
+def _segments_intersect(
+    a: tuple[float, float],
+    b: tuple[float, float],
+    c: tuple[float, float],
+    d: tuple[float, float],
+) -> bool:
+    def orientation(
+        p: tuple[float, float],
+        q: tuple[float, float],
+        r: tuple[float, float],
+    ) -> float:
+        return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+
+    def on_segment(
+        p: tuple[float, float],
+        q: tuple[float, float],
+        r: tuple[float, float],
+    ) -> bool:
+        return (
+            min(p[0], r[0]) <= q[0] <= max(p[0], r[0])
+            and min(p[1], r[1]) <= q[1] <= max(p[1], r[1])
+        )
+
+    o1 = orientation(a, b, c)
+    o2 = orientation(a, b, d)
+    o3 = orientation(c, d, a)
+    o4 = orientation(c, d, b)
+    epsilon = 1e-9
+    if (o1 > epsilon) != (o2 > epsilon) and (o3 > epsilon) != (o4 > epsilon):
+        return True
+    return (
+        (abs(o1) <= epsilon and on_segment(a, c, b))
+        or (abs(o2) <= epsilon and on_segment(a, d, b))
+        or (abs(o3) <= epsilon and on_segment(c, a, d))
+        or (abs(o4) <= epsilon and on_segment(c, b, d))
     )
 
 

@@ -1,0 +1,3 @@
+{"case_id":"week7_integration_typed_primary_001","input":{"input_type":"typed","text":"Inspect the greenhouse."},"intent_system":"deterministic_primary","expected_status":"active","notes":["synthetic_integration_case","week2_selected_primary"]}
+{"case_id":"week7_integration_typed_trained_001","input":{"input_type":"typed","text":"Send two drones north and scan the crops."},"intent_system":"trained_naive_bayes","expected_status":"active","notes":["synthetic_integration_case","trained_intent_interface"]}
+{"case_id":"week7_integration_whisper_001","input":{"input_type":"whisper_prediction","prediction_id":"audio_008"},"intent_system":"deterministic_primary","expected_status":"active","notes":["stored_asr_artifact_integration_case","audio_not_rerun"]}

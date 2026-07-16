@@ -9,4 +9,4 @@
 {"case_id":"week7_no_drone_001","command":"Inspect the greenhouse.","expected_workflow_status":"safety_incomplete","mission_altitude_m":30.0,"scheduling_fleet_set_all":{"status":"unavailable"},"notes":["synthetic_development_case"]}
 {"case_id":"week7_clarification_001","command":"Check if there is any traffic on the road.","expected_workflow_status":"clarification_required","notes":["synthetic_development_case"]}
 {"case_id":"week7_unresolved_001","command":"Look for the missing dog.","expected_workflow_status":"clarification_required","notes":["synthetic_unresolved_grounding_case"]}
-{"case_id":"week7_referenced_obstacle_001","command":"Inspect the greenhouse and avoid the power lines.","expected_workflow_status":"ready_for_simulated_execution","mission_altitude_m":30.0,"notes":["target_is_flyable_but_route_intersection_is_not_evaluated"]}
+{"case_id":"week7_referenced_obstacle_001","command":"Inspect the greenhouse and avoid the power lines.","expected_workflow_status":"ready_for_simulated_execution","mission_altitude_m":30.0,"notes":["target_and_straight_line_route_do_not_intersect_the_referenced_obstacle"]}

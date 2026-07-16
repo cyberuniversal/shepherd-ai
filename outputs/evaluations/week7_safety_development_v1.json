@@ -573,9 +573,12 @@
                     "flyable": true,
                     "map_role": "mission_area",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_north_field"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -628,9 +631,12 @@
                     "flyable": true,
                     "map_role": "mission_area",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_north_field"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -643,7 +649,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -658,12 +664,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": true,
@@ -1311,9 +1321,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -1326,7 +1339,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -1341,12 +1354,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -1942,9 +1959,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -1957,7 +1977,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -1972,12 +1992,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": true,
@@ -2609,6 +2633,8 @@
                     "flyable": false,
                     "map_role": "restricted_area",
                     "requires_clearance": true,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "zone_maintenance_yard"
                   },
                   "reason": "target_is_restricted_or_requires_clearance",
@@ -2624,7 +2650,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -2639,12 +2665,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -3244,9 +3274,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -3259,7 +3292,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 61.0,
           "policy": {
@@ -3274,12 +3307,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -3872,9 +3909,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -3887,7 +3927,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 60.0,
           "policy": {
@@ -3902,12 +3942,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": true,
@@ -4552,9 +4596,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -4567,7 +4614,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -4582,12 +4629,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -5190,9 +5241,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -5205,7 +5259,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -5220,12 +5274,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -5784,7 +5842,7 @@
           ],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -5799,12 +5857,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": false,
@@ -6195,7 +6257,7 @@
         "expected_workflow_status": "ready_for_simulated_execution",
         "mission_altitude_m": 30.0,
         "notes": [
-          "target_is_flyable_but_route_intersection_is_not_evaluated"
+          "target_and_straight_line_route_do_not_intersect_the_referenced_obstacle"
         ]
       },
       "command": "Inspect the greenhouse and avoid the power lines.",
@@ -6204,7 +6266,7 @@
       "expected_workflow_status": "ready_for_simulated_execution",
       "failed_categories_match_expected": true,
       "notes": [
-        "target_is_flyable_but_route_intersection_is_not_evaluated"
+        "target_and_straight_line_route_do_not_intersect_the_referenced_obstacle"
       ],
       "status_matches_expected": true,
       "workflow_result": {
@@ -6810,9 +6872,12 @@
                     "flyable": true,
                     "map_role": "inspection_target",
                     "requires_clearance": false,
+                    "route_clearance_margin_m": 0.0,
+                    "route_intersections": [],
+                    "route_model": "straight_line_center_to_center",
                     "target_location_id": "loc_greenhouse"
                   },
-                  "reason": "target_is_flyable",
+                  "reason": "target_and_straight_line_route_are_clear",
                   "status": "passed"
                 }
               ],
@@ -6825,7 +6890,7 @@
           "issues": [],
           "limitations": [
             "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
-            "Route intersection, collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
           ],
           "mission_altitude_m": 30.0,
           "policy": {
@@ -6840,12 +6905,16 @@
             "default_mission_altitude_m": 30.0,
             "maximum_altitude_m": 60.0,
             "minimum_battery_percent": 25.0,
+            "minimum_inter_drone_separation_m": 20.0,
             "notes": [
               "The roadmap requires battery and altitude checks but does not state thresholds.",
               "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
-              "Route intersection, collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+              "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+              "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
             ],
             "policy_id": "week7_synthetic_safety_policy_v1",
+            "route_clearance_margin_m": 0.0,
             "source": "custom_week7_development_policy_v1"
           },
           "safe_to_execute": true,
@@ -6920,12 +6989,12 @@
     "data_scope": "synthetic_development_evaluation",
     "evaluator": "deterministic_week7_safety_evaluator_v1",
     "fleet": "C:\\Users\\momoa\\Desktop\\shepherd-ai\\datasets\\drones\\week5_three_drone_fleet_v1.json",
-    "generated_at_utc": "2026-07-16T16:40:47.318792+00:00",
+    "generated_at_utc": "2026-07-16T17:55:30.399084+00:00",
     "input_sha256": {
-      "cases": "4e8a692d42efb5ae75fe0ad735ce5bf62b6717b94f1c85dda4b500172a34ed07",
+      "cases": "337e6503f5effdd031dfbdbb69c072a77495348313e853ab63ee19f62bd10ff0",
       "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
       "map": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95",
-      "policy": "61a090bcdb59cd331d0b3db044ecd3250fc5355cc3f159fabff4cc2ecad8bdd5"
+      "policy": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc"
     },
     "map": "C:\\Users\\momoa\\Desktop\\shepherd-ai\\datasets\\maps\\shepherd_test_map_v1.csv",
     "policy": "C:\\Users\\momoa\\Desktop\\shepherd-ai\\datasets\\safety\\week7_safety_policy_v1.json",

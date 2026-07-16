@@ -9,7 +9,7 @@ from shepherd_ai.constraint_normalization import normalize_constraints
 from shepherd_ai.feedback import FeedbackLog, simulate_mission_status_updates
 from shepherd_ai.grounding import MapLocation, ground_intent
 from shepherd_ai.grounding_clarification import build_clarification_report
-from shepherd_ai.intent import parse_intent
+from shepherd_ai.intent import MissionIntent, parse_intent
 from shepherd_ai.mission_planning import plan_grounded_mission, validate_mission_plan
 from shepherd_ai.safety import SafetyPolicy, validate_schedule_safety
 from shepherd_ai.scheduling import extract_tasks_from_plan_payloads, load_drones, schedule_tasks
@@ -63,6 +63,7 @@ def run_integrated_workflow(
     strategy: str = "least_loaded",
     mission_altitude_m: float | None = None,
     current_fleet_payload: Mapping[str, Any] | None = None,
+    intent_override: MissionIntent | None = None,
 ) -> IntegratedWorkflowResult:
     """Run prior bounded modules and stop before any simulated execution."""
 
@@ -70,7 +71,7 @@ def run_integrated_workflow(
     feedback.add("input", "command_received", "Mission command received.")
     location_list = tuple(locations)
     location_index = {location.id: location for location in location_list}
-    intent = parse_intent(command)
+    intent = intent_override or parse_intent(command)
     feedback.add(
         "intent",
         "intent_extracted",

@@ -1,21 +1,25 @@
 {
-  "scope": "week7_research_deferrals_v1",
+  "scope": "week7_resolved_gaps_and_remaining_limits_v3",
   "deferrals": {
     "route_geometry_not_evaluated": {
-      "status": "deferred_to_later_planning_or_execution_work",
-      "reason": "The current planner produces target coordinates and task graphs, not obstacle-aware trajectories."
+      "status": "resolved_with_declared_baseline",
+      "reason": "Straight-line center-to-center intersection is evaluated against synthetic circular and polygonal restricted map records; trajectory optimization remains outside this baseline."
     },
     "collision_avoidance_not_evaluated": {
-      "status": "deferred_to_execution_simulation",
-      "reason": "Week 7 is a pre-execution gate and does not implement a dynamics or collision-avoidance controller."
+      "status": "resolved_with_separation_monitor",
+      "reason": "Pairwise position snapshots are checked against a synthetic minimum separation and violations request hold/replan; active collision-avoidance control and dynamics remain unevaluated."
     },
-    "mission_specific_vision_execution": {
-      "status": "deferred_to_week8",
-      "reason": "Week 8 explicitly requires processing imagery in the complete scenario; Week 7 preserves the planned vision step without fabricating mission imagery."
+    "stateful_clarification_dialogue": {
+      "status": "implemented_and_evaluated",
+      "reason": "Registered cases cover accepted and rejected responses, retry, confirmation, cancellation, and timeout with stored dialogue history."
+    },
+    "previous_module_integration": {
+      "status": "implemented_and_evaluated",
+      "reason": "Registered cases cover typed and stored Whisper input, selected and trained intent interfaces, grounding, planning, scheduling, safety, bounded Week 6 result binding, and supervision."
     },
     "physical_safety_not_claimed": {
       "status": "recorded_caveat",
-      "reason": "All policies, drone states, map records, and status updates in this gate are synthetic simulation artifacts."
+      "reason": "All policies, drone states, map records, status transitions, and interventions are software-simulation artifacts."
     }
   }
 }

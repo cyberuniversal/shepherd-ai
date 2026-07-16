@@ -18,9 +18,28 @@ def _json(path: str) -> dict:
 
 
 class Week7CompletionTests(unittest.TestCase):
-    def _audit(self, evaluation: dict | None = None, deferrals: dict | None = None):
+    def _audit(
+        self,
+        evaluation: dict | None = None,
+        supervision_evaluation: dict | None = None,
+        clarification_evaluation: dict | None = None,
+        route_evaluation: dict | None = None,
+        integration_evaluation: dict | None = None,
+        sensitivity_evaluation: dict | None = None,
+        deferrals: dict | None = None,
+    ):
         return build_week7_completion_audit(
             evaluation=evaluation or _json("outputs/evaluations/week7_safety_development_v1.json"),
+            supervision_evaluation=supervision_evaluation
+            or _json("outputs/evaluations/week7_supervision_development_v1.json"),
+            clarification_evaluation=clarification_evaluation
+            or _json("outputs/evaluations/week7_clarification_development_v1.json"),
+            route_evaluation=route_evaluation
+            or _json("outputs/evaluations/week7_route_safety_development_v1.json"),
+            integration_evaluation=integration_evaluation
+            or _json("outputs/evaluations/week7_integration_development_v1.json"),
+            sensitivity_evaluation=sensitivity_evaluation
+            or _json("outputs/evaluations/week7_policy_sensitivity_v1.json"),
             policy=_json("datasets/safety/week7_safety_policy_v1.json"),
             acceptance_criteria=_json("docs/week7_acceptance_criteria.json"),
             research_deferrals=deferrals or _json("docs/week7_research_deferrals.json"),
@@ -32,6 +51,12 @@ class Week7CompletionTests(unittest.TestCase):
 
         self.assertTrue(audit.advancement_allowed)
         self.assertEqual(audit.blockers, ())
+        self.assertNotIn("stateful_clarification_dialogue_evaluated", audit.blockers)
+        self.assertNotIn("previous_modules_integrated", audit.blockers)
+        self.assertNotIn("route_aware_restricted_area_enforcement_evaluated", audit.blockers)
+        self.assertNotIn("inter_drone_separation_or_collision_handling_evaluated", audit.blockers)
+        self.assertNotIn("multi_snapshot_telemetry_sequence_evaluated", audit.blockers)
+        self.assertNotIn("synthetic_policy_threshold_sensitivity_evaluated", audit.blockers)
         self.assertEqual(
             audit.decision,
             "week7_complete_for_advancement_to_week8_end_to_end_evaluation",
@@ -52,12 +77,22 @@ class Week7CompletionTests(unittest.TestCase):
         self.assertFalse(audit.advancement_allowed)
         self.assertIn("physical_safety_not_claimed", audit.blockers)
 
+    def test_missing_runtime_supervision_evidence_blocks_advancement(self) -> None:
+        supervision = copy.deepcopy(
+            _json("outputs/evaluations/week7_supervision_development_v1.json")
+        )
+        supervision["summary"]["expected_event_type_matches"] = 0
+
+        audit = self._audit(supervision_evaluation=supervision)
+
+        self.assertIn("event_driven_mission_status_evaluated", audit.blockers)
+
     def test_markdown_preserves_scope_and_decision(self) -> None:
         markdown = render_week7_completion_markdown(self._audit())
 
         self.assertIn("Week 7 Completion Gate Audit", markdown)
-        self.assertIn("not physical-flight safety evidence", markdown)
-        self.assertIn("Advancement allowed", markdown)
+        self.assertIn("Synthetic branch coverage alone cannot complete", markdown)
+        self.assertIn("Advancement allowed: `true`", markdown)
 
 
 if __name__ == "__main__":

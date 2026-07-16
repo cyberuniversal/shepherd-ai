@@ -1,0 +1,3078 @@
+{
+  "cases": [
+    {
+      "actual_status": "active",
+      "case_id": "week7_integration_typed_primary_001",
+      "case_input": {
+        "case_id": "week7_integration_typed_primary_001",
+        "expected_status": "active",
+        "input": {
+          "input_type": "typed",
+          "text": "Inspect the greenhouse."
+        },
+        "intent_system": "deterministic_primary",
+        "notes": [
+          "synthetic_integration_case",
+          "week2_selected_primary"
+        ]
+      },
+      "data_type": "synthetic_or_stored_artifact_week7_integration_case",
+      "expected_status": "active",
+      "notes": [
+        "synthetic_integration_case",
+        "week2_selected_primary"
+      ],
+      "prototype_result": {
+        "clarification": null,
+        "input": {
+          "command": "Inspect the greenhouse.",
+          "input_type": "typed",
+          "record_id": null
+        },
+        "intent": {
+          "action": "inspect",
+          "constraints": [],
+          "count": null,
+          "location": null,
+          "notes": [
+            "count_not_stated",
+            "location_not_stated"
+          ],
+          "parser": "deterministic_v3",
+          "target": "greenhouse",
+          "text": "Inspect the greenhouse."
+        },
+        "limitations": [
+          "Software-simulation integration only; no physical drones are controlled.",
+          "Stored ASR and vision artifacts are consumed without rerunning their models.",
+          "The Week 6 vision binding is not a mission-specific observation."
+        ],
+        "stages": [
+          {
+            "detail": "typed",
+            "stage": "speech_or_text_input",
+            "status": "completed"
+          },
+          {
+            "detail": "deterministic_v3",
+            "stage": "selected_intent_interface",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "grounding",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "planning",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "scheduling",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "safety",
+            "status": "completed"
+          },
+          {
+            "detail": "development_reference_bound",
+            "stage": "vision_result_binding",
+            "status": "completed"
+          },
+          {
+            "detail": "active",
+            "stage": "supervision",
+            "status": "completed"
+          }
+        ],
+        "status": "active",
+        "supervision": {
+          "events": [
+            {
+              "details": {},
+              "event_type": "mission_created",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Mission schedule is awaiting explicit operator confirmation.",
+              "mission_status": "awaiting_confirmation",
+              "mode": "event_driven_simulation",
+              "safety_status": null,
+              "sequence": 1
+            },
+            {
+              "details": {},
+              "event_type": "operator_confirmed",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Operator confirmed the mission and preflight safety passed.",
+              "mission_status": "active",
+              "mode": "event_driven_simulation",
+              "safety_status": "approved",
+              "sequence": 2
+            }
+          ],
+          "last_safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_charlie",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 88.0,
+                      "drone_id": "drone_charlie",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "inspection_target",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_greenhouse"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_charlie",
+                "task_id": "mission_001"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 1,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 4,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "last_separation_check": {
+            "category": "inter_drone_separation",
+            "evidence": {
+              "minimum_inter_drone_separation_m": 20.0,
+              "pair_distances": [],
+              "violating_pairs": []
+            },
+            "reason": "fewer_than_two_drones_to_compare",
+            "status": "passed"
+          },
+          "limitations": [
+            "State transitions consume explicit simulated events; no vehicle dynamics are modeled.",
+            "Return, hold, and replanning interventions are requests, not executed trajectories.",
+            "Collision avoidance and route-geometry validation are not implemented."
+          ],
+          "mission_status": "active",
+          "mode": "event_driven_simulation",
+          "tasks": {
+            "mission_001": {
+              "drone_id": "drone_charlie",
+              "status": "running",
+              "target_location_id": "loc_greenhouse",
+              "task_id": "mission_001"
+            }
+          }
+        },
+        "vision_binding": {
+          "artifact_path": "outputs\\evaluations\\week6_visdrone_yolov8n_seed17_e50_completed_summary.json",
+          "artifact_status": "completed_registered_baseline",
+          "bound_plan_action": "run_vision_model",
+          "dataset": "VisDrone2019-DET",
+          "limitation": "The Week 6 artifact proves the vision interface and prior experiment provenance only; it is not an observation from this simulated mission.",
+          "metrics": {
+            "fitness": 0.1672366961928156,
+            "validation_map50": 0.29676968245417856,
+            "validation_map50_95": 0.1672366961928156,
+            "validation_precision": 0.4311579746662367,
+            "validation_recall": 0.3203436146826227
+          },
+          "mission_specific_observation": false,
+          "model": "yolov8n.pt",
+          "research_note": "Completed registered VisDrone validation baseline. Metrics are from the official validation split; test-dev was not used for model selection. This result does not establish Agriculture-Vision segmentation performance or end-to-end Shepherd-AI mission performance.",
+          "scope": "week6_development_result_not_mission_specific",
+          "status": "development_reference_bound"
+        },
+        "workflow": {
+          "clarification_report": {
+            "blocks_planning": false,
+            "command_text": "Inspect the greenhouse.",
+            "issues": [],
+            "ready_for_planning": true,
+            "requests": []
+          },
+          "command": "Inspect the greenhouse.",
+          "feedback": {
+            "blocked": false,
+            "events": [
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Mission command received.",
+                "phase": "input",
+                "sequence": 1,
+                "status": "command_received"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "action": "inspect",
+                  "count": null,
+                  "parser": "deterministic_v3"
+                },
+                "message": "Structured mission intent produced.",
+                "phase": "intent",
+                "sequence": 2,
+                "status": "intent_extracted"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Command references grounded to the map.",
+                "phase": "grounding",
+                "sequence": 3,
+                "status": "grounding_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Validated mission plan produced.",
+                "phase": "planning",
+                "sequence": 4,
+                "status": "plan_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 1,
+                  "strategy": "least_loaded"
+                },
+                "message": "All schedulable mission tasks were assigned.",
+                "phase": "scheduling",
+                "sequence": 5,
+                "status": "schedule_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 1,
+                  "failed_checks": 0,
+                  "not_evaluated_checks": 0,
+                  "passed_checks": 4,
+                  "roadmap_checks_per_assignment": 4
+                },
+                "message": "All configured pre-execution safety checks passed.",
+                "phase": "safety",
+                "sequence": 6,
+                "status": "safety_approved"
+              }
+            ],
+            "latest_status": "safety_approved"
+          },
+          "grounded_intent": {
+            "intent": {
+              "action": "inspect",
+              "constraints": [],
+              "count": null,
+              "location": null,
+              "notes": [
+                "count_not_stated",
+                "location_not_stated"
+              ],
+              "parser": "deterministic_v3",
+              "target": "greenhouse",
+              "text": "Inspect the greenhouse."
+            },
+            "issues": [],
+            "ready_for_planning": true,
+            "references": [
+              {
+                "candidates": [],
+                "confidence": 0.0,
+                "field": "location",
+                "location": null,
+                "note": "no phrase provided for this intent field",
+                "phrase": null,
+                "status": "not_provided"
+              },
+              {
+                "candidates": [],
+                "confidence": 1.0,
+                "field": "target",
+                "location": {
+                  "aliases": [
+                    "greenhouse",
+                    "green house"
+                  ],
+                  "boundary": [],
+                  "category": "structure",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_greenhouse",
+                  "latitude": 24.0013,
+                  "longitude": 46.0022,
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "radius_m": 35.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": null,
+                "phrase": "greenhouse",
+                "status": "grounded"
+              }
+            ]
+          },
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": null,
+            "location": null,
+            "notes": [
+              "count_not_stated",
+              "location_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "greenhouse",
+            "text": "Inspect the greenhouse."
+          },
+          "limitations": [
+            "Week 7 pre-execution simulation workflow; it does not control physical drones.",
+            "Mission-specific vision execution and full mission reporting remain Week 8 work.",
+            "Safety approval applies only to the configured synthetic policy and available evidence."
+          ],
+          "mission_plan": {
+            "intent": {
+              "action": "inspect",
+              "constraints": [],
+              "count": null,
+              "location": null,
+              "notes": [
+                "count_not_stated",
+                "location_not_stated"
+              ],
+              "parser": "deterministic_v3",
+              "target": "greenhouse",
+              "text": "Inspect the greenhouse."
+            },
+            "issues": [],
+            "notes": [
+              "Week 4 deterministic mission plan; not scheduling, execution, or safety validation."
+            ],
+            "primary_map_object": {
+              "boundary": [],
+              "category": "structure",
+              "center": {
+                "latitude": 24.0013,
+                "longitude": 46.0022
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_greenhouse",
+              "map_role": "inspection_target",
+              "name": "Greenhouse",
+              "phrase": "greenhouse",
+              "radius_m": 35.0,
+              "reference_field": "target",
+              "requires_clearance": false
+            },
+            "ready_for_scheduling": true,
+            "referenced_map_objects": [
+              {
+                "boundary": [],
+                "category": "structure",
+                "center": {
+                  "latitude": 24.0013,
+                  "longitude": 46.0022
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_greenhouse",
+                "map_role": "inspection_target",
+                "name": "Greenhouse",
+                "phrase": "greenhouse",
+                "radius_m": 35.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              }
+            ],
+            "status": "planned",
+            "steps": [
+              {
+                "action": "validate_grounding",
+                "depends_on": [],
+                "description": "Confirm grounded map object loc_greenhouse is available to the planner.",
+                "expected_output": "validated_grounded_map_object",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_001"
+              },
+              {
+                "action": "takeoff",
+                "depends_on": [
+                  "step_001"
+                ],
+                "description": "Prepare a simulated drone takeoff task for later scheduling.",
+                "expected_output": "airborne_simulated_drone",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_002"
+              },
+              {
+                "action": "fly_to",
+                "depends_on": [
+                  "step_002"
+                ],
+                "description": "Navigate to Greenhouse using the grounded center coordinates.",
+                "expected_output": "drone_at_grounded_location",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_003"
+              },
+              {
+                "action": "inspect_area",
+                "depends_on": [
+                  "step_003"
+                ],
+                "description": "Inspect Greenhouse and collect simulated observations.",
+                "expected_output": "inspect_area_complete",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_004"
+              },
+              {
+                "action": "capture_images",
+                "depends_on": [
+                  "step_004"
+                ],
+                "description": "Capture simulated imagery at Greenhouse for later vision processing.",
+                "expected_output": "captured_image_batch_reference",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_005"
+              },
+              {
+                "action": "run_vision_model",
+                "depends_on": [
+                  "step_005"
+                ],
+                "description": "Create a planned downstream vision-inference task for the captured imagery.",
+                "expected_output": "vision_inference_task_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [
+                  "Week 4 plans this task; Week 6 implements actual YOLO inference."
+                ],
+                "step_id": "step_006"
+              },
+              {
+                "action": "save_observation_results",
+                "depends_on": [
+                  "step_006"
+                ],
+                "description": "Store simulated observation outputs for later reporting and evaluation.",
+                "expected_output": "saved_observation_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "structure",
+                  "center": {
+                    "latitude": 24.0013,
+                    "longitude": 46.0022
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_greenhouse",
+                  "map_role": "inspection_target",
+                  "name": "Greenhouse",
+                  "phrase": "greenhouse",
+                  "radius_m": 35.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_007"
+              },
+              {
+                "action": "return_to_launch_area",
+                "depends_on": [
+                  "step_007"
+                ],
+                "description": "Return the simulated drone to the launch area after the observation task.",
+                "expected_output": "return_task_for_scheduler",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_008"
+              }
+            ],
+            "task_graph": {
+              "edges": [
+                {
+                  "from": "step_001",
+                  "to": "step_002"
+                },
+                {
+                  "from": "step_002",
+                  "to": "step_003"
+                },
+                {
+                  "from": "step_003",
+                  "to": "step_004"
+                },
+                {
+                  "from": "step_004",
+                  "to": "step_005"
+                },
+                {
+                  "from": "step_005",
+                  "to": "step_006"
+                },
+                {
+                  "from": "step_006",
+                  "to": "step_007"
+                },
+                {
+                  "from": "step_007",
+                  "to": "step_008"
+                }
+              ],
+              "nodes": [
+                {
+                  "action": "validate_grounding",
+                  "expected_output": "validated_grounded_map_object",
+                  "id": "step_001"
+                },
+                {
+                  "action": "takeoff",
+                  "expected_output": "airborne_simulated_drone",
+                  "id": "step_002"
+                },
+                {
+                  "action": "fly_to",
+                  "expected_output": "drone_at_grounded_location",
+                  "id": "step_003"
+                },
+                {
+                  "action": "inspect_area",
+                  "expected_output": "inspect_area_complete",
+                  "id": "step_004"
+                },
+                {
+                  "action": "capture_images",
+                  "expected_output": "captured_image_batch_reference",
+                  "id": "step_005"
+                },
+                {
+                  "action": "run_vision_model",
+                  "expected_output": "vision_inference_task_record",
+                  "id": "step_006"
+                },
+                {
+                  "action": "save_observation_results",
+                  "expected_output": "saved_observation_record",
+                  "id": "step_007"
+                },
+                {
+                  "action": "return_to_launch_area",
+                  "expected_output": "return_task_for_scheduler",
+                  "id": "step_008"
+                }
+              ]
+            }
+          },
+          "mission_plan_validation": {
+            "issues": [],
+            "valid": true,
+            "warnings": []
+          },
+          "safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_charlie",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 88.0,
+                      "drone_id": "drone_charlie",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "inspection_target",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_greenhouse"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_charlie",
+                "task_id": "mission_001"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 1,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 4,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "schedule": {
+            "assignments": [
+              {
+                "action": "inspect",
+                "drone_id": "drone_charlie",
+                "duration_min": 8.676,
+                "end_min": 8.676,
+                "start_min": 0.0,
+                "strategy": "least_loaded",
+                "target_location_id": "loc_greenhouse",
+                "target_name": "Greenhouse",
+                "task_id": "mission_001",
+                "travel_distance_m": 273.317
+              }
+            ],
+            "metrics": {
+              "assigned_tasks": 1,
+              "assignment_count_range": 1,
+              "drones_used": 1,
+              "makespan_min": 8.676,
+              "mean_response_delay_min": 0.0,
+              "total_active_time_min": 8.676,
+              "total_tasks": 1,
+              "total_travel_distance_m": 273.317,
+              "unassigned_tasks": 0,
+              "workload_range_min": 8.676
+            },
+            "notes": [
+              "Week 5 deterministic scheduling simulation; not safety validation, route optimization, or execution."
+            ],
+            "strategy": "least_loaded",
+            "unassigned_tasks": []
+          },
+          "simulated_status_updates": [
+            {
+              "drone_id": "drone_charlie",
+              "mode": "schedule_based_simulation",
+              "sequence": 1,
+              "simulated_time_min": 0.0,
+              "status": "task_started",
+              "task_id": "mission_001"
+            },
+            {
+              "drone_id": "drone_charlie",
+              "mode": "schedule_based_simulation",
+              "sequence": 2,
+              "simulated_time_min": 8.676,
+              "status": "task_completed",
+              "task_id": "mission_001"
+            }
+          ],
+          "status": "ready_for_simulated_execution",
+          "workflow": "deterministic_week7_integrated_workflow_v1"
+        }
+      },
+      "stages": [
+        "speech_or_text_input",
+        "selected_intent_interface",
+        "grounding",
+        "planning",
+        "scheduling",
+        "safety",
+        "vision_result_binding",
+        "supervision"
+      ],
+      "status_matches_expected": true
+    },
+    {
+      "actual_status": "active",
+      "case_id": "week7_integration_typed_trained_001",
+      "case_input": {
+        "case_id": "week7_integration_typed_trained_001",
+        "expected_status": "active",
+        "input": {
+          "input_type": "typed",
+          "text": "Send two drones north and scan the crops."
+        },
+        "intent_system": "trained_naive_bayes",
+        "notes": [
+          "synthetic_integration_case",
+          "trained_intent_interface"
+        ]
+      },
+      "data_type": "synthetic_or_stored_artifact_week7_integration_case",
+      "expected_status": "active",
+      "notes": [
+        "synthetic_integration_case",
+        "trained_intent_interface"
+      ],
+      "prototype_result": {
+        "clarification": null,
+        "input": {
+          "command": "Send two drones north and scan the crops.",
+          "input_type": "typed",
+          "record_id": null
+        },
+        "intent": {
+          "action": "scan",
+          "constraints": [],
+          "count": 2,
+          "location": "north",
+          "notes": [],
+          "parser": "trained_nb_human_curated_v2",
+          "target": "crops",
+          "text": "Send two drones north and scan the crops."
+        },
+        "limitations": [
+          "Software-simulation integration only; no physical drones are controlled.",
+          "Stored ASR and vision artifacts are consumed without rerunning their models.",
+          "The Week 6 vision binding is not a mission-specific observation."
+        ],
+        "stages": [
+          {
+            "detail": "typed",
+            "stage": "speech_or_text_input",
+            "status": "completed"
+          },
+          {
+            "detail": "trained_nb_human_curated_v2",
+            "stage": "trained_intent_interface",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "grounding",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "planning",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "scheduling",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "safety",
+            "status": "completed"
+          },
+          {
+            "detail": "development_reference_bound",
+            "stage": "vision_result_binding",
+            "status": "completed"
+          },
+          {
+            "detail": "active",
+            "stage": "supervision",
+            "status": "completed"
+          }
+        ],
+        "status": "active",
+        "supervision": {
+          "events": [
+            {
+              "details": {},
+              "event_type": "mission_created",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Mission schedule is awaiting explicit operator confirmation.",
+              "mission_status": "awaiting_confirmation",
+              "mode": "event_driven_simulation",
+              "safety_status": null,
+              "sequence": 1
+            },
+            {
+              "details": {},
+              "event_type": "operator_confirmed",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Operator confirmed the mission and preflight safety passed.",
+              "mission_status": "active",
+              "mode": "event_driven_simulation",
+              "safety_status": "approved",
+              "sequence": 2
+            }
+          ],
+          "last_safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_bravo",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 91.0,
+                      "drone_id": "drone_bravo",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_north_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_bravo",
+                "task_id": "mission_001_drone_01"
+              },
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_charlie",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 88.0,
+                      "drone_id": "drone_charlie",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_north_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_charlie",
+                "task_id": "mission_001_drone_02"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 2,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 8,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "last_separation_check": {
+            "category": "inter_drone_separation",
+            "evidence": {
+              "minimum_inter_drone_separation_m": 20.0,
+              "pair_distances": [
+                {
+                  "distance_m": 90.261582,
+                  "drone_ids": [
+                    "drone_bravo",
+                    "drone_charlie"
+                  ]
+                }
+              ],
+              "violating_pairs": []
+            },
+            "reason": "all_inter_drone_distances_at_or_above_threshold",
+            "status": "passed"
+          },
+          "limitations": [
+            "State transitions consume explicit simulated events; no vehicle dynamics are modeled.",
+            "Return, hold, and replanning interventions are requests, not executed trajectories.",
+            "Collision avoidance and route-geometry validation are not implemented."
+          ],
+          "mission_status": "active",
+          "mode": "event_driven_simulation",
+          "tasks": {
+            "mission_001_drone_01": {
+              "drone_id": "drone_bravo",
+              "status": "running",
+              "target_location_id": "loc_north_field",
+              "task_id": "mission_001_drone_01"
+            },
+            "mission_001_drone_02": {
+              "drone_id": "drone_charlie",
+              "status": "running",
+              "target_location_id": "loc_north_field",
+              "task_id": "mission_001_drone_02"
+            }
+          }
+        },
+        "vision_binding": {
+          "artifact_path": "outputs\\evaluations\\week6_visdrone_yolov8n_seed17_e50_completed_summary.json",
+          "artifact_status": "completed_registered_baseline",
+          "bound_plan_action": "run_vision_model",
+          "dataset": "VisDrone2019-DET",
+          "limitation": "The Week 6 artifact proves the vision interface and prior experiment provenance only; it is not an observation from this simulated mission.",
+          "metrics": {
+            "fitness": 0.1672366961928156,
+            "validation_map50": 0.29676968245417856,
+            "validation_map50_95": 0.1672366961928156,
+            "validation_precision": 0.4311579746662367,
+            "validation_recall": 0.3203436146826227
+          },
+          "mission_specific_observation": false,
+          "model": "yolov8n.pt",
+          "research_note": "Completed registered VisDrone validation baseline. Metrics are from the official validation split; test-dev was not used for model selection. This result does not establish Agriculture-Vision segmentation performance or end-to-end Shepherd-AI mission performance.",
+          "scope": "week6_development_result_not_mission_specific",
+          "status": "development_reference_bound"
+        },
+        "workflow": {
+          "clarification_report": {
+            "blocks_planning": false,
+            "command_text": "Send two drones north and scan the crops.",
+            "issues": [],
+            "ready_for_planning": true,
+            "requests": []
+          },
+          "command": "Send two drones north and scan the crops.",
+          "feedback": {
+            "blocked": false,
+            "events": [
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Mission command received.",
+                "phase": "input",
+                "sequence": 1,
+                "status": "command_received"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "action": "scan",
+                  "count": 2,
+                  "parser": "trained_nb_human_curated_v2"
+                },
+                "message": "Structured mission intent produced.",
+                "phase": "intent",
+                "sequence": 2,
+                "status": "intent_extracted"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Command references grounded to the map.",
+                "phase": "grounding",
+                "sequence": 3,
+                "status": "grounding_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Validated mission plan produced.",
+                "phase": "planning",
+                "sequence": 4,
+                "status": "plan_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 2,
+                  "strategy": "least_loaded"
+                },
+                "message": "All schedulable mission tasks were assigned.",
+                "phase": "scheduling",
+                "sequence": 5,
+                "status": "schedule_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 2,
+                  "failed_checks": 0,
+                  "not_evaluated_checks": 0,
+                  "passed_checks": 8,
+                  "roadmap_checks_per_assignment": 4
+                },
+                "message": "All configured pre-execution safety checks passed.",
+                "phase": "safety",
+                "sequence": 6,
+                "status": "safety_approved"
+              }
+            ],
+            "latest_status": "safety_approved"
+          },
+          "grounded_intent": {
+            "intent": {
+              "action": "scan",
+              "constraints": [],
+              "count": 2,
+              "location": "north",
+              "notes": [],
+              "parser": "trained_nb_human_curated_v2",
+              "target": "crops",
+              "text": "Send two drones north and scan the crops."
+            },
+            "issues": [],
+            "ready_for_planning": true,
+            "references": [
+              {
+                "candidates": [],
+                "confidence": 0.9,
+                "field": "location",
+                "location": {
+                  "aliases": [
+                    "north",
+                    "north field",
+                    "northern field",
+                    "crops",
+                    "crop"
+                  ],
+                  "boundary": [],
+                  "category": "field",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_north_field",
+                  "latitude": 24.0,
+                  "longitude": 46.0,
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "radius_m": 120.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": null,
+                "phrase": "north",
+                "status": "grounded"
+              },
+              {
+                "candidates": [],
+                "confidence": 0.9,
+                "field": "target",
+                "location": {
+                  "aliases": [
+                    "north",
+                    "north field",
+                    "northern field",
+                    "crops",
+                    "crop"
+                  ],
+                  "boundary": [],
+                  "category": "field",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_north_field",
+                  "latitude": 24.0,
+                  "longitude": 46.0,
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "radius_m": 120.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": null,
+                "phrase": "crops",
+                "status": "grounded"
+              }
+            ]
+          },
+          "intent": {
+            "action": "scan",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "trained_nb_human_curated_v2",
+            "target": "crops",
+            "text": "Send two drones north and scan the crops."
+          },
+          "limitations": [
+            "Week 7 pre-execution simulation workflow; it does not control physical drones.",
+            "Mission-specific vision execution and full mission reporting remain Week 8 work.",
+            "Safety approval applies only to the configured synthetic policy and available evidence."
+          ],
+          "mission_plan": {
+            "intent": {
+              "action": "scan",
+              "constraints": [],
+              "count": 2,
+              "location": "north",
+              "notes": [],
+              "parser": "trained_nb_human_curated_v2",
+              "target": "crops",
+              "text": "Send two drones north and scan the crops."
+            },
+            "issues": [],
+            "notes": [
+              "Week 4 deterministic mission plan; not scheduling, execution, or safety validation."
+            ],
+            "primary_map_object": {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 24.0,
+                "longitude": 46.0
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_north_field",
+              "map_role": "mission_area",
+              "name": "North Field",
+              "phrase": "crops",
+              "radius_m": 120.0,
+              "reference_field": "target",
+              "requires_clearance": false
+            },
+            "ready_for_scheduling": true,
+            "referenced_map_objects": [
+              {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "north",
+                "radius_m": 120.0,
+                "reference_field": "location",
+                "requires_clearance": false
+              },
+              {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "crops",
+                "radius_m": 120.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              }
+            ],
+            "status": "planned",
+            "steps": [
+              {
+                "action": "validate_grounding",
+                "depends_on": [],
+                "description": "Confirm grounded map object loc_north_field is available to the planner.",
+                "expected_output": "validated_grounded_map_object",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_001"
+              },
+              {
+                "action": "takeoff",
+                "depends_on": [
+                  "step_001"
+                ],
+                "description": "Prepare a simulated drone takeoff task for later scheduling.",
+                "expected_output": "airborne_simulated_drone",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_002"
+              },
+              {
+                "action": "fly_to",
+                "depends_on": [
+                  "step_002"
+                ],
+                "description": "Navigate to North Field using the grounded center coordinates.",
+                "expected_output": "drone_at_grounded_location",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_003"
+              },
+              {
+                "action": "scan_area",
+                "depends_on": [
+                  "step_003"
+                ],
+                "description": "Scan North Field and collect simulated observations.",
+                "expected_output": "scan_area_complete",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_004"
+              },
+              {
+                "action": "capture_images",
+                "depends_on": [
+                  "step_004"
+                ],
+                "description": "Capture simulated imagery at North Field for later vision processing.",
+                "expected_output": "captured_image_batch_reference",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_005"
+              },
+              {
+                "action": "run_vision_model",
+                "depends_on": [
+                  "step_005"
+                ],
+                "description": "Create a planned downstream vision-inference task for the captured imagery.",
+                "expected_output": "vision_inference_task_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [
+                  "Week 4 plans this task; Week 6 implements actual YOLO inference."
+                ],
+                "step_id": "step_006"
+              },
+              {
+                "action": "save_observation_results",
+                "depends_on": [
+                  "step_006"
+                ],
+                "description": "Store simulated observation outputs for later reporting and evaluation.",
+                "expected_output": "saved_observation_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 24.0,
+                    "longitude": 46.0
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_north_field",
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "phrase": "crops",
+                  "radius_m": 120.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_007"
+              },
+              {
+                "action": "return_to_launch_area",
+                "depends_on": [
+                  "step_007"
+                ],
+                "description": "Return the simulated drone to the launch area after the observation task.",
+                "expected_output": "return_task_for_scheduler",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_008"
+              }
+            ],
+            "task_graph": {
+              "edges": [
+                {
+                  "from": "step_001",
+                  "to": "step_002"
+                },
+                {
+                  "from": "step_002",
+                  "to": "step_003"
+                },
+                {
+                  "from": "step_003",
+                  "to": "step_004"
+                },
+                {
+                  "from": "step_004",
+                  "to": "step_005"
+                },
+                {
+                  "from": "step_005",
+                  "to": "step_006"
+                },
+                {
+                  "from": "step_006",
+                  "to": "step_007"
+                },
+                {
+                  "from": "step_007",
+                  "to": "step_008"
+                }
+              ],
+              "nodes": [
+                {
+                  "action": "validate_grounding",
+                  "expected_output": "validated_grounded_map_object",
+                  "id": "step_001"
+                },
+                {
+                  "action": "takeoff",
+                  "expected_output": "airborne_simulated_drone",
+                  "id": "step_002"
+                },
+                {
+                  "action": "fly_to",
+                  "expected_output": "drone_at_grounded_location",
+                  "id": "step_003"
+                },
+                {
+                  "action": "scan_area",
+                  "expected_output": "scan_area_complete",
+                  "id": "step_004"
+                },
+                {
+                  "action": "capture_images",
+                  "expected_output": "captured_image_batch_reference",
+                  "id": "step_005"
+                },
+                {
+                  "action": "run_vision_model",
+                  "expected_output": "vision_inference_task_record",
+                  "id": "step_006"
+                },
+                {
+                  "action": "save_observation_results",
+                  "expected_output": "saved_observation_record",
+                  "id": "step_007"
+                },
+                {
+                  "action": "return_to_launch_area",
+                  "expected_output": "return_task_for_scheduler",
+                  "id": "step_008"
+                }
+              ]
+            }
+          },
+          "mission_plan_validation": {
+            "issues": [],
+            "valid": true,
+            "warnings": []
+          },
+          "safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_bravo",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 91.0,
+                      "drone_id": "drone_bravo",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_north_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_bravo",
+                "task_id": "mission_001_drone_01"
+              },
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_charlie",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 88.0,
+                      "drone_id": "drone_charlie",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_north_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_charlie",
+                "task_id": "mission_001_drone_02"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 2,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 8,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "schedule": {
+            "assignments": [
+              {
+                "action": "scan",
+                "drone_id": "drone_bravo",
+                "duration_min": 11.457,
+                "end_min": 11.457,
+                "start_min": 0.0,
+                "strategy": "least_loaded",
+                "target_location_id": "loc_north_field",
+                "target_name": "North Field",
+                "task_id": "mission_001_drone_01",
+                "travel_distance_m": 827.137
+              },
+              {
+                "action": "scan",
+                "drone_id": "drone_charlie",
+                "duration_min": 11.486,
+                "end_min": 11.486,
+                "start_min": 0.0,
+                "strategy": "least_loaded",
+                "target_location_id": "loc_north_field",
+                "target_name": "North Field",
+                "task_id": "mission_001_drone_02",
+                "travel_distance_m": 780.042
+              }
+            ],
+            "metrics": {
+              "assigned_tasks": 2,
+              "assignment_count_range": 1,
+              "drones_used": 2,
+              "makespan_min": 11.486,
+              "mean_response_delay_min": 0.0,
+              "total_active_time_min": 22.943,
+              "total_tasks": 2,
+              "total_travel_distance_m": 1607.179,
+              "unassigned_tasks": 0,
+              "workload_range_min": 11.486
+            },
+            "notes": [
+              "Week 5 deterministic scheduling simulation; not safety validation, route optimization, or execution."
+            ],
+            "strategy": "least_loaded",
+            "unassigned_tasks": []
+          },
+          "simulated_status_updates": [
+            {
+              "drone_id": "drone_bravo",
+              "mode": "schedule_based_simulation",
+              "sequence": 1,
+              "simulated_time_min": 0.0,
+              "status": "task_started",
+              "task_id": "mission_001_drone_01"
+            },
+            {
+              "drone_id": "drone_charlie",
+              "mode": "schedule_based_simulation",
+              "sequence": 2,
+              "simulated_time_min": 0.0,
+              "status": "task_started",
+              "task_id": "mission_001_drone_02"
+            },
+            {
+              "drone_id": "drone_bravo",
+              "mode": "schedule_based_simulation",
+              "sequence": 3,
+              "simulated_time_min": 11.457,
+              "status": "task_completed",
+              "task_id": "mission_001_drone_01"
+            },
+            {
+              "drone_id": "drone_charlie",
+              "mode": "schedule_based_simulation",
+              "sequence": 4,
+              "simulated_time_min": 11.486,
+              "status": "task_completed",
+              "task_id": "mission_001_drone_02"
+            }
+          ],
+          "status": "ready_for_simulated_execution",
+          "workflow": "deterministic_week7_integrated_workflow_v1"
+        }
+      },
+      "stages": [
+        "speech_or_text_input",
+        "trained_intent_interface",
+        "grounding",
+        "planning",
+        "scheduling",
+        "safety",
+        "vision_result_binding",
+        "supervision"
+      ],
+      "status_matches_expected": true
+    },
+    {
+      "actual_status": "active",
+      "case_id": "week7_integration_whisper_001",
+      "case_input": {
+        "case_id": "week7_integration_whisper_001",
+        "expected_status": "active",
+        "input": {
+          "input_type": "whisper_prediction",
+          "prediction_id": "audio_008"
+        },
+        "intent_system": "deterministic_primary",
+        "notes": [
+          "stored_asr_artifact_integration_case",
+          "audio_not_rerun"
+        ]
+      },
+      "data_type": "synthetic_or_stored_artifact_week7_integration_case",
+      "expected_status": "active",
+      "notes": [
+        "stored_asr_artifact_integration_case",
+        "audio_not_rerun"
+      ],
+      "prototype_result": {
+        "clarification": null,
+        "input": {
+          "audio_path": "datasets\\sample_audio\\audio_008.wav",
+          "command": "Inspect the north field while avoiding the storage area.",
+          "input_type": "whisper_prediction",
+          "model_name": "whisper",
+          "model_version": "base",
+          "parameters": {
+            "dataset_root": ".",
+            "detected_language": "en",
+            "device": "cuda",
+            "device_metadata": {
+              "checked_at_utc": "2026-07-04T17:26:30.075999+00:00",
+              "cuda_available": true,
+              "cuda_device_names": [
+                "NVIDIA GeForce GTX 1650 SUPER"
+              ],
+              "required_device_substring": "GTX"
+            },
+            "fp16": false,
+            "language": "en",
+            "manifest": "datasets\\sample_audio\\manifest.jsonl",
+            "model": "base",
+            "packages": {
+              "openai-whisper": "20250625",
+              "torch": "2.12.1+cu126"
+            },
+            "runtime": {
+              "platform": "Windows-11-10.0.26200-SP0",
+              "python": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]"
+            },
+            "segments": 1
+          },
+          "record_id": "audio_008"
+        },
+        "intent": {
+          "action": "inspect",
+          "constraints": [
+            "while avoiding the storage area"
+          ],
+          "count": null,
+          "location": "north",
+          "notes": [
+            "count_not_stated"
+          ],
+          "parser": "deterministic_v3",
+          "target": "field",
+          "text": "Inspect the north field while avoiding the storage area."
+        },
+        "limitations": [
+          "Software-simulation integration only; no physical drones are controlled.",
+          "Stored ASR and vision artifacts are consumed without rerunning their models.",
+          "The Week 6 vision binding is not a mission-specific observation."
+        ],
+        "stages": [
+          {
+            "detail": "whisper_prediction",
+            "stage": "speech_or_text_input",
+            "status": "completed"
+          },
+          {
+            "detail": "deterministic_v3",
+            "stage": "selected_intent_interface",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "grounding",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "planning",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "scheduling",
+            "status": "completed"
+          },
+          {
+            "detail": "ready_for_simulated_execution",
+            "stage": "safety",
+            "status": "completed"
+          },
+          {
+            "detail": "development_reference_bound",
+            "stage": "vision_result_binding",
+            "status": "completed"
+          },
+          {
+            "detail": "active",
+            "stage": "supervision",
+            "status": "completed"
+          }
+        ],
+        "status": "active",
+        "supervision": {
+          "events": [
+            {
+              "details": {},
+              "event_type": "mission_created",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Mission schedule is awaiting explicit operator confirmation.",
+              "mission_status": "awaiting_confirmation",
+              "mode": "event_driven_simulation",
+              "safety_status": null,
+              "sequence": 1
+            },
+            {
+              "details": {},
+              "event_type": "operator_confirmed",
+              "failed_categories": [],
+              "intervention": null,
+              "message": "Operator confirmed the mission and preflight safety passed.",
+              "mission_status": "active",
+              "mode": "event_driven_simulation",
+              "safety_status": "approved",
+              "sequence": 2
+            }
+          ],
+          "last_safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_alpha",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 96.0,
+                      "drone_id": "drone_alpha",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_open_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_alpha",
+                "task_id": "mission_001"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 1,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 4,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "last_separation_check": {
+            "category": "inter_drone_separation",
+            "evidence": {
+              "minimum_inter_drone_separation_m": 20.0,
+              "pair_distances": [],
+              "violating_pairs": []
+            },
+            "reason": "fewer_than_two_drones_to_compare",
+            "status": "passed"
+          },
+          "limitations": [
+            "State transitions consume explicit simulated events; no vehicle dynamics are modeled.",
+            "Return, hold, and replanning interventions are requests, not executed trajectories.",
+            "Collision avoidance and route-geometry validation are not implemented."
+          ],
+          "mission_status": "active",
+          "mode": "event_driven_simulation",
+          "tasks": {
+            "mission_001": {
+              "drone_id": "drone_alpha",
+              "status": "running",
+              "target_location_id": "loc_open_field",
+              "task_id": "mission_001"
+            }
+          }
+        },
+        "vision_binding": {
+          "artifact_path": "outputs\\evaluations\\week6_visdrone_yolov8n_seed17_e50_completed_summary.json",
+          "artifact_status": "completed_registered_baseline",
+          "bound_plan_action": "run_vision_model",
+          "dataset": "VisDrone2019-DET",
+          "limitation": "The Week 6 artifact proves the vision interface and prior experiment provenance only; it is not an observation from this simulated mission.",
+          "metrics": {
+            "fitness": 0.1672366961928156,
+            "validation_map50": 0.29676968245417856,
+            "validation_map50_95": 0.1672366961928156,
+            "validation_precision": 0.4311579746662367,
+            "validation_recall": 0.3203436146826227
+          },
+          "mission_specific_observation": false,
+          "model": "yolov8n.pt",
+          "research_note": "Completed registered VisDrone validation baseline. Metrics are from the official validation split; test-dev was not used for model selection. This result does not establish Agriculture-Vision segmentation performance or end-to-end Shepherd-AI mission performance.",
+          "scope": "week6_development_result_not_mission_specific",
+          "status": "development_reference_bound"
+        },
+        "workflow": {
+          "clarification_report": {
+            "blocks_planning": false,
+            "command_text": "Inspect the north field while avoiding the storage area.",
+            "issues": [],
+            "ready_for_planning": true,
+            "requests": []
+          },
+          "command": "Inspect the north field while avoiding the storage area.",
+          "feedback": {
+            "blocked": false,
+            "events": [
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Mission command received.",
+                "phase": "input",
+                "sequence": 1,
+                "status": "command_received"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "action": "inspect",
+                  "count": null,
+                  "parser": "deterministic_v3"
+                },
+                "message": "Structured mission intent produced.",
+                "phase": "intent",
+                "sequence": 2,
+                "status": "intent_extracted"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Command references grounded to the map.",
+                "phase": "grounding",
+                "sequence": 3,
+                "status": "grounding_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {},
+                "message": "Validated mission plan produced.",
+                "phase": "planning",
+                "sequence": 4,
+                "status": "plan_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 1,
+                  "strategy": "least_loaded"
+                },
+                "message": "All schedulable mission tasks were assigned.",
+                "phase": "scheduling",
+                "sequence": 5,
+                "status": "schedule_ready"
+              },
+              {
+                "blocks_progress": false,
+                "details": {
+                  "assignments": 1,
+                  "failed_checks": 0,
+                  "not_evaluated_checks": 0,
+                  "passed_checks": 4,
+                  "roadmap_checks_per_assignment": 4
+                },
+                "message": "All configured pre-execution safety checks passed.",
+                "phase": "safety",
+                "sequence": 6,
+                "status": "safety_approved"
+              }
+            ],
+            "latest_status": "safety_approved"
+          },
+          "grounded_intent": {
+            "intent": {
+              "action": "inspect",
+              "constraints": [
+                "while avoiding the storage area"
+              ],
+              "count": null,
+              "location": "north",
+              "notes": [
+                "count_not_stated"
+              ],
+              "parser": "deterministic_v3",
+              "target": "field",
+              "text": "Inspect the north field while avoiding the storage area."
+            },
+            "issues": [],
+            "ready_for_planning": true,
+            "references": [
+              {
+                "candidates": [],
+                "confidence": 0.9,
+                "field": "location",
+                "location": {
+                  "aliases": [
+                    "north",
+                    "north field",
+                    "northern field",
+                    "crops",
+                    "crop"
+                  ],
+                  "boundary": [],
+                  "category": "field",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_north_field",
+                  "latitude": 24.0,
+                  "longitude": 46.0,
+                  "map_role": "mission_area",
+                  "name": "North Field",
+                  "radius_m": 120.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": null,
+                "phrase": "north",
+                "status": "grounded"
+              },
+              {
+                "candidates": [],
+                "confidence": 0.9,
+                "field": "target",
+                "location": {
+                  "aliases": [
+                    "open field",
+                    "field"
+                  ],
+                  "boundary": [],
+                  "category": "field",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_open_field",
+                  "latitude": 23.996,
+                  "longitude": 46.0012,
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "radius_m": 140.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": null,
+                "phrase": "field",
+                "status": "grounded"
+              },
+              {
+                "candidates": [],
+                "confidence": 0.8,
+                "field": "constraint[0]",
+                "location": {
+                  "aliases": [
+                    "storage area",
+                    "storage"
+                  ],
+                  "boundary": [],
+                  "category": "structure",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_storage_area",
+                  "latitude": 23.9984,
+                  "longitude": 46.0028,
+                  "map_role": "inspection_target",
+                  "name": "Storage Area",
+                  "radius_m": 40.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                "note": "map reference found inside constraint phrase",
+                "phrase": "while avoiding the storage area",
+                "status": "grounded"
+              }
+            ]
+          },
+          "intent": {
+            "action": "inspect",
+            "constraints": [
+              "while avoiding the storage area"
+            ],
+            "count": null,
+            "location": "north",
+            "notes": [
+              "count_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "field",
+            "text": "Inspect the north field while avoiding the storage area."
+          },
+          "limitations": [
+            "Week 7 pre-execution simulation workflow; it does not control physical drones.",
+            "Mission-specific vision execution and full mission reporting remain Week 8 work.",
+            "Safety approval applies only to the configured synthetic policy and available evidence."
+          ],
+          "mission_plan": {
+            "intent": {
+              "action": "inspect",
+              "constraints": [
+                "while avoiding the storage area"
+              ],
+              "count": null,
+              "location": "north",
+              "notes": [
+                "count_not_stated"
+              ],
+              "parser": "deterministic_v3",
+              "target": "field",
+              "text": "Inspect the north field while avoiding the storage area."
+            },
+            "issues": [],
+            "notes": [
+              "Week 4 deterministic mission plan; not scheduling, execution, or safety validation."
+            ],
+            "primary_map_object": {
+              "boundary": [],
+              "category": "field",
+              "center": {
+                "latitude": 23.996,
+                "longitude": 46.0012
+              },
+              "flyable": true,
+              "geometry_type": "circle",
+              "location_id": "loc_open_field",
+              "map_role": "mission_area",
+              "name": "Open Field",
+              "phrase": "field",
+              "radius_m": 140.0,
+              "reference_field": "target",
+              "requires_clearance": false
+            },
+            "ready_for_scheduling": true,
+            "referenced_map_objects": [
+              {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 24.0,
+                  "longitude": 46.0
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_north_field",
+                "map_role": "mission_area",
+                "name": "North Field",
+                "phrase": "north",
+                "radius_m": 120.0,
+                "reference_field": "location",
+                "requires_clearance": false
+              },
+              {
+                "boundary": [],
+                "category": "field",
+                "center": {
+                  "latitude": 23.996,
+                  "longitude": 46.0012
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_open_field",
+                "map_role": "mission_area",
+                "name": "Open Field",
+                "phrase": "field",
+                "radius_m": 140.0,
+                "reference_field": "target",
+                "requires_clearance": false
+              },
+              {
+                "boundary": [],
+                "category": "structure",
+                "center": {
+                  "latitude": 23.9984,
+                  "longitude": 46.0028
+                },
+                "flyable": true,
+                "geometry_type": "circle",
+                "location_id": "loc_storage_area",
+                "map_role": "inspection_target",
+                "name": "Storage Area",
+                "phrase": "while avoiding the storage area",
+                "radius_m": 40.0,
+                "reference_field": "constraint[0]",
+                "requires_clearance": false
+              }
+            ],
+            "status": "planned",
+            "steps": [
+              {
+                "action": "validate_grounding",
+                "depends_on": [],
+                "description": "Confirm grounded map object loc_open_field is available to the planner.",
+                "expected_output": "validated_grounded_map_object",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_001"
+              },
+              {
+                "action": "review_constraints",
+                "depends_on": [
+                  "step_001"
+                ],
+                "description": "Review command constraints before creating schedulable flight tasks.",
+                "expected_output": "constraints_available_for_later_safety_validation",
+                "map_object": null,
+                "notes": [
+                  "while avoiding the storage area"
+                ],
+                "step_id": "step_002"
+              },
+              {
+                "action": "takeoff",
+                "depends_on": [
+                  "step_002"
+                ],
+                "description": "Prepare a simulated drone takeoff task for later scheduling.",
+                "expected_output": "airborne_simulated_drone",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_003"
+              },
+              {
+                "action": "fly_to",
+                "depends_on": [
+                  "step_003"
+                ],
+                "description": "Navigate to Open Field using the grounded center coordinates.",
+                "expected_output": "drone_at_grounded_location",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_004"
+              },
+              {
+                "action": "inspect_area",
+                "depends_on": [
+                  "step_004"
+                ],
+                "description": "Inspect Open Field and collect simulated observations.",
+                "expected_output": "inspect_area_complete",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_005"
+              },
+              {
+                "action": "capture_images",
+                "depends_on": [
+                  "step_005"
+                ],
+                "description": "Capture simulated imagery at Open Field for later vision processing.",
+                "expected_output": "captured_image_batch_reference",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_006"
+              },
+              {
+                "action": "run_vision_model",
+                "depends_on": [
+                  "step_006"
+                ],
+                "description": "Create a planned downstream vision-inference task for the captured imagery.",
+                "expected_output": "vision_inference_task_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [
+                  "Week 4 plans this task; Week 6 implements actual YOLO inference."
+                ],
+                "step_id": "step_007"
+              },
+              {
+                "action": "save_observation_results",
+                "depends_on": [
+                  "step_007"
+                ],
+                "description": "Store simulated observation outputs for later reporting and evaluation.",
+                "expected_output": "saved_observation_record",
+                "map_object": {
+                  "boundary": [],
+                  "category": "field",
+                  "center": {
+                    "latitude": 23.996,
+                    "longitude": 46.0012
+                  },
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "location_id": "loc_open_field",
+                  "map_role": "mission_area",
+                  "name": "Open Field",
+                  "phrase": "field",
+                  "radius_m": 140.0,
+                  "reference_field": "target",
+                  "requires_clearance": false
+                },
+                "notes": [],
+                "step_id": "step_008"
+              },
+              {
+                "action": "return_to_launch_area",
+                "depends_on": [
+                  "step_008"
+                ],
+                "description": "Return the simulated drone to the launch area after the observation task.",
+                "expected_output": "return_task_for_scheduler",
+                "map_object": null,
+                "notes": [],
+                "step_id": "step_009"
+              }
+            ],
+            "task_graph": {
+              "edges": [
+                {
+                  "from": "step_001",
+                  "to": "step_002"
+                },
+                {
+                  "from": "step_002",
+                  "to": "step_003"
+                },
+                {
+                  "from": "step_003",
+                  "to": "step_004"
+                },
+                {
+                  "from": "step_004",
+                  "to": "step_005"
+                },
+                {
+                  "from": "step_005",
+                  "to": "step_006"
+                },
+                {
+                  "from": "step_006",
+                  "to": "step_007"
+                },
+                {
+                  "from": "step_007",
+                  "to": "step_008"
+                },
+                {
+                  "from": "step_008",
+                  "to": "step_009"
+                }
+              ],
+              "nodes": [
+                {
+                  "action": "validate_grounding",
+                  "expected_output": "validated_grounded_map_object",
+                  "id": "step_001"
+                },
+                {
+                  "action": "review_constraints",
+                  "expected_output": "constraints_available_for_later_safety_validation",
+                  "id": "step_002"
+                },
+                {
+                  "action": "takeoff",
+                  "expected_output": "airborne_simulated_drone",
+                  "id": "step_003"
+                },
+                {
+                  "action": "fly_to",
+                  "expected_output": "drone_at_grounded_location",
+                  "id": "step_004"
+                },
+                {
+                  "action": "inspect_area",
+                  "expected_output": "inspect_area_complete",
+                  "id": "step_005"
+                },
+                {
+                  "action": "capture_images",
+                  "expected_output": "captured_image_batch_reference",
+                  "id": "step_006"
+                },
+                {
+                  "action": "run_vision_model",
+                  "expected_output": "vision_inference_task_record",
+                  "id": "step_007"
+                },
+                {
+                  "action": "save_observation_results",
+                  "expected_output": "saved_observation_record",
+                  "id": "step_008"
+                },
+                {
+                  "action": "return_to_launch_area",
+                  "expected_output": "return_task_for_scheduler",
+                  "id": "step_009"
+                }
+              ]
+            }
+          },
+          "mission_plan_validation": {
+            "issues": [],
+            "valid": true,
+            "warnings": []
+          },
+          "safety_report": {
+            "altitude_source": "operator_or_workflow_input",
+            "assignment_results": [
+              {
+                "checks": [
+                  {
+                    "category": "availability",
+                    "evidence": {
+                      "allowed_statuses": [
+                        "idle"
+                      ],
+                      "drone_id": "drone_alpha",
+                      "drone_status": "idle"
+                    },
+                    "reason": "drone_status_allowed",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "battery",
+                    "evidence": {
+                      "battery_percent": 96.0,
+                      "drone_id": "drone_alpha",
+                      "minimum_battery_percent": 25.0
+                    },
+                    "reason": "battery_at_or_above_threshold",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "altitude",
+                    "evidence": {
+                      "command_altitude_ceiling_m": null,
+                      "maximum_altitude_m": 60.0,
+                      "minimum_altitude_exclusive_m": 0.0,
+                      "mission_altitude_m": 30.0
+                    },
+                    "reason": "altitude_within_policy_and_command_constraint",
+                    "status": "passed"
+                  },
+                  {
+                    "category": "restricted_area",
+                    "evidence": {
+                      "blocked_map_roles": [
+                        "obstacle",
+                        "restricted_area"
+                      ],
+                      "flyable": true,
+                      "map_role": "mission_area",
+                      "requires_clearance": false,
+                      "route_clearance_margin_m": 0.0,
+                      "route_intersections": [],
+                      "route_model": "straight_line_center_to_center",
+                      "target_location_id": "loc_open_field"
+                    },
+                    "reason": "target_and_straight_line_route_are_clear",
+                    "status": "passed"
+                  }
+                ],
+                "decision": "approved",
+                "drone_id": "drone_alpha",
+                "task_id": "mission_001"
+              }
+            ],
+            "command_altitude_ceiling_m": null,
+            "issues": [],
+            "limitations": [
+              "Pre-execution simulation gate only; this is not a physical-flight safety guarantee.",
+              "Routes use a straight-line geometric baseline; trajectory optimization, active collision avoidance, weather, communications, and flight dynamics are not evaluated."
+            ],
+            "mission_altitude_m": 30.0,
+            "policy": {
+              "allowed_drone_statuses": [
+                "idle"
+              ],
+              "blocked_map_roles": [
+                "obstacle",
+                "restricted_area"
+              ],
+              "data_type": "synthetic_simulation_safety_policy",
+              "default_mission_altitude_m": 30.0,
+              "maximum_altitude_m": 60.0,
+              "minimum_battery_percent": 25.0,
+              "minimum_inter_drone_separation_m": 20.0,
+              "notes": [
+                "The roadmap requires battery and altitude checks but does not state thresholds.",
+                "These values are explicit synthetic development assumptions, not legal limits, hardware specifications, or safety guarantees.",
+                "Restricted-area checks use a straight-line center-to-center route baseline against circular or polygonal blocked map records.",
+                "The 20 m inter-drone separation threshold is a synthetic software-simulation assumption, not a hardware specification.",
+                "Collision avoidance, weather, communications, and physical flight dynamics are not evaluated by this policy."
+              ],
+              "policy_id": "week7_synthetic_safety_policy_v1",
+              "route_clearance_margin_m": 0.0,
+              "source": "custom_week7_development_policy_v1"
+            },
+            "safe_to_execute": true,
+            "status": "approved",
+            "summary": {
+              "assignments": 1,
+              "failed_checks": 0,
+              "not_evaluated_checks": 0,
+              "passed_checks": 4,
+              "roadmap_checks_per_assignment": 4
+            },
+            "validator": "deterministic_week7_safety_v1"
+          },
+          "schedule": {
+            "assignments": [
+              {
+                "action": "inspect",
+                "drone_id": "drone_alpha",
+                "duration_min": 12.244,
+                "end_min": 12.244,
+                "start_min": 0.0,
+                "strategy": "least_loaded",
+                "target_location_id": "loc_open_field",
+                "target_name": "Open Field",
+                "task_id": "mission_001",
+                "travel_distance_m": 1294.0
+              }
+            ],
+            "metrics": {
+              "assigned_tasks": 1,
+              "assignment_count_range": 1,
+              "drones_used": 1,
+              "makespan_min": 12.244,
+              "mean_response_delay_min": 0.0,
+              "total_active_time_min": 12.244,
+              "total_tasks": 1,
+              "total_travel_distance_m": 1294.0,
+              "unassigned_tasks": 0,
+              "workload_range_min": 12.244
+            },
+            "notes": [
+              "Week 5 deterministic scheduling simulation; not safety validation, route optimization, or execution."
+            ],
+            "strategy": "least_loaded",
+            "unassigned_tasks": []
+          },
+          "simulated_status_updates": [
+            {
+              "drone_id": "drone_alpha",
+              "mode": "schedule_based_simulation",
+              "sequence": 1,
+              "simulated_time_min": 0.0,
+              "status": "task_started",
+              "task_id": "mission_001"
+            },
+            {
+              "drone_id": "drone_alpha",
+              "mode": "schedule_based_simulation",
+              "sequence": 2,
+              "simulated_time_min": 12.244,
+              "status": "task_completed",
+              "task_id": "mission_001"
+            }
+          ],
+          "status": "ready_for_simulated_execution",
+          "workflow": "deterministic_week7_integrated_workflow_v1"
+        }
+      },
+      "stages": [
+        "speech_or_text_input",
+        "selected_intent_interface",
+        "grounding",
+        "planning",
+        "scheduling",
+        "safety",
+        "vision_result_binding",
+        "supervision"
+      ],
+      "status_matches_expected": true
+    }
+  ],
+  "metadata": {
+    "data_scope": "synthetic_commands_plus_stored_asr_and_vision_artifacts",
+    "evaluator": "bounded_week7_prior_module_integration_evaluator_v1",
+    "generated_at_utc": "2026-07-16T17:55:32.710830+00:00",
+    "input_sha256": {
+      "cases": "59025d24850c8ed1f6b91bb39c3ffdde51825963f78c3cabe113e1e389cd2496",
+      "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
+      "intent_model": "76373b24987518a9bc11dc99b5966babd549f8e13ce4710f84b66c31b909c727",
+      "map": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95",
+      "policy": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc",
+      "vision_artifact": "a8be5ed9d26061318b0b5681742b1c84ef55f47be72d32ec1245b42059c6a796",
+      "whisper_predictions": "24804de0bb672eac03cf24e8b05945a9756e7269cf1c5073e94d47bdc5d30628"
+    },
+    "integrated_stages": [
+      "grounding",
+      "planning",
+      "safety",
+      "scheduling",
+      "selected_intent_interface",
+      "speech_or_text_input",
+      "supervision",
+      "trained_intent_interface",
+      "vision_result_binding"
+    ],
+    "python_version": "3.14.3",
+    "random_seed": null,
+    "research_note": "This evaluates module contracts. ASR and vision models are not rerun, and the Week 6 vision result is not treated as mission-specific imagery or end-to-end success."
+  },
+  "summary": {
+    "case_count": 3,
+    "expected_status_matches": 3
+  }
+}

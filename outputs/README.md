@@ -150,3 +150,16 @@ Current Week 5 artifacts:
 - `outputs/tables/week5_assignments_least_loaded.csv`: primary assignment table for the default `least_loaded` strategy.
 - `outputs/visualizations/week5_drone_allocation_least_loaded.html`: generated allocation timeline visualization.
 - `outputs/evaluations/week5_completion_gate_audit.json`: machine-readable Week 5 completion-gate audit.
+
+Current intentionally promoted Week 7 artifacts:
+
+- `outputs/evaluations/week7_safety_development_v1.json`: 12-case preflight evaluation.
+- `outputs/evaluations/week7_clarification_development_v1.json`: 4-case stateful dialogue evaluation.
+- `outputs/evaluations/week7_route_safety_development_v1.json`: 3-case straight-line route geometry evaluation.
+- `outputs/evaluations/week7_supervision_development_v1.json`: 8-case event-driven lifecycle and telemetry evaluation.
+- `outputs/evaluations/week7_integration_development_v1.json`: 3-case prior-module interface evaluation.
+- `outputs/evaluations/week7_policy_sensitivity_v1.json`: four-dimension synthetic threshold sensitivity study.
+- `outputs/evaluations/week7_completion_gate_audit.json`: corrected machine-readable Week 7 completion decision.
+
+These are software-simulation development artifacts. They are not physical
+safety or Week 8 end-to-end mission results.

@@ -34,3 +34,10 @@ Current generated reports:
 - `week4_mission_planning_report.md`: summary of the initial deterministic Week 4 task-sequence planner and its planning-gate evaluation.
 - `week5_schedule_comparison_v1.md`: generated Week 5 deterministic scheduling strategy comparison and primary assignment table.
 - `week5_completion_gate_audit.md`: generated Week 5 completion-gate audit separating roadmap deliverables from deferred research claims.
+- `week7_safety_development_v1.md`: preflight safety branch evaluation.
+- `week7_clarification_development_v1.md`: stateful dialogue evaluation.
+- `week7_route_safety_development_v1.md`: straight-line route geometry evaluation.
+- `week7_supervision_development_v1.md`: event-driven lifecycle and telemetry evaluation.
+- `week7_integration_development_v1.md`: prior-module interface integration evaluation.
+- `week7_policy_sensitivity_v1.md`: synthetic threshold sensitivity analysis.
+- `week7_completion_gate_audit.md`: corrected Week 7 completion audit; it supersedes the earlier preflight-only completion claim.

@@ -207,19 +207,32 @@ Completion criteria: Unsafe or incomplete missions are flagged before simulated 
 
 Known uncertainties: Battery thresholds, altitude limits, restricted-area dataset, and operator-clarification policy are not stated.
 
-Current status: Week 7 is complete for roadmap advancement with a deterministic
-pre-execution development slice. `src/shepherd_ai/safety.py` applies battery,
+Current status: Week 7 is complete for roadmap advancement after a corrected,
+literature-grounded audit. The deterministic
+pre-execution development slice in `src/shepherd_ai/safety.py` applies battery,
 restricted-area, altitude, and availability checks to every assignment using
 the explicit synthetic policy at
 `datasets/safety/week7_safety_policy_v1.json`. The integrated workflow reuses
 the Week 3 clarification report, Week 4 planner, and Week 5 scheduler, emits
-ordered feedback and schedule-based simulated status updates, and blocks failed
-or unavailable evidence. The registered case matrix and protocol are
+ordered feedback and schedule-based projected status updates, and blocks failed
+or unavailable evidence. The registered preflight case matrix and protocol are
 `datasets/safety/week7_safety_cases_v1.jsonl` and
 `docs/week7_safety_protocol.md`. The registered 12-case evaluation matched all
-expected workflow statuses and failed categories. The completion audit permits
-advancement with no blockers. This remains synthetic pre-execution evidence;
-mission-specific Week 6 vision execution belongs to the Week 8 full scenario.
+expected workflow statuses and failed categories. A second development slice in
+`src/shepherd_ai/mission_supervision.py` adds explicit confirmation, event-driven
+lifecycle states, telemetry-triggered safety rechecks, pause/resume/cancel,
+low-battery return requests, and availability-loss hold/replan requests. Its six
+registered synthetic cases match their expected final states, event sequences,
+and interventions. The final evidence also includes a four-case stateful
+clarification evaluation, three route-geometry cases over circles and polygons,
+eight supervision cases including a multi-snapshot safe-to-unsafe separation
+transition, three prior-module integration cases covering typed input, a stored
+Whisper prediction, the selected deterministic parser, the trained Naive Bayes
+intent interface, and a bounded Week 6 vision-result binding, plus sensitivity
+analysis over four synthetic policy dimensions. The corrected completion audit
+permits Week 8 advancement with no blockers. This remains software-simulation
+evidence and does not establish mission-specific vision, continuous dynamics,
+active collision avoidance, or physical safety. See `docs/week7_gap_audit.md`.
 
 ## Milestone 8: End-To-End Demonstration And Evaluation
 

@@ -1,0 +1,668 @@
+{
+  "cases": [
+    {
+      "actual_event_types": [
+        "clarification_requested",
+        "response_accepted",
+        "operator_confirmed"
+      ],
+      "actual_status": "confirmed",
+      "case_id": "week7_clarification_confirm_001",
+      "case_input": {
+        "case_id": "week7_clarification_confirm_001",
+        "command": "Check if there is any traffic on the road.",
+        "events": [
+          {
+            "choices": {
+              "target": "loc_service_road"
+            },
+            "type": "choose"
+          },
+          {
+            "type": "confirm"
+          }
+        ],
+        "expected_event_types": [
+          "clarification_requested",
+          "response_accepted",
+          "operator_confirmed"
+        ],
+        "expected_status": "confirmed",
+        "notes": [
+          "synthetic_stateful_dialogue_case"
+        ]
+      },
+      "data_type": "synthetic_week7_stateful_clarification_case",
+      "dialogue_result": {
+        "current_report": {
+          "blocks_planning": false,
+          "command_text": "Check if there is any traffic on the road.",
+          "issues": [],
+          "ready_for_planning": true,
+          "requests": []
+        },
+        "events": [
+          {
+            "details": {
+              "request_count": 1
+            },
+            "event_type": "clarification_requested",
+            "message": "Operator clarification is required before planning.",
+            "sequence": 1,
+            "status": "awaiting_response"
+          },
+          {
+            "details": {
+              "choices": {
+                "target": "loc_service_road"
+              },
+              "remaining_requests": 0
+            },
+            "event_type": "response_accepted",
+            "message": "The response was accepted and awaits explicit confirmation.",
+            "sequence": 2,
+            "status": "awaiting_confirmation"
+          },
+          {
+            "details": {},
+            "event_type": "operator_confirmed",
+            "message": "Operator confirmed the grounded mission command.",
+            "sequence": 3,
+            "status": "confirmed"
+          }
+        ],
+        "mode": "stateful_multi_turn",
+        "original_command": "Check if there is any traffic on the road.",
+        "resolved_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": null,
+            "location": null,
+            "notes": [
+              "count_not_stated",
+              "location_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "traffic on the road",
+            "text": "Check if there is any traffic on the road."
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.0,
+              "field": "location",
+              "location": null,
+              "note": "no phrase provided for this intent field",
+              "phrase": null,
+              "status": "not_provided"
+            },
+            {
+              "candidates": [],
+              "confidence": 1.0,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "service road",
+                  "road"
+                ],
+                "boundary": [],
+                "category": "road",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_service_road",
+                "latitude": 23.9972,
+                "longitude": 45.9986,
+                "map_role": "corridor",
+                "name": "Service Road",
+                "radius_m": 60.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": "operator_selected_ambiguous_candidate",
+              "phrase": "traffic on the road",
+              "status": "grounded"
+            }
+          ]
+        },
+        "status": "confirmed"
+      },
+      "event_types_match_expected": true,
+      "expected_event_types": [
+        "clarification_requested",
+        "response_accepted",
+        "operator_confirmed"
+      ],
+      "expected_status": "confirmed",
+      "notes": [
+        "synthetic_stateful_dialogue_case"
+      ],
+      "status_matches_expected": true
+    },
+    {
+      "actual_event_types": [
+        "clarification_requested",
+        "response_rejected",
+        "response_accepted",
+        "operator_confirmed"
+      ],
+      "actual_status": "confirmed",
+      "case_id": "week7_clarification_retry_001",
+      "case_input": {
+        "case_id": "week7_clarification_retry_001",
+        "command": "Check if there is any traffic on the road.",
+        "events": [
+          {
+            "choices": {
+              "target": "loc_not_a_candidate"
+            },
+            "type": "choose"
+          },
+          {
+            "choices": {
+              "target": "loc_main_road"
+            },
+            "type": "choose"
+          },
+          {
+            "type": "confirm"
+          }
+        ],
+        "expected_event_types": [
+          "clarification_requested",
+          "response_rejected",
+          "response_accepted",
+          "operator_confirmed"
+        ],
+        "expected_status": "confirmed",
+        "notes": [
+          "synthetic_stateful_dialogue_case"
+        ]
+      },
+      "data_type": "synthetic_week7_stateful_clarification_case",
+      "dialogue_result": {
+        "current_report": {
+          "blocks_planning": false,
+          "command_text": "Check if there is any traffic on the road.",
+          "issues": [],
+          "ready_for_planning": true,
+          "requests": []
+        },
+        "events": [
+          {
+            "details": {
+              "request_count": 1
+            },
+            "event_type": "clarification_requested",
+            "message": "Operator clarification is required before planning.",
+            "sequence": 1,
+            "status": "awaiting_response"
+          },
+          {
+            "details": {
+              "choices": {
+                "target": "loc_not_a_candidate"
+              },
+              "error": "choice for target must be one of the ambiguous candidates: loc_main_road, loc_service_road"
+            },
+            "event_type": "response_rejected",
+            "message": "The clarification response did not match the available map choices.",
+            "sequence": 2,
+            "status": "awaiting_response"
+          },
+          {
+            "details": {
+              "choices": {
+                "target": "loc_main_road"
+              },
+              "remaining_requests": 0
+            },
+            "event_type": "response_accepted",
+            "message": "The response was accepted and awaits explicit confirmation.",
+            "sequence": 3,
+            "status": "awaiting_confirmation"
+          },
+          {
+            "details": {},
+            "event_type": "operator_confirmed",
+            "message": "Operator confirmed the grounded mission command.",
+            "sequence": 4,
+            "status": "confirmed"
+          }
+        ],
+        "mode": "stateful_multi_turn",
+        "original_command": "Check if there is any traffic on the road.",
+        "resolved_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": null,
+            "location": null,
+            "notes": [
+              "count_not_stated",
+              "location_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "traffic on the road",
+            "text": "Check if there is any traffic on the road."
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.0,
+              "field": "location",
+              "location": null,
+              "note": "no phrase provided for this intent field",
+              "phrase": null,
+              "status": "not_provided"
+            },
+            {
+              "candidates": [],
+              "confidence": 1.0,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "main road",
+                  "road"
+                ],
+                "boundary": [],
+                "category": "road",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_main_road",
+                "latitude": 24.0026,
+                "longitude": 46.001,
+                "map_role": "corridor",
+                "name": "Main Road",
+                "radius_m": 80.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": "operator_selected_ambiguous_candidate",
+              "phrase": "traffic on the road",
+              "status": "grounded"
+            }
+          ]
+        },
+        "status": "confirmed"
+      },
+      "event_types_match_expected": true,
+      "expected_event_types": [
+        "clarification_requested",
+        "response_rejected",
+        "response_accepted",
+        "operator_confirmed"
+      ],
+      "expected_status": "confirmed",
+      "notes": [
+        "synthetic_stateful_dialogue_case"
+      ],
+      "status_matches_expected": true
+    },
+    {
+      "actual_event_types": [
+        "clarification_requested",
+        "operator_cancelled"
+      ],
+      "actual_status": "cancelled",
+      "case_id": "week7_clarification_cancel_001",
+      "case_input": {
+        "case_id": "week7_clarification_cancel_001",
+        "command": "Check if there is any traffic on the road.",
+        "events": [
+          {
+            "reason": "operator_declined",
+            "type": "cancel"
+          }
+        ],
+        "expected_event_types": [
+          "clarification_requested",
+          "operator_cancelled"
+        ],
+        "expected_status": "cancelled",
+        "notes": [
+          "synthetic_stateful_dialogue_case"
+        ]
+      },
+      "data_type": "synthetic_week7_stateful_clarification_case",
+      "dialogue_result": {
+        "current_report": {
+          "blocks_planning": true,
+          "command_text": "Check if there is any traffic on the road.",
+          "issues": [
+            "target_ambiguous",
+            "no_grounded_map_reference"
+          ],
+          "ready_for_planning": false,
+          "requests": [
+            {
+              "field": "target",
+              "options": [
+                {
+                  "category": "road",
+                  "location_id": "loc_service_road",
+                  "map_role": "corridor",
+                  "name": "Service Road"
+                },
+                {
+                  "category": "road",
+                  "location_id": "loc_main_road",
+                  "map_role": "corridor",
+                  "name": "Main Road"
+                }
+              ],
+              "phrase": "traffic on the road",
+              "question": "Which map location should 'traffic on the road' refer to for target?",
+              "reason": "ambiguous_map_reference"
+            }
+          ]
+        },
+        "events": [
+          {
+            "details": {
+              "request_count": 1
+            },
+            "event_type": "clarification_requested",
+            "message": "Operator clarification is required before planning.",
+            "sequence": 1,
+            "status": "awaiting_response"
+          },
+          {
+            "details": {
+              "reason": "operator_declined"
+            },
+            "event_type": "operator_cancelled",
+            "message": "Operator cancelled the clarification session.",
+            "sequence": 2,
+            "status": "cancelled"
+          }
+        ],
+        "mode": "stateful_multi_turn",
+        "original_command": "Check if there is any traffic on the road.",
+        "resolved_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": null,
+            "location": null,
+            "notes": [
+              "count_not_stated",
+              "location_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "traffic on the road",
+            "text": "Check if there is any traffic on the road."
+          },
+          "issues": [
+            "target_ambiguous",
+            "no_grounded_map_reference"
+          ],
+          "ready_for_planning": false,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.0,
+              "field": "location",
+              "location": null,
+              "note": "no phrase provided for this intent field",
+              "phrase": null,
+              "status": "not_provided"
+            },
+            {
+              "candidates": [
+                {
+                  "aliases": [
+                    "service road",
+                    "road"
+                  ],
+                  "boundary": [],
+                  "category": "road",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_service_road",
+                  "latitude": 23.9972,
+                  "longitude": 45.9986,
+                  "map_role": "corridor",
+                  "name": "Service Road",
+                  "radius_m": 60.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                {
+                  "aliases": [
+                    "main road",
+                    "road"
+                  ],
+                  "boundary": [],
+                  "category": "road",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_main_road",
+                  "latitude": 24.0026,
+                  "longitude": 46.001,
+                  "map_role": "corridor",
+                  "name": "Main Road",
+                  "radius_m": 80.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                }
+              ],
+              "confidence": 0.0,
+              "field": "target",
+              "location": null,
+              "note": "larger phrase matched multiple map records",
+              "phrase": "traffic on the road",
+              "status": "ambiguous"
+            }
+          ]
+        },
+        "status": "cancelled"
+      },
+      "event_types_match_expected": true,
+      "expected_event_types": [
+        "clarification_requested",
+        "operator_cancelled"
+      ],
+      "expected_status": "cancelled",
+      "notes": [
+        "synthetic_stateful_dialogue_case"
+      ],
+      "status_matches_expected": true
+    },
+    {
+      "actual_event_types": [
+        "clarification_requested",
+        "clarification_timed_out"
+      ],
+      "actual_status": "timed_out",
+      "case_id": "week7_clarification_timeout_001",
+      "case_input": {
+        "case_id": "week7_clarification_timeout_001",
+        "command": "Check if there is any traffic on the road.",
+        "events": [
+          {
+            "type": "timeout"
+          }
+        ],
+        "expected_event_types": [
+          "clarification_requested",
+          "clarification_timed_out"
+        ],
+        "expected_status": "timed_out",
+        "notes": [
+          "synthetic_stateful_dialogue_case"
+        ]
+      },
+      "data_type": "synthetic_week7_stateful_clarification_case",
+      "dialogue_result": {
+        "current_report": {
+          "blocks_planning": true,
+          "command_text": "Check if there is any traffic on the road.",
+          "issues": [
+            "target_ambiguous",
+            "no_grounded_map_reference"
+          ],
+          "ready_for_planning": false,
+          "requests": [
+            {
+              "field": "target",
+              "options": [
+                {
+                  "category": "road",
+                  "location_id": "loc_service_road",
+                  "map_role": "corridor",
+                  "name": "Service Road"
+                },
+                {
+                  "category": "road",
+                  "location_id": "loc_main_road",
+                  "map_role": "corridor",
+                  "name": "Main Road"
+                }
+              ],
+              "phrase": "traffic on the road",
+              "question": "Which map location should 'traffic on the road' refer to for target?",
+              "reason": "ambiguous_map_reference"
+            }
+          ]
+        },
+        "events": [
+          {
+            "details": {
+              "request_count": 1
+            },
+            "event_type": "clarification_requested",
+            "message": "Operator clarification is required before planning.",
+            "sequence": 1,
+            "status": "awaiting_response"
+          },
+          {
+            "details": {},
+            "event_type": "clarification_timed_out",
+            "message": "The clarification session timed out without confirmation.",
+            "sequence": 2,
+            "status": "timed_out"
+          }
+        ],
+        "mode": "stateful_multi_turn",
+        "original_command": "Check if there is any traffic on the road.",
+        "resolved_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": null,
+            "location": null,
+            "notes": [
+              "count_not_stated",
+              "location_not_stated"
+            ],
+            "parser": "deterministic_v3",
+            "target": "traffic on the road",
+            "text": "Check if there is any traffic on the road."
+          },
+          "issues": [
+            "target_ambiguous",
+            "no_grounded_map_reference"
+          ],
+          "ready_for_planning": false,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.0,
+              "field": "location",
+              "location": null,
+              "note": "no phrase provided for this intent field",
+              "phrase": null,
+              "status": "not_provided"
+            },
+            {
+              "candidates": [
+                {
+                  "aliases": [
+                    "service road",
+                    "road"
+                  ],
+                  "boundary": [],
+                  "category": "road",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_service_road",
+                  "latitude": 23.9972,
+                  "longitude": 45.9986,
+                  "map_role": "corridor",
+                  "name": "Service Road",
+                  "radius_m": 60.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                },
+                {
+                  "aliases": [
+                    "main road",
+                    "road"
+                  ],
+                  "boundary": [],
+                  "category": "road",
+                  "flyable": true,
+                  "geometry_type": "circle",
+                  "id": "loc_main_road",
+                  "latitude": 24.0026,
+                  "longitude": 46.001,
+                  "map_role": "corridor",
+                  "name": "Main Road",
+                  "radius_m": 80.0,
+                  "requires_clearance": false,
+                  "source": "custom_week3_synthetic_map_v1",
+                  "split": "development"
+                }
+              ],
+              "confidence": 0.0,
+              "field": "target",
+              "location": null,
+              "note": "larger phrase matched multiple map records",
+              "phrase": "traffic on the road",
+              "status": "ambiguous"
+            }
+          ]
+        },
+        "status": "timed_out"
+      },
+      "event_types_match_expected": true,
+      "expected_event_types": [
+        "clarification_requested",
+        "clarification_timed_out"
+      ],
+      "expected_status": "timed_out",
+      "notes": [
+        "synthetic_stateful_dialogue_case"
+      ],
+      "status_matches_expected": true
+    }
+  ],
+  "metadata": {
+    "clarification_dialogue_mode": "stateful_multi_turn",
+    "data_scope": "synthetic_stateful_dialogue_development_evaluation",
+    "evaluator": "deterministic_week7_stateful_clarification_evaluator_v1",
+    "generated_at_utc": "2026-07-16T17:55:31.020768+00:00",
+    "input_sha256": {
+      "cases": "c3baf22c18466ba17ac8f5d65d264f20b4055e768597fed389c444b1b81314ae",
+      "map": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95"
+    },
+    "python_version": "3.14.3",
+    "random_seed": null,
+    "research_note": "This evaluates deterministic dialogue state and choice validation. It is not a human-factors or usability study."
+  },
+  "summary": {
+    "case_count": 4,
+    "expected_event_type_matches": 4,
+    "expected_status_matches": 4
+  }
+}

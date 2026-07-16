@@ -29,5 +29,5 @@ This is a synthetic pre-execution development evaluation, not physical-flight sa
 ## Limitations
 
 - Thresholds are explicit synthetic development assumptions.
-- Route geometry, collisions, weather, communications, and dynamics are not evaluated.
+- Routes use a straight-line geometry baseline; active collision avoidance, weather, communications, and dynamics are not evaluated.
 - Mission-specific vision execution and full mission reports remain Week 8 work.
