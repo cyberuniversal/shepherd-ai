@@ -37,9 +37,11 @@ the separate destinations and targets.
    require clarification rather than guessed segmentation.
 3. Parse, ground, and plan each clause independently while retaining its source
    clause identifier.
-4. Reconcile multiple map references. The current map grounds `east` to East
-   Field and `irrigation` to Irrigation Canal at a different location. The
-   planner must not silently discard either reference.
+4. Reconcile multiple map references. The map grounds `east` to East Field and
+   `irrigation` to Irrigation Canal at a different location. The operator
+   explicitly selected East Field as the destination; irrigation remains the
+   semantic inspection target, and the original references remain in the raw
+   record.
 5. Schedule all three task replicas together, then run deterministic preflight
    and event-driven supervision using the Week 7 interfaces.
 6. Run vision inference on the images registered to this mission. Prior Week 6
@@ -69,6 +71,11 @@ report, log, and screenshots trace back to raw outputs.
 - No WAV recording of the exact fixed scenario is registered.
 - `datasets/aerial_images/manifest.jsonl` does not exist, and only the dataset
   README is present under that directory.
-- The synthetic map places East Field and Irrigation Canal at distinct
-  coordinates; the intended relation in the roadmap command is not stated.
 - Metric acceptance thresholds and baseline comparisons are not stated.
+
+## Recorded Destination Resolution
+
+On 2026-07-16, the operator selected East Field for the third drone. The stored
+resolution is `clause_002=loc_east_field`. This permits the typed preparation
+and deterministic movement simulation to proceed without rewriting the fixed
+roadmap command or moving the existing Irrigation Canal map record.

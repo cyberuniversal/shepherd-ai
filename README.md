@@ -422,11 +422,26 @@ Run and store the exact typed roadmap preflight:
 python scripts/run_week8_preflight.py --output outputs/evaluations/week8_roadmap_scenario_typed_preflight.json
 ```
 
-The current expected result is `clarification_required`. The first clause
+Without a recorded operator resolution, the expected result is
+`clarification_required`. The first clause
 grounds `north` and `crops` to North Field. The second grounds `east` to East
 Field and `irrigation` to Irrigation Canal, which are distinct records in the
 custom map. The pipeline preserves that contradiction as a negative result and
-does not schedule the mission until the intended map relation is resolved.
+does not schedule the mission until the intended map relation is resolved. The
+operator has now selected East Field for clause 2, and that choice is stored as
+an explicit resolution while irrigation remains the semantic inspection target.
+
+Run the resolved three-drone movement simulation:
+
+```powershell
+python scripts/run_week8_simulation.py --output outputs/evaluations/week8_roadmap_scenario_simulation.json --telemetry-output outputs/evaluations/week8_roadmap_scenario_telemetry.jsonl --map-output outputs/visualizations/week8_roadmap_scenario_simulation.html
+```
+
+The output includes a deterministic 2D round-trip simulation, time-stamped raw
+telemetry, runtime inter-drone separation checks, phase-change events, and an
+animated Folium map. Static formation slots keep the two North Field drones at
+separate inspection points. This is not aerodynamic simulation, active
+collision avoidance, ASR evidence, or mission-specific vision evidence.
 
 Week 8 also remains blocked on a human-recorded WAV of the exact scenario and a
 mission-image manifest with source, split, and file provenance. Existing Week 6

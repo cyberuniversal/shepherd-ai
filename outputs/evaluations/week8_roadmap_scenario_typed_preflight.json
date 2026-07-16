@@ -1,7 +1,7 @@
 {
   "metadata": {
     "fleet": "datasets/drones/week5_three_drone_fleet_v1.json",
-    "generated_at_utc": "2026-07-16T18:23:49.584779+00:00",
+    "generated_at_utc": "2026-07-16T18:52:58.187126+00:00",
     "input_mode": "typed_development",
     "input_sha256": {
       "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
@@ -23,6 +23,83 @@
     "clause_results": [
       {
         "clause_id": "clause_001",
+        "destination_resolution": null,
+        "effective_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 2,
+            "location": "north",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "crops",
+            "text": "Send two drones north to inspect crops"
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "location",
+              "location": {
+                "aliases": [
+                  "north",
+                  "north field",
+                  "northern field",
+                  "crops",
+                  "crop"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_north_field",
+                "latitude": 24.0,
+                "longitude": 46.0,
+                "map_role": "mission_area",
+                "name": "North Field",
+                "radius_m": 120.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "north",
+              "status": "grounded"
+            },
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "north",
+                  "north field",
+                  "northern field",
+                  "crops",
+                  "crop"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_north_field",
+                "latitude": 24.0,
+                "longitude": 46.0,
+                "map_role": "mission_area",
+                "name": "North Field",
+                "radius_m": 120.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "crops",
+              "status": "grounded"
+            }
+          ]
+        },
         "grounded_intent": {
           "intent": {
             "action": "inspect",
@@ -450,6 +527,79 @@
       },
       {
         "clause_id": "clause_002",
+        "destination_resolution": null,
+        "effective_grounded_intent": {
+          "intent": {
+            "action": "inspect",
+            "constraints": [],
+            "count": 1,
+            "location": "east",
+            "notes": [],
+            "parser": "deterministic_v3",
+            "target": "irrigation canal",
+            "text": "one drone east to inspect irrigation"
+          },
+          "issues": [],
+          "ready_for_planning": true,
+          "references": [
+            {
+              "candidates": [],
+              "confidence": 0.9,
+              "field": "location",
+              "location": {
+                "aliases": [
+                  "east",
+                  "east field",
+                  "eastern field"
+                ],
+                "boundary": [],
+                "category": "field",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_east_field",
+                "latitude": 23.999,
+                "longitude": 46.003,
+                "map_role": "mission_area",
+                "name": "East Field",
+                "radius_m": 100.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "east",
+              "status": "grounded"
+            },
+            {
+              "candidates": [],
+              "confidence": 1.0,
+              "field": "target",
+              "location": {
+                "aliases": [
+                  "irrigation canal",
+                  "canal",
+                  "irrigation"
+                ],
+                "boundary": [],
+                "category": "waterway",
+                "flyable": true,
+                "geometry_type": "circle",
+                "id": "loc_irrigation_canal",
+                "latitude": 24.0006,
+                "longitude": 45.9981,
+                "map_role": "inspection_target",
+                "name": "Irrigation Canal",
+                "radius_m": 45.0,
+                "requires_clearance": false,
+                "source": "custom_week3_synthetic_map_v1",
+                "split": "development"
+              },
+              "note": null,
+              "phrase": "irrigation canal",
+              "status": "grounded"
+            }
+          ]
+        },
         "grounded_intent": {
           "intent": {
             "action": "inspect",
@@ -920,7 +1070,7 @@
         }
       }
     ],
-    "preparation_elapsed_seconds": 0.008683199994266033,
+    "preparation_elapsed_seconds": 0.007614900008775294,
     "safety_report": null,
     "schedule": null,
     "status": "clarification_required"

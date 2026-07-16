@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_4df287149b38962b3e5889cc7a9bbe4d {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_4df287149b38962b3e5889cc7a9bbe4d" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_4df287149b38962b3e5889cc7a9bbe4d = L.map(
+                "map_4df287149b38962b3e5889cc7a9bbe4d",
+                {
+                    center: [23.999785, 46.00107],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 16,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+
+            
+
+        
+    
+            var tile_layer_f628c4d2a503e7a2baba79297743715d = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_f628c4d2a503e7a2baba79297743715d.addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            var circle_ca02eebdb72aa201f756b7bd5aff9baf = L.circle(
+                [24.0, 46.0],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 120.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_ca02eebdb72aa201f756b7bd5aff9baf.bindTooltip(
+                `<div>
+                     North Field (loc_north_field)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_27f6734efacb0f76c5d35fc566d689ef = L.circle(
+                [23.9978, 46.0],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 120.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_27f6734efacb0f76c5d35fc566d689ef.bindTooltip(
+                `<div>
+                     South Field (loc_south_field)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_9d52a933392615654315beb12a9c9379 = L.circle(
+                [23.999, 46.003],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 100.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_9d52a933392615654315beb12a9c9379.bindTooltip(
+                `<div>
+                     East Field (loc_east_field)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_f6892bcdddece4f62f1a712c7d008304 = L.circle(
+                [23.999, 45.997],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 100.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_f6892bcdddece4f62f1a712c7d008304.bindTooltip(
+                `<div>
+                     West Field (loc_west_field)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_43b791b88bff472c1474862fdfa6769d = L.circle(
+                [23.996, 46.0012],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 140.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_43b791b88bff472c1474862fdfa6769d.bindTooltip(
+                `<div>
+                     Open Field (loc_open_field)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_176e9fd95ea645186b730dcef7d463a1 = L.circle(
+                [24.0013, 46.0022],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 35.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_176e9fd95ea645186b730dcef7d463a1.bindTooltip(
+                `<div>
+                     Greenhouse (loc_greenhouse)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_3c5fafa90cd23c1e923dfb468dea265a = L.circle(
+                [24.0006, 45.9981],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 45.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_3c5fafa90cd23c1e923dfb468dea265a.bindTooltip(
+                `<div>
+                     Irrigation Canal (loc_irrigation_canal)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_134b3537c3761607aea8b193b3ceb434 = L.circle(
+                [23.9984, 46.0028],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 40.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_134b3537c3761607aea8b193b3ceb434.bindTooltip(
+                `<div>
+                     Storage Area (loc_storage_area)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_3189762e8910960c12862d4c3d81b8dc = L.circle(
+                [24.0021, 45.9994],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_3189762e8910960c12862d4c3d81b8dc.bindTooltip(
+                `<div>
+                     Water Tank (loc_water_tank)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_834dd9321085df4a51c4500a3585513d = L.circle(
+                [23.9972, 45.9986],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 60.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_834dd9321085df4a51c4500a3585513d.bindTooltip(
+                `<div>
+                     Service Road (loc_service_road)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_a60950646e6a46ce03a67ee460668143 = L.circle(
+                [24.0026, 46.001],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 80.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_a60950646e6a46ce03a67ee460668143.bindTooltip(
+                `<div>
+                     Main Road (loc_main_road)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_2220a9c9597c2cea74fda640e7950981 = L.circle(
+                [23.9968, 46.0036],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_2220a9c9597c2cea74fda640e7950981.bindTooltip(
+                `<div>
+                     Gatehouse (loc_gatehouse)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_7a5da81fc8b0e2903a3501b2d771cf00 = L.circle(
+                [24.0019, 46.0035],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_7a5da81fc8b0e2903a3501b2d771cf00.bindTooltip(
+                `<div>
+                     Control Tent (loc_control_tent)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_17eaf80b663cb9a6fd72d31260025456 = L.circle(
+                [24.0024, 46.0028],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_17eaf80b663cb9a6fd72d31260025456.bindTooltip(
+                `<div>
+                     Command Post (loc_command_post)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_1655d937c4e16201c5ae6d2463acb16b = L.circle(
+                [23.9965, 45.999],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 30.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_1655d937c4e16201c5ae6d2463acb16b.bindTooltip(
+                `<div>
+                     Visitor Bridge (loc_visitor_bridge)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_5d55179d4623730c266215893390034a = L.circle(
+                [24.003, 46.004],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 45.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_5d55179d4623730c266215893390034a.bindTooltip(
+                `<div>
+                     Taxi Lane (loc_taxi_lane)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_7d34f9a79e8cce04ac2398bdcc8e0cce = L.circle(
+                [23.9958, 46.0045],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 70.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_7d34f9a79e8cce04ac2398bdcc8e0cce.bindTooltip(
+                `<div>
+                     Overflow Parking Area (loc_overflow_parking)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_ec3bf336a0d58cbd9693ceca67355108 = L.circle(
+                [24.0008, 46.0048],
+                {"bubblingMouseEvents": true, "color": "#666666", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#666666", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 30.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_ec3bf336a0d58cbd9693ceca67355108.bindTooltip(
+                `<div>
+                     Launch Area (loc_launch_area)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_b375261f1ba96d5c6847d3e783552c1c = L.circle(
+                [24.0034, 45.9987],
+                {"bubblingMouseEvents": true, "color": "#B2182B", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#B2182B", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 55.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_b375261f1ba96d5c6847d3e783552c1c.bindTooltip(
+                `<div>
+                     Maintenance Yard (zone_maintenance_yard)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_e2826aebec005b5c66fd5278f89b9d2c = L.circle(
+                [24.0011, 45.9972],
+                {"bubblingMouseEvents": true, "color": "#B2182B", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#B2182B", "fillOpacity": 0.06, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 65.0, "stroke": true, "weight": 1}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            circle_e2826aebec005b5c66fd5278f89b9d2c.bindTooltip(
+                `<div>
+                     Power Lines (obs_power_lines)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
+                _getDisplayDateFormat: function(date){
+                    var newdate = new moment(date);
+                    console.log(newdate)
+                    return newdate.format("YYYY-MM-DD HH:mm:ss");
+                }
+            });
+            map_4df287149b38962b3e5889cc7a9bbe4d.timeDimension = L.timeDimension(
+                {
+                    period: "PT15S",
+                }
+            );
+            var timeDimensionControl = new L.Control.TimeDimensionCustom(
+                {
+  "position": "bottomleft",
+  "minSpeed": 0.1,
+  "maxSpeed": 10,
+  "autoPlay": false,
+  "loopButton": false,
+  "timeSliderDragUpdate": true,
+  "speedSlider": true,
+  "playerOptions": {
+  "transitionTime": 200,
+  "loop": false,
+  "startOver": true,
+},
+}
+            );
+            map_4df287149b38962b3e5889cc7a9bbe4d.addControl(this.timeDimensionControl);
+
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:00:00+00:00", "popup": "drone_alpha<br>phase=outbound<br>task=mission_002<br>t=0.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0035, 24.0019]}, "properties": {"time": "2025-01-01T00:00:00+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=0.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0028, 24.0024]}, "properties": {"time": "2025-01-01T00:00:00+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=0.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.004268823832106, 24.000268823832105]}, "properties": {"time": "2025-01-01T00:00:15+00:00", "popup": "drone_alpha<br>phase=outbound<br>task=mission_002<br>t=0.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.002900945333174, 24.001555437974602]}, "properties": {"time": "2025-01-01T00:00:15+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=0.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.002262166047416, 24.00196925396325]}, "properties": {"time": "2025-01-01T00:00:15+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=0.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00373764766421, 23.999737647664208]}, "properties": {"time": "2025-01-01T00:00:30+00:00", "popup": "drone_alpha<br>phase=outbound<br>task=mission_002<br>t=0.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00230189066635, 24.00121087594921]}, "properties": {"time": "2025-01-01T00:00:30+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=0.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00172433209483, 24.001538507926497]}, "properties": {"time": "2025-01-01T00:00:30+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=0.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00320647149631, 23.99920647149631]}, "properties": {"time": "2025-01-01T00:00:45+00:00", "popup": "drone_alpha<br>phase=outbound<br>task=mission_002<br>t=0.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.001702835999524, 24.00086631392381]}, "properties": {"time": "2025-01-01T00:00:45+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=0.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.001186498142246, 24.001107761889745]}, "properties": {"time": "2025-01-01T00:00:45+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=0.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:01:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=1.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.001103781332695, 24.000521751898415]}, "properties": {"time": "2025-01-01T00:01:00+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=1.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000648664189654, 24.000677015852993]}, "properties": {"time": "2025-01-01T00:01:00+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=1.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:01:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=1.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00050472666587, 24.00017718987302]}, "properties": {"time": "2025-01-01T00:01:15+00:00", "popup": "drone_bravo<br>phase=outbound<br>task=mission_001_drone_01<br>t=1.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00011083023707, 24.00024626981624]}, "properties": {"time": "2025-01-01T00:01:15+00:00", "popup": "drone_charlie<br>phase=outbound<br>task=mission_001_drone_02<br>t=1.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:01:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=1.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:01:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=1.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:01:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=1.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:01:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=1.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:01:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=1.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:01:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=1.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:02:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=2.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:02:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=2.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:02:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=2.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:02:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=2.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:02:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=2.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:02:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=2.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:02:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=2.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:02:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=2.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:02:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=2.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:02:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=2.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:02:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=2.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:02:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=2.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:03:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=3.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:03:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=3.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:03:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=3.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:03:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=3.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:03:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=3.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:03:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=3.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:03:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=3.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:03:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=3.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:03:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=3.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:03:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=3.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:03:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=3.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:03:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=3.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:04:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=4.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:04:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=4.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:04:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=4.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:04:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=4.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:04:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=4.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:04:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=4.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:04:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=4.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:04:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=4.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:04:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=4.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:04:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=4.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:04:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=4.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:04:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=4.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:05:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=5.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:05:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=5.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:05:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=5.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:05:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=5.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:05:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=5.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:05:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=5.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:05:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=5.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:05:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=5.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:05:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=5.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:05:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=5.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:05:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=5.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:05:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=5.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:06:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=6.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:06:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=6.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:06:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=6.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:06:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=6.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:06:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=6.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:06:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=6.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:06:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=6.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:06:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=6.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:06:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=6.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:06:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=6.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:06:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=6.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:06:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=6.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:07:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=7.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:07:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=7.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:07:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=7.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:07:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=7.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:07:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=7.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:07:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=7.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:07:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=7.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:07:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=7.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:07:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=7.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:07:45+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=7.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:07:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=7.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:07:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=7.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:08:00+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=8.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:08:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=8.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:08:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=8.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:08:15+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=8.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:08:15+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=8.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:08:15+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=8.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003, 23.999]}, "properties": {"time": "2025-01-01T00:08:30+00:00", "popup": "drone_alpha<br>phase=on_station<br>task=mission_002<br>t=8.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:08:30+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=8.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:08:30+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=8.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0034316901915, 23.9994316901915]}, "properties": {"time": "2025-01-01T00:08:45+00:00", "popup": "drone_alpha<br>phase=returning<br>task=mission_002<br>t=8.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:08:45+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=8.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:08:45+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=8.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.003962866359394, 23.999962866359397]}, "properties": {"time": "2025-01-01T00:09:00+00:00", "popup": "drone_alpha<br>phase=returning<br>task=mission_002<br>t=9.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000196664800306, 24.0]}, "properties": {"time": "2025-01-01T00:09:00+00:00", "popup": "drone_bravo<br>phase=on_station<br>task=mission_001_drone_01<br>t=9.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [45.999803335199694, 24.0]}, "properties": {"time": "2025-01-01T00:09:00+00:00", "popup": "drone_charlie<br>phase=on_station<br>task=mission_001_drone_02<br>t=9.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00449404252729, 24.000494042527293]}, "properties": {"time": "2025-01-01T00:09:15+00:00", "popup": "drone_alpha<br>phase=returning<br>task=mission_002<br>t=9.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00060776406857, 24.000236454541387]}, "properties": {"time": "2025-01-01T00:09:15+00:00", "popup": "drone_bravo<br>phase=returning<br>task=mission_001_drone_01<br>t=9.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000140948938416, 24.0002703915943]}, "properties": {"time": "2025-01-01T00:09:15+00:00", "popup": "drone_charlie<br>phase=returning<br>task=mission_001_drone_02<br>t=9.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:09:30+00:00", "popup": "drone_alpha<br>phase=completed<br>task=none<br>t=9.5 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00120681873539, 24.000581016566784]}, "properties": {"time": "2025-01-01T00:09:30+00:00", "popup": "drone_bravo<br>phase=returning<br>task=mission_001_drone_01<br>t=9.5 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.000678782891, 24.00070113763105]}, "properties": {"time": "2025-01-01T00:09:30+00:00", "popup": "drone_charlie<br>phase=returning<br>task=mission_001_drone_02<br>t=9.5 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:09:45+00:00", "popup": "drone_alpha<br>phase=completed<br>task=none<br>t=9.75 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00180587340222, 24.00092557859218]}, "properties": {"time": "2025-01-01T00:09:45+00:00", "popup": "drone_bravo<br>phase=returning<br>task=mission_001_drone_01<br>t=9.75 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.001216616843585, 24.001131883667803]}, "properties": {"time": "2025-01-01T00:09:45+00:00", "popup": "drone_charlie<br>phase=returning<br>task=mission_001_drone_02<br>t=9.75 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:10:00+00:00", "popup": "drone_alpha<br>phase=completed<br>task=none<br>t=10.0 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00240492806905, 24.001270140617574]}, "properties": {"time": "2025-01-01T00:10:00+00:00", "popup": "drone_bravo<br>phase=returning<br>task=mission_001_drone_01<br>t=10.0 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00175445079617, 24.001562629704555]}, "properties": {"time": "2025-01-01T00:10:00+00:00", "popup": "drone_charlie<br>phase=returning<br>task=mission_001_drone_02<br>t=10.0 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:10:15+00:00", "popup": "drone_alpha<br>phase=completed<br>task=none<br>t=10.25 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00300398273587, 24.00161470264297]}, "properties": {"time": "2025-01-01T00:10:15+00:00", "popup": "drone_bravo<br>phase=returning<br>task=mission_001_drone_01<br>t=10.25 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.00229228474876, 24.001993375741307]}, "properties": {"time": "2025-01-01T00:10:15+00:00", "popup": "drone_charlie<br>phase=returning<br>task=mission_001_drone_02<br>t=10.25 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0048, 24.0008]}, "properties": {"time": "2025-01-01T00:10:29.160000+00:00", "popup": "drone_alpha<br>phase=completed<br>task=none<br>t=10.486 min", "icon": "circle", "iconstyle": {"fillColor": "#0072B2", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0035, 24.0019]}, "properties": {"time": "2025-01-01T00:10:29.160000+00:00", "popup": "drone_bravo<br>phase=completed<br>task=none<br>t=10.486 min", "icon": "circle", "iconstyle": {"fillColor": "#D55E00", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [46.0028, 24.0024]}, "properties": {"time": "2025-01-01T00:10:29.160000+00:00", "popup": "drone_charlie<br>phase=completed<br>task=none<br>t=10.486 min", "icon": "circle", "iconstyle": {"fillColor": "#009E73", "fillOpacity": 0.9, "stroke": true, "color": "#111111", "weight": 1, "radius": 6}}}]}, {
+                    pointToLayer: function (feature, latLng) {
+                        if (feature.properties.icon == 'marker') {
+                            if(feature.properties.iconstyle){
+                                return new L.Marker(latLng, {
+                                    icon: L.icon(feature.properties.iconstyle)});
+                            }
+                            //else
+                            return new L.Marker(latLng);
+                        }
+                        if (feature.properties.icon == 'circle') {
+                            if (feature.properties.iconstyle) {
+                                return new L.circleMarker(latLng, feature.properties.iconstyle)
+                                };
+                            //else
+                            return new L.circleMarker(latLng);
+                        }
+                        //else
+
+                        return new L.Marker(latLng);
+                    },
+                    style: function (feature) {
+                        return feature.properties.style;
+                    },
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties.popup) {
+                        layer.bindPopup(feature.properties.popup);
+                        }
+                        if (feature.properties.tooltip) {
+                        layer.bindTooltip(feature.properties.tooltip);
+                        }
+                    }
+                })
+
+            var timestamped_geo_json_f895e6524a68edb984e1baafa4b22349 = L.timeDimension.layer.geoJson(
+                geoJsonLayer,
+                {
+                    updateTimeDimension: true,
+                    addlastPoint: true,
+                    duration: "PT15S",
+                }
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+        
+    
+            var layer_control_90c4f1b8f29251864f05c121ae1e03b4_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_f628c4d2a503e7a2baba79297743715d,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_90c4f1b8f29251864f05c121ae1e03b4 = L.control.layers(
+                layer_control_90c4f1b8f29251864f05c121ae1e03b4_layers.base_layers,
+                layer_control_90c4f1b8f29251864f05c121ae1e03b4_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_4df287149b38962b3e5889cc7a9bbe4d);
+
+        
+</script>
+</html>

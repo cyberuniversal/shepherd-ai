@@ -22,6 +22,7 @@ def prepare_week8_mission(
     fleet_payload: Mapping[str, Any],
     safety_policy: SafetyPolicy,
     strategy: str = "least_loaded",
+    grounding_resolutions: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     """Prepare all command clauses through shared scheduling and safety.
 
@@ -33,6 +34,7 @@ def prepare_week8_mission(
     started = perf_counter()
     location_list = tuple(locations)
     location_index = {location.id: location for location in location_list}
+    resolutions = dict(grounding_resolutions or {})
     decomposition = decompose_mission_command(command)
     if decomposition.status == "clarification_required" or decomposition.issues:
         return _result(
@@ -54,13 +56,30 @@ def prepare_week8_mission(
             if reference.status == "grounded" and reference.location is not None
         }
         clause_issues: list[str] = list(grounded.issues)
+        planning_grounded = grounded
+        destination_resolution: dict[str, Any] | None = None
         if len(reference_ids) > 1:
-            clause_issues.append(f"{clause.clause_id}_distinct_location_and_target")
+            selected_id = resolutions.get(clause.clause_id)
+            if selected_id is None:
+                clause_issues.append(f"{clause.clause_id}_distinct_location_and_target")
+            elif selected_id not in reference_ids:
+                clause_issues.append(f"{clause.clause_id}_invalid_destination_resolution")
+            else:
+                selected = location_index[selected_id]
+                planning_grounded = _resolved_destination_grounding(grounded, selected_id)
+                destination_resolution = {
+                    "source": "explicit_operator_resolution",
+                    "selected_location_id": selected_id,
+                    "selected_location_name": selected.name,
+                    "non_destination_reference_ids": sorted(reference_ids - {selected_id}),
+                }
         clause_result: dict[str, Any] = {
             "clause_id": clause.clause_id,
             "text": clause.text,
             "intent": clause.intent.to_dict(),
             "grounded_intent": grounded.to_dict(),
+            "effective_grounded_intent": planning_grounded.to_dict(),
+            "destination_resolution": destination_resolution,
             "issues": clause_issues,
         }
         if clause_issues or not grounded.ready_for_planning:
@@ -69,7 +88,7 @@ def prepare_week8_mission(
             clause_results.append(clause_result)
             continue
 
-        plan = plan_grounded_mission(grounded)
+        plan = plan_grounded_mission(planning_grounded)
         validation = validate_mission_plan(plan)
         clause_result["mission_plan"] = plan.to_dict()
         clause_result["mission_plan_validation"] = validation.to_dict()
@@ -160,3 +179,22 @@ def _result(
             "Distinct grounded references are blocked because the custom map has no relation model that can reconcile them.",
         ],
     }
+
+
+def _resolved_destination_grounding(
+    grounded: GroundedIntent,
+    selected_location_id: str,
+) -> GroundedIntent:
+    selected_references = tuple(
+        reference
+        for reference in grounded.references
+        if reference.location is not None and reference.location.id == selected_location_id
+    )
+    if not selected_references:
+        raise ValueError(f"resolution is not one of the grounded references: {selected_location_id}")
+    return GroundedIntent(
+        intent=dict(grounded.intent),
+        references=selected_references,
+        ready_for_planning=True,
+        issues=(),
+    )
