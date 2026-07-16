@@ -161,15 +161,13 @@ This initial Week 6 foundation is complete when:
 - detection summaries state that they are not benchmark performance,
 - tests cover manifest validation and detection-summary behavior.
 
-The original foundation gate has been exercised on a T4 and its non-image raw
+The original foundation gate was exercised on a T4 and its non-image raw
 outputs are preserved. The first segmentation development baseline was also
 trained on a T4 using 64 train and 64 validation tiles, three epochs, and seed
 17. Its best validation modified mIoU was `0.0965`, dominated by background;
-most anomaly classes remained at zero. Week 6 remains incomplete as a
-research-quality vision milestone until the development experiment is scaled,
-class imbalance is addressed through recorded comparisons, and a fixed
-held-out protocol is evaluated. YOLO inference on Agriculture-Vision is a smoke
-test, not its semantic-segmentation benchmark.
+most anomaly classes remained at zero. Later fixed, imbalance, and objective
+comparisons supersede this initial result. YOLO inference on Agriculture-Vision
+is a smoke test, not its semantic-segmentation benchmark.
 
 The cap-20 train-pixel-weighted comparison is now recorded as a negative result:
 its best T4 validation modified mIoU was `0.03748389352181541`, below the
@@ -192,9 +190,8 @@ optimization reduces background collapse.
 That comparison improved best validation modified mIoU from
 `0.0925782719754147` to `0.15387379872696982` and produced drydown IoU
 `0.327905255318418`. Other evaluated anomaly classes remained at zero IoU.
-BCE-Dice is therefore the leading development objective, but Week 6 remains
-incomplete until broader anomaly coverage and the remaining completion evidence
-are addressed.
+BCE-Dice is therefore the leading development objective, while broader anomaly
+coverage remains research debt rather than a roadmap blocker.
 
 The fixed training subset audit showed zero training positives for `endrow`,
 `storm_damage`, and `water`. The next controlled comparison is therefore the
@@ -214,9 +211,10 @@ directly supports bounding-box detection, confidence values, annotated outputs,
 and detection-performance metrics. The preregistered VisDrone baseline is in
 `docs/week6_visdrone_detection_protocol.md`.
 
-The first registered VisDrone run was interrupted after Colab exhausted the
-account's current GPU allocation. A later CPU-only audit verified that 20 epochs
-had completed and that `last.pt`, `best.pt`, `results.csv`, and `args.yaml` were
-intact in Drive. Epoch 20 had validation mAP50-95 `0.14527`, but the registered
-50-epoch run remains incomplete. Resume must use the verified epoch-20
-`last.pt`; the intermediate metric is not the final VisDrone baseline.
+The first registered VisDrone run was interrupted after epoch 20, then resumed
+from the verified `last.pt` checkpoint and completed all 50 epochs. Validation
+of `best.pt` produced precision `0.43116`, recall `0.32034`, mAP50 `0.29677`,
+and mAP50-95 `0.16724`. Exact metrics and artifact hashes are recorded in
+`outputs/evaluations/week6_visdrone_yolov8n_seed17_e50_completed_summary.json`.
+Week 6 is complete for roadmap advancement under the limits recorded in
+`docs/week6_completion_assessment.md`.

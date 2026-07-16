@@ -1,0 +1,21 @@
+{
+  "scope": "week7_research_deferrals_v1",
+  "deferrals": {
+    "route_geometry_not_evaluated": {
+      "status": "deferred_to_later_planning_or_execution_work",
+      "reason": "The current planner produces target coordinates and task graphs, not obstacle-aware trajectories."
+    },
+    "collision_avoidance_not_evaluated": {
+      "status": "deferred_to_execution_simulation",
+      "reason": "Week 7 is a pre-execution gate and does not implement a dynamics or collision-avoidance controller."
+    },
+    "mission_specific_vision_execution": {
+      "status": "deferred_to_week8",
+      "reason": "Week 8 explicitly requires processing imagery in the complete scenario; Week 7 preserves the planned vision step without fabricating mission imagery."
+    },
+    "physical_safety_not_claimed": {
+      "status": "recorded_caveat",
+      "reason": "All policies, drone states, map records, and status updates in this gate are synthetic simulation artifacts."
+    }
+  }
+}

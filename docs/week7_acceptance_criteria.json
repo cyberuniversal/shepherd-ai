@@ -1,0 +1,33 @@
+{
+  "scope": "week7_safety_feedback_integration_development_gate_v1",
+  "required_roadmap_checks": [
+    "availability",
+    "battery",
+    "altitude",
+    "restricted_area"
+  ],
+  "required_behaviors": {
+    "ambiguous_grounding_requires_clarification": true,
+    "failed_check_blocks_progress": true,
+    "not_evaluated_check_blocks_progress": true,
+    "unassigned_tasks_block_progress": true,
+    "ordered_feedback_events": true,
+    "schedule_status_updates_labeled_simulated": true,
+    "raw_case_results_preserved": true
+  },
+  "registered_development_case_count": 12,
+  "completion_requires": [
+    "all registered cases match expected workflow status",
+    "all expected failed categories match",
+    "focused and full repository tests pass",
+    "completion audit records remaining integration limitations"
+  ],
+  "current_scope_exclusions": [
+    "route intersection and collision avoidance",
+    "weather and communications",
+    "physical flight dynamics",
+    "physical-drone safety guarantee",
+    "mission-specific vision execution",
+    "Week 8 end-to-end mission success"
+  ]
+}

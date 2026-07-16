@@ -1,0 +1,76 @@
+{
+  "advancement_allowed": true,
+  "blockers": [],
+  "decision": "week7_complete_for_advancement_to_week8_end_to_end_evaluation",
+  "research_gates": [
+    {
+      "detail": "policy thresholds must be labeled synthetic assumptions, not legal limits",
+      "name": "synthetic_threshold_scope_declared",
+      "passed": true
+    },
+    {
+      "detail": "physical safety limitation is recorded",
+      "name": "physical_safety_not_claimed",
+      "passed": true
+    },
+    {
+      "detail": "route-geometry limitation is recorded",
+      "name": "route_geometry_limit_recorded",
+      "passed": true
+    },
+    {
+      "detail": "collision-avoidance limitation is recorded",
+      "name": "collision_avoidance_limit_recorded",
+      "passed": true
+    },
+    {
+      "detail": "mission-specific imagery is deferred rather than fabricated",
+      "name": "mission_specific_vision_deferred_to_week8",
+      "passed": true
+    }
+  ],
+  "research_gates_passed": true,
+  "roadmap_gates": [
+    {
+      "detail": "cases=12, expected=12",
+      "name": "registered_case_count",
+      "passed": true
+    },
+    {
+      "detail": "matches=12, expected=12",
+      "name": "all_expected_statuses_match",
+      "passed": true
+    },
+    {
+      "detail": "matches=12, expected=12",
+      "name": "all_expected_failed_categories_match",
+      "passed": true
+    },
+    {
+      "detail": "observed=['altitude', 'availability', 'battery', 'restricted_area']",
+      "name": "four_roadmap_checks_present",
+      "passed": true
+    },
+    {
+      "detail": "failed=['altitude', 'availability', 'battery', 'restricted_area']",
+      "name": "four_failure_categories_exercised",
+      "passed": true
+    },
+    {
+      "detail": "statuses=['clarification_required', 'ready_for_simulated_execution', 'safety_incomplete', 'safety_rejected']",
+      "name": "clarification_and_safety_outcomes_present",
+      "passed": true
+    },
+    {
+      "detail": "updates=10",
+      "name": "simulated_status_updates_present",
+      "passed": true
+    },
+    {
+      "detail": "Notebook7 must run the workflow, evaluation, and completion audit scripts",
+      "name": "notebook_runs_workflow_and_evaluation",
+      "passed": true
+    }
+  ],
+  "roadmap_gates_passed": true
+}

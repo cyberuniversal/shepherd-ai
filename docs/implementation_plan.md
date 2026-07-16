@@ -207,6 +207,20 @@ Completion criteria: Unsafe or incomplete missions are flagged before simulated 
 
 Known uncertainties: Battery thresholds, altitude limits, restricted-area dataset, and operator-clarification policy are not stated.
 
+Current status: Week 7 is complete for roadmap advancement with a deterministic
+pre-execution development slice. `src/shepherd_ai/safety.py` applies battery,
+restricted-area, altitude, and availability checks to every assignment using
+the explicit synthetic policy at
+`datasets/safety/week7_safety_policy_v1.json`. The integrated workflow reuses
+the Week 3 clarification report, Week 4 planner, and Week 5 scheduler, emits
+ordered feedback and schedule-based simulated status updates, and blocks failed
+or unavailable evidence. The registered case matrix and protocol are
+`datasets/safety/week7_safety_cases_v1.jsonl` and
+`docs/week7_safety_protocol.md`. The registered 12-case evaluation matched all
+expected workflow statuses and failed categories. The completion audit permits
+advancement with no blockers. This remains synthetic pre-execution evidence;
+mission-specific Week 6 vision execution belongs to the Week 8 full scenario.
+
 ## Milestone 8: End-To-End Demonstration And Evaluation
 
 Objective: Run the full scenario from the roadmap and evaluate the complete system.

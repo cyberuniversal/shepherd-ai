@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, and Week 6 computer vision. The vision work includes a generic YOLO smoke test and a T4-trained compact U-Net development baseline on a licensed Agriculture-Vision subset. It is not an end-to-end prototype, does not control physical drones, and does not yet implement Week 7 safety validation or integrated mission execution.
+Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and a completed roadmap-level Week 7 deterministic pre-execution safety/feedback workflow. It is not an end-to-end prototype, does not control physical drones, and does not provide a physical-flight safety guarantee.
 
 ## Project Rule
 
@@ -354,6 +354,37 @@ python scripts/run_yolo_detection.py --manifest datasets/aerial_images/manifest.
 ```
 
 Required caveat: detection counts are not detection performance. Do not report mAP, precision, recall, or mission success until labeled data, split definitions, and an evaluation protocol exist.
+
+## Week 7 Safety, Feedback, and Integration
+
+The Week 7 slice integrates typed intent extraction, explicit-map
+grounding and clarification, mission planning, multi-drone scheduling, and a
+deterministic pre-execution safety gate. Every assignment receives battery,
+restricted-area, altitude, and current-availability checks. Missing evidence
+blocks execution instead of passing silently. Thresholds are stored in the
+synthetic development policy rather than hidden in source code.
+
+Run one workflow and store the complete result:
+
+```powershell
+python scripts/run_week7_workflow.py --command "Send two drones north and scan the crops." --output outputs/evaluations/week7_safe_example.json
+```
+
+Run the registered seven-case development evaluation:
+
+```powershell
+python scripts/evaluate_week7_safety.py
+```
+
+The registered 12-case development evaluation matched all expected workflow
+statuses and failed categories, and the completion audit permits Week 8
+advancement with no blockers. This is deterministic synthetic case coverage,
+not a measured physical safety rate.
+
+The resulting status events are schedule-based simulation records, not flight
+telemetry. Route geometry, collision avoidance, weather, communications,
+dynamics, mission-specific vision execution, and Week 8 mission success remain
+unevaluated. See `docs/week7_safety_protocol.md`.
 
 ## First Milestone
 

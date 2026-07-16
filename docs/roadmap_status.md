@@ -53,7 +53,7 @@ See `docs/repository_hygiene.md`.
 | Week 4 | Mission planning | `src/shepherd_ai/mission_planning.py`, `scripts/plan_mission.py`, `scripts/evaluate_mission_planning.py`, `scripts/render_mission_flow.py`, `scripts/audit_week4_completion.py` | `notebooks/Notebook4_Planner.ipynb` | `datasets/maps/week4_planning_cases_v1.jsonl` | `outputs/evaluations/week4_completion_gate_audit.json`; planning gate passed locally |
 | Week 5 | Multi-drone scheduling | `src/shepherd_ai/scheduling.py`, `scripts/schedule_missions.py`, `scripts/audit_week5_completion.py` | `notebooks/Notebook5_Scheduler.ipynb` | `datasets/drones/week5_three_drone_fleet_v1.json` | `outputs/evaluations/week5_completion_gate_audit.json`; scheduling gate passed locally |
 | Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision and VisDrone2019-DET; licensed imagery and checkpoints remain outside Git | Complete for roadmap advancement; registered 50-epoch VisDrone YOLOv8n validation baseline and Agriculture-Vision segmentation development comparisons recorded |
-| Week 7 | Safety, feedback, and integration | Not implemented | `notebooks/Notebook7_Safety.ipynb` | Not specified | Not started |
+| Week 7 | Safety, feedback, and integration | `src/shepherd_ai/safety.py`, `feedback.py`, `integration.py`; Week 7 workflow, evaluation, and audit scripts | `notebooks/Notebook7_Safety.ipynb` | Synthetic policy and 12 registered safety/clarification cases under `datasets/safety/` | Complete for roadmap advancement; 12/12 expected statuses and failure categories matched, completion audit passed with no blockers |
 | Week 8 | End-to-end demo and evaluation | Not implemented | `notebooks/Notebook8_FinalDemo.ipynb`, `notebooks/Notebook9_Evaluation.ipynb` | Depends on Weeks 2-7 | Not started |
 | Week 9 | Research paper draft | Not implemented | Not stated | Evaluation artifacts and figures | Not started |
 | Week 10 | Final paper and presentation | Not implemented | Not stated | Final reports/slides | Not started |
@@ -73,3 +73,7 @@ See `docs/repository_hygiene.md`.
   not a state-of-the-art claim. Agriculture-Vision remains development-only:
   the leading fixed 256/256 BCE-Dice result reached modified mIoU `0.15387`,
   with drydown as the only anomaly class with nonzero IoU.
+- Week 7 is complete at the synthetic pre-execution milestone level. Its
+  `12/12` result is deterministic registered-case behavior, not physical safety
+  performance. Route geometry, collision avoidance, and mission-specific
+  imagery remain explicitly deferred.

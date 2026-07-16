@@ -1,20 +1,27 @@
 # Week 6 Research Deferrals
 
-The current Week 6 work is a vision-inference foundation, not a completed
+Week 6 is complete for roadmap advancement, but neither vision task is a final
 computer-vision benchmark.
 
-Agriculture-Vision CVPR 2020 is selected, its terms were accepted for a Colab
-run, and a real 30-image subset was processed. The following remain deferred:
+Completed evidence:
 
-- label-schema mapping,
-- semantic-segmentation model training,
-- dataset-backed modified mIoU evaluation using the official overlapping masks
-  (the metric implementation now exists, but has not been run on those labels),
+- Agriculture-Vision label mapping, compact U-Net training, and modified-mIoU
+  development comparisons on fixed and stratified 256/256 subsets,
+- a leading fixed-subset BCE-Dice modified mIoU of `0.15387`, with drydown as
+  the only anomaly class with nonzero IoU,
+- a registered 50-epoch VisDrone2019-DET YOLOv8n baseline with validation
+  mAP50-95 `0.16724`,
+- tracked configurations, split definitions, seeds, versions, metrics, and
+  private-artifact hashes.
+
+The following remain deferred:
+
+- final Agriculture-Vision test-set evaluation,
+- broader nonzero Agriculture-Vision anomaly-class coverage,
 - comparison across YOLO model sizes or other detectors,
-- integration of detections into mission reports,
-- safety use of detections.
+- mission-specific ingestion of vision outputs,
+- evaluation of whether detections improve mission outcomes or safety.
 
-The roadmap names public imagery families such as VisDrone, UAVDT, DOTA, xView,
-and Agriculture-Vision. Do not report generic YOLO output as Agriculture-Vision
-segmentation performance. The prior download existed only in an expired Colab
-runtime and must be reproduced before label mapping or training.
+Do not report the Agriculture-Vision YOLO smoke test as segmentation
+performance, the development U-Net as a final benchmark, or the VisDrone result
+as mission performance. See `docs/week6_completion_assessment.md`.
