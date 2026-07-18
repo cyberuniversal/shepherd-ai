@@ -46,6 +46,7 @@ def prepare_week8_mission(
 
     clause_results: list[dict[str, Any]] = []
     plans: list[dict[str, Any]] = []
+    perception_targets: list[dict[str, Any]] = []
     issues: list[str] = []
     blocking_clauses: list[str] = []
     for clause in decomposition.clauses:
@@ -58,6 +59,33 @@ def prepare_week8_mission(
         clause_issues: list[str] = list(grounded.issues)
         planning_grounded = grounded
         destination_resolution: dict[str, Any] | None = None
+        perception_target: dict[str, Any] | None = None
+        unresolved_target = next(
+            (
+                reference
+                for reference in grounded.references
+                if reference.field == "target" and reference.status == "unresolved"
+            ),
+            None,
+        )
+        grounded_location = next(
+            (
+                reference.location
+                for reference in grounded.references
+                if reference.field == "location"
+                and reference.status == "grounded"
+                and reference.location is not None
+            ),
+            None,
+        )
+        if unresolved_target is not None and grounded_location is not None:
+            clause_issues = [issue for issue in clause_issues if issue != "target_unresolved"]
+            planning_grounded = _planning_grounding_without_unresolved_target(grounded)
+            perception_target = _perception_target(
+                clause.clause_id,
+                unresolved_target.phrase,
+                grounded_location,
+            )
         if len(reference_ids) > 1:
             selected_id = resolutions.get(clause.clause_id)
             if selected_id is None:
@@ -73,6 +101,20 @@ def prepare_week8_mission(
                     "selected_location_name": selected.name,
                     "non_destination_reference_ids": sorted(reference_ids - {selected_id}),
                 }
+                target_phrase = clause.intent.target
+                if target_phrase and selected_id != next(
+                    (
+                        reference.location.id
+                        for reference in grounded.references
+                        if reference.field == "target" and reference.location is not None
+                    ),
+                    selected_id,
+                ):
+                    perception_target = _perception_target(
+                        clause.clause_id,
+                        str(target_phrase),
+                        selected,
+                    )
         clause_result: dict[str, Any] = {
             "clause_id": clause.clause_id,
             "text": clause.text,
@@ -80,6 +122,7 @@ def prepare_week8_mission(
             "grounded_intent": grounded.to_dict(),
             "effective_grounded_intent": planning_grounded.to_dict(),
             "destination_resolution": destination_resolution,
+            "perception_target": perception_target,
             "issues": clause_issues,
         }
         if clause_issues or not grounded.ready_for_planning:
@@ -99,6 +142,8 @@ def prepare_week8_mission(
             issues.append(plan_issue)
         else:
             plans.append({"mission_plan": plan.to_dict()})
+            if perception_target is not None:
+                perception_targets.append(perception_target)
         clause_results.append(clause_result)
 
     if blocking_clauses:
@@ -107,6 +152,7 @@ def prepare_week8_mission(
             decomposition.to_dict(),
             clause_results=clause_results,
             plans=plans,
+            perception_targets=perception_targets,
             issues=issues,
             blocking_clauses=blocking_clauses,
             started=started,
@@ -136,6 +182,7 @@ def prepare_week8_mission(
         decomposition.to_dict(),
         clause_results=clause_results,
         plans=plans,
+        perception_targets=perception_targets,
         schedule=schedule.to_dict(),
         safety_report=safety.to_dict(),
         issues=issues,
@@ -154,6 +201,7 @@ def _result(
     *,
     clause_results: list[dict[str, Any]] | None = None,
     plans: list[dict[str, Any]] | None = None,
+    perception_targets: list[dict[str, Any]] | None = None,
     schedule: dict[str, Any] | None = None,
     safety_report: dict[str, Any] | None = None,
     issues: list[str] | None = None,
@@ -167,6 +215,7 @@ def _result(
         "decomposition": decomposition,
         "clause_results": clause_results or [],
         "plans": plans or [],
+        "perception_targets": perception_targets or [],
         "schedule": schedule,
         "safety_report": safety_report,
         "blocking_clauses": blocking_clauses or [],
@@ -177,6 +226,7 @@ def _result(
             "Software-simulation preparation only; no physical drones are controlled.",
             "No mission is successful until ASR, mission imagery, vision, supervision, and reporting evidence are stored.",
             "Distinct grounded references are blocked because the custom map has no relation model that can reconcile them.",
+            "Perception targets have no coordinates until mission imagery produces a valid vision observation.",
         ],
     }
 
@@ -198,3 +248,33 @@ def _resolved_destination_grounding(
         ready_for_planning=True,
         issues=(),
     )
+
+
+def _planning_grounding_without_unresolved_target(grounded: GroundedIntent) -> GroundedIntent:
+    references = tuple(
+        reference
+        for reference in grounded.references
+        if not (reference.field == "target" and reference.status == "unresolved")
+    )
+    issues = tuple(issue for issue in grounded.issues if issue != "target_unresolved")
+    return GroundedIntent(
+        intent=dict(grounded.intent),
+        references=references,
+        ready_for_planning=any(reference.status == "grounded" for reference in references),
+        issues=issues,
+    )
+
+
+def _perception_target(
+    clause_id: str,
+    phrase: str | None,
+    search_region: MapLocation,
+) -> dict[str, Any]:
+    return {
+        "clause_id": clause_id,
+        "phrase": phrase,
+        "status": "awaiting_vision",
+        "known_coordinates": False,
+        "search_region_id": search_region.id,
+        "search_region_name": search_region.name,
+    }

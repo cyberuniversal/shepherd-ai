@@ -41,6 +41,7 @@ def simulate_schedule(
     safety_policy: SafetyPolicy,
     *,
     time_step_min: float = 0.25,
+    task_behaviors: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Execute scheduled round trips as explicit 2D simulated telemetry."""
 
@@ -65,6 +66,7 @@ def simulate_schedule(
         raise ValueError(f"schedule references unknown locations: {', '.join(missing_locations)}")
 
     task_slots = _formation_slots(schedule.assignments, location_index, safety_policy)
+    behaviors = {str(key): dict(value) for key, value in (task_behaviors or {}).items()}
     makespan = max(assignment.end_min for assignment in schedule.assignments)
     times = _simulation_times(makespan, time_step_min)
     snapshots: list[dict[str, Any]] = []
@@ -84,17 +86,34 @@ def simulate_schedule(
     if supervisor.snapshot()["mission_status"] != "active":
         raise ValueError("simulation supervisor blocked initial preflight")
 
+    assignments_by_drone = {
+        drone_id: tuple(
+            assignment
+            for assignment in schedule.assignments
+            if assignment.drone_id == drone_id
+        )
+        for drone_id in drone_index
+    }
     for snapshot_index, time_min in enumerate(times):
         drone_rows: list[dict[str, Any]] = []
         states: list[DroneState] = []
         for drone_id in sorted(drone_index):
             drone = drone_index[drone_id]
+            active_assignment = next(
+                (
+                    assignment
+                    for assignment in assignments_by_drone[drone_id]
+                    if assignment.start_min <= time_min < assignment.end_min
+                ),
+                None,
+            )
             row = _drone_at_time(
                 drone,
                 schedule.assignments,
                 task_slots,
                 time_min,
                 safety_policy.default_mission_altitude_m,
+                behaviors.get(active_assignment.task_id, {}) if active_assignment else {},
             )
             drone_rows.append(row)
             states.append(
@@ -173,6 +192,7 @@ def simulate_schedule(
         "minimum_required_separation_m": safety_policy.minimum_inter_drone_separation_m,
         "minimum_observed_separation_m": round(minimum_observed, 6),
         "task_slots": task_slots,
+        "task_behaviors": behaviors,
         "events": events,
         "supervision": supervisor.snapshot(),
         "snapshots": snapshots,
@@ -182,6 +202,7 @@ def simulate_schedule(
             "Formation slots are static geometric deconfliction, not active collision avoidance.",
             "Battery percentage is held constant because no battery-consumption model is specified.",
             "Imagery capture and model inference are separate Week 8 stage artifacts.",
+            "Perception targets are not assigned coordinates before a valid vision observation.",
         ],
     }
 
@@ -312,6 +333,7 @@ def _formation_slots(
                 "longitude": longitude,
                 "east_offset_m": east_m,
                 "north_offset_m": north_m,
+                "region_radius_m": location.radius_m,
             }
     return slots
 
@@ -330,6 +352,7 @@ def _drone_at_time(
     task_slots: Mapping[str, Mapping[str, Any]],
     time_min: float,
     mission_altitude_m: float,
+    behavior: Mapping[str, Any],
 ) -> dict[str, Any]:
     assigned = sorted(
         (row for row in assignments if row.drone_id == drone.drone_id),
@@ -361,9 +384,14 @@ def _drone_at_time(
         latitude = _interpolate(drone.current_latitude, float(slot["latitude"]), fraction)
         longitude = _interpolate(drone.current_longitude, float(slot["longitude"]), fraction)
     elif elapsed < one_way_min + work_min:
-        phase = "on_station"
-        latitude = float(slot["latitude"])
-        longitude = float(slot["longitude"])
+        if behavior.get("mode") == "search":
+            phase = "searching"
+            progress = (elapsed - one_way_min) / max(work_min, 1e-9)
+            latitude, longitude = _search_position(slot, progress)
+        else:
+            phase = "on_station"
+            latitude = float(slot["latitude"])
+            longitude = float(slot["longitude"])
     else:
         fraction = (elapsed - one_way_min - work_min) / max(one_way_min, 1e-9)
         phase = "returning"
@@ -383,3 +411,21 @@ def _drone_at_time(
 def _interpolate(start: float, end: float, fraction: float) -> float:
     bounded = min(max(fraction, 0.0), 1.0)
     return start + (end - start) * bounded
+
+
+def _search_position(slot: Mapping[str, Any], progress: float) -> tuple[float, float]:
+    bounded = min(max(progress, 0.0), 1.0)
+    row_count = 6
+    row_position = min(bounded * row_count, row_count - 1e-9)
+    row = int(row_position)
+    across = row_position - row
+    if row % 2:
+        across = 1.0 - across
+    radius_m = min(float(slot.get("region_radius_m", 50.0)) * 0.3, 25.0)
+    east_m = -radius_m + 2.0 * radius_m * across
+    north_m = -radius_m + 2.0 * radius_m * row / max(row_count - 1, 1)
+    latitude = float(slot["latitude"]) + north_m / 111_320.0
+    longitude = float(slot["longitude"]) + east_m / (
+        111_320.0 * max(cos(radians(float(slot["latitude"]))), 0.01)
+    )
+    return latitude, longitude

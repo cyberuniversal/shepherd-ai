@@ -42,12 +42,17 @@ the separate destinations and targets.
    explicitly selected East Field as the destination; irrigation remains the
    semantic inspection target, and the original references remain in the raw
    record.
-5. Schedule all three task replicas together, then run deterministic preflight
+5. Distinguish navigable search regions from perception targets. A command such
+   as `search for a car in the east field` may use East Field coordinates as a
+   bounded search region, but it must not assign coordinates to the car. The
+   object remains `awaiting_vision`, and the simulator executes an inspectable
+   region sweep until mission imagery is available.
+6. Schedule all three task replicas together, then run deterministic preflight
    and event-driven supervision using the Week 7 interfaces.
-6. Run vision inference on the images registered to this mission. Prior Week 6
+7. Run vision inference on the images registered to this mission. Prior Week 6
    results may establish model provenance but are not mission observations.
-7. Write raw stage outputs before deriving metrics or a mission report.
-8. Mark the run incomplete whenever required evidence is absent or a stage is
+8. Write raw stage outputs before deriving metrics or a mission report.
+9. Mark the run incomplete whenever required evidence is absent or a stage is
    blocked. Preserve that negative result.
 
 ## Evaluation
@@ -71,6 +76,9 @@ report, log, and screenshots trace back to raw outputs.
 - No WAV recording of the exact fixed scenario is registered.
 - `datasets/aerial_images/manifest.jsonl` does not exist, and only the dataset
   README is present under that directory.
+- The 3D search renderer can visualize an `awaiting_vision` sweep, but it cannot
+  change a perception target to `found` without mission-assigned imagery and a
+  stored vision inference result.
 - Metric acceptance thresholds and baseline comparisons are not stated.
 
 ## Recorded Destination Resolution

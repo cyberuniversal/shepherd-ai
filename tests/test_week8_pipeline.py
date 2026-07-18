@@ -109,6 +109,41 @@ class Week8PipelineTests(unittest.TestCase):
         self.assertEqual(len(result["schedule"]["assignments"]), 2)
         self.assertEqual(result["decomposition"]["status"], "single_clause")
 
+    def test_unresolved_object_is_a_perception_target_inside_grounded_region(self) -> None:
+        result = prepare_week8_mission(
+            "Send one drone east to search for a car.",
+            locations=self.locations,
+            fleet_payload=self.fleet,
+            safety_policy=self.policy,
+        )
+
+        self.assertEqual(result["status"], "awaiting_required_week8_evidence")
+        self.assertEqual(result["schedule"]["assignments"][0]["target_location_id"], "loc_east_field")
+        self.assertEqual(
+            result["perception_targets"],
+            [
+                {
+                    "clause_id": "clause_001",
+                    "phrase": "car",
+                    "status": "awaiting_vision",
+                    "known_coordinates": False,
+                    "search_region_id": "loc_east_field",
+                    "search_region_name": "East Field",
+                }
+            ],
+        )
+
+    def test_unresolved_object_without_grounded_region_still_blocks(self) -> None:
+        result = prepare_week8_mission(
+            "Send one drone to look for a car.",
+            locations=self.locations,
+            fleet_payload=self.fleet,
+            safety_policy=self.policy,
+        )
+
+        self.assertEqual(result["status"], "clarification_required")
+        self.assertIsNone(result["schedule"])
+
 
 if __name__ == "__main__":
     unittest.main()

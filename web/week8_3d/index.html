@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shepherd-AI 3D Mission Simulator</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="app-shell">
+    <div id="scene" aria-label="Interactive 3D mission scene"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <strong>Shepherd-AI</strong>
+        <span>3D Mission Simulator</span>
+      </div>
+      <div class="topbar-actions">
+        <span id="connection-status" class="connection"><i data-lucide="circle"></i> Connecting</span>
+        <label class="camera-select">
+          <i data-lucide="camera"></i>
+          <select id="camera-mode" aria-label="Camera mode">
+            <option value="overview">Overview</option>
+            <option value="follow">Follow active drone</option>
+          </select>
+        </label>
+        <button id="reset-camera" class="icon-button" title="Reset camera" aria-label="Reset camera">
+          <i data-lucide="focus"></i>
+        </button>
+      </div>
+    </header>
+
+    <aside class="pipeline-rail" aria-label="Mission pipeline">
+      <h2>Mission pipeline</h2>
+      <ol id="stage-list" class="stage-list">
+        <li data-stage="input"><span>1</span><i data-lucide="message-square"></i><div><strong>Input</strong><small>Waiting</small></div></li>
+        <li data-stage="intent"><span>2</span><i data-lucide="braces"></i><div><strong>Intent</strong><small>Waiting</small></div></li>
+        <li data-stage="grounding"><span>3</span><i data-lucide="map-pin"></i><div><strong>Grounding</strong><small>Waiting</small></div></li>
+        <li data-stage="planning"><span>4</span><i data-lucide="route"></i><div><strong>Planning</strong><small>Waiting</small></div></li>
+        <li data-stage="scheduling"><span>5</span><i data-lucide="calendar-clock"></i><div><strong>Scheduling</strong><small>Waiting</small></div></li>
+        <li data-stage="safety"><span>6</span><i data-lucide="shield-check"></i><div><strong>Safety</strong><small>Waiting</small></div></li>
+        <li data-stage="simulation"><span>7</span><i data-lucide="play-square"></i><div><strong>Simulation</strong><small>Waiting</small></div></li>
+        <li data-stage="vision"><span>8</span><i data-lucide="scan-search"></i><div><strong>Vision</strong><small>Awaiting imagery</small></div></li>
+      </ol>
+      <section id="clarification" class="clarification" hidden>
+        <div class="clarification-heading"><i data-lucide="message-circle-question"></i><strong>Clarification needed</strong></div>
+        <p id="clarification-message"></p>
+        <div id="clarification-options" class="clarification-options"></div>
+      </section>
+    </aside>
+
+    <aside class="telemetry-rail" aria-label="Mission telemetry">
+      <h2>Telemetry</h2>
+      <div class="mission-clock">
+        <span>Mission time</span>
+        <strong id="mission-clock">00:00</strong>
+      </div>
+      <div id="drone-list" class="drone-list"></div>
+      <div class="safety-summary">
+        <div><i data-lucide="shield"></i><span>Safety</span><strong id="safety-status">Standby</strong></div>
+        <div><span>Minimum separation</span><strong id="separation-value">--</strong></div>
+        <div><span>Perception target</span><strong id="perception-status">Not assigned</strong></div>
+      </div>
+    </aside>
+
+    <section class="command-dock" aria-label="Mission command and playback">
+      <div class="command-entry">
+        <label for="mission-command">Command</label>
+        <div class="command-row">
+          <textarea id="mission-command" rows="2" spellcheck="true"></textarea>
+          <button id="run-mission" class="run-button"><i data-lucide="send"></i><span>Run mission</span></button>
+        </div>
+      </div>
+      <div class="playback">
+        <span class="control-label">Playback</span>
+        <div class="playback-buttons">
+          <button id="restart" class="icon-button" title="Restart simulation" aria-label="Restart simulation"><i data-lucide="rotate-ccw"></i></button>
+          <button id="play-pause" class="icon-button primary-icon" title="Play or pause" aria-label="Play or pause"><i data-lucide="play"></i></button>
+        </div>
+      </div>
+      <div class="timeline-control">
+        <div class="timeline-heading"><span>Timeline</span><output id="timeline-output">00:00 / 00:00</output></div>
+        <input id="timeline" type="range" min="0" max="1" value="0" step="0.01" aria-label="Mission timeline">
+      </div>
+      <label class="speed-control">
+        <span>Speed</span>
+        <select id="speed">
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1.0x</option>
+          <option value="2">2.0x</option>
+          <option value="4">4.0x</option>
+        </select>
+      </label>
+    </section>
+
+    <div id="notice" class="notice" role="status" hidden></div>
+    <div id="loading" class="loading-state"><span></span><strong>Initializing 3D mission environment</strong></div>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

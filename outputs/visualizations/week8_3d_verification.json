@@ -1,0 +1,23 @@
+{
+  "artifact_type": "ui_verification",
+  "claim_scope": "interactive Three.js rendering only; not experimental mission evidence",
+  "command": "Send one drone east to search for a car.",
+  "desktop_screenshot": {
+    "path": "outputs/visualizations/week8_3d_desktop.png",
+    "viewport_observed_px": [1914, 935],
+    "timeline_min": 5.0,
+    "expected_phase": "searching",
+    "expected_perception_status": "car - awaiting vision"
+  },
+  "mobile_screenshot": {
+    "path": "outputs/visualizations/week8_3d_mobile.png",
+    "viewport_observed_px": [390, 844],
+    "state": "initial"
+  },
+  "target_coordinates_injected": false,
+  "notes": [
+    "The renderer displays map-defined search regions.",
+    "No car marker or car coordinates are rendered.",
+    "A found-object result still requires mission-assigned imagery and valid vision inference."
+  ]
+}

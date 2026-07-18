@@ -443,6 +443,25 @@ animated Folium map. Static formation slots keep the two North Field drones at
 separate inspection points. This is not aerodynamic simulation, active
 collision avoidance, ASR evidence, or mission-specific vision evidence.
 
+Launch the interactive 3D telemetry renderer locally:
+
+```powershell
+python scripts/serve_week8_demo.py
+```
+
+Then open `http://127.0.0.1:8765/`. The operator can enter a command, resolve
+bounded grounding ambiguity, and play the resulting validated simulation. The
+browser is only a Three.js renderer: decomposition, grounding, planning,
+scheduling, and safety remain in the Python pipeline. Known map regions can be
+used as search bounds, but unresolved objects are never assigned invented
+coordinates. For example, `Send one drone east to search for a car.` produces
+a sweep of East Field and keeps `car` in `awaiting vision` state until
+mission-assigned imagery and a valid vision result exist.
+
+The 3D scene is not a flight-physics engine and does not make Week 8 complete.
+Its design and interaction contract are recorded in
+`docs/week8_3d_interactive_design.md`.
+
 Week 8 also remains blocked on a human-recorded WAV of the exact scenario and a
 mission-image manifest with source, split, and file provenance. Existing Week 6
 development summaries are not relabeled as mission observations. Notebook 8
