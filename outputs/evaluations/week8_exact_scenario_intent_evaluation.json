@@ -6,23 +6,23 @@
   "field_accuracy": 0.9,
   "field_denominator": 10,
   "field_matches": 9,
-  "generated_at_utc": "2026-07-22T11:07:30.440648+00:00",
+  "generated_at_utc": "2026-07-22T13:33:32.458882+00:00",
   "model": {
-    "inference_elapsed_seconds": 0.2025871999994706,
-    "model_load_elapsed_seconds": 1.2384355000012874,
-    "path": "outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85/model.safetensors",
+    "inference_elapsed_seconds": 0.2536591900000076,
+    "model_load_elapsed_seconds": 1.985755367000138,
+    "path": "/content/drive/MyDrive/shepherd-ai-private/week2/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85/model.safetensors",
     "runtime": {
       "accelerate_version": "1.14.0",
       "cuda_available": true,
       "cuda_device_names": [
-        "NVIDIA GeForce GTX 1650 SUPER"
+        "Tesla T4"
       ],
-      "datasets_version": "5.0.0",
-      "torch_version": "2.12.1+cu126",
-      "transformers_version": "5.13.0"
+      "datasets_version": "4.0.0",
+      "torch_version": "2.11.0+cu128",
+      "transformers_version": "5.13.1"
     },
     "sha256": "6330e38ed9f739abdd9f194c17bae3613b66918e213b7e558a59b38c109ab24a",
-    "source_model_dir": "outputs\\model_artifacts\\hf_token_classifier_distilbert_colab_t4_expanded85"
+    "source_model_dir": "/content/drive/MyDrive/shepherd-ai-private/week2/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85"
   },
   "model_role": "frozen_trained_checkpoint",
   "prediction_field": "hybrid_span_parser",

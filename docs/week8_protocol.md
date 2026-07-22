@@ -71,18 +71,24 @@ provenance, the two clauses and three assignments are preserved, safety does not
 approve unresolved evidence, all required metrics are reported, and the mission
 report, log, and screenshots trace back to raw outputs.
 
-## Current Known Blockers
+## Recorded Completion Evidence
 
-- No WAV recording of the exact fixed scenario is registered.
-- `datasets/aerial_images/manifest.jsonl` does not exist, and only the dataset
-  README is present under that directory.
-- The discontinued 3D experiments cannot supply active mission evidence.
-- Metric acceptance thresholds and baseline comparisons are not stated.
-- The roadmap does not define which vision labels constitute successful crop
-  or irrigation inspection. The registered protocol uses non-water
-  Agriculture-Vision anomaly classes for crop inspection and `water` plus
-  `waterway` for irrigation inspection. This project-defined mapping and its
-  internal-validation limitation must be reported with the result.
+The Colab run completed on 2026-07-22 and the machine-checked audit passes all
+ten gates with no blockers. Registered evidence includes the exact human WAV
+and its hash, Whisper prediction and WER, frozen trained-intent predictions,
+the resolved three-drone schedule, safety report, 43 telemetry records,
+mission-assigned image manifest, raw segmentation predictions, five-metric
+summary, animated map, log, screenshot, and mission report.
+
+The roadmap does not state metric acceptance thresholds or baseline
+comparisons, so completion means that the required stages and measurements are
+present and traceable, not that every measured value is strong. In particular,
+the 59-image Agriculture-Vision validation-remainder evaluation recorded
+mission-class modified mean IoU `0.02356`. The project-defined mapping uses
+non-water anomaly classes for crop inspection and `water` plus `waterway` for
+irrigation inspection; this mapping, the weak result, and the internal-
+validation limitation must be reported. The discontinued 3D experiments do
+not supply active mission evidence.
 
 The machine-checked artifact schema is documented in
 `docs/week8_evidence_contract.md`.

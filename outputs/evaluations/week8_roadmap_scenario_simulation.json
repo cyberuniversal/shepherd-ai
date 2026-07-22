@@ -1,8 +1,8 @@
 {
   "metadata": {
     "artifact_sha256": {
-      "animated_map": "80d19f45cb1aa1fdbc04d8762f1c4d54189047ffabaab21d901edf1c19146984",
-      "telemetry": "3c0d56ec8594b3fa85556268ea2fcac2f95b92031063ff902d684dd1a420b165"
+      "animated_map": "b5d22d58f8d1e608f5b6508c16d308a2eef6bf967d3d02e26865162b23bbe3d5",
+      "telemetry": "3ce9ebd1eabe78823506eb7add0d088116adf109fa0639b13eb469879fda6da3"
     },
     "command_sha256": "3c631acc81d03a93115ee07009d43cc72bfe6dcb9c8f6944e5fb0942c1013548",
     "destination_resolution": {
@@ -10,11 +10,11 @@
     },
     "destination_resolution_source": "explicit_operator_confirmation",
     "fleet": "datasets/drones/week5_three_drone_fleet_v1.json",
-    "generated_at_utc": "2026-07-21T20:26:06.899535+00:00",
+    "generated_at_utc": "2026-07-22T13:33:58.715532+00:00",
     "input_mode": "typed_development",
     "input_sha256": {
-      "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
-      "map": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95",
+      "fleet": "bc9ca10240c6f016cd734eb7ca28fb7491be5c07f3dbe99f858211ddf9f0fe63",
+      "map": "622113e1bf9cd972caf514e11dc5e3d3c5f043a6c2a3ea89de1cfe2f9305d06e",
       "policy": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc"
     },
     "map": "datasets/maps/shepherd_test_map_v1.csv",
@@ -24,7 +24,7 @@
       "shepherd-ai": "0.1.0"
     },
     "policy": "datasets/safety/week7_safety_policy_v1.json",
-    "python_version": "3.14.3",
+    "python_version": "3.12.13",
     "random_seed": null,
     "research_note": "Resolved typed-command software simulation. This is movement/supervision evidence, not complete Week 8 success because exact-scenario ASR and mission vision evidence are still missing.",
     "scenario_source": "roadmap_week8_fixed_scenario",
@@ -1716,7 +1716,7 @@
         }
       }
     ],
-    "preparation_elapsed_seconds": 0.008100099999865051,
+    "preparation_elapsed_seconds": 0.010645294999903854,
     "safety_report": {
       "altitude_source": "operator_or_workflow_input",
       "assignment_results": [
@@ -2941,6 +2941,6 @@
     "telemetry_output": "outputs/evaluations/week8_roadmap_scenario_telemetry.jsonl",
     "telemetry_records": 43,
     "time_step_min": 0.25,
-    "wall_clock_seconds": 0.011524499997904059
+    "wall_clock_seconds": 0.01574459200014644
   }
 }

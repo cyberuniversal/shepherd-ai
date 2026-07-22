@@ -1,0 +1,176 @@
+{
+  "dataset": {
+    "development_ids_excluded": 768,
+    "license": "official terms accepted; pixels remain in private Google Drive",
+    "name": "Agriculture-Vision 2017 miniscale",
+    "selection_basis": "label_positive_then_seeded_hash",
+    "selection_seed": 29,
+    "source_split": "official_validation_remainder"
+  },
+  "generated_at_utc": "2026-07-22T15:00:00.086807+00:00",
+  "inference": {
+    "batch_size": 4,
+    "device": "cuda:0",
+    "elapsed_seconds": 28.345538954000403,
+    "numpy_version": "2.0.2",
+    "raw_predictions_path": "outputs/evaluations/week8_mission_vision_raw.jsonl",
+    "raw_predictions_sha256": "caaea8e6fd6f3e17fc14d597d3c25651ca56476e6fb80011e47b4e3ad42c2b94",
+    "runtime": {
+      "cuda_available": true,
+      "cuda_device_count": 1,
+      "cuda_device_names": [
+        "Tesla T4"
+      ],
+      "required_device_substring": "T4"
+    },
+    "torch_version": "2.11.0+cu128"
+  },
+  "limitations": [
+    "This is a disjoint internal validation remainder, not the official hidden test benchmark.",
+    "Mission imagery is sampled from public agricultural data rather than captured by physical drones.",
+    "The class mapping is a declared Week 8 protocol choice, not a claim from Agriculture-Vision."
+  ],
+  "manifest": {
+    "clause_ids": [
+      "clause_001",
+      "clause_002"
+    ],
+    "path": "outputs/evaluations/week8_mission_image_manifest.jsonl",
+    "records": 59,
+    "records_with_labels": 59,
+    "records_with_sha256": 59,
+    "sha256": "005f12b02d135e62922ee88b56428f535717403fe5d9b129efe559aaf7e1e1c0"
+  },
+  "metrics": {
+    "clause_metrics": {
+      "clause_001": {
+        "evaluated_class_count": 5,
+        "mean_iou": 0.02827406456988916,
+        "per_class_iou": {
+          "double_plant": 0.0,
+          "drydown": 0.1413703228494458,
+          "endrow": 0.0,
+          "nutrient_deficiency": null,
+          "planter_skip": 0.0,
+          "storm_damage": null,
+          "weed_cluster": 0.0
+        }
+      },
+      "clause_002": {
+        "evaluated_class_count": 1,
+        "mean_iou": 0.0,
+        "per_class_iou": {
+          "water": 0.0,
+          "waterway": null
+        }
+      }
+    },
+    "denominator": 6,
+    "image_denominator": 59,
+    "name": "mission_class_modified_mean_iou",
+    "primary_value": 0.023561720474907635
+  },
+  "model": {
+    "name": "small_unet_from_scratch",
+    "path": "/content/drive/MyDrive/shepherd-ai-private/week6/checkpoints/agriculture_vision_small_unet_seed17_dev256_bce_dice1/best.pt",
+    "sha256": "1342eb4aa2149e34b696405855bc20f1ab41f10dd9d2965f430657c80fafa96b",
+    "source": "week6_frozen_bce_dice_development_checkpoint",
+    "training_config": {
+      "base_channels": 16,
+      "batch_size": 4,
+      "class_balance": {
+        "absent_classes": [
+          "nutrient_deficiency",
+          "waterway"
+        ],
+        "class_weights": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        "method": "train_pixel_negative_to_positive_ratio_capped",
+        "positive_weight_cap": 20.0,
+        "positive_weights": [
+          1.0,
+          20.0,
+          4.887093381688013,
+          20.0,
+          1.0,
+          20.0,
+          20.0,
+          20.0,
+          1.0,
+          20.0
+        ]
+      },
+      "class_names": [
+        "background",
+        "double_plant",
+        "drydown",
+        "endrow",
+        "nutrient_deficiency",
+        "planter_skip",
+        "storm_damage",
+        "water",
+        "waterway",
+        "weed_cluster"
+      ],
+      "dataset_root": "/content/drive/MyDrive/shepherd-ai-private/week6",
+      "device": {
+        "cuda_available": true,
+        "cuda_device_count": 1,
+        "cuda_device_names": [
+          "Tesla T4"
+        ],
+        "required_device_substring": "T4"
+      },
+      "dice_scope": "train-present_anomaly_classes",
+      "dice_weight": 1.0,
+      "epochs_requested": 5,
+      "input_normalization": "uint8_rgb_divided_by_255",
+      "labels_dir": "/content/drive/MyDrive/shepherd-ai-private/week6/agriculture-vision/data2017/data2017_miniscale",
+      "learning_rate": 0.001,
+      "loss": "bce-dice",
+      "manifest": "datasets/aerial_images/manifest_segmentation_seed17_dev256.jsonl",
+      "model": "small_unet_from_scratch",
+      "num_workers": 2,
+      "numpy_version": "2.0.2",
+      "seed": 17,
+      "selected_device": "cuda:0",
+      "test_records_used": 0,
+      "torch_version": "2.11.0+cu128",
+      "train_label_audit": "outputs/evaluations/week6_agriculture_vision_full_train_label_audit.json",
+      "train_records": 256,
+      "validation_records": 256
+    }
+  },
+  "scenario_source": "roadmap_week8_fixed_scenario",
+  "task_label_mapping": {
+    "clause_001": {
+      "classes": [
+        "double_plant",
+        "drydown",
+        "endrow",
+        "nutrient_deficiency",
+        "planter_skip",
+        "storm_damage",
+        "weed_cluster"
+      ],
+      "mission_target": "crops"
+    },
+    "clause_002": {
+      "classes": [
+        "water",
+        "waterway"
+      ],
+      "mission_target": "irrigation"
+    }
+  }
+}

@@ -1,13 +1,7 @@
 {
-  "blockers": [
-    "exact_scenario_asr_evidence",
-    "mission_assigned_vision_evaluation",
-    "all_roadmap_metrics_reported",
-    "raw_and_derived_artifacts_present",
-    "claim_limits_preserved"
-  ],
-  "completion_allowed": false,
-  "decision": "remain_on_week8_until_end_to_end_evidence_is_complete",
+  "blockers": [],
+  "completion_allowed": true,
+  "decision": "week8_complete_for_advancement_to_week9_paper_draft",
   "gates": [
     {
       "detail": "source_text='Send two drones north to inspect crops and one drone east to inspect irrigation.'",
@@ -30,9 +24,9 @@
       "passed": true
     },
     {
-      "detail": "audio_type=None, audio_hash_present=False, prediction_present=False",
+      "detail": "audio_type='human_recorded_audio', audio_hash_present=True, prediction_present=True",
       "name": "exact_scenario_asr_evidence",
-      "passed": false
+      "passed": true
     },
     {
       "detail": "model_role='frozen_trained_checkpoint', records=2, accuracy=0.5",
@@ -40,25 +34,25 @@
       "passed": true
     },
     {
-      "detail": "records=None, clauses=None, labeled=None, metric=None",
+      "detail": "records=59, clauses=['clause_001', 'clause_002'], labeled=59, metric=0.023561720474907635",
       "name": "mission_assigned_vision_evaluation",
-      "passed": false
+      "passed": true
     },
     {
-      "detail": "reported=[], required=['intent_extraction_accuracy', 'grounding_accuracy', 'scheduling_quality', 'detection_performance', 'overall_execution_time']",
+      "detail": "reported=['detection_performance', 'grounding_accuracy', 'intent_extraction_accuracy', 'overall_execution_time', 'scheduling_quality'], required=['intent_extraction_accuracy', 'grounding_accuracy', 'scheduling_quality', 'detection_performance', 'overall_execution_time']",
       "name": "all_roadmap_metrics_reported",
-      "passed": false
+      "passed": true
     },
     {
-      "detail": "artifacts={'animated_map': True, 'demonstration_log': False, 'demonstration_screenshot': True, 'evaluation_summary': False, 'mission_report': False, 'raw_run': True, 'telemetry': True}",
+      "detail": "artifacts={'animated_map': True, 'demonstration_log': True, 'demonstration_screenshot': True, 'evaluation_summary': True, 'mission_report': True, 'raw_run': True, 'telemetry': True}",
       "name": "raw_and_derived_artifacts_present",
-      "passed": false
+      "passed": true
     },
     {
-      "detail": "physical=None, guarantee=None, novelty=None",
+      "detail": "physical=False, guarantee=False, novelty=False",
       "name": "claim_limits_preserved",
-      "passed": false
+      "passed": true
     }
   ],
-  "gates_passed": false
+  "gates_passed": true
 }

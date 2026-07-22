@@ -55,7 +55,7 @@ See `docs/repository_hygiene.md`.
 | Week 5 | Multi-drone scheduling | `src/shepherd_ai/scheduling.py`, `scripts/schedule_missions.py`, `scripts/audit_week5_completion.py` | `notebooks/Notebook5_Scheduler.ipynb` | `datasets/drones/week5_three_drone_fleet_v1.json` | `outputs/evaluations/week5_completion_gate_audit.json`; scheduling gate passed locally |
 | Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision and VisDrone2019-DET; licensed imagery and checkpoints remain outside Git | Complete for roadmap advancement; registered 50-epoch VisDrone YOLOv8n validation baseline and Agriculture-Vision segmentation development comparisons recorded |
 | Week 7 | Safety, feedback, and integration | `src/shepherd_ai/safety.py`, `feedback.py`, `integration.py`, `clarification_dialogue.py`, `mission_supervision.py`, `integrated_prototype.py`; Week 7 evaluation and audit scripts | `notebooks/Notebook7_Safety.ipynb` | Synthetic policy plus preflight, dialogue, route, supervision, integration, and sensitivity cases under `datasets/safety/` | Complete for roadmap advancement under the corrected gate; all registered evaluations pass and the audit has no blockers |
-| Week 8 | End-to-end demo and evaluation | `src/shepherd_ai/mission_decomposition.py`, `src/shepherd_ai/week8_pipeline.py`, `src/shepherd_ai/mission_simulation.py`, `src/shepherd_ai/week8_asr.py`, `src/shepherd_ai/week8_evaluation.py`, `src/shepherd_ai/week8_vision_evaluation.py`, `src/shepherd_ai/week8_completion.py`, Week 8 run/evaluation/audit scripts | `notebooks/Notebook8_FinalDemo.ipynb`, `notebooks/Notebook9_Evaluation.ipynb` | Existing map/fleet/policy; exact human WAV and private Agriculture-Vision/checkpoint assets | In progress; simulation, screenshot, evidence workflow, and frozen trained-intent scenario result exist; exact ASR and disjoint vision inference remain unexecuted |
+| Week 8 | End-to-end demo and evaluation | `src/shepherd_ai/mission_decomposition.py`, `src/shepherd_ai/week8_pipeline.py`, `src/shepherd_ai/mission_simulation.py`, `src/shepherd_ai/week8_asr.py`, `src/shepherd_ai/week8_evaluation.py`, `src/shepherd_ai/week8_vision_evaluation.py`, `src/shepherd_ai/week8_completion.py`, Week 8 run/evaluation/audit scripts | `notebooks/Notebook8_FinalDemo.ipynb` | Existing map/fleet/policy; exact human WAV and private Agriculture-Vision/checkpoint assets | Complete for roadmap advancement; all ten completion gates pass and the five required metrics are stored with raw evidence |
 | Week 9 | Research paper draft | Not implemented | Not stated | Evaluation artifacts and figures | Not started |
 | Week 10 | Final paper and presentation | Not implemented | Not stated | Final reports/slides | Not started |
 
@@ -79,15 +79,16 @@ See `docs/repository_hygiene.md`.
   route, `8/8` supervision, `3/3` integration, and `4/4` sensitivity results.
   These are registered development cases, not physical safety or Week 8
   end-to-end mission performance.
-- Week 8 has started but is not complete. The bounded decomposer preserves two
-  clauses and three requested drones. The unresolved typed preflight remains a
-  stored negative result; the operator subsequently selected East Field for
-  clause 2. The resolved schedule drives deterministic three-drone telemetry
-  and an animated Folium map. The user discontinued the optional Three.js and
-  Gazebo experiments on 2026-07-21; their reports remain historical negative
-  evidence and are not active architecture. The frozen trained intent result is
-  1/2 exact records and 9/10 fields on the fixed clauses. The complete Colab
-  evidence workflow and a demonstration screenshot now exist. Exact-scenario
-  ASR and disjoint private-Drive Agriculture-Vision inference must still run
-  before the five-metric summary, log, mission report, and completion gate can
-  be finalized.
+- Week 8 is complete for roadmap advancement. The fixed command produced two
+  clauses, three assignments, 43 deterministic telemetry records, and an
+  approved software-simulation safety report after the operator resolved the
+  irrigation clause to East Field. Exact-scenario Whisper evaluation recorded
+  WER `0.07143`; trained intent exact match was `1/2` with `9/10` fields;
+  grounding accuracy was `2/2`; scheduling completion was `3/3`; and measured
+  warm-model pipeline time was `31.3343` seconds. Mission-assigned evaluation
+  on 59 disjoint Agriculture-Vision validation-remainder images produced
+  modified mean IoU `0.02356`, a weak generalization result that remains part
+  of the evidence. The run is a single development scenario, not a statistical
+  end-to-end benchmark. It does not demonstrate physical flight, guarantee
+  safety, or establish novelty. The discontinued Three.js and Gazebo reports
+  remain historical negative evidence and are not active architecture.

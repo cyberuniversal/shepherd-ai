@@ -256,19 +256,19 @@ Completion criteria: The roadmap scenario executes reproducibly and produces doc
 
 Known uncertainties: Acceptance thresholds and baseline comparisons are not stated.
 
-Current status: Week 8 remains in progress. Typed decomposition, grounding,
-scheduling, preflight safety, deterministic three-drone telemetry, animated
-Folium visualization, and a static demonstration screenshot exist. The frozen
-expanded85 DistilBERT checkpoint has been evaluated on the two fixed clauses:
-exact intent match is 1/2 and field accuracy is 9/10, with clause 2 predicting
-`send` instead of `inspect`. The user discontinued the optional 3D experiments;
-the active implementation follows the roadmap's Python software-simulation
-scope. Notebook 8 now contains the complete evidence workflow, including exact
-WAV registration, disjoint Agriculture-Vision validation-remainder selection,
-frozen segmentation inference, five-metric derivation, reporting, auditing, and
-private-Drive persistence. Exact-scenario ASR and the private-Drive vision run
-have not yet been executed, so the final metrics, log, mission report, and
-completion decision remain unavailable.
+Current status: Week 8 is complete for roadmap advancement. The exact fixed
+scenario was run through registered human audio, Whisper ASR, the frozen
+expanded85 DistilBERT intent checkpoint, map grounding, three-drone scheduling,
+deterministic safety validation and simulation, and frozen Agriculture-Vision
+segmentation inference. The stored results are WER `0.07143`, intent exact
+match `1/2` and field accuracy `9/10`, grounding accuracy `2/2`, scheduling
+completion `3/3`, mission-class modified mean IoU `0.02356` over 59 images, and
+`31.3343` seconds of measured warm-model pipeline time. The completion audit
+passes all ten gates with no blockers. The vision result is weak and must not
+be hidden by the successful orchestration result. This is one development
+scenario in software simulation; it is not physical-flight evidence, a safety
+guarantee, a statistical end-to-end benchmark, or an established novelty claim.
+The optional 3D experiments remain discontinued historical negative evidence.
 
 ## Milestone 9: Research Paper Draft
 

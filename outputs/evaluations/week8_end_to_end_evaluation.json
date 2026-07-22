@@ -1,0 +1,83 @@
+{
+  "asr": {
+    "exact_match": false,
+    "word_error_rate": 0.07142857142857142
+  },
+  "generated_at_utc": "2026-07-22T15:05:13.591908+00:00",
+  "limitations": [
+    "Software simulation only; no physical drones were controlled.",
+    "Safety checks validate configured rules and do not guarantee real-world safety.",
+    "The two-clause scenario is development evidence, not a statistical end-to-end benchmark.",
+    "Agriculture-Vision evaluation uses a disjoint internal validation remainder, not hidden test labels."
+  ],
+  "metrics": {
+    "detection_performance": {
+      "definition": "mission_class_modified_mean_iou",
+      "denominator": 6,
+      "image_denominator": 59,
+      "source_artifact": "outputs/evaluations/week8_mission_vision_evaluation.json",
+      "value": 0.023561720474907635
+    },
+    "grounding_accuracy": {
+      "definition": "resolved destination match against the fixed scenario and operator resolution",
+      "denominator": 2,
+      "records": [
+        {
+          "clause_id": "clause_001",
+          "expected_location_id": "loc_north_field",
+          "matched": true,
+          "observed_location_ids": [
+            "loc_north_field"
+          ]
+        },
+        {
+          "clause_id": "clause_002",
+          "expected_location_id": "loc_east_field",
+          "matched": true,
+          "observed_location_ids": [
+            "loc_east_field"
+          ]
+        }
+      ],
+      "source_artifact": "outputs/evaluations/week8_roadmap_scenario_simulation.json",
+      "value": 1.0
+    },
+    "intent_extraction_accuracy": {
+      "definition": "exact structured-intent match across the two fixed roadmap clauses",
+      "denominator": 2,
+      "source_artifact": "outputs/evaluations/week8_exact_scenario_intent_evaluation.json",
+      "value": 0.5
+    },
+    "overall_execution_time": {
+      "definition": "sum of measured warm-model ASR, intent, mission preparation, deterministic simulation, and vision inference wall-clock durations; model loading and notebook orchestration overhead excluded",
+      "denominator": 1,
+      "stage_timings": {
+        "asr_inference_seconds": 2.708679788999973,
+        "intent_inference_seconds": 0.2536591900000076,
+        "preparation_seconds": 0.010645294999903854,
+        "simulation_seconds": 0.01574459200014644,
+        "vision_inference_seconds": 28.345538954000403
+      },
+      "unit": "seconds",
+      "value": 31.334267820000434
+    },
+    "scheduling_quality": {
+      "assigned_tasks": 3,
+      "definition": "task assignment completion ratio; assigned requested task replicas / total replicas",
+      "denominator": 3,
+      "source_artifact": "outputs/evaluations/week8_roadmap_scenario_simulation.json",
+      "value": 1.0
+    }
+  },
+  "mission": {
+    "assignments": 3,
+    "safety_status": "approved",
+    "simulation_status": "completed",
+    "telemetry_records": 43
+  },
+  "novelty_claimed": false,
+  "physical_flight_claimed": false,
+  "safety_guarantee_claimed": false,
+  "scenario_source": "roadmap_week8_fixed_scenario",
+  "status": "completed_software_simulation_evaluation"
+}

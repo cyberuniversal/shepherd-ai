@@ -11,7 +11,7 @@ SCRIPT = ROOT / "scripts/audit_week8_completion.py"
 
 
 class AuditWeek8CompletionCliTests(unittest.TestCase):
-    def test_cli_preserves_current_incomplete_result(self) -> None:
+    def test_cli_reports_completed_result_from_registered_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "audit.json"
             report = Path(temporary) / "audit.md"
@@ -31,10 +31,14 @@ class AuditWeek8CompletionCliTests(unittest.TestCase):
             )
             payload = json.loads(output.read_text(encoding="utf-8"))
 
-        self.assertIn('"completion_allowed": false', completed.stdout)
-        self.assertFalse(payload["completion_allowed"])
-        self.assertIn("exact_scenario_asr_evidence", payload["blockers"])
-        self.assertIn("mission_assigned_vision_evaluation", payload["blockers"])
+        self.assertIn('"completion_allowed": true', completed.stdout)
+        self.assertTrue(payload["completion_allowed"])
+        self.assertEqual(
+            payload["decision"],
+            "week8_complete_for_advancement_to_week9_paper_draft",
+        )
+        self.assertEqual(payload["blockers"], [])
+        self.assertTrue(payload["gates_passed"])
 
 
 if __name__ == "__main__":
