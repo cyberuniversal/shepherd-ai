@@ -183,6 +183,35 @@ class VisionManifestTests(unittest.TestCase):
             with self.assertRaisesRegex(VisionManifestError, "sha256 mismatch"):
                 load_vision_manifest(manifest, dataset_root=root)
 
+    def test_can_defer_manifest_checksum_verification(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            image = root / "sample.jpg"
+            image.write_bytes(b"current-content")
+            manifest = root / "manifest.jsonl"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "id": "sample",
+                        "image_path": "sample.jpg",
+                        "split": "validation",
+                        "source": "unit_test",
+                        "data_type": "synthetic_test_fixture",
+                        "license": "test_only",
+                        "provenance_url": "local_test_fixture",
+                        "sha256": "0" * 64,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            records = load_vision_manifest(
+                manifest, dataset_root=root, verify_checksums=False
+            )
+
+        self.assertEqual(records[0].sha256, "0" * 64)
+
     def test_requires_named_cuda_device(self) -> None:
         class FakeCuda:
             @staticmethod

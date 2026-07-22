@@ -74,8 +74,12 @@ def main() -> None:
         }
         device = torch.device("cpu")
 
-    all_records = load_vision_manifest(args.full_manifest, dataset_root=args.dataset_root)
-    development = load_vision_manifest(args.development_manifest, dataset_root=args.dataset_root)
+    all_records = load_vision_manifest(
+        args.full_manifest, dataset_root=args.dataset_root, verify_checksums=False
+    )
+    development = load_vision_manifest(
+        args.development_manifest, dataset_root=args.dataset_root, verify_checksums=False
+    )
     development_ids = {record.id for record in development}
     candidates = [
         {"id": record.id, "record": record, "split": record.split}
@@ -103,6 +107,15 @@ def main() -> None:
         for row in selected[clause_id]
     ]
     selected_records = [row["record"] for _, row in selected_rows]
+    for record in selected_records:
+        if record.sha256 is None:
+            raise RuntimeError(f"selected mission image has no declared checksum: {record.id}")
+        actual_sha256 = sha256_file(record.image_path)
+        if actual_sha256 != record.sha256:
+            raise RuntimeError(
+                f"selected mission image checksum mismatch: {record.id}: "
+                f"expected {record.sha256}, got {actual_sha256}"
+            )
     _write_mission_manifest(args.mission_manifest_output, selected_rows, args.dataset_root)
 
     checkpoint_path = Path(args.checkpoint)

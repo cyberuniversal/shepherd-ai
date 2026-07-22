@@ -276,7 +276,12 @@ def modified_multilabel_iou(
     )
 
 
-def load_vision_manifest(path: str | Path, *, dataset_root: str | Path) -> list[VisionManifestRecord]:
+def load_vision_manifest(
+    path: str | Path,
+    *,
+    dataset_root: str | Path,
+    verify_checksums: bool = True,
+) -> list[VisionManifestRecord]:
     """Load and validate a JSONL aerial-image manifest."""
 
     manifest = Path(path)
@@ -307,7 +312,7 @@ def load_vision_manifest(path: str | Path, *, dataset_root: str | Path) -> list[
         if not image_path.exists():
             raise VisionManifestError(f"line {line_number}: image file does not exist: {image_path}")
         declared_sha256 = _optional_sha256(raw.get("sha256"), line_number)
-        if declared_sha256 is not None:
+        if declared_sha256 is not None and verify_checksums:
             actual_sha256 = sha256_file(image_path)
             if actual_sha256 != declared_sha256:
                 raise VisionManifestError(
