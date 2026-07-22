@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from shepherd_ai.segmentation import AgricultureVisionDataset, build_small_unet  # noqa: E402
 from shepherd_ai.vision import (  # noqa: E402
     AGRICULTURE_VISION_2017_CLASSES,
+    load_agriculture_vision_2017_positive_classes,
     load_agriculture_vision_2017_target,
     load_vision_manifest,
     modified_multilabel_iou,
@@ -81,14 +82,13 @@ def main() -> None:
         for record in all_records
     ]
 
-    def positive_classes_for(row: dict[str, Any]) -> list[str]:
+    def positive_classes_for(row: dict[str, Any], class_names: tuple[str, ...]) -> list[str]:
         record = row["record"]
-        target = load_agriculture_vision_2017_target(args.labels_dir, record.image_path.stem)
-        return [
-            class_name
-            for index, class_name in enumerate(target.class_names[1:], start=1)
-            if bool(target.targets[index].any())
-        ]
+        return list(
+            load_agriculture_vision_2017_positive_classes(
+                args.labels_dir, record.image_path.stem, class_names
+            )
+        )
 
     selected = select_mission_records_lazily(
         candidates,

@@ -16,6 +16,7 @@ from shepherd_ai.vision import (  # noqa: E402
     DetectionRecord,
     VisionManifestError,
     load_vision_manifest,
+    load_agriculture_vision_2017_positive_classes,
     load_agriculture_vision_2017_target,
     modified_multilabel_iou,
     require_cuda_device,
@@ -310,6 +311,21 @@ class VisionManifestTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "binary 0/255"):
                 load_agriculture_vision_2017_target(root, stem)
+
+    def test_loads_only_requested_positive_classes_inside_valid_field(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stem = "FIELD_0-0-2-2"
+            self._write_binary_mask(root / "field_bounds" / f"{stem}.png", [[255, 255], [0, 0]])
+            self._write_binary_mask(root / "field_masks" / f"{stem}.png", [[255, 255], [255, 255]])
+            self._write_binary_mask(root / "field_labels" / "water" / f"{stem}.png", [[0, 255], [0, 0]])
+            self._write_binary_mask(root / "field_labels" / "waterway" / f"{stem}.png", [[0, 0], [255, 0]])
+
+            positive = load_agriculture_vision_2017_positive_classes(
+                root, stem, ("water", "waterway")
+            )
+
+        self.assertEqual(positive, ("water",))
 
     @staticmethod
     def _write_binary_mask(path: Path, values: list[list[int]]) -> None:

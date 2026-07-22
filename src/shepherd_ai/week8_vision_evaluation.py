@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Callable, Iterable, Mapping
+from typing import Any, Callable, Collection, Iterable, Mapping
 
 import numpy as np
 
@@ -64,7 +64,7 @@ def select_mission_records_lazily(
     excluded_ids: set[str],
     max_per_clause: int,
     seed: int,
-    positive_classes_for: Callable[[Mapping[str, Any]], Iterable[str]],
+    positive_classes_for: Callable[[Mapping[str, Any], Collection[str]], Iterable[str]],
 ) -> dict[str, list[dict[str, Any]]]:
     """Select the same seeded positives without reading every record's labels."""
 
@@ -78,19 +78,21 @@ def select_mission_records_lazily(
     candidates.sort(key=lambda row: _rank(seed, str(row.get("id"))))
     selected: dict[str, list[dict[str, Any]]] = {"clause_001": [], "clause_002": []}
     used: set[str] = set()
-    for record in candidates:
-        record_id = str(record.get("id"))
-        positive = {str(value) for value in positive_classes_for(record)}
-        enriched = {**record, "positive_classes": sorted(positive)}
-        for clause_id in ("clause_002", "clause_001"):
-            if len(selected[clause_id]) >= max_per_clause or record_id in used:
+    # Keep the eager protocol's ordering exactly: fill the rarer irrigation
+    # clause first, then scan again for crop records that remain disjoint.
+    for clause_id in ("clause_002", "clause_001"):
+        relevant = MISSION_CLASS_NAMES[clause_id]
+        for record in candidates:
+            record_id = str(record.get("id"))
+            if record_id in used:
                 continue
-            if not positive.intersection(MISSION_CLASS_NAMES[clause_id]):
+            positive = {str(value) for value in positive_classes_for(record, relevant)}
+            if not positive.intersection(relevant):
                 continue
-            selected[clause_id].append(enriched)
+            selected[clause_id].append({**record, "positive_classes": sorted(positive)})
             used.add(record_id)
-        if all(len(rows) >= max_per_clause for rows in selected.values()):
-            break
+            if len(selected[clause_id]) == max_per_clause:
+                break
     for clause_id, rows in selected.items():
         if not rows:
             raise ValueError(f"no positive held-out validation records for {clause_id}")

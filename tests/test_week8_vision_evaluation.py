@@ -61,11 +61,16 @@ class Week8VisionEvaluationTests(unittest.TestCase):
             max_per_clause=1,
             seed=29,
         )
-        reads: list[str] = []
+        reads: list[tuple[str, tuple[str, ...]]] = []
 
-        def positives(row: dict[str, object]) -> list[str]:
-            reads.append(str(row["id"]))
-            return list(row["positive_classes"])  # type: ignore[arg-type]
+        def positives(row: dict[str, object], relevant: object) -> list[str]:
+            relevant_names = tuple(relevant)  # type: ignore[arg-type]
+            reads.append((str(row["id"]), relevant_names))
+            return [
+                value
+                for value in row["positive_classes"]  # type: ignore[union-attr]
+                if value in relevant_names
+            ]
 
         lazy = select_mission_records_lazily(
             records,
@@ -79,7 +84,34 @@ class Week8VisionEvaluationTests(unittest.TestCase):
             {clause: [row["id"] for row in rows] for clause, rows in lazy.items()},
             {clause: [row["id"] for row in rows] for clause, rows in eager.items()},
         )
-        self.assertLess(len(reads), len(records))
+        self.assertLess(sum(len(relevant) for _, relevant in reads), len(records) * 9)
+
+    def test_lazy_selection_preserves_irrigation_first_for_overlapping_record(self) -> None:
+        records = [
+            {"id": "both", "split": "validation", "positive_classes": ["water", "drydown"]},
+            {"id": "crop", "split": "validation", "positive_classes": ["drydown"]},
+        ]
+
+        def positives(row: dict[str, object], relevant: object) -> list[str]:
+            return [
+                value
+                for value in row["positive_classes"]  # type: ignore[union-attr]
+                if value in relevant  # type: ignore[operator]
+            ]
+
+        eager = select_mission_records(records, excluded_ids=set(), max_per_clause=1, seed=29)
+        lazy = select_mission_records_lazily(
+            records,
+            excluded_ids=set(),
+            max_per_clause=1,
+            seed=29,
+            positive_classes_for=positives,
+        )
+
+        self.assertEqual(
+            {clause: [row["id"] for row in rows] for clause, rows in lazy.items()},
+            {clause: [row["id"] for row in rows] for clause, rows in eager.items()},
+        )
 
     def test_class_iou_summary_uses_declared_classes_only(self) -> None:
         confusion = np.array([[8, 1, 0], [1, 4, 0], [0, 1, 5]])

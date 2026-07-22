@@ -178,6 +178,36 @@ def load_agriculture_vision_2017_target(
     )
 
 
+def load_agriculture_vision_2017_positive_classes(
+    dataset_dir: str | Path,
+    image_id: str,
+    class_names: Iterable[str],
+) -> tuple[str, ...]:
+    """Return requested anomaly classes with positives inside the valid field mask."""
+
+    requested = tuple(dict.fromkeys(class_names))
+    unknown = set(requested).difference(AGRICULTURE_VISION_2017_CLASSES[1:])
+    if unknown:
+        raise ValueError(f"unknown Agriculture-Vision classes: {sorted(unknown)}")
+    root = Path(dataset_dir)
+    boundary = _load_binary_mask(root / "field_bounds" / f"{image_id}.png")
+    field_mask = _load_binary_mask(
+        root / "field_masks" / f"{image_id}.png", shape=boundary.shape
+    )
+    valid_mask = boundary & field_mask
+    return tuple(
+        class_name
+        for class_name in requested
+        if (
+            _load_binary_mask(
+                root / "field_labels" / class_name / f"{image_id}.png",
+                shape=boundary.shape,
+            )
+            & valid_mask
+        ).any()
+    )
+
+
 def modified_multilabel_iou(
     predictions: np.ndarray,
     targets: np.ndarray,
