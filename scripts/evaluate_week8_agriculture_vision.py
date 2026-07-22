@@ -30,7 +30,7 @@ from shepherd_ai.vision import (  # noqa: E402
 from shepherd_ai.week8_vision_evaluation import (  # noqa: E402
     MISSION_CLASS_NAMES,
     class_iou_summary,
-    select_mission_records,
+    select_mission_records_lazily,
 )
 
 
@@ -76,29 +76,26 @@ def main() -> None:
     all_records = load_vision_manifest(args.full_manifest, dataset_root=args.dataset_root)
     development = load_vision_manifest(args.development_manifest, dataset_root=args.dataset_root)
     development_ids = {record.id for record in development}
-    scanned: list[dict[str, Any]] = []
-    for record in all_records:
-        if record.split != "validation" or record.id in development_ids:
-            continue
+    candidates = [
+        {"id": record.id, "record": record, "split": record.split}
+        for record in all_records
+    ]
+
+    def positive_classes_for(row: dict[str, Any]) -> list[str]:
+        record = row["record"]
         target = load_agriculture_vision_2017_target(args.labels_dir, record.image_path.stem)
-        positive_classes = [
+        return [
             class_name
             for index, class_name in enumerate(target.class_names[1:], start=1)
             if bool(target.targets[index].any())
         ]
-        scanned.append(
-            {
-                "id": record.id,
-                "record": record,
-                "split": record.split,
-                "positive_classes": positive_classes,
-            }
-        )
-    selected = select_mission_records(
-        scanned,
+
+    selected = select_mission_records_lazily(
+        candidates,
         excluded_ids=development_ids,
         max_per_clause=args.max_per_clause,
         seed=args.selection_seed,
+        positive_classes_for=positive_classes_for,
     )
     selected_rows = [
         (clause_id, row)

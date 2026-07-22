@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Iterable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 import numpy as np
 
@@ -54,6 +54,45 @@ def select_mission_records(
             if len(selected[clause_id]) == max_per_clause:
                 break
         if not selected[clause_id]:
+            raise ValueError(f"no positive held-out validation records for {clause_id}")
+    return selected
+
+
+def select_mission_records_lazily(
+    records: Iterable[Mapping[str, Any]],
+    *,
+    excluded_ids: set[str],
+    max_per_clause: int,
+    seed: int,
+    positive_classes_for: Callable[[Mapping[str, Any]], Iterable[str]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Select the same seeded positives without reading every record's labels."""
+
+    if max_per_clause < 1:
+        raise ValueError("max_per_clause must be positive")
+    candidates = [
+        dict(record)
+        for record in records
+        if record.get("split") == "validation" and str(record.get("id")) not in excluded_ids
+    ]
+    candidates.sort(key=lambda row: _rank(seed, str(row.get("id"))))
+    selected: dict[str, list[dict[str, Any]]] = {"clause_001": [], "clause_002": []}
+    used: set[str] = set()
+    for record in candidates:
+        record_id = str(record.get("id"))
+        positive = {str(value) for value in positive_classes_for(record)}
+        enriched = {**record, "positive_classes": sorted(positive)}
+        for clause_id in ("clause_002", "clause_001"):
+            if len(selected[clause_id]) >= max_per_clause or record_id in used:
+                continue
+            if not positive.intersection(MISSION_CLASS_NAMES[clause_id]):
+                continue
+            selected[clause_id].append(enriched)
+            used.add(record_id)
+        if all(len(rows) >= max_per_clause for rows in selected.values()):
+            break
+    for clause_id, rows in selected.items():
+        if not rows:
             raise ValueError(f"no positive held-out validation records for {clause_id}")
     return selected
 
