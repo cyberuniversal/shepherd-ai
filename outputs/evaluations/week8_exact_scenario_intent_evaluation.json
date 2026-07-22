@@ -1,0 +1,89 @@
+{
+  "evaluation_role": "scenario_development_not_held_out_week2_benchmark",
+  "exact_match_accuracy": 0.5,
+  "exact_match_denominator": 2,
+  "exact_matches": 1,
+  "field_accuracy": 0.9,
+  "field_denominator": 10,
+  "field_matches": 9,
+  "generated_at_utc": "2026-07-22T11:07:30.440648+00:00",
+  "model": {
+    "inference_elapsed_seconds": 0.2025871999994706,
+    "model_load_elapsed_seconds": 1.2384355000012874,
+    "path": "outputs/model_artifacts/hf_token_classifier_distilbert_colab_t4_expanded85/model.safetensors",
+    "runtime": {
+      "accelerate_version": "1.14.0",
+      "cuda_available": true,
+      "cuda_device_names": [
+        "NVIDIA GeForce GTX 1650 SUPER"
+      ],
+      "datasets_version": "5.0.0",
+      "torch_version": "2.12.1+cu126",
+      "transformers_version": "5.13.0"
+    },
+    "sha256": "6330e38ed9f739abdd9f194c17bae3613b66918e213b7e558a59b38c109ab24a",
+    "source_model_dir": "outputs\\model_artifacts\\hf_token_classifier_distilbert_colab_t4_expanded85"
+  },
+  "model_role": "frozen_trained_checkpoint",
+  "prediction_field": "hybrid_span_parser",
+  "records": [
+    {
+      "exact_match": true,
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "field_matches": {
+        "action": true,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": true
+      },
+      "gold_source": "roadmap_specification",
+      "id": "clause_001",
+      "predicted_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "prediction_record_id": "week8_clause_001",
+      "text": "Send two drones north to inspect crops."
+    },
+    {
+      "exact_match": false,
+      "expected_intent": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "irrigation"
+      },
+      "field_matches": {
+        "action": false,
+        "constraints": true,
+        "count": true,
+        "location": true,
+        "target": true
+      },
+      "gold_source": "roadmap_specification",
+      "id": "clause_002",
+      "predicted_intent": {
+        "action": "send",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "irrigation"
+      },
+      "prediction_record_id": "week8_clause_002",
+      "text": "Send one drone east to inspect irrigation."
+    }
+  ],
+  "research_note": "The fixed scenario is scored against semantics stated by the roadmap. This two-clause development result does not replace held-out Week 2 evaluation.",
+  "scenario_source": "roadmap_week8_fixed_scenario"
+}

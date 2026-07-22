@@ -256,6 +256,20 @@ Completion criteria: The roadmap scenario executes reproducibly and produces doc
 
 Known uncertainties: Acceptance thresholds and baseline comparisons are not stated.
 
+Current status: Week 8 remains in progress. Typed decomposition, grounding,
+scheduling, preflight safety, deterministic three-drone telemetry, animated
+Folium visualization, and a static demonstration screenshot exist. The frozen
+expanded85 DistilBERT checkpoint has been evaluated on the two fixed clauses:
+exact intent match is 1/2 and field accuracy is 9/10, with clause 2 predicting
+`send` instead of `inspect`. The user discontinued the optional 3D experiments;
+the active implementation follows the roadmap's Python software-simulation
+scope. Notebook 8 now contains the complete evidence workflow, including exact
+WAV registration, disjoint Agriculture-Vision validation-remainder selection,
+frozen segmentation inference, five-metric derivation, reporting, auditing, and
+private-Drive persistence. Exact-scenario ASR and the private-Drive vision run
+have not yet been executed, so the final metrics, log, mission report, and
+completion decision remain unavailable.
+
 ## Milestone 9: Research Paper Draft
 
 Objective: Convert the implemented prototype and evaluation into a manuscript draft.

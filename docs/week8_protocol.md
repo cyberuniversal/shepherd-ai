@@ -76,10 +76,16 @@ report, log, and screenshots trace back to raw outputs.
 - No WAV recording of the exact fixed scenario is registered.
 - `datasets/aerial_images/manifest.jsonl` does not exist, and only the dataset
   README is present under that directory.
-- The 3D search renderer can visualize an `awaiting_vision` sweep, but it cannot
-  change a perception target to `found` without mission-assigned imagery and a
-  stored vision inference result.
+- The discontinued 3D experiments cannot supply active mission evidence.
 - Metric acceptance thresholds and baseline comparisons are not stated.
+- The roadmap does not define which vision labels constitute successful crop
+  or irrigation inspection. The registered protocol uses non-water
+  Agriculture-Vision anomaly classes for crop inspection and `water` plus
+  `waterway` for irrigation inspection. This project-defined mapping and its
+  internal-validation limitation must be reported with the result.
+
+The machine-checked artifact schema is documented in
+`docs/week8_evidence_contract.md`.
 
 ## Recorded Destination Resolution
 

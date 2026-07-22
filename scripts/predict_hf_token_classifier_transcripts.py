@@ -8,6 +8,7 @@ from importlib.metadata import PackageNotFoundError, version
 import json
 from pathlib import Path
 import sys
+from time import perf_counter
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +37,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    total_started = perf_counter()
     args = parse_args()
     try:
         import accelerate
@@ -54,15 +56,18 @@ def main() -> None:
         accelerate,
         required_device_substring=args.required_device_substring,
     )
+    model_load_started = perf_counter()
     tokenizer = AutoTokenizer.from_pretrained(args.model_dir)
     if not tokenizer.is_fast:
         raise ValueError("token classification inference requires a fast tokenizer with word_ids() support")
     model = AutoModelForTokenClassification.from_pretrained(args.model_dir)
     model.to(device)
     model.eval()
+    model_load_elapsed_seconds = perf_counter() - model_load_started
     id2label = {int(index): str(label) for index, label in model.config.id2label.items()}
 
     input_records = _read_jsonl(args.input_jsonl)
+    inference_started = perf_counter()
     output_records = [
         _predict_transcript_record(
             record,
@@ -77,6 +82,7 @@ def main() -> None:
         )
         for record in input_records
     ]
+    inference_elapsed_seconds = perf_counter() - inference_started
     output = {
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -88,6 +94,9 @@ def main() -> None:
             "batch_size": args.batch_size,
             "required_device_substring": args.required_device_substring,
             "runtime": runtime_metadata,
+            "model_load_elapsed_seconds": model_load_elapsed_seconds,
+            "inference_elapsed_seconds": inference_elapsed_seconds,
+            "total_elapsed_seconds": perf_counter() - total_started,
             "evaluation_note": (
                 "Model-generated span and intent predictions for transcript text. This is not accuracy "
                 "unless compared against human-verified gold labels in a separate evaluation."

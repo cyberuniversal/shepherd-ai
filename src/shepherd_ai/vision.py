@@ -90,6 +90,36 @@ class DetectionRecord:
         return payload
 
 
+def detections_from_ultralytics_result(
+    image_id: str,
+    image_path: str,
+    model_name: str,
+    result: Any,
+) -> list[DetectionRecord]:
+    """Convert one Ultralytics result without coupling callers to its tensors."""
+
+    names = getattr(result, "names", {}) or {}
+    boxes = getattr(result, "boxes", None)
+    if boxes is None:
+        return []
+    xyxy = boxes.xyxy.cpu().tolist()
+    confidences = boxes.conf.cpu().tolist()
+    class_ids = [int(value) for value in boxes.cls.cpu().tolist()]
+    return [
+        DetectionRecord(
+            image_id=image_id,
+            image_path=image_path,
+            model_name=model_name,
+            model_version="ultralytics_runtime",
+            class_id=class_id,
+            class_name=str(names.get(class_id, class_id)),
+            confidence=float(confidence),
+            bbox_xyxy=tuple(float(value) for value in bbox),
+        )
+        for bbox, confidence, class_id in zip(xyxy, confidences, class_ids)
+    ]
+
+
 @dataclass(frozen=True)
 class SegmentationMetricResult:
     """Overlap-aware semantic-segmentation evaluation output."""

@@ -1,0 +1,64 @@
+{
+  "blockers": [
+    "exact_scenario_asr_evidence",
+    "mission_assigned_vision_evaluation",
+    "all_roadmap_metrics_reported",
+    "raw_and_derived_artifacts_present",
+    "claim_limits_preserved"
+  ],
+  "completion_allowed": false,
+  "decision": "remain_on_week8_until_end_to_end_evidence_is_complete",
+  "gates": [
+    {
+      "detail": "source_text='Send two drones north to inspect crops and one drone east to inspect irrigation.'",
+      "name": "fixed_scenario_preserved",
+      "passed": true
+    },
+    {
+      "detail": "clauses=2, requested_drones=3",
+      "name": "two_clauses_and_three_drones",
+      "passed": true
+    },
+    {
+      "detail": "assignments=3, safety_status='approved'",
+      "name": "three_drone_schedule_and_safety",
+      "passed": true
+    },
+    {
+      "detail": "simulator='deterministic_2d_mission_simulator_v1', status='completed', telemetry_records=43",
+      "name": "software_simulation_completed",
+      "passed": true
+    },
+    {
+      "detail": "audio_type=None, audio_hash_present=False, prediction_present=False",
+      "name": "exact_scenario_asr_evidence",
+      "passed": false
+    },
+    {
+      "detail": "model_role='frozen_trained_checkpoint', records=2, accuracy=0.5",
+      "name": "trained_two_clause_intent_evaluation",
+      "passed": true
+    },
+    {
+      "detail": "records=None, clauses=None, labeled=None, metric=None",
+      "name": "mission_assigned_vision_evaluation",
+      "passed": false
+    },
+    {
+      "detail": "reported=[], required=['intent_extraction_accuracy', 'grounding_accuracy', 'scheduling_quality', 'detection_performance', 'overall_execution_time']",
+      "name": "all_roadmap_metrics_reported",
+      "passed": false
+    },
+    {
+      "detail": "artifacts={'animated_map': True, 'demonstration_log': False, 'demonstration_screenshot': True, 'evaluation_summary': False, 'mission_report': False, 'raw_run': True, 'telemetry': True}",
+      "name": "raw_and_derived_artifacts_present",
+      "passed": false
+    },
+    {
+      "detail": "physical=None, guarantee=None, novelty=None",
+      "name": "claim_limits_preserved",
+      "passed": false
+    }
+  ],
+  "gates_passed": false
+}

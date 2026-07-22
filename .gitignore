@@ -18,6 +18,12 @@ env/
 build/
 dist/
 
+# Historical local artifacts from the discontinued Week 8 Gazebo experiment.
+simulation/ros2_ws/build/
+simulation/ros2_ws/install/
+simulation/ros2_ws/log/
+/log/
+
 .ipynb_checkpoints/
 
 # Keep small, documented samples in the repository. Do not commit private data,

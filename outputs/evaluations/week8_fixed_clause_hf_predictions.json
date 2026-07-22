@@ -1,0 +1,251 @@
+{
+  "metadata": {
+    "batch_size": 2,
+    "evaluation_note": "Model-generated span and intent predictions for transcript text. This is not accuracy unless compared against human-verified gold labels in a separate evaluation.",
+    "generated_at_utc": "2026-07-22T11:07:28.889303+00:00",
+    "id_field": "id",
+    "inference_elapsed_seconds": 0.2025871999994706,
+    "input_jsonl": "datasets\\commands\\week8_fixed_scenario_clauses.jsonl",
+    "model_dir": "outputs\\model_artifacts\\hf_token_classifier_distilbert_colab_t4_expanded85",
+    "model_load_elapsed_seconds": 1.2384355000012874,
+    "required_device_substring": "",
+    "runtime": {
+      "accelerate_version": "1.14.0",
+      "cuda_available": true,
+      "cuda_device_names": [
+        "NVIDIA GeForce GTX 1650 SUPER"
+      ],
+      "datasets_version": "5.0.0",
+      "torch_version": "2.12.1+cu126",
+      "transformers_version": "5.13.0"
+    },
+    "split_field": "split",
+    "total_elapsed_seconds": 10.49129670000002,
+    "transcript_field": "text"
+  },
+  "records": [
+    {
+      "hybrid_span_parser": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "hybrid_span_validation": {
+        "issue_counts": {},
+        "issues": [],
+        "valid": true
+      },
+      "id": "week8_clause_001",
+      "offsets": [
+        [
+          0,
+          4
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          15
+        ],
+        [
+          16,
+          21
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          25,
+          32
+        ],
+        [
+          33,
+          38
+        ],
+        [
+          38,
+          39
+        ]
+      ],
+      "predicted_entities": [
+        [
+          "count",
+          5,
+          15
+        ],
+        [
+          "location",
+          16,
+          21
+        ],
+        [
+          "action",
+          25,
+          32
+        ],
+        [
+          "target",
+          33,
+          38
+        ]
+      ],
+      "predicted_tags": [
+        "O",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "B-action",
+        "B-target",
+        "O"
+      ],
+      "span_intent_assembly": {
+        "action": "inspect",
+        "constraints": [],
+        "count": 2,
+        "location": "north",
+        "target": "crops"
+      },
+      "span_intent_validation": {
+        "issue_counts": {},
+        "issues": [],
+        "valid": true
+      },
+      "split": "scenario_development",
+      "tokens": [
+        "Send",
+        "two",
+        "drones",
+        "north",
+        "to",
+        "inspect",
+        "crops",
+        "."
+      ],
+      "transcript": "Send two drones north to inspect crops.",
+      "transcript_field": "text"
+    },
+    {
+      "hybrid_span_parser": {
+        "action": "send",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "irrigation"
+      },
+      "hybrid_span_validation": {
+        "issue_counts": {},
+        "issues": [],
+        "valid": true
+      },
+      "id": "week8_clause_002",
+      "offsets": [
+        [
+          0,
+          4
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          9,
+          14
+        ],
+        [
+          15,
+          19
+        ],
+        [
+          20,
+          22
+        ],
+        [
+          23,
+          30
+        ],
+        [
+          31,
+          41
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "predicted_entities": [
+        [
+          "action",
+          0,
+          4
+        ],
+        [
+          "count",
+          5,
+          14
+        ],
+        [
+          "location",
+          15,
+          19
+        ],
+        [
+          "action",
+          23,
+          30
+        ],
+        [
+          "target",
+          31,
+          41
+        ]
+      ],
+      "predicted_tags": [
+        "B-action",
+        "B-count",
+        "I-count",
+        "B-location",
+        "O",
+        "B-action",
+        "B-target",
+        "O"
+      ],
+      "span_intent_assembly": {
+        "action": "send",
+        "constraints": [],
+        "count": 1,
+        "location": "east",
+        "target": "irrigation"
+      },
+      "span_intent_validation": {
+        "issue_counts": {},
+        "issues": [],
+        "valid": true
+      },
+      "split": "scenario_development",
+      "tokens": [
+        "Send",
+        "one",
+        "drone",
+        "east",
+        "to",
+        "inspect",
+        "irrigation",
+        "."
+      ],
+      "transcript": "Send one drone east to inspect irrigation.",
+      "transcript_field": "text"
+    }
+  ],
+  "summary": {
+    "hybrid_intents_with_validation_issues": 0,
+    "predicted_entities": 9,
+    "raw_intents_with_validation_issues": 0,
+    "records": 2
+  }
+}

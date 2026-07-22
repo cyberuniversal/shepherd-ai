@@ -1,7 +1,7 @@
 {
   "metadata": {
     "artifact_sha256": {
-      "animated_map": "bbc3c107401bebf606060e81c2b59106e282d070b1f5bc709a6d332ff1258452",
+      "animated_map": "80d19f45cb1aa1fdbc04d8762f1c4d54189047ffabaab21d901edf1c19146984",
       "telemetry": "3c0d56ec8594b3fa85556268ea2fcac2f95b92031063ff902d684dd1a420b165"
     },
     "command_sha256": "3c631acc81d03a93115ee07009d43cc72bfe6dcb9c8f6944e5fb0942c1013548",
@@ -10,7 +10,7 @@
     },
     "destination_resolution_source": "explicit_operator_confirmation",
     "fleet": "datasets/drones/week5_three_drone_fleet_v1.json",
-    "generated_at_utc": "2026-07-16T18:53:54.084579+00:00",
+    "generated_at_utc": "2026-07-21T20:26:06.899535+00:00",
     "input_mode": "typed_development",
     "input_sha256": {
       "fleet": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd",
@@ -535,6 +535,7 @@
           "valid": true,
           "warnings": []
         },
+        "perception_target": null,
         "text": "Send two drones north to inspect crops"
       },
       {
@@ -993,6 +994,14 @@
           "valid": true,
           "warnings": []
         },
+        "perception_target": {
+          "clause_id": "clause_002",
+          "known_coordinates": false,
+          "phrase": "irrigation canal",
+          "search_region_id": "loc_east_field",
+          "search_region_name": "East Field",
+          "status": "awaiting_vision"
+        },
         "text": "one drone east to inspect irrigation"
       }
     ],
@@ -1037,12 +1046,23 @@
     "limitations": [
       "Software-simulation preparation only; no physical drones are controlled.",
       "No mission is successful until ASR, mission imagery, vision, supervision, and reporting evidence are stored.",
-      "Distinct grounded references are blocked because the custom map has no relation model that can reconcile them."
+      "Distinct grounded references are blocked because the custom map has no relation model that can reconcile them.",
+      "Perception targets have no coordinates until mission imagery produces a valid vision observation."
     ],
     "missing_evidence": [
       "exact_scenario_asr_prediction",
       "mission_image_manifest",
       "mission_vision_results"
+    ],
+    "perception_targets": [
+      {
+        "clause_id": "clause_002",
+        "known_coordinates": false,
+        "phrase": "irrigation canal",
+        "search_region_id": "loc_east_field",
+        "search_region_name": "East Field",
+        "status": "awaiting_vision"
+      }
     ],
     "pipeline": "week8_compound_mission_preparation_v1",
     "plans": [
@@ -1696,7 +1716,7 @@
         }
       }
     ],
-    "preparation_elapsed_seconds": 0.007934900000691414,
+    "preparation_elapsed_seconds": 0.008100099999865051,
     "safety_report": {
       "altitude_source": "operator_or_workflow_input",
       "assignment_results": [
@@ -2069,7 +2089,8 @@
       "Deterministic 2D kinematic interpolation; no aerodynamic or flight-controller dynamics.",
       "Formation slots are static geometric deconfliction, not active collision avoidance.",
       "Battery percentage is held constant because no battery-consumption model is specified.",
-      "Imagery capture and model inference are separate Week 8 stage artifacts."
+      "Imagery capture and model inference are separate Week 8 stage artifacts.",
+      "Perception targets are not assigned coordinates before a valid vision observation."
     ],
     "minimum_observed_separation_m": 39.955058,
     "minimum_required_separation_m": 20.0,
@@ -2887,12 +2908,14 @@
         }
       }
     },
+    "task_behaviors": {},
     "task_slots": {
       "mission_001_drone_01": {
         "east_offset_m": 20.0,
         "latitude": 24.0,
         "longitude": 46.000196664800306,
         "north_offset_m": 0.0,
+        "region_radius_m": 120.0,
         "target_location_id": "loc_north_field",
         "target_name": "North Field"
       },
@@ -2901,6 +2924,7 @@
         "latitude": 24.0,
         "longitude": 45.999803335199694,
         "north_offset_m": 2.4492935982947065e-15,
+        "region_radius_m": 120.0,
         "target_location_id": "loc_north_field",
         "target_name": "North Field"
       },
@@ -2909,6 +2933,7 @@
         "latitude": 23.999,
         "longitude": 46.003,
         "north_offset_m": 0.0,
+        "region_radius_m": 100.0,
         "target_location_id": "loc_east_field",
         "target_name": "East Field"
       }
@@ -2916,6 +2941,6 @@
     "telemetry_output": "outputs/evaluations/week8_roadmap_scenario_telemetry.jsonl",
     "telemetry_records": 43,
     "time_step_min": 0.25,
-    "wall_clock_seconds": 0.011456000036559999
+    "wall_clock_seconds": 0.011524499997904059
   }
 }

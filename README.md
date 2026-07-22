@@ -2,7 +2,7 @@
 
 Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
 
-Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 8 is now in progress: the exact roadmap command is decomposed into two inspectable clauses requesting three drones, but the first stored typed preflight correctly stops because the custom map grounds `east` and `irrigation` to different locations. This is not an end-to-end success result, does not control physical drones, and does not provide a physical-flight safety guarantee.
+Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 8 is in progress using the roadmap's Python software simulation. The fixed command is decomposed into two clauses requesting three drones, the operator's East Field resolution is preserved, deterministic telemetry plus Folium and PNG visualizations are implemented, and the frozen trained intent checkpoint has been evaluated on both clauses. Exact-scenario ASR and the registered Agriculture-Vision holdout run remain missing, so this is not yet an end-to-end success result, does not control physical drones, and does not provide a physical-flight safety guarantee.
 
 ## Project Rule
 
@@ -443,30 +443,43 @@ animated Folium map. Static formation slots keep the two North Field drones at
 separate inspection points. This is not aerodynamic simulation, active
 collision avoidance, ASR evidence, or mission-specific vision evidence.
 
-Launch the interactive 3D telemetry renderer locally:
+Audit all Week 8 completion requirements against stored artifacts:
 
 ```powershell
-python scripts/serve_week8_demo.py
+python scripts/audit_week8_completion.py
 ```
 
-Then open `http://127.0.0.1:8765/`. The operator can enter a command, resolve
-bounded grounding ambiguity, and play the resulting validated simulation. The
-browser is only a Three.js renderer: decomposition, grounding, planning,
-scheduling, and safety remain in the Python pipeline. Known map regions can be
-used as search bounds, but unresolved objects are never assigned invented
-coordinates. For example, `Send one drone east to search for a car.` produces
-a sweep of East Field and keeps `car` in `awaiting vision` state until
-mission-assigned imagery and a valid vision result exist.
+The frozen expanded85 DistilBERT checkpoint has now been run locally on the two
+fixed clauses. It produced one exact structured-intent match out of two and
+9/10 matching fields; clause 2 incorrectly selected `send` rather than
+`inspect`. This is scenario-development evidence and does not replace the held-
+out Week 2 benchmark.
 
-The 3D scene is not a flight-physics engine and does not make Week 8 complete.
-Its design and interaction contract are recorded in
-`docs/week8_3d_interactive_design.md`.
+The complete Colab sequence is in `notebooks/Notebook8_FinalDemo.ipynb`. It:
 
-Week 8 also remains blocked on a human-recorded WAV of the exact scenario and a
-mission-image manifest with source, split, and file provenance. Existing Week 6
-development summaries are not relabeled as mission observations. Notebook 8
-orchestrates this preflight in Colab; later cells will be added only as the
-required inputs and stage evidence exist.
+1. registers and transcribes one exact human WAV;
+2. runs the frozen trained intent checkpoint;
+3. executes the resolved three-drone software simulation;
+4. excludes Week 6 development IDs and evaluates the frozen Agriculture-Vision
+   checkpoint on label-positive validation-remainder records;
+5. builds all five roadmap metrics, the mission report, log, screenshot, and
+   completion audit; and
+6. saves a non-pixel, non-checkpoint artifact bundle to private Google Drive.
+
+The current expected audit decision remains to stay on Week 8 until the Colab
+audio and vision cells produce their raw evidence. Missing files are not
+converted into zero-valued results.
+
+The previously explored Three.js and Gazebo paths were discontinued on
+2026-07-21 and are not part of the active architecture. Their stored reports
+remain negative experiment history; they are not Week 8 completion evidence.
+
+Week 8 remains blocked on a human-recorded WAV of the exact scenario and the
+private-Drive Agriculture-Vision holdout inference. Existing Week 6 development
+summaries and abandoned simulator frames are not relabeled as mission
+observations. The notebook now constructs the mission manifest, raw predictions,
+metrics, and reports from source artifacts and refuses completion when any stage
+is absent.
 
 ## First Milestone
 

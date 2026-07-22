@@ -89,7 +89,22 @@ The roadmap lists the intended stack:
 - Visualization: Matplotlib and Folium.
 - Data processing: Pandas and NumPy.
 
-No repository configuration currently pins these dependencies. Do not invent install, test, lint, format, or run commands. Inspect actual config files first if they are added later.
+`pyproject.toml` declares the current Python dependency ranges and optional
+vision dependencies. Derive install, test, lint, format, and run commands from
+current repository configuration rather than inventing them.
+
+## Current Week 8 Simulation Decision
+
+The user discontinued the Gazebo and Three.js work on 2026-07-21. The active
+Week 8 simulator is the roadmap-supported Python software simulation with
+deterministic telemetry and Folium visualization. Do not resume or rebuild a 3D
+simulator unless the user explicitly reverses this decision.
+
+The discontinued 3D experiment reports remain historical negative evidence.
+They are not active architecture, dependencies, roadmap requirements, or Week 8
+completion evidence. Mission imagery must come from an explicitly registered
+mission image manifest; prior development images or abandoned simulator frames
+must not be silently relabeled as mission observations.
 
 ## Planned Data And Experiments
 

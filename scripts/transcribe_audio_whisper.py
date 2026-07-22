@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import platform
 import sys
+from time import perf_counter
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    total_started = perf_counter()
     args = parse_args()
     records = load_audio_manifest(args.manifest, dataset_root=args.dataset_root)
     device_metadata = require_device_substring(args.required_device_substring)
@@ -54,7 +56,9 @@ def main() -> None:
 
     import torch
 
+    model_load_started = perf_counter()
     model = whisper.load_model(args.model, device=args.device)
+    model_load_elapsed_seconds = perf_counter() - model_load_started
     parameters: dict[str, Any] = {
         "manifest": args.manifest,
         "dataset_root": args.dataset_root,
@@ -73,11 +77,14 @@ def main() -> None:
         },
     }
     predictions = []
+    inference_started = perf_counter()
     for record in records:
+        record_started = perf_counter()
         transcription_args: dict[str, Any] = {"fp16": args.fp16}
         if args.language:
             transcription_args["language"] = args.language
         result = model.transcribe(str(record.audio_path), **transcription_args)
+        record_elapsed_seconds = perf_counter() - record_started
         predictions.append(
             build_whisper_prediction(
                 record,
@@ -88,10 +95,16 @@ def main() -> None:
                     **parameters,
                     "segments": len(result.get("segments", [])),
                     "detected_language": result.get("language"),
+                    "record_inference_elapsed_seconds": record_elapsed_seconds,
+                    "model_load_elapsed_seconds": model_load_elapsed_seconds,
                 },
             )
         )
 
+    inference_elapsed_seconds = perf_counter() - inference_started
+    parameters["inference_elapsed_seconds"] = inference_elapsed_seconds
+    parameters["model_load_elapsed_seconds"] = model_load_elapsed_seconds
+    parameters["total_elapsed_seconds"] = perf_counter() - total_started
     write_whisper_predictions(args.predictions_output, predictions)
 
     expected = {record.id: record.transcript for record in records}
