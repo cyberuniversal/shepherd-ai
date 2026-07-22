@@ -163,3 +163,16 @@ Current intentionally promoted Week 7 artifacts:
 
 These are software-simulation development artifacts. They are not physical
 safety or Week 8 end-to-end mission results.
+
+Current intentionally promoted Week 8 and Week 9 paper evidence:
+
+- `outputs/evaluations/week8_end_to_end_evaluation.json`: five required roadmap
+  metrics from the completed fixed software-simulation scenario.
+- `outputs/evaluations/week8_mission_vision_raw.jsonl`: raw frozen-checkpoint
+  mission vision predictions; the weak result is intentionally preserved.
+- `outputs/evaluations/week9_paper_evidence.json`: source hashes, metric rows,
+  runtime rows, limitations, and claim limits used by the Week 9 draft.
+- `outputs/evaluations/week9_completion_gate_audit.json`: machine-checked Week
+  9 draft and traceability decision.
+- `outputs/tables/week9_end_to_end_metrics.csv` and
+  `outputs/tables/week9_runtime_stages.csv`: generated manuscript source tables.

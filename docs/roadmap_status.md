@@ -56,7 +56,7 @@ See `docs/repository_hygiene.md`.
 | Week 6 | Computer vision integration | `src/shepherd_ai/vision.py`, `src/shepherd_ai/segmentation.py`, Week 6 preparation, validation, detection, and segmentation-training scripts | `notebooks/Notebook6_Vision.ipynb` | Agriculture-Vision and VisDrone2019-DET; licensed imagery and checkpoints remain outside Git | Complete for roadmap advancement; registered 50-epoch VisDrone YOLOv8n validation baseline and Agriculture-Vision segmentation development comparisons recorded |
 | Week 7 | Safety, feedback, and integration | `src/shepherd_ai/safety.py`, `feedback.py`, `integration.py`, `clarification_dialogue.py`, `mission_supervision.py`, `integrated_prototype.py`; Week 7 evaluation and audit scripts | `notebooks/Notebook7_Safety.ipynb` | Synthetic policy plus preflight, dialogue, route, supervision, integration, and sensitivity cases under `datasets/safety/` | Complete for roadmap advancement under the corrected gate; all registered evaluations pass and the audit has no blockers |
 | Week 8 | End-to-end demo and evaluation | `src/shepherd_ai/mission_decomposition.py`, `src/shepherd_ai/week8_pipeline.py`, `src/shepherd_ai/mission_simulation.py`, `src/shepherd_ai/week8_asr.py`, `src/shepherd_ai/week8_evaluation.py`, `src/shepherd_ai/week8_vision_evaluation.py`, `src/shepherd_ai/week8_completion.py`, Week 8 run/evaluation/audit scripts | `notebooks/Notebook8_FinalDemo.ipynb` | Existing map/fleet/policy; exact human WAV and private Agriculture-Vision/checkpoint assets | Complete for roadmap advancement; all ten completion gates pass and the five required metrics are stored with raw evidence |
-| Week 9 | Research paper draft | Not implemented | Not stated | Evaluation artifacts and figures | Not started |
+| Week 9 | Research paper draft | `src/shepherd_ai/week9_paper.py`, `src/shepherd_ai/week9_completion.py`, Week 9 build and audit scripts | `notebooks/Notebook9_Evaluation.ipynb` | Promoted Week 8 evidence; generated paper tables and figures | Complete for roadmap advancement; all eight paper-draft and traceability gates pass |
 | Week 10 | Final paper and presentation | Not implemented | Not stated | Final reports/slides | Not started |
 
 ## Current Caveats
@@ -92,3 +92,11 @@ See `docs/repository_hygiene.md`.
   end-to-end benchmark. It does not demonstrate physical flight, guarantee
   safety, or establish novelty. The discontinued Three.js and Gazebo reports
   remain historical negative evidence and are not active architecture.
+- Week 9 is complete for roadmap advancement, not publication readiness. The
+  first draft contains every section named by the roadmap, architecture and
+  evaluation workflow diagrams, dataset and module tables, a generated runtime
+  figure, five-metric traceability, and an organized bibliography covering all
+  15 reviewed papers. The completion audit passes eight gates with no blockers.
+  A target venue, formal research question, defensible novelty statement,
+  expanded statistical evaluation, final results discussion, and final paper
+  formatting remain unresolved for Week 10 or a later explicit decision.

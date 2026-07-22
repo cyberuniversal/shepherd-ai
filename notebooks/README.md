@@ -14,6 +14,6 @@ Notebook sequence:
 6. `Notebook6_Vision.ipynb` - aerial image inference and detection summaries.
 7. `Notebook7_Safety.ipynb` - clarification, deterministic safety, event-driven supervision, integration, and sensitivity evaluation.
 8. `Notebook8_FinalDemo.ipynb` - integrated scenario demo.
-9. `Notebook9_Evaluation.ipynb` - evaluation tables, figures, and research outputs.
+9. `Notebook9_Evaluation.ipynb` - CPU-only validation and regeneration of the Week 9 paper evidence, tables, diagrams, and runtime figure.
 
 Do not put private credentials, private audio, downloaded model weights, or undocumented datasets in notebooks.

@@ -292,6 +292,19 @@ Completion criteria: Draft sections exist and all claims trace to source documen
 
 Known uncertainties: Target venue/style and final contribution are not stated.
 
+Current status: Week 9 is complete for roadmap advancement. The first draft is
+`reports/shepherd_ai_paper_draft.md`; it includes every roadmap-required draft
+section and explicitly separates literature findings, implemented behavior,
+measured Shepherd-AI results, and unsupported claims. The organized working
+bibliography covers all 15 papers in the repository review. A tested evidence
+builder validates the completed Week 8 audit and claim-limit flags before
+generating the five-metric table, runtime table and figure, architecture and
+evaluation workflow diagrams, source hashes, and traceability report. Notebook
+9 reproduces these artifacts without rerunning training or consuming a GPU.
+The Week 9 completion audit passes all eight gates with no blockers. This is a
+complete first-draft milestone, not a final manuscript or publication-readiness
+claim; venue style, formal research question, and novelty remain unspecified.
+
 ## Milestone 10: Final Paper And Presentation
 
 Objective: Finalize manuscript, documentation, slides, and demo materials.

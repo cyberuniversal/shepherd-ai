@@ -1,0 +1,48 @@
+{
+  "blockers": [],
+  "completion_allowed": true,
+  "decision": "week9_paper_draft_complete_for_advancement_to_week10",
+  "gates": [
+    {
+      "detail": "sections=10/10",
+      "name": "all_roadmap_draft_sections_present",
+      "passed": true
+    },
+    {
+      "detail": "references=15/15",
+      "name": "organized_bibliography_covers_review",
+      "passed": true
+    },
+    {
+      "detail": "cited=['L1', 'L10', 'L11', 'L12', 'L13', 'L14', 'L15', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9'], undefined=[]",
+      "name": "paper_citations_resolve_to_bibliography",
+      "passed": true
+    },
+    {
+      "detail": "metrics=['detection_performance', 'grounding_accuracy', 'intent_extraction_accuracy', 'overall_execution_time', 'scheduling_quality']",
+      "name": "five_roadmap_metrics_traceable",
+      "passed": true
+    },
+    {
+      "detail": "paper includes the measured weak mission-vision result",
+      "name": "negative_vision_result_preserved",
+      "passed": true
+    },
+    {
+      "detail": "claim_limits={'novelty_claimed': False, 'physical_flight_claimed': False, 'safety_guarantee_claimed': False}",
+      "name": "claim_limits_preserved",
+      "passed": true
+    },
+    {
+      "detail": "artifacts={'architecture_figure': True, 'evaluation_workflow': True, 'metrics_table': True, 'runtime_figure': True, 'runtime_table': True, 'traceability_report': True}",
+      "name": "paper_artifacts_present",
+      "passed": true
+    },
+    {
+      "detail": "Notebook 9 validates and regenerates registered paper evidence",
+      "name": "notebook_regenerates_artifacts",
+      "passed": true
+    }
+  ],
+  "gates_passed": true
+}

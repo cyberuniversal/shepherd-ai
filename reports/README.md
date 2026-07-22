@@ -41,3 +41,14 @@ Current generated reports:
 - `week7_integration_development_v1.md`: prior-module interface integration evaluation.
 - `week7_policy_sensitivity_v1.md`: synthetic threshold sensitivity analysis.
 - `week7_completion_gate_audit.md`: corrected Week 7 completion audit; it supersedes the earlier preflight-only completion claim.
+- `shepherd_ai_paper_draft.md`: Week 9 first manuscript draft; not a final paper
+  or accepted novelty claim.
+- `week9_bibliography.md`: organized working bibliography covering all 15
+  papers in the repository literature-review export.
+- `week9_evidence_traceability.md`: generated mapping from paper metrics to
+  registered source artifacts and claim limits.
+- `week9_completion_gate_audit.md`: machine-checked draft-completeness and
+  traceability audit; it does not assert publication readiness.
+- `figures/week9_system_architecture.mmd` and
+  `figures/week9_evaluation_workflow.mmd`: Mermaid figure sources.
+- `figures/week9_stage_runtime.png`: generated warm-model stage timing figure.

@@ -1,0 +1,6 @@
+metric,value,denominator,unit,definition,source_artifact
+intent_extraction_accuracy,0.5,2,ratio,exact structured-intent match across the two fixed roadmap clauses,outputs/evaluations/week8_exact_scenario_intent_evaluation.json
+grounding_accuracy,1.0,2,ratio,resolved destination match against the fixed scenario and operator resolution,outputs/evaluations/week8_roadmap_scenario_simulation.json
+scheduling_quality,1.0,3,ratio,task assignment completion ratio; assigned requested task replicas / total replicas,outputs/evaluations/week8_roadmap_scenario_simulation.json
+detection_performance,0.023561720474907635,6,ratio,mission_class_modified_mean_iou,outputs/evaluations/week8_mission_vision_evaluation.json
+overall_execution_time,31.334267820000434,1,seconds,"sum of measured warm-model ASR, intent, mission preparation, deterministic simulation, and vision inference wall-clock durations; model loading and notebook orchestration overhead excluded",outputs/evaluations/week8_end_to_end_evaluation.json
