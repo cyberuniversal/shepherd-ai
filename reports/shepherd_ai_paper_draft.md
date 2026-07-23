@@ -455,6 +455,12 @@ entities, and blinded label review. Improving and reevaluating agricultural
 perception remains a separate requirement; the evidence-aware result must not
 replace it.
 
+The repository now contains the label-separated packet builder, strict
+Hugging Face inference runner, raw-output evaluator, and human-benchmark
+validator for this experiment. No monolithic LLM result or fresh human-held-out
+result is reported until the corresponding Colab output and adjudicated data
+are stored.
+
 ## References
 
 The organized working bibliography is `reports/week9_bibliography.md`.

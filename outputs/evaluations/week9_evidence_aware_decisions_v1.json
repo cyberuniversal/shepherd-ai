@@ -666,7 +666,7 @@
       "safety": "existing_synthetic_development_cases"
     },
     "evaluator": "week9_evidence_aware_decision_evaluator_v1",
-    "generated_at_utc": "2026-07-23T10:10:58.230953+00:00",
+    "generated_at_utc": "2026-07-23T12:32:21.512580+00:00",
     "input_paths": {
       "conflict_cases": "datasets/evidence/week9_conflict_cases_v1.jsonl",
       "dialogue_cases": "datasets/safety/week7_clarification_cases_v1.jsonl",
@@ -714,6 +714,8 @@
         "false_refusal_denominator": 2,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "clarify": 2,
           "proceed": 2
@@ -739,6 +741,8 @@
         "false_refusal_denominator": 2,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "proceed": 4
         },
@@ -765,6 +769,8 @@
         "false_refusal_denominator": 20,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "clarify": 2,
           "proceed": 20
@@ -790,6 +796,8 @@
         "false_refusal_denominator": 20,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "proceed": 22
         },
@@ -817,6 +825,8 @@
         "false_refusal_denominator": 4,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "block": 6,
           "clarify": 2,
@@ -844,6 +854,8 @@
         "false_refusal_denominator": 4,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "proceed": 12
         },
@@ -881,6 +893,8 @@
         "false_refusal_denominator": 26,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "block": 6,
           "clarify": 6,
@@ -908,6 +922,8 @@
         "false_refusal_denominator": 26,
         "false_refusal_rate": 0.0,
         "false_refusals": 0,
+        "invalid_prediction_rate": 0.0,
+        "invalid_predictions": 0,
         "predicted_decision_counts": {
           "proceed": 38
         },

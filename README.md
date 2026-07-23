@@ -969,6 +969,30 @@ TACOS reimplementation and not a monolithic LLM result. See
 limits. The low Week 8 agricultural vision result remains part of the paper and
 is not replaced by this decision diagnostic.
 
+The next comparison is implemented but not yet run. Build its label-separated
+packet locally:
+
+```powershell
+python scripts/build_monolithic_decision_packet.py
+```
+
+Run `scripts/run_hf_monolithic_decision_baseline.py` in a Colab T4 runtime,
+then score the preserved raw responses with:
+
+```powershell
+python scripts/evaluate_monolithic_decision_baseline.py
+```
+
+The default baseline is `Qwen/Qwen2.5-7B-Instruct` loaded in 4-bit mode. The
+runner resolves an exact model commit, records all package and decoding
+parameters, refuses CPU execution, never loads the separate gold file, and can
+resume interrupted Colab runs. See
+`docs/week9_monolithic_baseline_protocol.md`.
+
+A fresh human-held-out benchmark does not yet exist. Candidate data must pass
+`scripts/validate_human_evidence_benchmark.py`; schema and collection rules are
+in `datasets/evidence/README.md`.
+
 ## Run Tests
 
 Use Python from the repository root:

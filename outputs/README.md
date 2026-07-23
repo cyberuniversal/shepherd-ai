@@ -177,5 +177,10 @@ Current intentionally promoted Week 8 and Week 9 paper evidence:
 - `outputs/evaluations/week9_evidence_aware_decisions_v1.json`: raw 38-case
   evidence-decision comparison, four stateful dialogue outcomes, metric
   denominators, source hashes, and explicit baseline/claim limits.
+- `outputs/evaluations/week9_monolithic_diagnostic_inputs_v1.jsonl`: label-free
+  same-input messages for the Colab monolithic LLM diagnostic.
+- `outputs/evaluations/week9_monolithic_diagnostic_manifest_v1.json`: hashes,
+  source paths, prompt version, class counts, and leakage controls for that
+  packet.
 - `outputs/tables/week9_end_to_end_metrics.csv` and
   `outputs/tables/week9_runtime_stages.csv`: generated manuscript source tables.

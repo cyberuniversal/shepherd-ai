@@ -1,0 +1,63 @@
+{
+  "case_count": 38,
+  "gold": {
+    "loaded_by_model_runner": false,
+    "path": "datasets/evidence/week9_monolithic_diagnostic_gold_v1.jsonl",
+    "sha256": "e6f7b490ef3e2209ba2d437bb202011e5d46136f3eede6bc478498d5a2a632e3"
+  },
+  "gold_decision_counts": {
+    "block": 6,
+    "clarify": 6,
+    "proceed": 26
+  },
+  "inputs": {
+    "contains_gold_labels": false,
+    "path": "outputs/evaluations/week9_monolithic_diagnostic_inputs_v1.jsonl",
+    "sha256": "2baca5b1d01f33b6f9efcb1f306341f4e9bb05d2cbdcfe60bd33fdc47c79c503"
+  },
+  "leakage_controls": [
+    "Model input JSONL contains no expected_decision or Shepherd decision.",
+    "Gold labels are stored in a separate JSONL not accepted by the model runner.",
+    "Each exact message list has a SHA-256 recorded before inference.",
+    "This packet reuses development evidence and is not called held-out."
+  ],
+  "metadata": {
+    "builder": "week9_monolithic_decision_packet_builder_v1",
+    "generated_at_utc": "2026-07-23T12:32:22.310531+00:00",
+    "prompt_version": "shepherd_monolithic_decision_prompt_v1",
+    "python_version": "3.14.3",
+    "random_seed": null,
+    "research_role": "diagnostic_not_fresh_human_heldout"
+  },
+  "sources": {
+    "conflict_cases": {
+      "path": "datasets/evidence/week9_conflict_cases_v1.jsonl",
+      "sha256": "939331a80b167002bad2f19900ca91b4307de121a28d2f08423432303dd87b1f"
+    },
+    "evaluation": {
+      "path": "outputs/evaluations/week9_evidence_aware_decisions_v1.json",
+      "sha256": "a364b71cae3524e69af9e10dff4ef2a2fa435ea1d61e2436852504a1452a5db7"
+    },
+    "fleet": {
+      "path": "datasets/drones/week5_three_drone_fleet_v1.json",
+      "sha256": "db27b1a6d36ddd98f9a9d3da207b0cc4e1e7f5d23a3c51c2119854a6ef1e51bd"
+    },
+    "map": {
+      "path": "datasets/maps/shepherd_test_map_v1.csv",
+      "sha256": "d231c512632ce92a97d50d047f6e463480c6b05bc3d9f94dce25b1c8bd2a3e95"
+    },
+    "policy": {
+      "path": "datasets/safety/week7_safety_policy_v1.json",
+      "sha256": "c4a7689a7a33fb97fb4324d1e3f852e4857d99cdc9478af8d110ee10e65dbccc"
+    },
+    "safety_cases": {
+      "path": "datasets/safety/week7_safety_cases_v1.jsonl",
+      "sha256": "337e6503f5effdd031dfbdbb69c072a77495348313e853ab63ee19f62bd10ff0"
+    }
+  },
+  "stratum_counts": {
+    "conflicting_grounded_references": 4,
+    "human_written_grounding_sufficiency": 22,
+    "synthetic_preflight_evidence": 12
+  }
+}

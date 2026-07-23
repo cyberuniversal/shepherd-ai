@@ -68,6 +68,21 @@ class EvidenceEvaluationTests(unittest.TestCase):
         self.assertEqual(summary["successful_recoveries"], 1)
         self.assertEqual(summary["clarification_recovery_rate"], 0.5)
 
+    def test_can_score_invalid_model_output_as_an_error(self) -> None:
+        summary = score_decision_rows(
+            [
+                {
+                    "expected_decision": "proceed",
+                    "predicted_decision": "invalid",
+                }
+            ],
+            allow_invalid_prediction=True,
+        )
+
+        self.assertEqual(summary["decision_accuracy"], 0.0)
+        self.assertEqual(summary["false_refusal_rate"], 1.0)
+        self.assertEqual(summary["invalid_prediction_rate"], 1.0)
+
 
 if __name__ == "__main__":
     unittest.main()
