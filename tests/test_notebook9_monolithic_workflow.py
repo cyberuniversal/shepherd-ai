@@ -35,6 +35,13 @@ class Notebook9MonolithicWorkflowTests(unittest.TestCase):
         self.assertNotIn("--gold", runner_cell)
         self.assertIn("--required-device-substring", runner_cell)
         self.assertIn("T4", runner_cell)
+        scoring_cell = next(
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if "evaluate_monolithic_decision_baseline.py"
+            in "".join(cell.get("source", []))
+        )
+        self.assertIn("from IPython.display import Markdown, display", scoring_cell)
 
 
 if __name__ == "__main__":
