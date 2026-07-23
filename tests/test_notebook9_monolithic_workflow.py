@@ -18,6 +18,13 @@ class Notebook9MonolithicWorkflowTests(unittest.TestCase):
         self.assertIn("build_monolithic_decision_packet.py", source)
         self.assertIn("run_hf_monolithic_decision_baseline.py", source)
         self.assertIn("evaluate_monolithic_decision_baseline.py", source)
+        setup_cell = "".join(notebook["cells"][1].get("source", []))
+        self.assertIn("%pip install -q -e .", setup_cell)
+        self.assertIn("sys.path.insert(0, src_path)", setup_cell)
+        self.assertLess(
+            setup_cell.index("%pip install -q -e ."),
+            setup_cell.index("sys.path.insert(0, src_path)"),
+        )
         runner_cell = next(
             "".join(cell.get("source", []))
             for cell in notebook["cells"]
