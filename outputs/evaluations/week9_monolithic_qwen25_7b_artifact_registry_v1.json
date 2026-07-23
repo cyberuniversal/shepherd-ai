@@ -1,0 +1,54 @@
+{
+  "artifact": {
+    "archive_filename": "week9_monolithic_qwen25_7b_artifacts.zip",
+    "archive_size_bytes": 22368,
+    "google_drive_path": "MyDrive/shepherd-ai/artifacts/week9_monolithic_qwen25_7b_artifacts.zip",
+    "sha256": "21aa49d8284edc567352f0892c3b39f075dea58ae0ba2aad77ad7bd33512696c",
+    "storage_scope": "user_owned_google_drive",
+    "zip_integrity_check": "passed"
+  },
+  "archive_contents": [
+    "outputs/evaluations/week9_monolithic_diagnostic_inputs_v1.jsonl",
+    "outputs/evaluations/week9_monolithic_diagnostic_manifest_v1.json",
+    "datasets/evidence/week9_monolithic_diagnostic_gold_v1.jsonl",
+    "outputs/evaluations/week9_monolithic_qwen25_7b_raw_v1.json",
+    "outputs/evaluations/week9_monolithic_qwen25_7b_evaluation_v1.json",
+    "reports/week9_monolithic_qwen25_7b_evaluation_v1.md"
+  ],
+  "evaluation": {
+    "case_count": 38,
+    "monolithic_llm_majority": {
+      "block_recall": 0.0,
+      "clarification_recall": 0.6667,
+      "decision_accuracy": 0.6842,
+      "false_refusal_rate": 0.1538,
+      "invalid_output_rate": 0.0,
+      "silent_proceed_proxy_rate": 0.1667
+    },
+    "repetitions": 1,
+    "shepherd_evidence_aware": {
+      "block_recall": 1.0,
+      "clarification_recall": 1.0,
+      "decision_accuracy": 1.0,
+      "false_refusal_rate": 0.0,
+      "invalid_output_rate": 0.0,
+      "silent_proceed_proxy_rate": 0.0
+    }
+  },
+  "inference": {
+    "device": "Tesla T4",
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "precision": "4bit",
+    "prompt_version": "shepherd_monolithic_decision_prompt_v1",
+    "random_seed": 17,
+    "temperature": 0.0
+  },
+  "research_limits": {
+    "fresh_human_heldout": false,
+    "paper_claim_status": "diagnostic_only",
+    "raw_output_committed_to_git": false,
+    "reuses_development_evidence": true
+  },
+  "schema_version": "week9_monolithic_artifact_registry_v1"
+}

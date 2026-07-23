@@ -455,11 +455,20 @@ entities, and blinded label review. Improving and reevaluating agricultural
 perception remains a separate requirement; the evidence-aware result must not
 replace it.
 
-The repository now contains the label-separated packet builder, strict
-Hugging Face inference runner, raw-output evaluator, and human-benchmark
-validator for this experiment. No monolithic LLM result or fresh human-held-out
-result is reported until the corresponding Colab output and adjudicated data
-are stored.
+The repository contains the label-separated packet builder, strict Hugging
+Face inference runner, raw-output evaluator, and human-benchmark validator. A
+38-case T4 diagnostic using `Qwen/Qwen2.5-7B-Instruct` revision
+`a09a35458c702b33eeacc393d103063234e8bc28` produced `0.6842` decision
+accuracy, `0.1538` false-refusal rate, `0.1667` silent-proceed proxy rate,
+`0.6667` clarification recall, and `0.0000` block recall. On the same cases,
+the Shepherd evidence-aware policy produced `1.0000` decision accuracy,
+`0.0000` false-refusal and silent-proceed proxy rates, and `1.0000`
+clarification and block recall. These reused development cases were used while
+designing Shepherd and therefore support only a diagnostic comparison, not a
+held-out performance or generalization claim. The raw output and evaluator
+files are preserved in the verified external archive registered by
+`outputs/evaluations/week9_monolithic_qwen25_7b_artifact_registry_v1.json`.
+A fresh adjudicated human-held-out result remains not evaluated.
 
 ## References
 

@@ -993,6 +993,14 @@ A fresh human-held-out benchmark does not yet exist. Candidate data must pass
 `scripts/validate_human_evidence_benchmark.py`; schema and collection rules are
 in `datasets/evidence/README.md`.
 
+The first Colab T4 diagnostic completed on 38 reused development cases with
+`Qwen/Qwen2.5-7B-Instruct` at revision
+`a09a35458c702b33eeacc393d103063234e8bc28`. Shepherd scored `1.0000`
+decision accuracy and the monolithic baseline scored `0.6842`; this is not a
+held-out result. The raw run and evaluator outputs are preserved in the
+verified Google Drive archive registered by
+`outputs/evaluations/week9_monolithic_qwen25_7b_artifact_registry_v1.json`.
+
 ## Run Tests
 
 Use Python from the repository root:

@@ -182,5 +182,9 @@ Current intentionally promoted Week 8 and Week 9 paper evidence:
 - `outputs/evaluations/week9_monolithic_diagnostic_manifest_v1.json`: hashes,
   source paths, prompt version, class counts, and leakage controls for that
   packet.
+- `outputs/evaluations/week9_monolithic_qwen25_7b_artifact_registry_v1.json`:
+  verified Google Drive archive path, SHA-256, exact model revision, observed
+  diagnostic metrics, archive contents, and claim limits. The raw run is
+  preserved in the registered archive but is not committed to Git.
 - `outputs/tables/week9_end_to_end_metrics.csv` and
   `outputs/tables/week9_runtime_stages.csv`: generated manuscript source tables.
