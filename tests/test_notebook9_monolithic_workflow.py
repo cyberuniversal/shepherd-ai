@@ -20,6 +20,7 @@ class Notebook9MonolithicWorkflowTests(unittest.TestCase):
         self.assertIn("evaluate_monolithic_decision_baseline.py", source)
         setup_cell = "".join(notebook["cells"][1].get("source", []))
         self.assertIn("%pip install -q -e .", setup_cell)
+        self.assertIn("'pull', '--ff-only'", setup_cell)
         self.assertIn("sys.path.insert(0, src_path)", setup_cell)
         self.assertLess(
             setup_cell.index("%pip install -q -e ."),
