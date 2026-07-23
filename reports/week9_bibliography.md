@@ -88,3 +88,26 @@ The repository's technical synthesis is `docs/literature_to_implementation.md`.
 The task-allocation review [L12] contains conflicts between some narrative
 claims and extracted tables; Shepherd-AI therefore does not cite it as evidence
 that one allocation strategy is universally best.
+
+## Additional Primary Sources For The Evidence-Aware Revision
+
+These sources were added after the supplied literature-review export. They are
+used only for the revised related-work comparison and are not presented as
+part of the original fifteen-paper review.
+
+**[E1]** Mandi Zhao, Shreeya Jain, and Shuran Song. "RoCo: Dialectic
+Multi-Robot Collaboration with Large Language Models." arXiv:2307.04738,
+2023. <https://arxiv.org/abs/2307.04738>
+
+**[E2]** Aoran Jiao, Tanmay P. Patel, Sanjmi Khurana, Anna-Mariya Korol,
+Lukas Brunke, Vivek K. Adajania, Utku Culha, Siqi Zhou, and Angela P.
+Schoellig. "Swarm-GPT: Combining Large Language Models with Safe Motion
+Planning for Robot Choreography Design." arXiv:2312.01059, 2023.
+<https://arxiv.org/abs/2312.01059>
+
+**[E3]** Siddharth Nayak, Adelmo Morrison Orozco, Marina Ten Have, Vittal
+Thirumalai, Jackson Zhang, Darren Chen, Aditya Kapoor, Eric Robinson, Karthik
+Gopalakrishnan, James Harrison, Brian Ichter, Anuj Mahajan, and Hamsa
+Balakrishnan. "LLaMAR: Long-Horizon Planning for Multi-Agent Robots in
+Partially Observable Environments." arXiv:2407.10031, 2024.
+<https://arxiv.org/abs/2407.10031>

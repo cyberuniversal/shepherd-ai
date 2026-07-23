@@ -1,4 +1,4 @@
-# Shepherd-AI: A Bounded Natural-Language Pipeline for Simulated Multi-Drone Missions
+# Shepherd-AI: Evidence-Gated Natural-Language Mission Planning for Simulated Multi-Drone Inspection
 
 **Week 9 first draft. Not a final paper or accepted novelty claim.**
 
@@ -22,9 +22,15 @@ match 1/2, grounding accuracy 2/2, scheduling completion 3/3, mission-class
 modified mean intersection-over-union 0.02356 over 59 images, and 31.3343
 seconds of measured warm-model execution time. The low vision score is retained
 as evidence that successful orchestration does not imply reliable perception.
-The current evidence is limited to software simulation and a single
-development scenario; it does not establish physical safety, broad
-generalization, or a novelty claim.
+In a separate 38-case evidence-decision diagnostic, the modular pipeline made
+38/38 registered `proceed`, `clarify`, or `block` decisions, with 0/26 false
+refusals and 0/12 silent-misexecution proxy errors. A command-only
+no-evidence-gate ablation made 12/12 such errors. Clarification recovery
+succeeded in 3/3 registered valid attempts. Most non-grounding cases are synthetic
+development diagnostics, and the ablation is not a monolithic LLM. The
+evidence therefore supports a candidate contribution in explicit,
+operator-facing evidence gating and failure-mode measurement, not physical
+safety, broad generalization, or a claim of being the first such system.
 
 **Keywords:** natural-language robotics, multi-drone coordination, mission
 planning, task allocation, semantic grounding, computer vision, software
@@ -52,9 +58,15 @@ inspectable pipeline rather than an unrestricted language-model controller.
 
 Shepherd-AI investigates whether the roadmap's voice-to-report pipeline can be
 assembled reproducibly in software simulation while preserving module-level
-evidence and failure states. The project currently demonstrates that the stages
-can exchange typed artifacts and execute one fixed scenario. It does not yet
-show that the system generalizes to open environments or physical drones.
+evidence and failure states. Its candidate contribution is an evidence-gated
+decision policy: locally valid language or planning output is insufficient to
+advance when map references are ambiguous, grounded references conflict,
+required state is missing, or configured safety checks fail. The paper measures
+false refusals, silent misexecution, clarification recall, and clarification
+recovery rather than treating format-valid plans as success. The project
+currently demonstrates one fixed end-to-end scenario and a controlled
+decision diagnostic. It does not show generalization to open environments or
+physical drones.
 
 ## 2. Motivation
 
@@ -79,7 +91,10 @@ records conflicts between some narrative claims and extracted tables.
 The practical motivation is therefore not to replace every robotics component
 with one model. It is to keep language handling, planning, allocation,
 perception, safety, execution, and evaluation separate enough that errors can
-be measured and blocked at their actual boundary.
+be measured and blocked at their actual boundary. The research question for
+the present revision is: **does explicit evidence gating reduce silent
+advancement on ambiguous, conflicting, or policy-invalid missions without
+unnecessarily refusing registered valid missions?**
 
 ## 3. Problem Statement
 
@@ -119,10 +134,16 @@ The project objectives, derived from the roadmap, are:
 - preserve raw outputs, model metadata, seeds, splits, failures, and derived
   metrics for paper preparation.
 
-A formal scientific hypothesis and final novelty statement are not stated in
-the repository. This draft therefore presents implemented objectives and
-measured evidence without converting them into an unsupported claim of being
-the first system of its kind.
+The candidate contribution evaluated in this draft is the combination of:
+
+1. a separately testable voice-to-perception multi-drone inspection pipeline;
+2. explicit `proceed`, `clarify`, and `block` decisions at grounding and safety
+   boundaries; and
+3. failure-mode metrics for false refusal, silent misexecution, and
+   clarification recovery.
+
+This is not a claim that modular robotics, safety validation, perception, or
+clarification is individually novel.
 
 ## 5. Related Work
 
@@ -130,14 +151,36 @@ the first system of its kind.
 
 TACOS demonstrates centralized one-to-many coordination using a semantic
 Coordinator and an execution-monitoring Supervisor, with conventional software
-handling trajectories [L1]. Swarm-Steward uses plan-then-execute separation,
+handling trajectories [L1]. Its monolithic ablation performed substantially
+worse than the two-role hierarchy on its multi-stage inspection task. TACOS
+assumes a complete, accurate world state and does not use onboard perception
+to discover its simulated targets [L1]. Shepherd-AI differs by separating
+speech, intent extraction, map grounding, planning, classical scheduling,
+perception, and safety into individually testable modules. This modularity is
+an engineering distinction, not by itself a novelty claim.
+
+RoCo assigns an LLM agent to each robot for dialogue, subtask planning, and
+waypoint proposals, then uses centralized motion planning and environment
+feedback [E1]. RoCo also uses OWL-ViT in real-world experiments; its authors
+identify perception errors as a major failure source and evaluate oracle human
+correction. It is therefore inaccurate to claim that all close systems lack
+perception. Swarm-GPT combines LLM-generated drone choreography with a
+model-based trajectory planner and safety layer, but it addresses synchronized
+performance design rather than semantic inspection and target discovery [E2].
+LLaMAR uses a plan-act-correct-verify architecture for partially observable
+multi-agent tasks [E3], so complete-world assumptions likewise cannot be
+attributed to all related systems.
+
+Swarm-Steward uses plan-then-execute separation,
 retrieval of map and state information, deterministic tools, and operator
-preview [L2]. The Web-of-Drones study exposes typed robot capabilities and live
-state through agent-enhanced interfaces [L3]. The hierarchical aerial-ground
-system combines high-level language models with a visual-language semantic map
-and conventional planners [L15]. Together, these papers support Shepherd-AI's
-separation between interpretation, typed mission artifacts, deterministic
-validation, and execution monitoring.
+preview, and its reviewed design can issue clarification requests [L2]. The
+Web-of-Drones study exposes typed robot capabilities and live state through
+agent-enhanced interfaces [L3]. The hierarchical aerial-ground system combines
+high-level language models with a visual-language semantic map and conventional
+planners [L15]. The remaining question is not whether prior work ever validates
+or clarifies. It is whether an integrated multi-UAV inspection pipeline
+explicitly measures insufficient/conflicting-evidence decisions, false
+refusals, silent misexecution, and recovery under a shared protocol.
 
 ### 5.2 Structured Plans And Executable Programs
 
@@ -263,7 +306,13 @@ within the declared validation workflow; the resulting checkpoint is frozen
 for Week 8. The VisDrone YOLOv8n detector is initialized from published
 weights, fine-tuned for 50 epochs on the official training split, and selected
 on the official validation split. These are separate segmentation and
-detection experiments and their metrics are not interchangeable.
+detection experiments and their metrics are not interchangeable. The fixed
+agricultural Week 8 scenario uses the U-Net result, not the YOLOv8n detector;
+the existence of a trained detector must not be used to obscure the scenario's
+low segmentation performance. On the official VisDrone validation split, the
+frozen YOLOv8n run recorded precision 0.43116, recall 0.32034, mAP50 0.29677,
+and mAP50-95 0.16724 after 50 training epochs. Those detection values are
+Week 6 model evidence, not agricultural mission success.
 
 ### 8.3 Fixed End-To-End Scenario
 
@@ -322,13 +371,93 @@ metadata support identity checks.
 The evidence supports completion of the bounded roadmap scenario in software
 simulation. It does not support claims of physical-drone control, real-world
 safety, open-world perception, statistically reliable end-to-end performance,
-or novelty. Final venue formatting, a formal research question, a defensible
-contribution statement, expanded experiments, results discussion, conclusion,
-and future-work treatment belong to the next roadmap milestone or require an
-explicit project decision.
+or state-of-the-art performance.
+
+### 8.6 Evidence-Aware Decision Diagnostic
+
+The versioned protocol in `docs/week9_evidence_aware_protocol.md` combines four
+registered strata:
+
+- 22 existing human-written grounding commands;
+- 12 existing synthetic preflight cases;
+- 4 synthetic conflicting-reference controls; and
+- 4 existing synthetic clarification dialogues.
+
+The 38 decision cases use gold labels `proceed`, `clarify`, or `block`.
+`proceed` means advance to the next bounded stage, not mission success. The
+comparison baseline sees only command text and proceeds whenever the existing
+parser identifies an action. It intentionally removes map, fleet, policy, and
+intermediate evidence. It is a mechanism ablation, not TACOS and not a
+monolithic LLM.
+
+## 9. Results
+
+### 9.1 Fixed End-To-End Scenario
+
+The fixed scenario completed the bounded software orchestration, but the
+results are mixed. Whisper WER was 0.07143 on one recording. Intent exact match
+was 1/2 clauses despite 9/10 field matches. Grounding and scheduling were 2/2
+and 3/3 respectively. Mission-class modified mean IoU was 0.02356 over 59
+images, including 0.0 for the irrigation clause. These values remain the
+primary end-to-end result and do not support a strong perception claim.
+
+### 9.2 Evidence Decisions
+
+Raw per-case outputs and denominators are stored in
+`outputs/evaluations/week9_evidence_aware_decisions_v1.json`.
+
+| System | Correct decisions | False refusals | Silent-proceed proxy errors | Clarification recall | Block recall |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Shepherd evidence-aware pipeline | 38/38 | 0/26 | 0/12 | 6/6 | 6/6 |
+| Single-pass actionability ablation | 26/38 | 0/26 | 12/12 | 0/6 | 0/6 |
+
+The stateful dialogue and conflict-resolution paths recovered in 3/3
+registered valid attempts. Dialogue terminal status matched all 4 synthetic
+cases, including retry, cancellation, and timeout outcomes. The
+silent-misexecution metric is a decision-level proxy: the diagnostic records an
+incorrect `proceed` decision but does not execute the wrong mission.
+
+## 10. Discussion
+
+The diagnostic supports the mechanism-level claim that explicit evidence gates
+prevented silent advancement on the registered ambiguous, conflicting, and
+policy-invalid cases without refusing the registered proceed cases. It does not
+establish that Shepherd-AI will retain these rates under new maps, noisy fleet
+state, adversarial language, different policies, or real operators.
+
+The comparison is deliberately weaker than the experiment needed for a final
+paper claim. The actionability ablation has no world evidence, while TACOS,
+RoCo, and LLaMAR receive structured state or observations. A fair monolithic
+LLM baseline must receive the same command, map, fleet, policy, and observation
+packet; use a frozen model and prompt; run multiple seeds or temperatures where
+applicable; and store every response. Until that experiment exists, this draft
+does not claim superiority over those systems.
+
+The low Week 8 vision result remains important. Evidence gating can stop an
+unsupported mission decision, but it cannot turn a weak perception model into
+a reliable detector. The paper's strongest current result is therefore
+decision discipline on a bounded diagnostic, not end-to-end agricultural
+inspection quality.
+
+## 11. Candidate Contribution And Next Experiment
+
+The defensible candidate contribution is: **a reproducible, modular
+multi-drone inspection pipeline that exposes insufficient or conflicting
+evidence as explicit operator-facing decisions and evaluates the resulting
+false-refusal, silent-misexecution, and clarification-recovery trade-off.**
+
+This statement is a candidate contribution, not a priority claim. The next
+required experiment is a same-input comparison against at least one frozen
+monolithic LLM baseline on a larger held-out ambiguity and state-conflict
+benchmark. The benchmark must include human-authored ambiguous and
+unambiguous commands, balanced decision classes, unseen paraphrases and map
+entities, and blinded label review. Improving and reevaluating agricultural
+perception remains a separate requirement; the evidence-aware result must not
+replace it.
 
 ## References
 
 The organized working bibliography is `reports/week9_bibliography.md`.
-Bracketed references [L1]-[L15] correspond directly to that file and to the
-fifteen paper pages in the repository literature-review export.
+Bracketed references [L1]-[L15] correspond to the repository
+literature-review export. [E1]-[E3] are additional primary sources recorded in
+the same bibliography for this revision.

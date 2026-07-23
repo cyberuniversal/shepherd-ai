@@ -948,6 +948,27 @@ The first command is the easiest path: type the transcript and pass a WAV path. 
 
 These commands are for real collection files. The repository currently includes command collection artifacts and an audio manifest, but those are not a final human-verified benchmark or a Whisper ASR evaluation.
 
+## Week 9 Evidence-Aware Paper Evaluation
+
+The current paper revision evaluates Shepherd-AI's explicit `proceed`,
+`clarify`, and `block` decisions. The benchmark reuses the 22 human-written
+Week 3 grounding commands and registered synthetic Week 7 cases, then adds four
+explicitly synthetic conflict controls. It reports false refusals, silent
+misexecution, clarification recall, block recall, and clarification recovery.
+
+Run the stored evaluation:
+
+```powershell
+python scripts/evaluate_evidence_aware_decisions.py
+```
+
+The comparison system is a command-only no-evidence-gate ablation. It is not a
+TACOS reimplementation and not a monolithic LLM result. See
+`docs/week9_evidence_aware_protocol.md` and
+`reports/week9_evidence_aware_decisions_v1.md` for definitions and claim
+limits. The low Week 8 agricultural vision result remains part of the paper and
+is not replaced by this decision diagnostic.
+
 ## Run Tests
 
 Use Python from the repository root:

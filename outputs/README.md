@@ -174,5 +174,8 @@ Current intentionally promoted Week 8 and Week 9 paper evidence:
   runtime rows, limitations, and claim limits used by the Week 9 draft.
 - `outputs/evaluations/week9_completion_gate_audit.json`: machine-checked Week
   9 draft and traceability decision.
+- `outputs/evaluations/week9_evidence_aware_decisions_v1.json`: raw 38-case
+  evidence-decision comparison, four stateful dialogue outcomes, metric
+  denominators, source hashes, and explicit baseline/claim limits.
 - `outputs/tables/week9_end_to_end_metrics.csv` and
   `outputs/tables/week9_runtime_stages.csv`: generated manuscript source tables.
