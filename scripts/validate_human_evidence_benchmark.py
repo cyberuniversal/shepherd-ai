@@ -9,7 +9,17 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from shepherd_ai.human_evidence_benchmark import (  # noqa: E402
+    context_sha256,
+    index_contexts,
+)
 
 
 REQUIRED_FIELDS = (
@@ -48,6 +58,11 @@ def main() -> None:
         help="Existing JSONL whose text/command fields must not overlap the candidate.",
     )
     parser.add_argument("--summary-output", type=Path, required=True)
+    parser.add_argument(
+        "--contexts",
+        type=Path,
+        help="Frozen evidence-context JSONL referenced by context_id.",
+    )
     parser.add_argument("--require-balanced", action="store_true")
     parser.add_argument("--minimum-per-decision", type=int, default=1)
     args = parser.parse_args()
@@ -56,6 +71,7 @@ def main() -> None:
 
     rows = _read_jsonl(args.dataset)
     comparison_texts = _comparison_texts(args.comparison)
+    contexts = index_contexts(_read_jsonl(args.contexts)) if args.contexts else None
     errors: list[str] = []
     ids: set[str] = set()
     normalized_texts: set[str] = set()
@@ -97,6 +113,21 @@ def main() -> None:
             errors.append(f"line {line_number}: context_id must be non-empty")
         else:
             context_counts[context_id] += 1
+            if contexts is not None:
+                context = contexts.get(context_id)
+                if context is None:
+                    errors.append(
+                        f"line {line_number}: unknown context_id {context_id!r}"
+                    )
+                else:
+                    if context["decision_stage"] != stage:
+                        errors.append(
+                            f"line {line_number}: context decision_stage does not match"
+                        )
+                    if row.get("context_sha256") != context_sha256(context):
+                        errors.append(
+                            f"line {line_number}: frozen context hash mismatch"
+                        )
         if row["split"] != EXPECTED_SPLIT:
             errors.append(f"line {line_number}: split must be {EXPECTED_SPLIT!r}")
         if row["data_type"] != EXPECTED_DATA_TYPE:
@@ -137,6 +168,12 @@ def main() -> None:
             {"path": str(path), "sha256": _sha256(path)}
             for path in args.comparison
         ],
+        "contexts": (
+            {"path": str(args.contexts), "sha256": _sha256(args.contexts)}
+            if args.contexts
+            else None
+        ),
+        "frozen_contexts_validated": contexts is not None,
         "require_balanced": args.require_balanced,
         "minimum_per_decision": args.minimum_per_decision,
         "valid": not errors,
@@ -150,6 +187,11 @@ def main() -> None:
             "Validation does not prove that labels are semantically correct.",
             "Participant consent, sampling, and ethics requirements are outside this file check.",
             "A valid candidate is not an evaluated Shepherd-AI result.",
+            (
+                "Frozen context contents were not validated because --contexts was omitted."
+                if contexts is None
+                else "Frozen context hashes and stage bindings were validated."
+            ),
         ],
     }
     args.summary_output.parent.mkdir(parents=True, exist_ok=True)

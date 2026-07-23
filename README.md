@@ -989,9 +989,13 @@ parameters, refuses CPU execution, never loads the separate gold file, and can
 resume interrupted Colab runs. See
 `docs/week9_monolithic_baseline_protocol.md`.
 
-A fresh human-held-out benchmark does not yet exist. Candidate data must pass
-`scripts/validate_human_evidence_benchmark.py`; schema and collection rules are
-in `datasets/evidence/README.md`.
+A fresh human-held-out benchmark does not yet exist. The repository now has a
+reproducible collection pipeline for frozen contexts, label-blinded review,
+third-party disagreement adjudication, overlap/context validation, and
+label-separated inference packets. It does not generate commands or pretend
+that review occurred. Follow `docs/human_evidence_benchmark_protocol.md`; a
+candidate must pass `scripts/validate_human_evidence_benchmark.py` before
+inference.
 
 The first Colab T4 diagnostic completed on 38 reused development cases with
 `Qwen/Qwen2.5-7B-Instruct` at revision

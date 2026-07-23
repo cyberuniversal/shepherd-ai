@@ -305,6 +305,15 @@ The Week 9 completion audit passes all eight gates with no blockers. This is a
 complete first-draft milestone, not a final manuscript or publication-readiness
 claim; venue style, formal research question, and novelty remain unspecified.
 
+Post-draft evidence strengthening: The 38-case Qwen diagnostic is preserved but
+reuses development evidence. A fresh held-out result is still not evaluated.
+The repository now implements the collection and governance workflow in
+`docs/human_evidence_benchmark_protocol.md`: exact frozen-context hashing,
+label-blinded independent review, mandatory third-party adjudication of
+disagreements, overlap and class-balance validation, and label-separated model
+packet construction. Actual commands, human identities, reviews, and labels
+remain uncollected and are not fabricated by the tooling.
+
 ## Milestone 10: Final Paper And Presentation
 
 Objective: Finalize manuscript, documentation, slides, and demo materials.
