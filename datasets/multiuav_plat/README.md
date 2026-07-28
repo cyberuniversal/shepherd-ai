@@ -10,3 +10,4 @@ the ignored `external/MultiUAV-Plat/` checkout.
 
 - `source_registry_v1.json` records the immutable source and field policy.
 - `source_audit_v1.json` is the preserved raw output of the successful audit.
+- `session_split_v1.json` freezes session placement and source-text overlap.

@@ -60,6 +60,13 @@ SOURCE_TEXT_FIELDS = {"id", "content", "content_aliases"}
 _DIFFICULTY_PATTERN = re.compile(
     r"_(Easy|Intermediate|Moderate|Hard|Extreme)_", re.IGNORECASE
 )
+SPLIT_NAMES = ("train", "calibration", "test")
+EXPECTED_SESSIONS_PER_STRATUM = 5
+SPLIT_ALLOCATION_PER_STRATUM = {
+    "train": 3,
+    "calibration": 1,
+    "test": 1,
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -72,6 +79,177 @@ def sha256_file(path: Path) -> str:
 
 def normalize_instruction(text: str) -> str:
     return " ".join(re.findall(r"[a-z0-9]+", text.lower()))
+
+
+def load_session_records(archive: Path) -> list[dict[str, Any]]:
+    """Read only split-relevant session and instruction metadata."""
+
+    records: list[dict[str, Any]] = []
+    with ZipFile(archive) as bundle:
+        for member in sorted(
+            name for name in bundle.namelist() if name.lower().endswith(".json")
+        ):
+            session = json.loads(bundle.read(member))
+            _require_object(session, f"{member}: session")
+            _require_fields(session, SESSION_REQUIRED_FIELDS, f"{member}: session")
+            difficulty_match = _DIFFICULTY_PATTERN.search(Path(member).name)
+            if difficulty_match is None:
+                raise ValueError(f"{member}: difficulty is absent from filename")
+            tasks = session["tasks"]
+            if not isinstance(tasks, list) or not tasks:
+                raise ValueError(f"{member}: tasks must be a non-empty list")
+            task_records = []
+            for task_index, task in enumerate(tasks):
+                label = f"{member}: task {task_index}"
+                _require_object(task, label)
+                _require_fields(task, TASK_REQUIRED_FIELDS, label)
+                aliases = task["content_aliases"]
+                if not isinstance(aliases, list) or not aliases:
+                    raise ValueError(
+                        f"{label}: content_aliases must be a non-empty list"
+                    )
+                task_records.append(
+                    {
+                        "task_id": _nonempty_text(task["id"], f"{label} id"),
+                        "canonical_normalized": normalize_instruction(
+                            _nonempty_text(task["content"], f"{label} content")
+                        ),
+                        "aliases_normalized": [
+                            normalize_instruction(
+                                _nonempty_text(alias, f"{label} alias {index}")
+                            )
+                            for index, alias in enumerate(aliases)
+                        ],
+                    }
+                )
+            records.append(
+                {
+                    "session_id": _nonempty_text(
+                        session["id"], f"{member}: session id"
+                    ),
+                    "archive_member": member,
+                    "scenario": _nonempty_text(
+                        session["task_type"], f"{member}: task_type"
+                    ),
+                    "difficulty": difficulty_match.group(1).lower(),
+                    "tasks": task_records,
+                }
+            )
+    return records
+
+
+def build_stratified_session_split(
+    records: list[dict[str, Any]],
+    *,
+    seed: str,
+) -> list[dict[str, str]]:
+    """Assign 3/1/1 sessions per scenario/difficulty stratum."""
+
+    if not seed.strip():
+        raise ValueError("split seed must be non-empty")
+    seen_ids: set[str] = set()
+    strata: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for record in records:
+        session_id = _nonempty_text(record.get("session_id"), "session_id")
+        if session_id in seen_ids:
+            raise ValueError(f"duplicate session id: {session_id}")
+        seen_ids.add(session_id)
+        key = (
+            _nonempty_text(record.get("scenario"), f"{session_id}: scenario"),
+            _nonempty_text(record.get("difficulty"), f"{session_id}: difficulty"),
+        )
+        strata.setdefault(key, []).append(record)
+
+    assignments: list[dict[str, str]] = []
+    for (scenario, difficulty), stratum_records in sorted(strata.items()):
+        if len(stratum_records) != EXPECTED_SESSIONS_PER_STRATUM:
+            raise ValueError(
+                f"stratum {(scenario, difficulty)} has {len(stratum_records)} "
+                f"sessions; expected {EXPECTED_SESSIONS_PER_STRATUM}"
+            )
+        ranked = sorted(
+            stratum_records,
+            key=lambda record: (
+                _split_rank(seed, str(record["session_id"])),
+                str(record["session_id"]),
+            ),
+        )
+        offset = 0
+        for split in SPLIT_NAMES:
+            count = SPLIT_ALLOCATION_PER_STRATUM[split]
+            for record in ranked[offset : offset + count]:
+                assignments.append(
+                    {
+                        "session_id": str(record["session_id"]),
+                        "archive_member": str(record["archive_member"]),
+                        "scenario": scenario,
+                        "difficulty": difficulty,
+                        "split": split,
+                        "rank_sha256": _split_rank(
+                            seed, str(record["session_id"])
+                        ),
+                    }
+                )
+            offset += count
+    return sorted(assignments, key=lambda row: row["session_id"])
+
+
+def audit_instruction_overlap(
+    records: list[dict[str, Any]],
+    assignments: list[dict[str, str]],
+) -> dict[str, Any]:
+    """Measure normalized source text appearing in more than one split."""
+
+    split_by_session = {
+        assignment["session_id"]: assignment["split"]
+        for assignment in assignments
+    }
+    if set(split_by_session) != {record["session_id"] for record in records}:
+        raise ValueError("split assignments do not cover exactly the source sessions")
+
+    canonical: dict[str, list[tuple[str, str]]] = {}
+    aliases: dict[str, list[tuple[str, str]]] = {}
+    for record in records:
+        session_id = record["session_id"]
+        split = split_by_session[session_id]
+        for task in record["tasks"]:
+            identity = (task["task_id"], split)
+            canonical.setdefault(task["canonical_normalized"], []).append(identity)
+            for alias in task["aliases_normalized"]:
+                aliases.setdefault(alias, []).append(identity)
+
+    return {
+        "canonical": _overlap_summary(canonical),
+        "all_official_aliases": _overlap_summary(aliases),
+        "interpretation": (
+            "The alias result audits the complete upstream alias pool. It is not "
+            "the overlap of a selected official-alias variant."
+        ),
+    }
+
+
+def _overlap_summary(
+    occurrences: dict[str, list[tuple[str, str]]],
+) -> dict[str, int]:
+    cross_split = {
+        text: rows
+        for text, rows in occurrences.items()
+        if len({split for _, split in rows}) > 1
+    }
+    affected_tasks = {
+        task_id
+        for rows in cross_split.values()
+        for task_id, _ in rows
+    }
+    return {
+        "normalized_text_count": len(occurrences),
+        "cross_split_normalized_text_count": len(cross_split),
+        "cross_split_affected_task_count": len(affected_tasks),
+    }
+
+
+def _split_rank(seed: str, session_id: str) -> str:
+    return hashlib.sha256(f"{seed}\0{session_id}".encode("utf-8")).hexdigest()
 
 
 def audit_benchmark_archive(

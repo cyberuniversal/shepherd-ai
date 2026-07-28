@@ -113,8 +113,11 @@ These counts assume every source task yields all five valid variants. Any
 excluded source task removes its complete five-case cluster. Partial clusters
 are invalid.
 
-The split seed and stratification policy must be registered before generation.
-Exact and normalized instruction overlap across splits must be reported.
+The session split is now frozen in `docs/multiuav_split_protocol.md` and
+`datasets/multiuav_plat/session_split_v1.json`, using the seed
+`shepherd-multiuav-split-v1`. Exact and normalized source-text overlap is
+reported in that manifest. Task eligibility and official-alias selection remain
+unfrozen, so no five-variant cases have been generated.
 
 ## Intervention Validity Rules
 
@@ -277,7 +280,7 @@ Before the locked run:
 - remove hard-coded transcription or test-specific aliases;
 - prove which NLP component the end-to-end path invokes;
 - resolve the DistilBERT role in this text-first benchmark;
-- freeze prompts, intervention rules, split seed, and method call budgets;
+- freeze prompts, intervention rules, and method call budgets;
 - test that no hidden reference data enters prompts;
 - test all output and recursive parameter validators;
 - test checkpoint/resume compatibility;
@@ -299,14 +302,12 @@ The following decisions block a locked experiment:
    clarification versus allowed observation or verification actions.
 4. **Alias authority:** Identify the exact upstream field or documentation that
    makes wording an official alias.
-5. **Split registration:** Choose the seed and session-level stratification
-   policy before variant inspection.
-6. **Execution scope:** Decide whether primary plan fidelity is static or
+5. **Execution scope:** Decide whether primary plan fidelity is static or
    includes submission to the official server. Static checks cannot be called
    live mission success.
-7. **Review protocol:** Register real author, reviewer, adjudicator, and
+6. **Review protocol:** Register real author, reviewer, adjudicator, and
    exclusion procedures without fabricating identities.
-8. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+7. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
    thermal/warm-up controls for resource measurements.
 
 ## Definition Of Done
