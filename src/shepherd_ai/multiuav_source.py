@@ -111,9 +111,16 @@ def load_session_records(archive: Path) -> list[dict[str, Any]]:
                 task_records.append(
                     {
                         "task_id": _nonempty_text(task["id"], f"{label} id"),
+                        "canonical_text": _nonempty_text(
+                            task["content"], f"{label} content"
+                        ),
                         "canonical_normalized": normalize_instruction(
                             _nonempty_text(task["content"], f"{label} content")
                         ),
+                        "aliases": [
+                            _nonempty_text(alias, f"{label} alias {index}")
+                            for index, alias in enumerate(aliases)
+                        ],
                         "aliases_normalized": [
                             normalize_instruction(
                                 _nonempty_text(alias, f"{label} alias {index}")
@@ -136,6 +143,227 @@ def load_session_records(archive: Path) -> list[dict[str, Any]]:
                 }
             )
     return records
+
+
+def build_task_eligibility(
+    records: list[dict[str, Any]],
+    assignments: list[dict[str, str]],
+    *,
+    seed: str,
+) -> list[dict[str, Any]]:
+    """Select nonleaking canonical owners and one official alias per task."""
+
+    if not seed.strip():
+        raise ValueError("eligibility seed must be non-empty")
+    split_by_session = {
+        assignment["session_id"]: assignment["split"]
+        for assignment in assignments
+    }
+    if set(split_by_session) != {record["session_id"] for record in records}:
+        raise ValueError("split assignments do not cover exactly the source sessions")
+
+    tasks: list[dict[str, Any]] = []
+    seen_task_ids: set[str] = set()
+    for record in records:
+        session_id = record["session_id"]
+        split = split_by_session[session_id]
+        for task in record["tasks"]:
+            task_id = _nonempty_text(task.get("task_id"), "task_id")
+            if task_id in seen_task_ids:
+                raise ValueError(f"duplicate task id: {task_id}")
+            seen_task_ids.add(task_id)
+            tasks.append(
+                {
+                    **task,
+                    "session_id": session_id,
+                    "scenario": record["scenario"],
+                    "difficulty": record["difficulty"],
+                    "split": split,
+                }
+            )
+
+    canonical_occurrences: dict[str, list[dict[str, Any]]] = {}
+    for task in tasks:
+        canonical_occurrences.setdefault(
+            task["canonical_normalized"], []
+        ).append(task)
+
+    canonical_owner: dict[str, str] = {}
+    for text, rows in canonical_occurrences.items():
+        support = Counter(row["split"] for row in rows)
+        canonical_owner[text] = min(
+            support,
+            key=lambda split: (
+                -support[split],
+                _eligibility_rank(seed, text, split),
+                split,
+            ),
+        )
+
+    retained = [
+        task
+        for task in tasks
+        if canonical_owner[task["canonical_normalized"]] == task["split"]
+    ]
+    retained_canonical_splits: dict[str, set[str]] = {}
+    for task in retained:
+        retained_canonical_splits.setdefault(
+            task["canonical_normalized"], set()
+        ).add(task["split"])
+
+    candidates_by_task: dict[str, list[dict[str, Any]]] = {}
+    alias_support: dict[str, dict[str, set[str]]] = {}
+    for task in retained:
+        candidates: dict[str, dict[str, Any]] = {}
+        for index, (alias, normalized) in enumerate(
+            zip(task["aliases"], task["aliases_normalized"], strict=True)
+        ):
+            if normalized == task["canonical_normalized"]:
+                continue
+            if retained_canonical_splits.get(normalized, set()) - {task["split"]}:
+                continue
+            candidates.setdefault(
+                normalized,
+                {
+                    "text": alias,
+                    "normalized": normalized,
+                    "source_alias_index": index,
+                },
+            )
+            alias_support.setdefault(normalized, {}).setdefault(
+                task["split"], set()
+            ).add(task["task_id"])
+        candidates_by_task[task["task_id"]] = list(candidates.values())
+
+    alias_owner: dict[str, str] = {}
+    for alias, split_support in alias_support.items():
+        alias_owner[alias] = min(
+            split_support,
+            key=lambda split: (
+                -len(split_support[split]),
+                _eligibility_rank(seed, "alias-owner", alias, split),
+                split,
+            ),
+        )
+
+    result: list[dict[str, Any]] = []
+    for task in tasks:
+        owner_split = canonical_owner[task["canonical_normalized"]]
+        base = {
+            "task_id": task["task_id"],
+            "session_id": task["session_id"],
+            "scenario": task["scenario"],
+            "difficulty": task["difficulty"],
+            "split": task["split"],
+            "canonical_normalized": task["canonical_normalized"],
+            "canonical_owner_split": owner_split,
+        }
+        if owner_split != task["split"]:
+            result.append(
+                {
+                    **base,
+                    "eligible": False,
+                    "exclusion_reason": "cross_split_canonical_nonowner",
+                    "selected_alias": None,
+                    "selected_alias_normalized": None,
+                    "selected_alias_source_index": None,
+                }
+            )
+            continue
+        candidates = [
+            candidate
+            for candidate in candidates_by_task[task["task_id"]]
+            if alias_owner[candidate["normalized"]] == task["split"]
+        ]
+        if not candidates:
+            result.append(
+                {
+                    **base,
+                    "eligible": False,
+                    "exclusion_reason": "no_nonleaking_official_alias",
+                    "selected_alias": None,
+                    "selected_alias_normalized": None,
+                    "selected_alias_source_index": None,
+                }
+            )
+            continue
+        selected = min(
+            candidates,
+            key=lambda candidate: (
+                _eligibility_rank(
+                    seed,
+                    task["task_id"],
+                    candidate["normalized"],
+                ),
+                candidate["source_alias_index"],
+            ),
+        )
+        result.append(
+            {
+                **base,
+                "eligible": True,
+                "exclusion_reason": None,
+                "selected_alias": selected["text"],
+                "selected_alias_normalized": selected["normalized"],
+                "selected_alias_source_index": selected["source_alias_index"],
+            }
+        )
+
+    _validate_eligibility_leakage(result)
+    return sorted(result, key=lambda row: row["task_id"])
+
+
+def summarize_task_eligibility(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    eligible = [row for row in rows if row["eligible"]]
+    exclusions = Counter(
+        row["exclusion_reason"] for row in rows if not row["eligible"]
+    )
+    split_counts = Counter(row["split"] for row in eligible)
+    exclusion_splits = Counter(row["split"] for row in rows if not row["eligible"])
+    return {
+        "source_task_count": len(rows),
+        "eligible_task_count": len(eligible),
+        "excluded_task_count": len(rows) - len(eligible),
+        "five_case_variant_count": len(eligible) * 5,
+        "eligible_task_counts_by_split": dict(sorted(split_counts.items())),
+        "five_case_variant_counts_by_split": {
+            split: count * 5 for split, count in sorted(split_counts.items())
+        },
+        "exclusion_counts_by_reason": dict(sorted(exclusions.items())),
+        "exclusion_counts_by_split": dict(sorted(exclusion_splits.items())),
+        "normalized_cross_split_overlap_count": 0,
+    }
+
+
+def _validate_eligibility_leakage(rows: list[dict[str, Any]]) -> None:
+    text_splits: dict[str, set[str]] = {}
+    for row in rows:
+        if not row["eligible"]:
+            continue
+        text_splits.setdefault(row["canonical_normalized"], set()).add(row["split"])
+        alias = row["selected_alias_normalized"]
+        if not isinstance(alias, str) or not alias:
+            raise ValueError(f"{row['task_id']}: eligible task has no selected alias")
+        if alias == row["canonical_normalized"]:
+            raise ValueError(
+                f"{row['task_id']}: selected alias equals its canonical instruction"
+            )
+        text_splits.setdefault(alias, set()).add(row["split"])
+    leaking = {
+        text: sorted(splits)
+        for text, splits in text_splits.items()
+        if len(splits) > 1
+    }
+    if leaking:
+        raise ValueError(
+            f"eligible canonical/alias text crosses split boundaries: {leaking}"
+        )
+
+
+def _eligibility_rank(seed: str, *parts: str) -> str:
+    return hashlib.sha256(
+        "\0".join((seed, *parts)).encode("utf-8")
+    ).hexdigest()
 
 
 def build_stratified_session_split(

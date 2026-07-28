@@ -57,8 +57,10 @@ Before variant generation:
    five-case cluster; and
 4. exact and normalized overlap must be recomputed on final generated text.
 
-The owner and alias-selection algorithms are not yet frozen. No derivative case
-count should be claimed until that next gate is implemented and audited.
+The owner and alias-selection algorithms are now frozen in
+`docs/multiuav_task_eligibility_protocol.md`. They retain 1,473 source tasks
+with zero normalized canonical/selected-alias overlap across splits. No
+intervention text has been generated.
 
 ## Claim Limits
 

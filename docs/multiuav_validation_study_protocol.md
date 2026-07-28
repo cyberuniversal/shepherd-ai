@@ -99,25 +99,29 @@ For every source task, the proposed dataset contains five linked variants:
    wording; and
 5. `resource_conflict_block`: a mission with no valid UAV-resource assignment.
 
-If all 1,500 source tasks are usable, the pre-exclusion total is 7,500 cases.
-All five variants for one task form one source cluster and must remain in the
-same split.
+The frozen leakage-control audit retains 1,473 of 1,500 source tasks. If every
+retained task later yields all five valid interventions, the pre-review upper
+bound is 7,365 cases. All five variants for one task form one source cluster and
+must remain in the same split.
 
-The proposed session-level split is 60/20/20:
+The frozen session-level split began as 60/20/20:
 
 - training: 45 sessions and 4,500 paired cases;
 - calibration: 15 sessions and 1,500 paired cases; and
 - test: 15 sessions and 1,500 paired cases.
 
-These counts assume every source task yields all five valid variants. Any
-excluded source task removes its complete five-case cluster. Partial clusters
+After deterministic leakage exclusions, the prospective upper bounds are
+4,495 train cases, 1,450 calibration cases, and 1,420 test cases. These counts
+still assume every retained source task yields all five valid interventions.
+Any later exclusion removes its complete five-case cluster. Partial clusters
 are invalid.
 
 The session split is now frozen in `docs/multiuav_split_protocol.md` and
 `datasets/multiuav_plat/session_split_v1.json`, using the seed
 `shepherd-multiuav-split-v1`. Exact and normalized source-text overlap is
-reported in that manifest. Task eligibility and official-alias selection remain
-unfrozen, so no five-variant cases have been generated.
+reported in that manifest. Task eligibility and official-alias selection are
+frozen in `docs/multiuav_task_eligibility_protocol.md`; no five-variant cases
+have been generated.
 
 ## Intervention Validity Rules
 
@@ -300,14 +304,12 @@ The following decisions block a locked experiment:
    primary comparison without a shared, justified role.
 3. **Recoverability rule:** Define when missing information requires operator
    clarification versus allowed observation or verification actions.
-4. **Alias authority:** Identify the exact upstream field or documentation that
-   makes wording an official alias.
-5. **Execution scope:** Decide whether primary plan fidelity is static or
+4. **Execution scope:** Decide whether primary plan fidelity is static or
    includes submission to the official server. Static checks cannot be called
    live mission success.
-6. **Review protocol:** Register real author, reviewer, adjudicator, and
+5. **Review protocol:** Register real author, reviewer, adjudicator, and
    exclusion procedures without fabricating identities.
-7. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+6. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
    thermal/warm-up controls for resource measurements.
 
 ## Definition Of Done

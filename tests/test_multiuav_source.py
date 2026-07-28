@@ -10,6 +10,8 @@ from shepherd_ai.multiuav_source import (
     audit_instruction_overlap,
     audit_benchmark_archive,
     build_stratified_session_split,
+    build_task_eligibility,
+    summarize_task_eligibility,
 )
 
 
@@ -205,6 +207,28 @@ class MultiUavSourceAuditTests(unittest.TestCase):
             )
         )
 
+    def test_committed_eligibility_is_bound_and_has_no_overlap(self) -> None:
+        import hashlib
+
+        metadata = ROOT / "datasets" / "multiuav_plat"
+        split_path = metadata / "session_split_v1.json"
+        eligibility = json.loads(
+            (metadata / "task_eligibility_v1.json").read_text(encoding="utf-8")
+        )
+
+        split_sha256 = hashlib.sha256(split_path.read_bytes()).hexdigest()
+        self.assertEqual(eligibility["session_split_sha256"], split_sha256)
+        self.assertEqual(eligibility["summary"]["eligible_task_count"], 1_473)
+        self.assertEqual(eligibility["summary"]["excluded_task_count"], 27)
+        self.assertEqual(
+            eligibility["summary"]["five_case_variant_count"],
+            7_365,
+        )
+        self.assertEqual(
+            eligibility["summary"]["normalized_cross_split_overlap_count"],
+            0,
+        )
+
 
 class MultiUavSessionSplitTests(unittest.TestCase):
     def test_split_is_deterministic_and_balanced_per_stratum(self) -> None:
@@ -268,6 +292,60 @@ class MultiUavSessionSplitTests(unittest.TestCase):
         )
 
 
+class MultiUavTaskEligibilityTests(unittest.TestCase):
+    def test_maximum_support_ownership_minimizes_canonical_exclusions(self) -> None:
+        records, assignments = _eligibility_records()
+
+        rows = build_task_eligibility(
+            records,
+            assignments,
+            seed="eligibility-seed",
+        )
+        summary = summarize_task_eligibility(rows)
+
+        excluded = [row for row in rows if not row["eligible"]]
+        self.assertEqual(len(excluded), 1)
+        self.assertEqual(excluded[0]["split"], "test")
+        self.assertEqual(
+            excluded[0]["exclusion_reason"],
+            "cross_split_canonical_nonowner",
+        )
+        self.assertEqual(summary["normalized_cross_split_overlap_count"], 0)
+
+    def test_alias_owner_uses_support_and_falls_back_to_unique_alias(self) -> None:
+        records, assignments = _eligibility_records()
+
+        rows = build_task_eligibility(
+            records,
+            assignments,
+            seed="eligibility-seed",
+        )
+        indexed = {row["task_id"]: row for row in rows}
+
+        self.assertEqual(
+            indexed["calibration-unique"]["selected_alias_normalized"],
+            "calibration only alias",
+        )
+        self.assertTrue(indexed["train-alias-1"]["eligible"])
+        self.assertTrue(indexed["train-alias-2"]["eligible"])
+
+    def test_eligibility_is_independent_of_source_record_order(self) -> None:
+        records, assignments = _eligibility_records()
+
+        first = build_task_eligibility(
+            records,
+            assignments,
+            seed="eligibility-seed",
+        )
+        second = build_task_eligibility(
+            list(reversed(records)),
+            list(reversed(assignments)),
+            seed="eligibility-seed",
+        )
+
+        self.assertEqual(first, second)
+
+
 def _split_records() -> list[dict]:
     records = []
     for scenario in ("area_search", "target_assignment"):
@@ -289,6 +367,101 @@ def _split_records() -> list[dict]:
                 }
             )
     return records
+
+
+def _eligibility_task(
+    task_id: str,
+    canonical: str,
+    aliases: list[str],
+) -> dict:
+    return {
+        "task_id": task_id,
+        "canonical_text": canonical,
+        "canonical_normalized": canonical,
+        "aliases": aliases,
+        "aliases_normalized": aliases,
+    }
+
+
+def _eligibility_records() -> tuple[list[dict], list[dict]]:
+    sessions = [
+        {
+            "session_id": "train-1",
+            "archive_member": "train-1.json",
+            "scenario": "area_search",
+            "difficulty": "easy",
+            "tasks": [
+                _eligibility_task(
+                    "train-shared-1",
+                    "shared canonical",
+                    ["train shared canonical alias"],
+                ),
+                _eligibility_task(
+                    "train-alias-1",
+                    "train canonical one",
+                    ["shared alias"],
+                ),
+            ],
+        },
+        {
+            "session_id": "train-2",
+            "archive_member": "train-2.json",
+            "scenario": "area_search",
+            "difficulty": "easy",
+            "tasks": [
+                _eligibility_task(
+                    "train-shared-2",
+                    "shared canonical",
+                    ["train shared canonical alias two"],
+                ),
+                _eligibility_task(
+                    "train-alias-2",
+                    "train canonical two",
+                    ["shared alias"],
+                ),
+            ],
+        },
+        {
+            "session_id": "test-1",
+            "archive_member": "test-1.json",
+            "scenario": "area_search",
+            "difficulty": "easy",
+            "tasks": [
+                _eligibility_task(
+                    "test-shared",
+                    "shared canonical",
+                    ["test shared canonical alias"],
+                ),
+            ],
+        },
+        {
+            "session_id": "calibration-1",
+            "archive_member": "calibration-1.json",
+            "scenario": "area_search",
+            "difficulty": "easy",
+            "tasks": [
+                _eligibility_task(
+                    "calibration-unique",
+                    "calibration canonical",
+                    ["shared alias", "calibration only alias"],
+                ),
+            ],
+        },
+    ]
+    split_by_session = {
+        "train-1": "train",
+        "train-2": "train",
+        "test-1": "test",
+        "calibration-1": "calibration",
+    }
+    assignments = [
+        {
+            "session_id": record["session_id"],
+            "split": split_by_session[record["session_id"]],
+        }
+        for record in sessions
+    ]
+    return sessions, assignments
 
 
 if __name__ == "__main__":
