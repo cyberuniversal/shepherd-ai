@@ -2,6 +2,12 @@
 
 **Week 9 first draft. Not a final paper or accepted novelty claim.**
 
+> **Historical draft:** Superseded on 2026-07-28 by the proposed MultiUAV-Plat
+> validation-placement study in
+> `docs/multiuav_validation_study_protocol.md`. Preserve the results and
+> limitations below as historical evidence; do not present them as results of
+> the revised paper.
+
 ## Abstract
 
 Natural-language interfaces can reduce the effort required to specify

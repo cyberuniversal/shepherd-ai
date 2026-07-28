@@ -1,5 +1,12 @@
 # Shepherd-AI Project Synthesis
 
+> **2026-07-28 update:** This document synthesized the repository at project
+> initialization. The prototype and roadmap artifacts described as missing
+> below have since been implemented in stages. The active paper direction is
+> now the proposed MultiUAV-Plat validation-placement study in
+> `docs/multiuav_validation_study_protocol.md`. Its benchmark and experiments
+> are not yet implemented or evaluated.
+
 ## Source Scope
 
 This synthesis is based only on the current repository documents read on 2026-06-28:
@@ -86,7 +93,13 @@ These are established by the reviewed papers, not by this repository's implement
 
 ## Limitations And Gaps
 
-The repository does not yet contain a working prototype, source modules, notebooks, datasets, experiments, tests, or package configuration beyond the files added for the first milestone. The formal research question, formal contribution, exact architecture diagram, package versions, dataset licenses, experiment protocol, baselines, thresholds, and CI process are not stated in the current source documents.
+At the time of this initial synthesis, the repository did not yet contain a
+working prototype, source modules, notebooks, datasets, experiments, tests, or
+package configuration beyond the first milestone. That statement is
+historical. The current repository must be inspected for implementation status.
+The revised paper now has a proposed research question and bounded
+systems-and-measurement contribution, but its protocol remains unresolved and
+has no new experiment results.
 
 The literature review identifies several general limitations in related systems: limited real-world validation, reliance on known maps or noiseless state, weak semantic validation, small or synthetic datasets, ambiguity in natural-language grounding, failure to distinguish valid output from task success, and incomplete evaluation of safety classifiers or runtime monitors.
 
@@ -94,13 +107,18 @@ The literature review identifies several general limitations in related systems:
 
 The roadmap supports an intended investigation into whether the planned modules can be integrated into a software-simulation prototype that turns voice or typed mission commands into planned, allocated, safety-checked, vision-supported multi-drone missions with evaluation results.
 
-The repository documents do not yet state a finalized research question, formal novelty claim, or hypothesis. The safe current framing is:
+The original repository documents did not state a finalized research question,
+formal novelty claim, or hypothesis. The active revision now proposes a
+validation-placement question, but it remains unsupported until the registered
+MultiUAV-Plat study is implemented. The safe framing is:
 
 - Fact: Shepherd-AI is planned as a Python software simulation, not a physical-drone deployment.
 - Fact: The roadmap defines modules for speech, intent extraction, grounding, planning, scheduling, vision, safety, feedback, integration, evaluation, and paper writing.
 - Fact: The literature supports bounded, inspectable representations and deterministic validation.
 - Untested hypothesis: these planned modules can be integrated into a working end-to-end prototype with useful evaluation results.
-- Not stated: the final scientific contribution or acceptance thresholds.
+- Proposed, not established: the active systems-and-measurement contribution.
+- Not finalized: the locked protocol, primary outcomes, and acceptance
+  thresholds.
 
 ## Established Claims Versus Hypotheses
 

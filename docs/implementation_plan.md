@@ -335,3 +335,49 @@ Evaluation metrics: Completeness of final reporting and reproducibility.
 Completion criteria: Documentation and artifacts are suitable for the intended student research/demo setting.
 
 Known uncertainties: Formatting requirements and dissemination target are not stated.
+
+## Post-Roadmap Research Revision: MultiUAV-Plat Validation Placement
+
+Objective: Replace the active paper claim with a bounded
+systems-and-measurement study of how validation placement changes failure
+containment and safety-utility-compute trade-offs in local multi-UAV planning.
+
+Relevant roadmap section: This refines Week 9 evaluation design and Week 10
+paper finalization. It is not an additional completed roadmap week.
+
+Relevant literature findings: Hierarchical language-robot systems repeatedly
+separate semantic planning from deterministic tools, safety gates, execution,
+and monitoring. Format validity does not establish mission correctness, and
+raw failures and negative results must be retained.
+
+Inputs and outputs: The planned input is an immutable MultiUAV-Plat source
+release plus five matched variants per source task. Outputs are label-separated
+datasets, four method configurations, raw predictions, containment labels,
+joint decision/fidelity/resource metrics, clustered statistical analysis, and
+a revised manuscript.
+
+Dependencies: Verified upstream commit and archive hash; locally reproduced
+source counts; registered intervention, split, review, model-call, offline, and
+hardware protocols; immutable Qwen model commits; and tested validators.
+
+Deliverables: See `docs/multiuav_validation_study_protocol.md`.
+
+Tests: Source-manifest integrity, full-cluster split enforcement, prompt
+leakage, trained-component wiring, strict output parsing, recursive plan
+grounding, call-budget parity, checkpoint compatibility, raw-result
+completeness, and publication-summary isolation.
+
+Evaluation metrics: Unsafe execution, silent continuation, false
+non-execution, decision accuracy, plan validity and fidelity, failure
+containment stage, latency, tokens, model calls, RAM, VRAM, and GPU-board
+energy.
+
+Completion criteria: The registered protocol is frozen before final scoring;
+every expected method-case row and failure is retained; analysis is clustered
+by source task; all claims trace to stored evidence; and the conclusion follows
+the observed result.
+
+Known uncertainties: M3/M4 call budgets, the role of the existing DistilBERT
+model, missing-fact recoverability, official alias authority, split seed and
+stratification, static-versus-live execution scope, review personnel, and
+hardware measurement controls are unresolved.

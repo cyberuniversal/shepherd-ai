@@ -92,11 +92,15 @@ See `docs/repository_hygiene.md`.
   end-to-end benchmark. It does not demonstrate physical flight, guarantee
   safety, or establish novelty. The discontinued Three.js and Gazebo reports
   remain historical negative evidence and are not active architecture.
-- Week 9 is complete for roadmap advancement, not publication readiness. The
+- Week 9 is complete for historical roadmap advancement, not publication
+  readiness. The
   first draft contains every section named by the roadmap, architecture and
   evaluation workflow diagrams, dataset and module tables, a generated runtime
   figure, five-metric traceability, and an organized bibliography covering all
   15 reviewed papers. The completion audit passes eight gates with no blockers.
-  A target venue, formal research question, defensible novelty statement,
-  expanded statistical evaluation, final results discussion, and final paper
-  formatting remain unresolved for Week 10 or a later explicit decision.
+  The active paper has since been replaced by the proposed MultiUAV-Plat
+  validation-placement study in
+  `docs/multiuav_validation_study_protocol.md`. That revision supplies a
+  bounded proposed question but still lacks a finalized protocol, implemented
+  benchmark, locked evaluation, final results discussion, and final paper
+  formatting.

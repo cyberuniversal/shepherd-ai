@@ -1,8 +1,15 @@
 # Shepherd-AI
 
-Shepherd-AI is a planned Python research prototype for natural-language multi-drone mission planning and coordination in software simulation.
+Shepherd-AI is a Python research prototype for natural-language multi-drone
+mission planning and coordination in software simulation.
 
-Current status: this repository contains implemented and tested slices for speech/intent extraction, grounding, mission planning, multi-drone scheduling, Week 6 computer vision, and the corrected Week 7 safety/feedback integration milestone. Week 8 is in progress using the roadmap's Python software simulation. The fixed command is decomposed into two clauses requesting three drones, the operator's East Field resolution is preserved, deterministic telemetry plus Folium and PNG visualizations are implemented, and the frozen trained intent checkpoint has been evaluated on both clauses. Exact-scenario ASR and the registered Agriculture-Vision holdout run remain missing, so this is not yet an end-to-end success result, does not control physical drones, and does not provide a physical-flight safety guarantee.
+Current research direction: the original ten-week prototype and its results are
+preserved, but the active paper is now a proposed systems-and-measurement study
+of validation placement on paired MultiUAV-Plat source tasks. The study compares
+monolithic, deterministic post-plan, stage-wise, and compute-matched post-plan
+configurations while jointly measuring safety, utility, failure containment,
+and local inference cost. The new benchmark and experiments are not yet
+implemented or evaluated. See `docs/multiuav_validation_study_protocol.md`.
 
 ## Project Rule
 
@@ -21,6 +28,8 @@ The current source of truth is:
 - `docs/implementation_plan.md`
 - `docs/milestone_2_speech_input.md`
 - `docs/literature_to_implementation.md`
+- `docs/source_material/code_plan_2026-07-25.docx`
+- `docs/multiuav_validation_study_protocol.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`
@@ -35,6 +44,11 @@ The current source of truth is:
 - `docs/repository_hygiene.md`
 
 The roadmap path is `docs/roadmap.pdf`; there is currently no `docs/roadmap/` directory.
+
+The MultiUAV-Plat study is a post-roadmap refinement of Week 9 and Week 10, not
+an additional completed roadmap milestone. The earlier Week 9 paper draft and
+38-case evidence diagnostics are historical development evidence and must not
+be reported as results of the new study.
 
 ## Google Colab Structure
 
@@ -948,9 +962,13 @@ The first command is the easiest path: type the transcript and pass a WAV path. 
 
 These commands are for real collection files. The repository currently includes command collection artifacts and an audio manifest, but those are not a final human-verified benchmark or a Whisper ASR evaluation.
 
-## Week 9 Evidence-Aware Paper Evaluation
+## Historical Week 9 Evidence-Aware Evaluation
 
-The current paper revision evaluates Shepherd-AI's explicit `proceed`,
+This section documents the superseded paper direction. Its code and outputs
+remain useful development evidence, but they are not part of the active
+MultiUAV-Plat paper's results.
+
+The historical revision evaluates Shepherd-AI's explicit `proceed`,
 `clarify`, and `block` decisions. The benchmark reuses the 22 human-written
 Week 3 grounding commands and registered synthetic Week 7 cases, then adds four
 explicitly synthetic conflict controls. It reports false refusals, silent

@@ -1,5 +1,11 @@
 # Fresh Human Evidence Benchmark Protocol
 
+> **Historical protocol:** This workflow belongs to the superseded Week 9
+> evidence-aware paper direction. Preserve it for traceability, but do not use
+> it as the primary dataset protocol for the active MultiUAV-Plat
+> validation-placement study. See
+> `docs/multiuav_validation_study_protocol.md`.
+
 ## Purpose
 
 This protocol creates the fresh, adjudicated final-test evidence-decision

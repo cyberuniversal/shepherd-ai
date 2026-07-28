@@ -10,8 +10,41 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_review\ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
 - Every Markdown file inside that literature-review export, including each paper page and its `Complete Summary ...md`.
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_to_implementation.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
+
+## Active Paper Direction
+
+The active paper direction is the proposed MultiUAV-Plat validation-placement
+study in `docs/multiuav_validation_study_protocol.md`. It supersedes the prior
+evidence-aware paper direction but does not erase its implementation, raw
+outputs, or negative evidence.
+
+Treat the new study as proposed until its source benchmark is locally verified,
+its unresolved protocol decisions are registered, its code exists, and locked
+experiments are stored. In particular:
+
+- do not call the upstream-reported 75 sessions, 1,500 tasks, or 9,396 checks a
+  local Shepherd-AI dataset audit;
+- do not call 7,500 derived cases collected until all five-case source clusters
+  exist and pass validation;
+- do not claim that M3 and M4 are compute matched until their model-call budgets
+  are explicit and tested;
+- do not force the existing DistilBERT span model into the new benchmark
+  without defining and testing a shared role;
+- do not label a missing-fact case `CLARIFY` when allowed observation APIs can
+  recover the fact;
+- do not label a resource-conflict case `BLOCK` when a valid UAV or recovery
+  action remains;
+- do not expose hidden validators, official reference plans, or privileged
+  state to any evaluated model; and
+- do not describe static plan checks as live simulator mission success.
+
+The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
+diagnostic, and fresh-human benchmark tooling are historical artifacts. They
+are not results for the new paper.
 
 ## Roadmap Versus Literature Review Authority
 
@@ -56,7 +89,12 @@ Roadmap-supported goals:
 - Generate mission feedback and reports.
 - Produce evaluation results, figures, documentation, and a research-paper draft/final version.
 
-Current scope is a Python software prototype and simulation. The formal research question, formal scientific contribution, and final hypotheses are not yet specified in the repository. Do not invent them.
+Current scope is a Python software prototype and simulation. The active study
+has a proposed research question and bounded systems-and-measurement
+contribution in `docs/multiuav_validation_study_protocol.md`, but the protocol
+is not finalized because its registered design decisions and experiments do
+not yet exist. Do not present the proposed question as a completed or supported
+contribution.
 
 ## Planned Pipeline And Modules
 
@@ -182,7 +220,10 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unspecified: formal research question, formal contribution, exact architecture diagram, exact package versions, dataset licenses, experiment protocol details, baselines, acceptance thresholds, CI, tests, and deployment process.
+- Currently unresolved for the active study: final preregistered question and
+  outcomes, M3/M4 model-call budgets, DistilBERT's role, intervention
+  recoverability, alias authority, split seed, execution scope, review
+  procedure, model revisions, and hardware measurement controls.
 
 ## Known Conflicts And Caveats
 

@@ -1,0 +1,321 @@
+# Shepherd-AI MultiUAV-Plat Validation-Placement Study
+
+## Status And Provenance
+
+This document records the revised paper direction supplied by the user in
+`docs/source_material/code_plan_2026-07-25.docx`.
+
+- Source DOCX SHA-256:
+  `829cfa69e2a3365d0686163fbd1548e9e0c22455535a6d725cc3289a37102f63`
+- Source document date: 2026-07-25
+- Repository adoption date: 2026-07-28
+- Status: proposed protocol, not implemented, frozen, or evaluated
+- Previous paper status: preserved as historical development evidence, but
+  superseded as the active paper direction
+
+The source DOCX contains 63 non-table paragraphs, no comments, and no tracked
+changes. LibreOffice was unavailable for page rendering, so the adoption check
+used complete structural text extraction rather than visual render evidence.
+
+## Research Position
+
+The paper is a systems-and-measurement study. It does not claim that refusal,
+safety checking, offline inference, modular planning, evidence gating, or
+multi-UAV language-model planning is individually novel.
+
+The proposed bounded contribution is the combined evaluation of:
+
+1. five matched interventions derived from each authentic source task;
+2. multiple validation placements under shared model and evidence conditions;
+3. failure-containment attribution;
+4. joint safety, utility, latency, memory, token, model-call, and GPU-board
+   energy reporting; and
+5. reproducible local inference with immutable source and model revisions.
+
+The proposed research question is:
+
+> How does the placement of evidence validation within a local multi-UAV
+> planning pipeline change where failures are contained, and what safety,
+> utility, latency, memory, token, model-call, and GPU-board energy trade-offs
+> result?
+
+This remains a proposed question until the unresolved design decisions below
+are registered.
+
+## Relationship To The Roadmap And Literature
+
+This study refines the roadmap's Week 9 and Week 10 evaluation and paper work.
+It does not create an additional roadmap week or replace the implemented
+software-simulation modules.
+
+The design follows the repository literature in these ways:
+
+- LLMs remain high-level interpreters and planners, not low-level controllers.
+- Outputs use bounded API plans and strict JSON decisions.
+- Deterministic validators gate execution and check schemas, identifiers,
+  parameters, provenance, and safety conditions.
+- Parsing, planning, validation, execution, and failure containment remain
+  separately inspectable.
+- Raw failures, malformed outputs, and negative results are retained.
+- Evaluation separates syntactic validity, task fidelity, and actual execution.
+
+MultiUAV-Plat was not part of the 15-paper repository literature export. It is
+a newly introduced primary benchmark source and must be added to the formal
+related-work record before manuscript finalization.
+
+## Source Benchmark
+
+Planned source:
+
+- Repository: `https://github.com/zhangsheng93/MultiUAV-Plat`
+- Required commit:
+  `1794e45e421fb5de03094f0b63f9ca95f86ab42f`
+- Upstream paper: *MultiUAV-Plat: An LLM-Oriented Platform, Benchmark and
+  Framework for Multi-UAV Collaborative Task Planning*, arXiv:2606.31073
+- Upstream-reported contents: 75 mission sessions, 1,500 natural-language
+  tasks, and 9,396 validation checks
+
+The commit currently resolves as upstream `main` and `HEAD`. The repository has
+not yet been downloaded into Shepherd-AI, its archive SHA-256 has not been
+registered, and its task/session counts have not been locally reproduced.
+Until that audit exists, the counts above are upstream claims, not
+Shepherd-AI dataset evidence.
+
+## Paired Dataset Design
+
+For every source task, the proposed dataset contains five linked variants:
+
+1. `canonical_execute`: canonical source instruction;
+2. `official_alias_execute`: source-supported alias wording;
+3. `missing_information_clarify`: a minimally underspecified instruction;
+4. `restored_information_execute`: the missing fact restored in matched
+   wording; and
+5. `resource_conflict_block`: a mission with no valid UAV-resource assignment.
+
+If all 1,500 source tasks are usable, the pre-exclusion total is 7,500 cases.
+All five variants for one task form one source cluster and must remain in the
+same split.
+
+The proposed session-level split is 60/20/20:
+
+- training: 45 sessions and 4,500 paired cases;
+- calibration: 15 sessions and 1,500 paired cases; and
+- test: 15 sessions and 1,500 paired cases.
+
+These counts assume every source task yields all five valid variants. Any
+excluded source task removes its complete five-case cluster. Partial clusters
+are invalid.
+
+The split seed and stratification policy must be registered before generation.
+Exact and normalized instruction overlap across splits must be reported.
+
+## Intervention Validity Rules
+
+The paired design is valid only if each intervention changes the intended
+evidence condition without changing unrelated mission semantics.
+
+- A missing-information case is `CLARIFY` only when the missing fact cannot be
+  recovered through the visible context or allowed observation APIs.
+- A resource-conflict case is `BLOCK` only when no allowed UAV, reassignment,
+  or source-supported recovery action can satisfy the mission.
+- The restored-information case must differ from its missing-information pair
+  only by the restored fact and unavoidable grammatical repair.
+- An official alias must be traceable to source benchmark metadata or
+  documentation. A manually invented paraphrase is not an official alias.
+- Hidden validators, reference API sequences, and privileged state must never
+  appear in model prompts.
+- Automatic generation is draft construction, not final labeling. Review and
+  adjudication identities must be real and pseudonymous.
+
+## Comparison Configurations
+
+The intended systems are:
+
+- `M1_monolithic`: one local model call produces the decision and API plan.
+- `M2_post_plan_deterministic`: the M1 plan passes through a deterministic
+  post-plan safety and fidelity gate.
+- `M3_stage_wise`: evidence is represented in a ledger, checked before
+  planning, and validated again for plan provenance.
+- `M4_post_plan_compute_matched`: a planner and a separate post-plan validator
+  use the same model-call budget as M3.
+
+All methods must receive the same visible command, mission evidence, action
+schema, model family, and decoding policy. Method-specific prompts and
+intermediate records must be versioned and hashed.
+
+The exact number and purpose of model calls in M3 are not yet explicit in the
+source DOCX. M3 and M4 cannot be called compute-matched until this is resolved
+and tested.
+
+## Output Contract
+
+Every method must return strict JSON containing:
+
+- `decision`: `EXECUTE`, `CLARIFY`, or `BLOCK`;
+- `reason`;
+- `clarification_question`, required only for `CLARIFY`; and
+- a non-empty structured API plan for `EXECUTE`.
+
+Malformed output is retained as `PARSE_ERROR`. It is not manually repaired,
+discarded, or converted into a valid decision.
+
+Every planned API value must be validated recursively against the visible
+command and context, including:
+
+- endpoint names;
+- UAV identifiers;
+- coordinates and regions;
+- headings;
+- distances and altitudes;
+- target identifiers;
+- messages and payload values; and
+- ordering or dependency constraints.
+
+The evaluator records containment as `pre_plan`, `post_plan`, `parse_error`, or
+`uncontained`.
+
+## Models And Offline Runtime
+
+Planned local model family:
+
+- `Qwen/Qwen2.5-3B-Instruct`
+- `Qwen/Qwen2.5-7B-Instruct`
+
+Each model must resolve to an immutable 40-character Hugging Face commit before
+the locked run. The comparison is within one model family and does not support
+claims about all LLMs.
+
+Measured inference requires:
+
+- weights cached before measurement;
+- local-files-only loading;
+- non-loopback sockets blocked during measured inference;
+- deterministic decoding;
+- raw prompt and response retention;
+- exact package and hardware metadata; and
+- a run-configuration hash that prevents incompatible resume.
+
+The primary experiment begins with text. Whisper and speech-to-mission claims
+remain outside the primary experiment until separately evaluated with
+consented recordings.
+
+## Metrics
+
+Decision and utility:
+
+- unsafe execution rate on `BLOCK` cases;
+- silent continuation rate on `CLARIFY` cases;
+- false non-execution rate on `EXECUTE` cases;
+- decision accuracy and per-class recall;
+- non-empty executable-plan rate; and
+- clarification recovery, only if a recovery interaction is implemented.
+
+Plan fidelity:
+
+- JSON/schema validity;
+- endpoint validity;
+- parameter grounding;
+- official-command fidelity; and
+- source-task or official-server completion when actually executed.
+
+Containment:
+
+- pre-plan containment;
+- post-plan containment;
+- parse-error containment; and
+- uncontained invalid mission rate.
+
+Compute:
+
+- wall-clock latency;
+- input and output tokens;
+- model-call count;
+- process RAM;
+- peak VRAM; and
+- NVIDIA GPU-board energy.
+
+GPU-board energy uses a device total-energy counter when available; otherwise,
+power is sampled at 20 Hz and numerically integrated. This is not workstation,
+simulator, network, or UAV energy.
+
+## Experimental Runs And Statistics
+
+Accuracy:
+
+- one complete locked test run per immutable checkpoint and method when
+  decoding is deterministic;
+- every expected case-method row retained; and
+- failed cases and parse errors included.
+
+Resources:
+
+- 30 source-task clusters, stratified before measurement;
+- all five variants for every selected source task;
+- three repetitions per model-method condition; and
+- resource repetitions reported separately from accuracy.
+
+Statistics:
+
+- source-task-cluster bootstrap;
+- paired method differences with confidence intervals;
+- a registered primary contrast and primary outcomes; and
+- secondary labeling or multiplicity correction for additional comparisons.
+
+## Reproducibility And Readiness Gates
+
+Before the locked run:
+
+- verify the MultiUAV-Plat commit, archive checksum, license, counts, and
+  source-task schema;
+- remove hard-coded transcription or test-specific aliases;
+- prove which NLP component the end-to-end path invokes;
+- resolve the DistilBERT role in this text-first benchmark;
+- freeze prompts, intervention rules, split seed, and method call budgets;
+- test that no hidden reference data enters prompts;
+- test all output and recursive parameter validators;
+- test checkpoint/resume compatibility;
+- test that partial source clusters are rejected;
+- test that empty plans and empty references are never rewarded;
+- label smoke results and exclude them from publication summaries; and
+- preserve every raw output and negative result.
+
+## Unresolved Decisions
+
+The following decisions block a locked experiment:
+
+1. **M3 call budget:** Specify whether stage-wise validation uses one or two
+   model calls and make M4 exactly compute matched.
+2. **DistilBERT role:** The existing token classifier was trained for Shepherd
+   intent spans, not MultiUAV-Plat API planning. It must not be forced into the
+   primary comparison without a shared, justified role.
+3. **Recoverability rule:** Define when missing information requires operator
+   clarification versus allowed observation or verification actions.
+4. **Alias authority:** Identify the exact upstream field or documentation that
+   makes wording an official alias.
+5. **Split registration:** Choose the seed and session-level stratification
+   policy before variant inspection.
+6. **Execution scope:** Decide whether primary plan fidelity is static or
+   includes submission to the official server. Static checks cannot be called
+   live mission success.
+7. **Review protocol:** Register real author, reviewer, adjudicator, and
+   exclusion procedures without fabricating identities.
+8. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+   thermal/warm-up controls for resource measurements.
+
+## Definition Of Done
+
+This revised paper is ready for conclusions only when:
+
+- all source and model checksums are recorded;
+- the protocol is frozen before final scores are inspected;
+- all five-case source clusters are complete;
+- every expected method-case result exists;
+- hidden reference fields are absent from prompts;
+- trained-component wiring is truthfully documented and tested;
+- smoke outputs are excluded from publication tables and figures;
+- statistical analysis uses source-task clusters;
+- safety, utility, and compute are reported together;
+- controlled-derivative, within-Qwen, execution-scope, isolation, and
+  call-budget limitations are explicit; and
+- the conclusion follows the observed results, including negative or mixed
+  findings.
