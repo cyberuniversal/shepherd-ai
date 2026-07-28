@@ -13,3 +13,5 @@ the ignored `external/MultiUAV-Plat/` checkout.
 - `session_split_v1.json` freezes session placement and source-text overlap.
 - `task_eligibility_v1.json` records every task inclusion/exclusion decision
   and the selected upstream alias.
+- `study_wiring_audit_v1.json` records the active text-first component path,
+  completed gates, legacy exclusions, and current blockers.

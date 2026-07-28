@@ -17,9 +17,9 @@ class Week9CompletionTests(unittest.TestCase):
         self.bibliography = (ROOT / "reports/week9_bibliography.md").read_text(
             encoding="utf-8"
         )
-        self.notebook = (ROOT / "notebooks/Notebook9_Evaluation.ipynb").read_text(
-            encoding="utf-8"
-        )
+        self.notebook = (
+            ROOT / "notebooks/Notebook9_Legacy_Paper_Artifacts.ipynb"
+        ).read_text(encoding="utf-8")
         self.evidence = json.loads(
             (ROOT / "outputs/evaluations/week9_paper_evidence.json").read_text(encoding="utf-8")
         )

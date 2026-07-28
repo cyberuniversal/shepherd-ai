@@ -377,7 +377,8 @@ every expected method-case row and failure is retained; analysis is clustered
 by source task; all claims trace to stored evidence; and the conclusion follows
 the observed result.
 
-Known uncertainties: M3/M4 call budgets, the role of the existing DistilBERT
-model, missing-fact recoverability, official alias authority, split seed and
-stratification, static-versus-live execution scope, review personnel, and
-hardware measurement controls are unresolved.
+Known uncertainties: M3/M4 call budgets, missing-fact recoverability,
+static-versus-live execution scope, review personnel, and hardware measurement
+controls remain unresolved. Source provenance, split registration, official
+alias authority, task eligibility, and the exclusion of the existing
+DistilBERT span tagger from the primary comparison are now frozen.

@@ -50,7 +50,10 @@ hashes, split roles, model metadata, and derived predictions are used instead.
 - `outputs/tables/week9_runtime_stages.csv`
 - `outputs/evaluations/week9_paper_evidence.json`
 - `reports/week9_evidence_traceability.md`
-- A reproducible `notebooks/Notebook9_Evaluation.ipynb`
+- A reproducible historical
+  `notebooks/Notebook9_Legacy_Paper_Artifacts.ipynb`. The active
+  `notebooks/Notebook9_Evaluation.ipynb` is reserved for the revised
+  MultiUAV validation study.
 
 ## Completion Criteria
 

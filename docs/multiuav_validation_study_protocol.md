@@ -283,7 +283,8 @@ Before the locked run:
   source-task schema;
 - remove hard-coded transcription or test-specific aliases;
 - prove which NLP component the end-to-end path invokes;
-- resolve the DistilBERT role in this text-first benchmark;
+- preserve the registered exclusion of DistilBERT from the primary text-first
+  comparison;
 - freeze prompts, intervention rules, and method call budgets;
 - test that no hidden reference data enters prompts;
 - test all output and recursive parameter validators;
@@ -299,17 +300,14 @@ The following decisions block a locked experiment:
 
 1. **M3 call budget:** Specify whether stage-wise validation uses one or two
    model calls and make M4 exactly compute matched.
-2. **DistilBERT role:** The existing token classifier was trained for Shepherd
-   intent spans, not MultiUAV-Plat API planning. It must not be forced into the
-   primary comparison without a shared, justified role.
-3. **Recoverability rule:** Define when missing information requires operator
+2. **Recoverability rule:** Define when missing information requires operator
    clarification versus allowed observation or verification actions.
-4. **Execution scope:** Decide whether primary plan fidelity is static or
+3. **Execution scope:** Decide whether primary plan fidelity is static or
    includes submission to the official server. Static checks cannot be called
    live mission success.
-5. **Review protocol:** Register real author, reviewer, adjudicator, and
+4. **Review protocol:** Register real author, reviewer, adjudicator, and
    exclusion procedures without fabricating identities.
-6. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+5. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
    thermal/warm-up controls for resource measurements.
 
 ## Definition Of Done

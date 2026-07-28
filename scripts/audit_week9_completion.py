@@ -38,7 +38,9 @@ def main() -> None:
     audit = build_week9_completion_audit(
         paper_text=(root / "reports/shepherd_ai_paper_draft.md").read_text(encoding="utf-8"),
         bibliography_text=(root / "reports/week9_bibliography.md").read_text(encoding="utf-8"),
-        notebook_text=(root / "notebooks/Notebook9_Evaluation.ipynb").read_text(encoding="utf-8"),
+        notebook_text=(
+            root / "notebooks/Notebook9_Legacy_Paper_Artifacts.ipynb"
+        ).read_text(encoding="utf-8"),
         evidence=evidence,
         artifact_status={name: (root / path).is_file() for name, path in ARTIFACTS.items()},
     )

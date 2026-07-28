@@ -1,0 +1,72 @@
+{
+  "active_branch": "codex/multiuav-validation-study",
+  "artifact_bindings": {
+    "session_split": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/session_split_v1.json",
+      "sha256": "988c6ac5662c0af21d71d883fe2c6a40f16afc4886cd49bbd5f674d45e893520"
+    },
+    "source_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/source_audit_v1.json",
+      "sha256": "34208e2f438f24c35770c02802bf1affb1d31f3981dba026aa79aa276bd7d491"
+    },
+    "task_eligibility": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/task_eligibility_v1.json",
+      "sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff"
+    }
+  },
+  "blocking_gates": [
+    "agent_visible_context_projection",
+    "recoverability_rule",
+    "intervention_generation_and_review",
+    "m1_to_m4_call_budget",
+    "strict_api_plan_contract",
+    "deterministic_recursive_validator",
+    "immutable_qwen_checkpoint_resolution",
+    "offline_inference_isolation",
+    "execution_scope",
+    "hardware_measurement_protocol"
+  ],
+  "claim_status": "component_wiring_audited_no_revised_inference",
+  "completed_gates": [
+    "pinned_source_integrity",
+    "session_split",
+    "task_eligibility",
+    "official_alias_selection"
+  ],
+  "errors": [],
+  "legacy_component_roles": {
+    "distilbert_week2_span_tagger": "excluded_from_primary_study; trained for Shepherd intent spans, not MultiUAV API planning",
+    "week8_deterministic_mission_pipeline": "historical_roadmap_evidence_not_a_primary_comparison_method",
+    "week9_monolithic_diagnostic": "historical_development_diagnostic_not_revised_study_evidence",
+    "whisper": "excluded_from_primary_text_first_study"
+  },
+  "primary_path": {
+    "api_plan_parser": "not_implemented",
+    "dataset": "five_variant_dataset_not_implemented",
+    "deterministic_validator": "not_implemented",
+    "execution_backend": "not_selected",
+    "input_modality": "text",
+    "methods": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "model_family": "Qwen2.5-Instruct_planned_not_loaded",
+    "source_adapter": "multiuav_plat_pinned_source_v1"
+  },
+  "ready_for_intervention_generation": false,
+  "ready_for_model_inference": false,
+  "runtime_invocation": {
+    "distilbert_invoked": false,
+    "legacy_week8_pipeline_invoked": false,
+    "qwen_invoked": false,
+    "whisper_invoked": false
+  },
+  "status": "blocked_before_intervention_generation",
+  "study_id": "multiuav_validation_placement_v1",
+  "valid": true
+}
