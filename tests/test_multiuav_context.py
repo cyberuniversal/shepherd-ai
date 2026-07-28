@@ -107,6 +107,17 @@ class MultiUavContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "outside the allowlist"):
             validate_agent_visible_context(context)
 
+    def test_validator_rejects_global_target_visibility(self) -> None:
+        context = project_agent_visible_context(
+            _session(),
+            task_id="task-1",
+            instruction="Take off.",
+        )
+        context["observation_contract"]["global_targets_visible"] = True
+
+        with self.assertRaisesRegex(ValueError, "global targets"):
+            validate_agent_visible_context(context)
+
 
 if __name__ == "__main__":
     unittest.main()

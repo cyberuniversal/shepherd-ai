@@ -34,6 +34,7 @@ The current source of truth is:
 - `docs/code_plan_compliance.md`
 - `docs/multiuav_validation_study_protocol.md`
 - `docs/multiuav_agent_context_protocol.md`
+- `docs/multiuav_recoverability_protocol.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`

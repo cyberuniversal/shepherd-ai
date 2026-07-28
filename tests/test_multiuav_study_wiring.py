@@ -25,7 +25,6 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertFalse(result["runtime_invocation"]["qwen_invoked"])
         self.assertFalse(result["ready_for_model_inference"])
-        self.assertIn("recoverability_rule", result["blocking_gates"])
         self.assertNotIn(
             "agent_visible_context_projection",
             result["blocking_gates"],
@@ -34,8 +33,14 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "agent_visible_context_projection",
             result["completed_gates"],
         )
+        self.assertNotIn("recoverability_rule", result["blocking_gates"])
+        self.assertIn("recoverability_rule", result["completed_gates"])
+        self.assertTrue(result["ready_for_intervention_generation"])
         self.assertTrue(
             result["artifact_bindings"]["agent_context_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["recoverability_audit"]["exists"]
         )
         self.assertTrue(
             result["artifact_bindings"][

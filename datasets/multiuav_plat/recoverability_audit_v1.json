@@ -1,0 +1,76 @@
+{
+  "claim_status": "recoverability_policy_and_candidate_coverage_audited_only",
+  "eligibility_sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff",
+  "generated_at_utc": "2026-07-28T15:30:00.702195+00:00",
+  "limitations": [
+    "Candidate detection inventories source wording but does not remove text or assign final labels.",
+    "Counterfactual fleet contexts prove policy behavior, not semantic quality of generated cases.",
+    "No missing-information, restored-information, or resource-conflict case was generated.",
+    "Every generated derivative still requires validation and registered human review."
+  ],
+  "policy": {
+    "excluded_resource_conflict_mutations": [
+      "low_battery",
+      "busy_status",
+      "route_obstruction",
+      "unknown_target_runtime_id_with_retained_reference"
+    ],
+    "initial_context_facts": [
+      "drone_battery_level",
+      "drone_position",
+      "drone_runtime_id",
+      "drone_status",
+      "environment_state"
+    ],
+    "local_observation_facts": {
+      "obstacle_geometry": "GET /drones/{id}/nearby/obstacles",
+      "target_runtime_id": "GET /drones/{id}/nearby/targets",
+      "target_runtime_position": "GET /drones/{id}/nearby/targets"
+    },
+    "planner_responsibility_facts": [
+      "api_endpoint_selection",
+      "generic_drone_assignment",
+      "intermediate_waypoint",
+      "route"
+    ],
+    "policy_version": 1,
+    "requires_operator_facts": [
+      "action_duration",
+      "altitude",
+      "communication_recipient",
+      "coverage_threshold",
+      "destination_coordinate",
+      "explicit_drone_identity",
+      "formation_assignment",
+      "message_payload",
+      "minimum_drone_count",
+      "movement_direction",
+      "movement_distance",
+      "target_reference",
+      "waypoint_coordinate"
+    ],
+    "resource_conflict_rule": "BLOCK only for absent explicitly required UAV identities or insufficient fleet cardinality when AGENT cannot register replacements"
+  },
+  "policy_sha256": "92176692eeac2ff45c7c14e5a2e7ab22522a4174b073dc228a049cebd7e15e3a",
+  "schema_version": 1,
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "summary": {
+    "candidate_fact_counts": {
+      "action_duration": 57,
+      "altitude": 1352,
+      "coverage_threshold": 209,
+      "explicit_drone_identity": 1390,
+      "minimum_drone_count": 196,
+      "movement_direction": 219,
+      "target_reference": 592,
+      "waypoint_coordinate": 804
+    },
+    "eligible_tasks_audited": 1473,
+    "resource_conflict_basis_counts": {
+      "explicit_required_uav_absence": 1390,
+      "zero_fleet_for_generic_uav_task": 83
+    },
+    "resource_conflict_block_justifications": 1473,
+    "tasks_with_operator_fact_candidates": 1473
+  }
+}

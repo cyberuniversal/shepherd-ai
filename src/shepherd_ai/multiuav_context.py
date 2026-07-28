@@ -136,8 +136,8 @@ def validate_agent_visible_context(context: Mapping[str, Any]) -> None:
     session = _require_mapping(context.get("session"), "agent context session")
     _reject_unknown_fields(session, set(SESSION_FIELDS), "agent context session")
     drones = context.get("drones")
-    if not isinstance(drones, list) or not drones:
-        raise ValueError("agent context drones must be a non-empty list")
+    if not isinstance(drones, list):
+        raise ValueError("agent context drones must be a list")
     for index, drone in enumerate(drones):
         _reject_unknown_fields(
             _require_mapping(drone, f"agent context drone {index}"),
@@ -167,6 +167,14 @@ def validate_agent_visible_context(context: Mapping[str, Any]) -> None:
         },
         "agent context observation_contract",
     )
+    if observation.get("global_targets_visible") is not False:
+        raise ValueError("global targets must not be visible to AGENT")
+    if observation.get("global_obstacles_visible") is not False:
+        raise ValueError("global obstacles must not be visible to AGENT")
+    if observation.get("local_perception_required") is not True:
+        raise ValueError("AGENT context must require local perception")
+    if observation.get("allowed_endpoints") != list(AGENT_OBSERVATION_ENDPOINTS):
+        raise ValueError("AGENT observation endpoints differ from the frozen contract")
 
 
 def privileged_noninterference_check(

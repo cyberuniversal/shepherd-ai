@@ -21,7 +21,7 @@ results.
 | CP-26 | Use a clean research branch, preserve old work, and record final-run commits. | implemented | Active branch is `codex/multiuav-validation-study`; historical notebooks and results remain versioned. No final run exists yet. |
 | CP-27 | Remove hard-coded mistranscriptions/test aliases; wire trained DistilBERT; fail on parser substitution. | implemented | Aliases were removed from `src/shepherd_ai/intent.py`; `HfTokenClassifierSpanPredictor` is wired into the historical integrated path; `tests/test_integrated_prototype.py` patches the deterministic parser to fail; the hashed smoke artifact is retained. DistilBERT remains excluded from M1-M4. |
 | CP-28 | Pin and verify MultiUAV-Plat commit, archive hash, 75 sessions, and 1,500 tasks. | implemented | `docs/multiuav_source_acquisition.md` and `datasets/multiuav_plat/source_audit_v1.json`. |
-| CP-29 | Build five linked variants per task without exposing hidden references. | partial | Eligibility, official aliases, and the AGENT-visible context projection are frozen. Recoverability rules and all generated variants remain unimplemented. |
+| CP-29 | Build five linked variants per task without exposing hidden references. | partial | Eligibility, official aliases, AGENT-visible context, and recoverability rules are frozen. All generated variants and their review remain unimplemented. |
 | CP-30 | Split by session; keep clusters together; report overlap. | implemented | `docs/multiuav_split_protocol.md`, `datasets/multiuav_plat/session_split_v1.json`, and task-level leakage exclusions. The plan's 4,500/1,500/1,500 counts are pre-exclusion targets; prospective retained counts are separately reported. |
 | CP-31 | Produce a compact review packet and use real reviewer identities. | not implemented | Packet schema and real review/adjudication procedure are not frozen. |
 | CP-32 | Implement M1-M4 and disclose any call-count confound. | not implemented | M1-M4 are specified only. M3 call semantics and the exactly matched M4 budget remain unresolved. |
@@ -32,7 +32,7 @@ results.
 | CP-37 | Record the full safety, utility, fidelity, latency, token, memory, call, and GPU-energy trade-off. | not implemented | Metrics are registered; no revised-study run exists. |
 | CP-38 | Use source-cluster bootstrap, paired differences, confidence intervals, and preregistered outcomes. | not implemented | Statistical unit is specified; primary outcomes and analysis code are not frozen. |
 | CP-39 | Checkpoint every row with compatible resume and complete raw packages. | not implemented | Revised-study runner and checkpoint/resume format do not exist. |
-| CP-40 | Add corruption, conflict, empty-value, partial-cluster, revision, and smoke-leak regression gates. | partial | Alias corruption and trained-parser substitution tests exist. Remaining listed gates are not implemented. |
+| CP-40 | Add corruption, conflict, empty-value, partial-cluster, revision, and smoke-leak regression gates. | partial | Alias corruption, trained-parser substitution, global-evidence leakage, and generic resource-conflict tests exist. Empty-value, partial-cluster, mutable-revision, and publication smoke-leak gates remain unimplemented. |
 
 ## Locked Protocol
 
@@ -65,9 +65,7 @@ results.
 
 ## Immediate Gate
 
-The next code-plan task remains CP-29. The agent-visible context projection is
-now audited over all 1,500 source tasks. Generation still cannot begin
-responsibly until the recoverability rule is frozen. That rule determines
-whether a missing-information case is truly `CLARIFY` and whether a
-resource-conflict case is truly `BLOCK`. Implementing variants before this gate
-would risk mislabeled controlled derivatives.
+The next code-plan task remains CP-29. Context projection and recoverability are
+now audited, so draft intervention generation may begin. Generated cases are
+not final data: complete five-case clusters must pass deterministic validation
+and the registered human review procedure before model inference.

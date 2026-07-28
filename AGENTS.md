@@ -13,6 +13,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\code_plan_compliance.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_recoverability_protocol.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
 
@@ -23,18 +24,18 @@ study in `docs/multiuav_validation_study_protocol.md`. It supersedes the prior
 evidence-aware paper direction but does not erase its implementation, raw
 outputs, or negative evidence.
 
-Treat the new study as proposed until its source benchmark is locally verified,
-its unresolved protocol decisions are registered, its code exists, and locked
-experiments are stored. In particular:
+Treat the new study as proposed until its unresolved protocol decisions are
+registered, its comparison code exists, and locked experiments are stored. In
+particular:
 
-- do not call the upstream-reported 75 sessions, 1,500 tasks, or 9,396 checks a
-  local Shepherd-AI dataset audit;
+- cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
+  through `datasets/multiuav_plat/source_audit_v1.json`;
 - do not call 7,500 derived cases collected until all five-case source clusters
   exist and pass validation;
 - do not claim that M3 and M4 are compute matched until their model-call budgets
   are explicit and tested;
-- do not force the existing DistilBERT span model into the new benchmark
-  without defining and testing a shared role;
+- preserve the registered exclusion of DistilBERT from M1-M4 because its
+  historical Shepherd intent-span role is not MultiUAV API planning;
 - do not label a missing-fact case `CLARIFY` when allowed observation APIs can
   recover the fact;
 - do not label a resource-conflict case `BLOCK` when a valid UAV or recovery
@@ -227,10 +228,9 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: final preregistered question and
-  outcomes, M3/M4 model-call budgets, DistilBERT's role, intervention
-  recoverability, alias authority, split seed, execution scope, review
-  procedure, model revisions, and hardware measurement controls.
+- Currently unresolved for the active study: final preregistered outcomes,
+  M3/M4 model-call budgets, execution scope, review procedure, immutable Qwen
+  revisions, and hardware measurement controls.
 
 ## Known Conflicts And Caveats
 

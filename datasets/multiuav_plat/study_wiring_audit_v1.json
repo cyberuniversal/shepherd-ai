@@ -4,12 +4,17 @@
     "agent_context_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/agent_context_audit_v1.json",
-      "sha256": "7a3e239e6ba27f9aeba450139a3497d954ab229fcc5cfa286e234e36b62ac55a"
+      "sha256": "bf9b976dc857a9846abe6480e236c79b3f81c2fe72af81c6033d97956699d4f1"
     },
     "historical_distilbert_wiring_smoke": {
       "exists": true,
       "path": "outputs/evaluations/week7_distilbert_wiring_smoke_v1.json",
       "sha256": "d53a0521e1abb7f75ae72beba886b63fc9138f43803389199ceceb487096ceba"
+    },
+    "recoverability_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/recoverability_audit_v1.json",
+      "sha256": "e04e06981d2207af1c7bd34ad3e7891e76b558bb9e03851bc4173388d8862f59"
     },
     "session_split": {
       "exists": true,
@@ -28,7 +33,6 @@
     }
   },
   "blocking_gates": [
-    "recoverability_rule",
     "intervention_generation_and_review",
     "m1_to_m4_call_budget",
     "strict_api_plan_contract",
@@ -44,7 +48,8 @@
     "session_split",
     "task_eligibility",
     "official_alias_selection",
-    "agent_visible_context_projection"
+    "agent_visible_context_projection",
+    "recoverability_rule"
   ],
   "errors": [],
   "legacy_component_roles": {
@@ -68,7 +73,7 @@
     "model_family": "Qwen2.5-Instruct_planned_not_loaded",
     "source_adapter": "multiuav_plat_pinned_source_v1"
   },
-  "ready_for_intervention_generation": false,
+  "ready_for_intervention_generation": true,
   "ready_for_model_inference": false,
   "runtime_invocation": {
     "distilbert_invoked": false,
@@ -76,7 +81,7 @@
     "qwen_invoked": false,
     "whisper_invoked": false
   },
-  "status": "blocked_before_intervention_generation",
+  "status": "ready_for_intervention_generation",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }

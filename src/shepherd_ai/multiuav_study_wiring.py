@@ -24,6 +24,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     split_path = metadata / "session_split_v1.json"
     eligibility_path = metadata / "task_eligibility_v1.json"
     context_path = metadata / "agent_context_audit_v1.json"
+    recoverability_path = metadata / "recoverability_audit_v1.json"
     distilbert_smoke_path = (
         repository_root
         / "outputs"
@@ -36,6 +37,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     split = _read_object(split_path, errors)
     eligibility = _read_object(eligibility_path, errors)
     context = _read_object(context_path, errors)
+    recoverability = _read_object(recoverability_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -77,6 +79,31 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             errors.append("agent context audit reports privileged-field leakage")
         if context_summary.get("privileged_noninterference_passes") != 1_500:
             errors.append("agent context privileged noninterference is incomplete")
+    if recoverability:
+        if (
+            recoverability.get("source_archive_sha256")
+            != EXPECTED_SOURCE_ARCHIVE_SHA256
+        ):
+            errors.append("recoverability audit is not bound to the pinned source")
+        if eligibility_path.is_file() and recoverability.get(
+            "eligibility_sha256"
+        ) != _sha256(eligibility_path):
+            errors.append("recoverability audit is not bound to task eligibility")
+        recoverability_summary = recoverability.get("summary", {})
+        if recoverability_summary.get("eligible_tasks_audited") != 1_473:
+            errors.append("recoverability audit does not cover eligible tasks")
+        if (
+            recoverability_summary.get("tasks_with_operator_fact_candidates")
+            != 1_473
+        ):
+            errors.append("recoverability candidate coverage is incomplete")
+        if (
+            recoverability_summary.get(
+                "resource_conflict_block_justifications"
+            )
+            != 1_473
+        ):
+            errors.append("resource-conflict justification coverage is incomplete")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -84,9 +111,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "task_eligibility",
         "official_alias_selection",
         "agent_visible_context_projection",
+        "recoverability_rule",
     ]
     blocking_gates = [
-        "recoverability_rule",
         "intervention_generation_and_review",
         "m1_to_m4_call_budget",
         "strict_api_plan_contract",
@@ -102,7 +129,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "valid": not errors,
         "errors": errors,
         "status": (
-            "blocked_before_intervention_generation"
+            "ready_for_intervention_generation"
             if not errors
             else "invalid_completed_gate_wiring"
         ),
@@ -138,7 +165,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "legacy_week8_pipeline_invoked": False,
             "qwen_invoked": False,
         },
-        "ready_for_intervention_generation": False,
+        "ready_for_intervention_generation": not errors,
         "ready_for_model_inference": False,
         "artifact_bindings": {
             "source_audit": _artifact_record(source_path, repository_root),
@@ -148,6 +175,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             ),
             "agent_context_audit": _artifact_record(
                 context_path, repository_root
+            ),
+            "recoverability_audit": _artifact_record(
+                recoverability_path, repository_root
             ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root

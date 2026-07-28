@@ -14,10 +14,12 @@ frozen MultiUAV source task
   -> label-separated scoring and resource measurement
 ```
 
-Only the source, split, eligibility, official-alias, and AGENT-visible context
-projection gates are currently implemented. The remaining stages above are
-planned and must not be described as wired or evaluated. Context projection
-evidence is documented in `docs/multiuav_agent_context_protocol.md`.
+The source, split, eligibility, official-alias, AGENT-visible context, and
+recoverability gates are currently implemented. The study is ready for draft
+intervention generation, but no generated case is approved or evaluated.
+Context and recoverability evidence are documented in
+`docs/multiuav_agent_context_protocol.md` and
+`docs/multiuav_recoverability_protocol.md`.
 
 ## Legacy Component Roles
 
@@ -65,7 +67,7 @@ tables, figures, or comparative claims.
 
 ## Current Stop Condition
 
-Revised-study model inference remains blocked until the recoverability rule,
-intervention dataset, method call budgets, plan contract, recursive validators,
-immutable Qwen revisions, isolation checks, execution scope, and hardware
-protocol are frozen and tested.
+Revised-study model inference remains blocked until the intervention dataset,
+method call budgets, plan contract, recursive validators, immutable Qwen
+revisions, isolation checks, execution scope, and hardware protocol are frozen
+and tested.

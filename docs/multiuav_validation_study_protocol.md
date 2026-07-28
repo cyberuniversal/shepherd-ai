@@ -141,6 +141,13 @@ evidence condition without changing unrelated mission semantics.
 - Automatic generation is draft construction, not final labeling. Review and
   adjudication identities must be real and pseudonymous.
 
+The recoverability decision is now frozen in
+`docs/multiuav_recoverability_protocol.md`. Operator requirements support
+clarification when removed. Initial context, allowed local observations, and
+planner-owned choices do not. Resource-conflict `BLOCK` cases require missing
+explicit UAV identities or insufficient fleet cardinality with no AGENT-level
+registration action.
+
 ## Comparison Configurations
 
 The intended systems are:
@@ -309,14 +316,12 @@ The following decisions block a locked experiment:
 
 1. **M3 call budget:** Specify whether stage-wise validation uses one or two
    model calls and make M4 exactly compute matched.
-2. **Recoverability rule:** Define when missing information requires operator
-   clarification versus allowed observation or verification actions.
-3. **Execution scope:** Decide whether primary plan fidelity is static or
+2. **Execution scope:** Decide whether primary plan fidelity is static or
    includes submission to the official server. Static checks cannot be called
    live mission success.
-4. **Review protocol:** Register real author, reviewer, adjudicator, and
+3. **Review protocol:** Register real author, reviewer, adjudicator, and
    exclusion procedures without fabricating identities.
-5. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+4. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
    thermal/warm-up controls for resource measurements.
 
 ## Definition Of Done

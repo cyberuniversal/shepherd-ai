@@ -14,7 +14,7 @@
   },
   "claim_status": "agent_visible_context_projection_audited_only",
   "context_schema_version": 1,
-  "generated_at_utc": "2026-07-28T15:07:39.628761+00:00",
+  "generated_at_utc": "2026-07-28T15:29:58.695983+00:00",
   "limitations": [
     "Canonical instructions were used only to audit projection structure.",
     "No five-variant intervention contexts were generated.",
