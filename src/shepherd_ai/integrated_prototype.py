@@ -6,7 +6,7 @@ the heavy models or claim that a development vision result is a mission image.
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, Protocol
 
 from shepherd_ai.clarification_dialogue import ClarificationSession
 from shepherd_ai.grounding import MapLocation
@@ -16,6 +16,16 @@ from shepherd_ai.intent_training import TrainedIntentModel
 from shepherd_ai.mission_supervision import MissionSupervisor
 from shepherd_ai.safety import SafetyPolicy
 from shepherd_ai.scheduling import Assignment, ScheduleResult, load_drones
+from shepherd_ai.span_intent import (
+    assemble_intent_from_entities,
+    validate_assembled_intent,
+)
+
+
+class SpanEntityPredictor(Protocol):
+    model_name: str
+
+    def predict_entities(self, text: str) -> list[list[Any]]: ...
 
 
 def run_integrated_prototype(
@@ -27,6 +37,7 @@ def run_integrated_prototype(
     safety_policy: SafetyPolicy,
     trained_intent_model: TrainedIntentModel | None,
     vision_artifact: Mapping[str, Any],
+    trained_span_predictor: SpanEntityPredictor | None = None,
 ) -> dict[str, Any]:
     """Run a typed or stored-ASR input through bounded Week 2-7 interfaces."""
 
@@ -37,6 +48,7 @@ def run_integrated_prototype(
         normalized_input["command"],
         intent_system,
         trained_intent_model,
+        trained_span_predictor,
     )
     vision = _validate_vision_artifact(vision_artifact)
     workflow = run_integrated_workflow(
@@ -51,7 +63,13 @@ def run_integrated_prototype(
     stages = [
         _stage("speech_or_text_input", "completed", normalized_input["input_type"]),
         _stage(
-            "trained_intent_interface" if intent_system == "trained_naive_bayes" else "selected_intent_interface",
+            (
+                "trained_distilbert_span_interface"
+                if intent_system == "trained_distilbert_spans"
+                else "trained_intent_interface"
+                if intent_system == "trained_naive_bayes"
+                else "selected_intent_interface"
+            ),
             "completed",
             intent.parser,
         ),
@@ -150,6 +168,7 @@ def _resolve_intent(
     command: str,
     intent_system: str,
     trained_model: TrainedIntentModel | None,
+    trained_span_predictor: SpanEntityPredictor | None,
 ) -> MissionIntent:
     if intent_system == "deterministic_primary":
         return parse_intent(command)
@@ -157,6 +176,27 @@ def _resolve_intent(
         if trained_model is None:
             raise ValueError("trained_naive_bayes requires a trained intent model")
         return trained_model.predict(command)
+    if intent_system == "trained_distilbert_spans":
+        if trained_span_predictor is None:
+            raise ValueError(
+                "trained_distilbert_spans requires a trained span predictor"
+            )
+        entities = trained_span_predictor.predict_entities(command)
+        payload = assemble_intent_from_entities(command, entities)
+        validation = validate_assembled_intent(payload)
+        return MissionIntent(
+            action=payload["action"],
+            count=payload["count"],
+            location=payload["location"],
+            target=payload["target"],
+            constraints=list(payload["constraints"]),
+            text=command,
+            parser=f"hf_token_classifier:{trained_span_predictor.model_name}",
+            notes=[
+                f"span_validation:{issue['code']}"
+                for issue in validation["issues"]
+            ],
+        )
     raise ValueError(f"unsupported intent system: {intent_system}")
 
 

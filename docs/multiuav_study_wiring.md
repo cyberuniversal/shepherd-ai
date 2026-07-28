@@ -14,18 +14,23 @@ frozen MultiUAV source task
   -> label-separated scoring and resource measurement
 ```
 
-Only the source, split, eligibility, and official-alias gates are currently
-implemented. The remaining stages above are planned and must not be described
-as wired or evaluated.
+Only the source, split, eligibility, official-alias, and AGENT-visible context
+projection gates are currently implemented. The remaining stages above are
+planned and must not be described as wired or evaluated. Context projection
+evidence is documented in `docs/multiuav_agent_context_protocol.md`.
 
 ## Legacy Component Roles
 
 - Whisper is excluded from the primary text-first experiment. Speech remains a
   separately evaluated roadmap capability.
-- The Week 2 DistilBERT checkpoint is excluded because it was trained to tag
-  Shepherd intent spans, not to produce MultiUAV API plans. Forcing it into the
-  revised comparison would not give M1-M4 a common or scientifically justified
-  role.
+- The Week 2 DistilBERT checkpoint is verifiably connected to the historical
+  Shepherd end-to-end path through
+  `scripts/run_trained_span_integrated_prototype.py`. That path assembles intent
+  only from predicted spans and has a regression test that fails if the
+  deterministic parser is invoked. The checkpoint remains excluded from the
+  primary comparison because it was trained to tag Shepherd intent spans, not
+  to produce MultiUAV API plans. Forcing it into M1-M4 would not provide a
+  common or scientifically justified role.
 - The Week 8 deterministic mission pipeline remains historical roadmap
   evidence. It is not M2 or M3 and must not be silently renamed as either.
 - The earlier Week 9 monolithic Qwen diagnostic used development Shepherd
@@ -52,9 +57,15 @@ python scripts/audit_multiuav_study_wiring.py `
 
 The output is a wiring/readiness record, not an evaluation result.
 
+The recorded DistilBERT wiring smoke result is
+`outputs/evaluations/week7_distilbert_wiring_smoke_v1.json`. It records the
+checkpoint and input hashes, runtime versions, GPU, and invoked parser. It is
+labelled `wiring_smoke_test_not_paper_evidence` and must not enter revised-paper
+tables, figures, or comparative claims.
+
 ## Current Stop Condition
 
-Revised-study model inference remains blocked until the context projection,
-recoverability rule, intervention dataset, method call budgets, plan contract,
-recursive validators, immutable Qwen revisions, isolation checks, execution
-scope, and hardware protocol are frozen and tested.
+Revised-study model inference remains blocked until the recoverability rule,
+intervention dataset, method call budgets, plan contract, recursive validators,
+immutable Qwen revisions, isolation checks, execution scope, and hardware
+protocol are frozen and tested.

@@ -1,0 +1,33 @@
+{
+  "agent_role_contract": {
+    "allowed_observation_endpoints": [
+      "GET /drones",
+      "GET /drones/{id}",
+      "GET /drones/{id}/nearby",
+      "GET /drones/{id}/nearby/drones",
+      "GET /drones/{id}/nearby/targets",
+      "GET /drones/{id}/nearby/obstacles",
+      "GET /environments/current"
+    ],
+    "global_obstacles_visible": false,
+    "global_targets_visible": false
+  },
+  "claim_status": "agent_visible_context_projection_audited_only",
+  "context_schema_version": 1,
+  "generated_at_utc": "2026-07-28T15:07:39.628761+00:00",
+  "limitations": [
+    "Canonical instructions were used only to audit projection structure.",
+    "No five-variant intervention contexts were generated.",
+    "No prompt, model inference, task execution, or evaluation occurred.",
+    "Local target and obstacle observations remain runtime evidence and are not pre-exposed."
+  ],
+  "schema_version": 1,
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "summary": {
+    "privileged_field_leaks": 0,
+    "privileged_noninterference_passes": 1500,
+    "sessions_audited": 75,
+    "tasks_audited": 1500,
+    "unique_context_hashes": 1500
+  }
+}

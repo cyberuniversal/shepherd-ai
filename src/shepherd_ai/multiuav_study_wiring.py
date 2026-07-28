@@ -23,11 +23,19 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     source_path = metadata / "source_audit_v1.json"
     split_path = metadata / "session_split_v1.json"
     eligibility_path = metadata / "task_eligibility_v1.json"
+    context_path = metadata / "agent_context_audit_v1.json"
+    distilbert_smoke_path = (
+        repository_root
+        / "outputs"
+        / "evaluations"
+        / "week7_distilbert_wiring_smoke_v1.json"
+    )
     errors: list[str] = []
 
     source = _read_object(source_path, errors)
     split = _read_object(split_path, errors)
     eligibility = _read_object(eligibility_path, errors)
+    context = _read_object(context_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -59,15 +67,25 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             errors.append("eligible task count does not match the frozen protocol")
         if summary.get("normalized_cross_split_overlap_count") != 0:
             errors.append("eligible task text has cross-split overlap")
+    if context:
+        if context.get("source_archive_sha256") != EXPECTED_SOURCE_ARCHIVE_SHA256:
+            errors.append("agent context audit is not bound to the pinned source")
+        context_summary = context.get("summary", {})
+        if context_summary.get("tasks_audited") != 1_500:
+            errors.append("agent context audit does not cover all source tasks")
+        if context_summary.get("privileged_field_leaks") != 0:
+            errors.append("agent context audit reports privileged-field leakage")
+        if context_summary.get("privileged_noninterference_passes") != 1_500:
+            errors.append("agent context privileged noninterference is incomplete")
 
     completed_gates = [
         "pinned_source_integrity",
         "session_split",
         "task_eligibility",
         "official_alias_selection",
+        "agent_visible_context_projection",
     ]
     blocking_gates = [
-        "agent_visible_context_projection",
         "recoverability_rule",
         "intervention_generation_and_review",
         "m1_to_m4_call_budget",
@@ -103,8 +121,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "legacy_component_roles": {
             "whisper": "excluded_from_primary_text_first_study",
             "distilbert_week2_span_tagger": (
-                "excluded_from_primary_study; trained for Shepherd intent spans, "
-                "not MultiUAV API planning"
+                "wired and smoke-tested in the historical Shepherd end-to-end "
+                "path; excluded from the primary study because it was trained "
+                "for Shepherd intent spans, not MultiUAV API planning"
             ),
             "week8_deterministic_mission_pipeline": (
                 "historical_roadmap_evidence_not_a_primary_comparison_method"
@@ -126,6 +145,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "session_split": _artifact_record(split_path, repository_root),
             "task_eligibility": _artifact_record(
                 eligibility_path, repository_root
+            ),
+            "agent_context_audit": _artifact_record(
+                context_path, repository_root
+            ),
+            "historical_distilbert_wiring_smoke": _artifact_record(
+                distilbert_smoke_path, repository_root
             ),
         },
         "claim_status": "component_wiring_audited_no_revised_inference",

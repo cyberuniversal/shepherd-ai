@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -75,6 +76,50 @@ class IntegratedPrototypeTests(unittest.TestCase):
                 {"input_type": "typed", "text": "Inspect the greenhouse."},
                 intent_system="deterministic_primary",
                 **inputs,
+            )
+
+    def test_trained_span_path_cannot_silently_use_deterministic_parser(self) -> None:
+        class FakeSpanPredictor:
+            model_name = "fake_distilbert_checkpoint"
+
+            def __init__(self) -> None:
+                self.commands: list[str] = []
+
+            def predict_entities(self, text: str) -> list[list[object]]:
+                self.commands.append(text)
+                return [["action", 0, 7], ["target", 12, 22]]
+
+        predictor = FakeSpanPredictor()
+        inputs = _inputs()
+        inputs["trained_span_predictor"] = predictor
+        with patch(
+            "shepherd_ai.integrated_prototype.parse_intent",
+            side_effect=AssertionError("deterministic parser fallback invoked"),
+        ):
+            result = run_integrated_prototype(
+                {"input_type": "typed", "text": "Inspect the greenhouse."},
+                intent_system="trained_distilbert_spans",
+                **inputs,
+            )
+
+        self.assertEqual(predictor.commands, ["Inspect the greenhouse."])
+        self.assertEqual(
+            result["intent"]["parser"],
+            "hf_token_classifier:fake_distilbert_checkpoint",
+        )
+        self.assertEqual(result["intent"]["action"], "inspect")
+        self.assertEqual(result["intent"]["target"], "greenhouse")
+        self.assertEqual(
+            result["stages"][1]["stage"],
+            "trained_distilbert_span_interface",
+        )
+
+    def test_trained_span_path_requires_predictor(self) -> None:
+        with self.assertRaisesRegex(ValueError, "requires a trained span predictor"):
+            run_integrated_prototype(
+                {"input_type": "typed", "text": "Inspect the greenhouse."},
+                intent_system="trained_distilbert_spans",
+                **_inputs(),
             )
 
 

@@ -26,6 +26,26 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertFalse(result["runtime_invocation"]["qwen_invoked"])
         self.assertFalse(result["ready_for_model_inference"])
         self.assertIn("recoverability_rule", result["blocking_gates"])
+        self.assertNotIn(
+            "agent_visible_context_projection",
+            result["blocking_gates"],
+        )
+        self.assertIn(
+            "agent_visible_context_projection",
+            result["completed_gates"],
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["agent_context_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "historical_distilbert_wiring_smoke"
+            ]["exists"]
+        )
+        self.assertIn(
+            "wired and smoke-tested",
+            result["legacy_component_roles"]["distilbert_week2_span_tagger"],
+        )
 
     def test_missing_completed_gate_makes_wiring_invalid(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

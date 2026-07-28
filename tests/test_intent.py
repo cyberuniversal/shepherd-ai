@@ -57,6 +57,18 @@ class IntentParserTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_intent("   ")
 
+    def test_mislabeled_asr_errors_are_not_parser_vocabulary(self) -> None:
+        for command in (
+            "Expect the greenhouse.",
+            "Server the greenhouse.",
+            "Scanda the west field.",
+            "Scam the west field.",
+        ):
+            with self.subTest(command=command):
+                self.assertIsNone(parse_intent(command).action)
+
+        self.assertIsNone(parse_intent("Send three jones north.").count)
+
     def test_search_open_field_for_missing_vehicle(self) -> None:
         intent = parse_intent("Search the open field for a missing vehicle.")
 

@@ -294,6 +294,15 @@ Before the locked run:
 - label smoke results and exclude them from publication summaries; and
 - preserve every raw output and negative result.
 
+The first two wiring gates above were completed on 2026-07-28. Known
+Whisper-derived action and count aliases were removed from the deterministic
+parser. The imported Week 2 DistilBERT checkpoint was then invoked through the
+historical Shepherd end-to-end path on a GTX 1650 SUPER. The raw, hashed result
+is retained as
+`outputs/evaluations/week7_distilbert_wiring_smoke_v1.json`. This result proves
+component invocation only; it is not revised-study accuracy evidence, and
+DistilBERT remains excluded from M1-M4.
+
 ## Unresolved Decisions
 
 The following decisions block a locked experiment:

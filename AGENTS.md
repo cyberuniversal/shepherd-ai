@@ -10,6 +10,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_review\ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
 - Every Markdown file inside that literature-review export, including each paper page and its `Complete Summary ...md`.
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_to_implementation.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\code_plan_compliance.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
 
@@ -58,6 +59,12 @@ If the roadmap sounds like a simple demo but the literature review shows that a 
 - Whisper can be used for speech-to-text, but ASR evaluation must be separate from intent extraction evaluation.
 - LLMs may propose structured plans or translations, but deterministic validators and conventional planners/controllers must gate execution.
 - Any trained or fine-tuned model requires recorded data provenance, split definitions, random seeds, package/model versions, parameters, raw outputs, and held-out evaluation.
+
+For the active MultiUAV validation-placement study, the source code plan
+defines the build order, locked protocol, and definition of done. Track every
+requirement explicitly in `docs/code_plan_compliance.md`; do not skip an
+unimplemented gate, start the full GPU experiment before correctness gates
+pass, or interpret a wiring smoke test as paper evidence.
 
 ## Current Repository Status
 

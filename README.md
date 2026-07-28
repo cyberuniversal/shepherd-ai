@@ -10,6 +10,8 @@ monolithic, deterministic post-plan, stage-wise, and compute-matched post-plan
 configurations while jointly measuring safety, utility, failure containment,
 and local inference cost. The new benchmark and experiments are not yet
 implemented or evaluated. See `docs/multiuav_validation_study_protocol.md`.
+The requirement-by-requirement implementation ledger is
+`docs/code_plan_compliance.md`.
 
 ## Project Rule
 
@@ -29,7 +31,9 @@ The current source of truth is:
 - `docs/milestone_2_speech_input.md`
 - `docs/literature_to_implementation.md`
 - `docs/source_material/code_plan_2026-07-25.docx`
+- `docs/code_plan_compliance.md`
 - `docs/multiuav_validation_study_protocol.md`
+- `docs/multiuav_agent_context_protocol.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`

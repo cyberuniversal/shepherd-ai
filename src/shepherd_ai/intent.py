@@ -46,8 +46,8 @@ ACTION_PATTERNS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("hold", ("hold position", "hold", "stay")),
     ("search", ("search",)),
     ("capture", ("capture", "capture images", "photograph", "take photos", "take pictures")),
-    ("inspect", ("inspect", "check", "survey", "expect", "server", "look for")),
-    ("scan", ("scan", "scanda", "scam", "map", "monitor", "monitoring")),
+    ("inspect", ("inspect", "check", "survey", "look for")),
+    ("scan", ("scan", "map", "monitor", "monitoring")),
     ("return", ("return", "come back", "bring back", "back to base", "back to the base")),
     ("send", ("send", "dispatch")),
 )
@@ -183,12 +183,12 @@ def _extract_count(text: str) -> int | str | None:
         return "all"
 
     count_mentions: list[int] = []
-    digit_match = re.search(r"\b(\d+)\s+(?:drones?|jones)\b", text)
+    digit_match = re.search(r"\b(\d+)\s+drones?\b", text)
     if digit_match:
         count_mentions.append(int(digit_match.group(1)))
 
     for word, value in NUMBER_WORDS.items():
-        if re.search(rf"\b{word}\s+(?:drones?|jones)\b", text):
+        if re.search(rf"\b{word}\s+drones?\b", text):
             count_mentions.append(value)
         if re.search(rf"\b{word}\s+more\b", text):
             count_mentions.append(value)
@@ -250,7 +250,7 @@ def _extract_pattern_location(text: str, action: str | None) -> str | None:
         phrase = _first_clean_match(
             text,
             (
-                r"\b(?:scan|scanda|scam|search)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
+                r"\b(?:scan|search)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
                 r"\bmonitor(?:ing)?\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:\s+until\b|\s+while\b|$)",
             ),
         )
@@ -261,9 +261,9 @@ def _extract_pattern_location(text: str, action: str | None) -> str | None:
         phrase = _first_clean_match(
             text,
             (
-                r"\b(?:inspect|check|survey|server|expect)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
+                r"\b(?:inspect|check|survey)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+for\b",
                 r"\bnear\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while|and)\b)",
-                r"\b(?:inspect|check|survey|server|expect)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+and\s+look\s+for\b",
+                r"\b(?:inspect|check|survey)\s+(?:the\s+|a\s+|an\s+)?(.+?)\s+and\s+look\s+for\b",
             ),
         )
         if phrase:
@@ -387,7 +387,7 @@ def _extract_open_vocabulary_target(text: str, action: str | None) -> str | None
         "scan": (
             rf"\bmap\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
             rf"\bmonitor(?:ing)?\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
-            rf"\b(?:scan|scanda|scam)\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
+            rf"\bscan\s+(?:the\s+|a\s+|an\s+)?(.+?){stop}",
         ),
     }
 
@@ -442,7 +442,7 @@ def _extract_pattern_target(text: str, action: str | None) -> str | None:
             text,
             (
                 r"\bcheck\s+if\s+there\s+(?:is|are)\s+(?:any\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
-                r"\b(?:scan|scanda|search|inspect|check|survey|server|expect)\b.+?\bfor\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
+                r"\b(?:scan|search|inspect|check|survey)\b.+?\bfor\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
                 r"\blook\s+for\s+(?:the\s+|a\s+|an\s+)?(.+?)(?:$|\s+(?:after|before|without|while)\b)",
             ),
         )

@@ -1,6 +1,16 @@
 {
   "active_branch": "codex/multiuav-validation-study",
   "artifact_bindings": {
+    "agent_context_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/agent_context_audit_v1.json",
+      "sha256": "7a3e239e6ba27f9aeba450139a3497d954ab229fcc5cfa286e234e36b62ac55a"
+    },
+    "historical_distilbert_wiring_smoke": {
+      "exists": true,
+      "path": "outputs/evaluations/week7_distilbert_wiring_smoke_v1.json",
+      "sha256": "d53a0521e1abb7f75ae72beba886b63fc9138f43803389199ceceb487096ceba"
+    },
     "session_split": {
       "exists": true,
       "path": "datasets/multiuav_plat/session_split_v1.json",
@@ -18,7 +28,6 @@
     }
   },
   "blocking_gates": [
-    "agent_visible_context_projection",
     "recoverability_rule",
     "intervention_generation_and_review",
     "m1_to_m4_call_budget",
@@ -34,11 +43,12 @@
     "pinned_source_integrity",
     "session_split",
     "task_eligibility",
-    "official_alias_selection"
+    "official_alias_selection",
+    "agent_visible_context_projection"
   ],
   "errors": [],
   "legacy_component_roles": {
-    "distilbert_week2_span_tagger": "excluded_from_primary_study; trained for Shepherd intent spans, not MultiUAV API planning",
+    "distilbert_week2_span_tagger": "wired and smoke-tested in the historical Shepherd end-to-end path; excluded from the primary study because it was trained for Shepherd intent spans, not MultiUAV API planning",
     "week8_deterministic_mission_pipeline": "historical_roadmap_evidence_not_a_primary_comparison_method",
     "week9_monolithic_diagnostic": "historical_development_diagnostic_not_revised_study_evidence",
     "whisper": "excluded_from_primary_text_first_study"
