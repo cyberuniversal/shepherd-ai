@@ -1,0 +1,71 @@
+{
+  "archive": {
+    "path_in_upstream_repository": "benchmark/benchmark.zip",
+    "sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+    "size_bytes": 11709646
+  },
+  "audit": {
+    "canonical_normalized_duplicates": 57,
+    "canonical_normalized_unique": 1443,
+    "image_count": 75,
+    "official_alias_count": 5794,
+    "official_alias_normalized_unique": 5545,
+    "scenario_session_counts": {
+      "area_assignment_and_patrol": 25,
+      "area_search": 25,
+      "target_assignment": 25
+    },
+    "session_count": 75,
+    "session_difficulty_counts": {
+      "easy": 15,
+      "extreme": 15,
+      "hard": 15,
+      "intermediate": 15,
+      "moderate": 15
+    },
+    "task_count": 1500,
+    "task_difficulty_counts": {
+      "easy": 206,
+      "hard": 727,
+      "medium": 567
+    },
+    "validation_check_leaf_count": 9396
+  },
+  "claim_status": "source_integrity_and_schema_audited_only",
+  "field_policy": {
+    "privileged_session_fields_forbidden_in_model_prompts": [
+      "history",
+      "statistics"
+    ],
+    "privileged_task_fields_forbidden_in_model_prompts": [
+      "commands",
+      "execution_check_apis",
+      "is_done",
+      "is_passed",
+      "related_apis"
+    ],
+    "source_text_allowlist": [
+      "content",
+      "content_aliases",
+      "id"
+    ]
+  },
+  "license": {
+    "identifier": "GPL-3.0",
+    "path_in_upstream_repository": "LICENSE",
+    "sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+  },
+  "limitations": [
+    "This registry does not contain or redistribute the upstream benchmark.",
+    "No Shepherd-AI derivative cases have been generated.",
+    "No model has been trained or evaluated for the revised paper.",
+    "Source instruction duplicates require split-overlap controls.",
+    "Static source auditing is not official-server mission execution."
+  ],
+  "repository": {
+    "commit": "1794e45e421fb5de03094f0b63f9ca95f86ab42f",
+    "url": "https://github.com/zhangsheng93/MultiUAV-Plat"
+  },
+  "schema_version": 1,
+  "source_type": "third_party_public_benchmark"
+}

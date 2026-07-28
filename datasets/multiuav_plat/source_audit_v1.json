@@ -1,0 +1,85 @@
+{
+  "benchmark": {
+    "archive": {
+      "member_count": 150,
+      "sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+      "size_bytes": 11709646,
+      "unexpected_members": []
+    },
+    "counts": {
+      "images": 75,
+      "official_aliases": 5794,
+      "sessions": 75,
+      "tasks": 1500,
+      "validation_check_leaves": 9396
+    },
+    "distributions": {
+      "aliases_per_task": {
+        "1": 37,
+        "2": 24,
+        "3": 131,
+        "4": 1224,
+        "5": 84
+      },
+      "scenario_sessions": {
+        "area_assignment_and_patrol": 25,
+        "area_search": 25,
+        "target_assignment": 25
+      },
+      "session_difficulties": {
+        "easy": 15,
+        "extreme": 15,
+        "hard": 15,
+        "intermediate": 15,
+        "moderate": 15
+      },
+      "task_difficulties": {
+        "easy": 206,
+        "hard": 727,
+        "medium": 567
+      }
+    },
+    "field_policy": {
+      "privileged_session_fields": [
+        "history",
+        "statistics"
+      ],
+      "privileged_task_fields": [
+        "commands",
+        "execution_check_apis",
+        "is_done",
+        "is_passed",
+        "related_apis"
+      ],
+      "source_text_allowlist": [
+        "content",
+        "content_aliases",
+        "id"
+      ]
+    },
+    "instruction_uniqueness": {
+      "alias_normalized_duplicates": 249,
+      "alias_normalized_unique": 5545,
+      "canonical_and_alias_normalized_duplicates": 306,
+      "canonical_normalized_duplicates": 57,
+      "canonical_normalized_unique": 1443
+    }
+  },
+  "claim_status": "source_integrity_and_schema_audited_only",
+  "generated_at_utc": "2026-07-28T13:45:48.465627+00:00",
+  "limitations": [
+    "No Shepherd-AI derivative cases were generated.",
+    "No model was trained or evaluated.",
+    "Static archive validation is not official-server mission execution.",
+    "Instruction duplicates require split-overlap controls before generation."
+  ],
+  "source": {
+    "archive_relative_path": "benchmark/benchmark.zip",
+    "archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+    "commit": "1794e45e421fb5de03094f0b63f9ca95f86ab42f",
+    "license": "GPL-3.0",
+    "license_sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809",
+    "repository": "https://github.com/zhangsheng93/MultiUAV-Plat"
+  },
+  "valid": true
+}

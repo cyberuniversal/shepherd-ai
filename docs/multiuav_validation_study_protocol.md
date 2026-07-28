@@ -75,11 +75,18 @@ Planned source:
 - Upstream-reported contents: 75 mission sessions, 1,500 natural-language
   tasks, and 9,396 validation checks
 
-The commit currently resolves as upstream `main` and `HEAD`. The repository has
-not yet been downloaded into Shepherd-AI, its archive SHA-256 has not been
-registered, and its task/session counts have not been locally reproduced.
-Until that audit exists, the counts above are upstream claims, not
-Shepherd-AI dataset evidence.
+The commit resolved as upstream `main` and `HEAD` during the 2026-07-28 source
+audit. The pinned `benchmark/benchmark.zip` is 11,709,646 bytes with SHA-256
+`b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3`.
+The local audit reproduced 75 sessions, 1,500 tasks, 9,396 recursively counted
+validation-check leaves, and 5,794 upstream `content_aliases`. Acquisition,
+license, field-boundary, and integrity details are recorded in
+`docs/multiuav_source_acquisition.md` and
+`datasets/multiuav_plat/source_registry_v1.json`.
+
+The audit also found only 1,443 unique normalized canonical instructions out of
+1,500. Therefore, session-level splitting alone does not establish textual
+independence; exact and normalized cross-split overlap must still be measured.
 
 ## Paired Dataset Design
 
