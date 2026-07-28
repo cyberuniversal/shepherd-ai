@@ -11,6 +11,26 @@
       "path": "outputs/evaluations/week7_distilbert_wiring_smoke_v1.json",
       "sha256": "d53a0521e1abb7f75ae72beba886b63fc9138f43803389199ceceb487096ceba"
     },
+    "intervention_pilot": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_pilot_v1.json",
+      "sha256": "a4726f9fd80afc3740b68465daa1b495ad8ee017390d641f32b1e2fb0892feab"
+    },
+    "intervention_pilot_review_packet": {
+      "exists": true,
+      "path": "reports/multiuav_intervention_pilot_review_v1.csv",
+      "sha256": "869827b8699785271e590c8814286b3be7fc27b99cd7acebca257cbfff678ed3"
+    },
+    "intervention_pilot_summary": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_pilot_summary_v1.json",
+      "sha256": "a9a389363246772f7c77c97140a15b442d76de49a7a9b286edf923bdae4029cb"
+    },
+    "intervention_pilot_validation": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_pilot_validation_v1.json",
+      "sha256": "e4ab12099b889dd669abb5d692096a31449cbbcbb7a46d40c1280928abe55e48"
+    },
     "recoverability_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/recoverability_audit_v1.json",
@@ -33,7 +53,8 @@
     }
   },
   "blocking_gates": [
-    "intervention_generation_and_review",
+    "human_intervention_review_and_adjudication",
+    "full_intervention_dataset_generation_and_review",
     "m1_to_m4_call_budget",
     "strict_api_plan_contract",
     "deterministic_recursive_validator",
@@ -42,14 +63,16 @@
     "execution_scope",
     "hardware_measurement_protocol"
   ],
-  "claim_status": "component_wiring_audited_no_revised_inference",
+  "claim_status": "unreviewed_training_pilot_wired_no_revised_inference",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
     "task_eligibility",
     "official_alias_selection",
     "agent_visible_context_projection",
-    "recoverability_rule"
+    "recoverability_rule",
+    "training_pilot_generation",
+    "training_pilot_deterministic_validation"
   ],
   "errors": [],
   "legacy_component_roles": {
@@ -60,7 +83,7 @@
   },
   "primary_path": {
     "api_plan_parser": "not_implemented",
-    "dataset": "five_variant_dataset_not_implemented",
+    "dataset": "training_pilot_30_clusters_pending_human_review",
     "deterministic_validator": "not_implemented",
     "execution_backend": "not_selected",
     "input_modality": "text",
@@ -73,6 +96,7 @@
     "model_family": "Qwen2.5-Instruct_planned_not_loaded",
     "source_adapter": "multiuav_plat_pinned_source_v1"
   },
+  "ready_for_human_review": true,
   "ready_for_intervention_generation": true,
   "ready_for_model_inference": false,
   "runtime_invocation": {
@@ -81,7 +105,7 @@
     "qwen_invoked": false,
     "whisper_invoked": false
   },
-  "status": "ready_for_intervention_generation",
+  "status": "training_pilot_ready_for_human_review",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }

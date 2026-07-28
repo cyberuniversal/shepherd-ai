@@ -36,11 +36,37 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertNotIn("recoverability_rule", result["blocking_gates"])
         self.assertIn("recoverability_rule", result["completed_gates"])
         self.assertTrue(result["ready_for_intervention_generation"])
+        self.assertTrue(result["ready_for_human_review"])
+        self.assertEqual(
+            result["status"],
+            "training_pilot_ready_for_human_review",
+        )
+        self.assertEqual(
+            result["primary_path"]["dataset"],
+            "training_pilot_30_clusters_pending_human_review",
+        )
+        self.assertIn(
+            "training_pilot_deterministic_validation",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "human_intervention_review_and_adjudication",
+            result["blocking_gates"],
+        )
         self.assertTrue(
             result["artifact_bindings"]["agent_context_audit"]["exists"]
         )
         self.assertTrue(
             result["artifact_bindings"]["recoverability_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_pilot"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_pilot_validation"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_pilot_review_packet"]["exists"]
         )
         self.assertTrue(
             result["artifact_bindings"][
@@ -58,7 +84,9 @@ class MultiUavStudyWiringTests(unittest.TestCase):
 
         self.assertFalse(result["valid"])
         self.assertEqual(result["status"], "invalid_completed_gate_wiring")
-        self.assertTrue(any("missing wiring artifact" in error for error in result["errors"]))
+        self.assertTrue(
+            any("missing wiring artifact" in error for error in result["errors"])
+        )
 
     def test_cli_preserves_audit_output(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -82,7 +110,7 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertEqual(
             result["claim_status"],
-            "component_wiring_audited_no_revised_inference",
+            "unreviewed_training_pilot_wired_no_revised_inference",
         )
 
 

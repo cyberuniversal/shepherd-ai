@@ -14,6 +14,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_recoverability_protocol.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_pilot_protocol.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
 
@@ -32,6 +33,8 @@ particular:
   through `datasets/multiuav_plat/source_audit_v1.json`;
 - do not call 7,500 derived cases collected until all five-case source clusters
   exist and pass validation;
+- do not call the 30-cluster, 150-case training pilot reviewed, approved, gold,
+  final, or evaluation data while its reviewer fields remain blank;
 - do not claim that M3 and M4 are compute matched until their model-call budgets
   are explicit and tested;
 - preserve the registered exclusion of DistilBERT from M1-M4 because its

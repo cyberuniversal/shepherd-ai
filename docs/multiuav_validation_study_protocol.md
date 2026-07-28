@@ -120,8 +120,11 @@ The session split is now frozen in `docs/multiuav_split_protocol.md` and
 `datasets/multiuav_plat/session_split_v1.json`, using the seed
 `shepherd-multiuav-split-v1`. Exact and normalized source-text overlap is
 reported in that manifest. Task eligibility and official-alias selection are
-frozen in `docs/multiuav_task_eligibility_protocol.md`; no five-variant cases
-have been generated.
+frozen in `docs/multiuav_task_eligibility_protocol.md`. A training-only
+construction pilot now contains 30 complete clusters and 150 unreviewed cases,
+selected as two tasks from each scenario/difficulty stratum. This pilot is for
+template review only; it does not change the prospective full-dataset counts
+and cannot enter calibration, test, model inference, or publication summaries.
 
 ## Intervention Validity Rules
 
@@ -147,6 +150,11 @@ clarification when removed. Initial context, allowed local observations, and
 planner-owned choices do not. Resource-conflict `BLOCK` cases require missing
 explicit UAV identities or insufficient fleet cardinality with no AGENT-level
 registration action.
+
+Pilot construction and its claim limits are registered in
+`docs/multiuav_intervention_pilot_protocol.md`. The stored pilot is
+deterministically reconstructed from the pinned source during validation. All
+proposed decisions and text transformations remain pending human review.
 
 ## Comparison Configurations
 

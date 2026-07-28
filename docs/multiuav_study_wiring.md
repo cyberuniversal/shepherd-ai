@@ -6,7 +6,7 @@ The primary revised experiment is text-first:
 
 ```text
 frozen MultiUAV source task
-  -> frozen five-variant case (not yet generated)
+  -> validated five-variant case (training pilot only; human review pending)
   -> method M1, M2, M3, or M4
   -> strict API-plan parser
   -> deterministic evidence, provenance, and safety validation
@@ -14,9 +14,11 @@ frozen MultiUAV source task
   -> label-separated scoring and resource measurement
 ```
 
-The source, split, eligibility, official-alias, AGENT-visible context, and
-recoverability gates are currently implemented. The study is ready for draft
-intervention generation, but no generated case is approved or evaluated.
+The source, split, eligibility, official-alias, AGENT-visible context,
+recoverability, pilot-generation, and pilot-validation gates are currently
+implemented. The training-only pilot contains 30 clusters and 150 cases across
+all 15 scenario/difficulty strata. All 30 clusters remain pending human review;
+none is approved or evaluated.
 Context and recoverability evidence are documented in
 `docs/multiuav_agent_context_protocol.md` and
 `docs/multiuav_recoverability_protocol.md`.
@@ -45,10 +47,10 @@ earlier work was useless.
 
 ## Notebook Entry Point
 
-`notebooks/Notebook9_Evaluation.ipynb` now checks out
-`codex/multiuav-validation-study`, audits the completed source gates, and
-reports the blockers before intervention generation. It does not invoke the
-legacy diagnostic runner or a model.
+`notebooks/Notebook9_Evaluation.ipynb` checks out
+`codex/multiuav-validation-study`, audits the completed source and pilot gates,
+and reports the blockers before human review and model inference. It does not
+invoke the legacy diagnostic runner or a model.
 
 The executable wiring audit is:
 
@@ -67,7 +69,8 @@ tables, figures, or comparative claims.
 
 ## Current Stop Condition
 
-Revised-study model inference remains blocked until the intervention dataset,
-method call budgets, plan contract, recursive validators, immutable Qwen
-revisions, isolation checks, execution scope, and hardware protocol are frozen
-and tested.
+The pilot is ready for real human review. Revised-study model inference remains
+blocked until pilot review/adjudication, full intervention generation and
+review, method call budgets, plan contract, recursive plan validators,
+immutable Qwen revisions, isolation checks, execution scope, and hardware
+protocol are frozen and tested.

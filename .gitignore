@@ -52,6 +52,7 @@ outputs/**
 reports/**
 !reports/
 !reports/README.md
+!reports/multiuav_intervention_pilot_review_v1.csv
 
 # One-off local helpers and backups.
 fill_postdev_packet.py
