@@ -11,7 +11,9 @@ from shepherd_ai.multiuav_interventions import (  # noqa: E402
     build_draft_cluster,
     compact_review_row,
     materialize_case_context,
+    prepare_pilot_review_rows,
     select_stratified_training_pilot,
+    validate_completed_pilot_review,
     validate_draft_cluster,
     validate_unreviewed_pilot_dataset,
 )
@@ -238,6 +240,72 @@ class MultiUavInterventionTests(unittest.TestCase):
                 source_by_id,
                 expected_per_stratum=1,
             )
+
+    def test_completed_review_accepts_explicit_approved_judgments(self) -> None:
+        task = {"id": "task-1", "content": "Drone 1 should hover."}
+        cluster = build_draft_cluster(_session(), task, _eligibility())
+        dataset = {"clusters": [cluster]}
+        rows = prepare_pilot_review_rows(
+            [compact_review_row(cluster)],
+            "reviewer_alpha",
+        )
+        rows[0]["review_status"] = "approved"
+        for field in (
+            "canonical_valid",
+            "alias_valid",
+            "missing_valid",
+            "restored_valid",
+            "conflict_valid",
+        ):
+            rows[0][field] = "yes"
+
+        result = validate_completed_pilot_review(dataset, rows)
+
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["status_counts"], {"approved": 1})
+        self.assertEqual(result["reviewer_ids"], ["reviewer_alpha"])
+
+    def test_completed_review_rejects_mutation_and_incomplete_judgment(self) -> None:
+        task = {"id": "task-1", "content": "Drone 1 should hover."}
+        cluster = build_draft_cluster(_session(), task, _eligibility())
+        dataset = {"clusters": [cluster]}
+        rows = prepare_pilot_review_rows(
+            [compact_review_row(cluster)],
+            "reviewer_alpha",
+        )
+        rows[0]["review_status"] = "approved"
+        rows[0]["canonical_valid"] = "yes"
+
+        with self.assertRaisesRegex(ValueError, "must be yes or no"):
+            validate_completed_pilot_review(dataset, rows)
+
+        rows[0]["canonical_instruction"] = "Changed source instruction"
+        with self.assertRaisesRegex(ValueError, "immutable review field changed"):
+            validate_completed_pilot_review(dataset, rows)
+
+    def test_completed_review_records_revision_without_approving_it(self) -> None:
+        task = {"id": "task-1", "content": "Drone 1 should hover."}
+        cluster = build_draft_cluster(_session(), task, _eligibility())
+        dataset = {"clusters": [cluster]}
+        rows = prepare_pilot_review_rows(
+            [compact_review_row(cluster)],
+            "reviewer_alpha",
+        )
+        rows[0].update(
+            {
+                "review_status": "needs_revision",
+                "canonical_valid": "yes",
+                "alias_valid": "yes",
+                "missing_valid": "no",
+                "restored_valid": "yes",
+                "conflict_valid": "yes",
+                "reviewer_notes": "The missing fact is still recoverable.",
+            }
+        )
+
+        result = validate_completed_pilot_review(dataset, rows)
+
+        self.assertEqual(result["status_counts"], {"needs_revision": 1})
 
 
 if __name__ == "__main__":

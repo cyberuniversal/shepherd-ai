@@ -54,7 +54,9 @@ does not duplicate full mission contexts.
 
 Reviewer IDs must be real pseudonyms assigned by the project team. A row is not
 approved until all five validity columns and the overall review status are
-completed under a registered adjudication procedure.
+completed under `docs/multiuav_intervention_review_protocol.md`. The frozen
+blank packet is not edited directly; a separate reviewer-specific working copy
+preserves the generation hash.
 
 ## Artifacts
 

@@ -37,6 +37,25 @@ PROPOSED_DECISIONS = {
 }
 PILOT_SEED = "shepherd-multiuav-intervention-pilot-v1"
 CASE_INSTRUCTION_SENTINEL = "__CASE_INSTRUCTION__"
+REVIEW_VALIDITY_FIELDS = (
+    "canonical_valid",
+    "alias_valid",
+    "missing_valid",
+    "restored_valid",
+    "conflict_valid",
+)
+REVIEW_HUMAN_FIELDS = frozenset(
+    {
+        "reviewer_id",
+        "review_status",
+        *REVIEW_VALIDITY_FIELDS,
+        "exclusion_reason",
+        "reviewer_notes",
+    }
+)
+REVIEW_STATUSES = frozenset(
+    {"approved", "needs_revision", "excluded"}
+)
 
 _DRONE_REFERENCE_PATTERN = re.compile(
     r"\b(?:drones?\s+)?Drone\s+\d+\b",
@@ -421,6 +440,114 @@ def validate_unreviewed_pilot_dataset(
     }
 
 
+def prepare_pilot_review_rows(
+    template_rows: Sequence[Mapping[str, Any]],
+    reviewer_id: str,
+) -> list[dict[str, Any]]:
+    """Create a separate working packet with a project-supplied pseudonym."""
+
+    reviewer = _reviewer_id(reviewer_id)
+    prepared: list[dict[str, Any]] = []
+    for template in template_rows:
+        row = dict(template)
+        if any(str(row.get(field, "")).strip() for field in REVIEW_HUMAN_FIELDS):
+            raise ValueError("review template already contains human review values")
+        row["reviewer_id"] = reviewer
+        prepared.append(row)
+    return prepared
+
+
+def validate_completed_pilot_review(
+    dataset: Mapping[str, Any],
+    review_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Validate completed human judgments without claiming identity provenance."""
+
+    clusters = dataset.get("clusters")
+    if not isinstance(clusters, list) or not clusters:
+        raise ValueError("pilot dataset requires non-empty clusters")
+    expected_rows = {
+        str(cluster["cluster_id"]): compact_review_row(cluster)
+        for cluster in clusters
+    }
+    if len(review_rows) != len(expected_rows):
+        raise ValueError("completed review must contain one row per cluster")
+
+    statuses: Counter[str] = Counter()
+    reviewers: set[str] = set()
+    seen: set[str] = set()
+    for review_row in review_rows:
+        row = dict(review_row)
+        cluster_id = str(row.get("cluster_id", ""))
+        if cluster_id in seen:
+            raise ValueError("completed review cluster ids must be unique")
+        seen.add(cluster_id)
+        if cluster_id not in expected_rows:
+            raise ValueError(f"unknown reviewed cluster: {cluster_id}")
+        expected = expected_rows[cluster_id]
+        if set(row) != set(expected):
+            raise ValueError(f"{cluster_id}: review packet schema changed")
+        for field, expected_value in expected.items():
+            if field in REVIEW_HUMAN_FIELDS:
+                continue
+            if row.get(field) != expected_value:
+                raise ValueError(
+                    f"{cluster_id}: immutable review field changed: {field}"
+                )
+
+        reviewer = _reviewer_id(str(row.get("reviewer_id", "")))
+        reviewers.add(reviewer)
+        validity = {
+            field: str(row.get(field, "")).strip().lower()
+            for field in REVIEW_VALIDITY_FIELDS
+        }
+        invalid_values = {
+            field: value
+            for field, value in validity.items()
+            if value not in {"yes", "no"}
+        }
+        if invalid_values:
+            raise ValueError(
+                f"{cluster_id}: validity fields must be yes or no: "
+                f"{sorted(invalid_values)}"
+            )
+        status = str(row.get("review_status", "")).strip().lower()
+        if status not in REVIEW_STATUSES:
+            raise ValueError(f"{cluster_id}: unsupported review status: {status!r}")
+        exclusion_reason = str(row.get("exclusion_reason", "")).strip()
+        notes = str(row.get("reviewer_notes", "")).strip()
+        rejected_fields = [field for field, value in validity.items() if value == "no"]
+        if status == "approved":
+            if rejected_fields:
+                raise ValueError(
+                    f"{cluster_id}: approved row contains rejected variants"
+                )
+            if exclusion_reason:
+                raise ValueError(
+                    f"{cluster_id}: approved row has an exclusion reason"
+                )
+        elif status == "needs_revision":
+            if not rejected_fields or not notes:
+                raise ValueError(
+                    f"{cluster_id}: needs_revision requires a no value and notes"
+                )
+        elif not exclusion_reason:
+            raise ValueError(
+                f"{cluster_id}: excluded row requires an exclusion reason"
+            )
+        statuses[status] += 1
+
+    if seen != set(expected_rows):
+        raise ValueError("completed review does not cover every pilot cluster")
+    return {
+        "valid": True,
+        "clusters_reviewed": len(review_rows),
+        "reviewer_ids": sorted(reviewers),
+        "status_counts": dict(sorted(statuses.items())),
+        "identity_provenance": "project_attestation_required_not_machine_verifiable",
+    }
+
+
 def _case(
     task_id: str,
     variant: str,
@@ -530,3 +657,12 @@ def _text(value: Any, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{label} must be non-empty text")
     return value.strip()
+
+
+def _reviewer_id(value: str) -> str:
+    reviewer = value.strip()
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{2,63}", reviewer):
+        raise ValueError(
+            "reviewer_id must be a 3-64 character project-supplied pseudonym"
+        )
+    return reviewer
