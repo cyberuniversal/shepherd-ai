@@ -51,6 +51,11 @@
       "path": "datasets/multiuav_plat/recoverability_audit_v1.json",
       "sha256": "e04e06981d2207af1c7bd34ad3e7891e76b558bb9e03851bc4173388d8862f59"
     },
+    "runner_contract_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/runner_contract_audit_v1.json",
+      "sha256": "49dd540fd7f6f6b1585e78f6f6998de2db6254d465f6fb662d59a22f49837e1c"
+    },
     "session_split": {
       "exists": true,
       "path": "datasets/multiuav_plat/session_split_v1.json",
@@ -58,8 +63,8 @@
     },
     "source_audit": {
       "exists": true,
-      "path": "datasets/multiuav_plat/source_audit_v1.json",
-      "sha256": "34208e2f438f24c35770c02802bf1affb1d31f3981dba026aa79aa276bd7d491"
+      "path": "src/shepherd_ai/multiuav_experiment.py",
+      "sha256": "465a71a15a3f4a99ea9e13e26fdb9417c4f9952533fe4b537d2593f6a4ef5446"
     },
     "task_eligibility": {
       "exists": true,
@@ -70,12 +75,11 @@
   "blocking_gates": [
     "human_intervention_review_and_adjudication",
     "full_intervention_dataset_generation_and_review",
-    "method_runners_and_prompts",
     "offline_inference_isolation",
     "execution_scope",
     "hardware_measurement_protocol"
   ],
-  "claim_status": "unreviewed_training_pilot_grounding_validator_and_model_revisions_wired_no_revised_inference",
+  "claim_status": "unreviewed_training_pilot_runner_checkpoint_and_model_revisions_wired_no_revised_inference",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -88,7 +92,9 @@
     "method_call_budget",
     "strict_structural_output_contract",
     "deterministic_recursive_grounding_validator",
-    "immutable_qwen_checkpoint_resolution"
+    "immutable_qwen_checkpoint_resolution",
+    "method_runners_and_prompts",
+    "row_checkpoint_resume_contract"
   ],
   "errors": [],
   "legacy_component_roles": {
@@ -99,10 +105,12 @@
   },
   "primary_path": {
     "api_plan_parser": "strict_multiuav_json_contract_v1",
+    "checkpoint_writer": "config_bound_jsonl_and_compact_zip_v1",
     "dataset": "training_pilot_30_clusters_pending_human_review",
     "deterministic_validator": "recursive_visible_evidence_grounding_v1",
     "execution_backend": "not_selected",
     "input_modality": "text",
+    "method_runner": "provider_independent_m1_m4_runner_v1",
     "methods": [
       "M1",
       "M2",

@@ -4,8 +4,10 @@
 
 This document freezes the model-call semantics and strict structural output
 contract required by paragraphs 31 and 32 of
-`docs/source_material/code_plan_2026-07-25.docx`. It does not implement model
-prompts, inference, recursive grounding, execution, or evaluation.
+`docs/source_material/code_plan_2026-07-25.docx`. Prompt construction, runner
+integration, and recursive grounding were implemented afterward under
+`docs/multiuav_runner_checkpoint_protocol.md`. Learned-model inference,
+execution, and evaluation remain absent.
 
 ## Model-Call Budget
 
@@ -67,17 +69,20 @@ code. It is never repaired, discarded, or converted into a valid decision.
 
 ## Boundary With Grounding
 
-This contract validates syntax and structural invariants only. It does not yet
-prove that:
+The strict parser validates syntax and structural invariants only. By itself,
+it does not establish endpoint, identifier, or value grounding. The separate
+deterministic grounding validator now checks:
 
 - an endpoint exists in the allowed AGENT API catalog;
 - an identifier is present in visible context;
-- coordinates, headings, distances, or messages are grounded;
-- the plan matches the operator instruction; or
-- the mission would succeed in the official server.
+- coordinates, headings, distances, and messages are visibly grounded; and
+- registered static bounds.
 
-Those checks belong to the recursive grounding and containment-stage validator
-required by the next code-plan gate.
+Neither component proves that the complete plan matches the operator's intent
+or that the mission would succeed in the official server.
+
+Grounding behavior and limitations are frozen in
+`docs/multiuav_grounding_validator_protocol.md`.
 
 ## Frozen Artifact
 
@@ -89,4 +94,4 @@ python scripts/audit_multiuav_method_contract.py `
 ```
 
 The artifact records the method registry, call counts, strict field sets,
-source-code hashes, claim boundary, and unresolved grounding limitation.
+source-code hashes, and the parser's claim boundary.

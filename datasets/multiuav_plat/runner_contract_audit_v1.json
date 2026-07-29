@@ -1,0 +1,129 @@
+{
+  "checkpoint_contract": {
+    "compact_zip_contents": [
+      "manifest.json",
+      "results.jsonl",
+      "run_config.json"
+    ],
+    "config_hash_on_every_row": true,
+    "duplicate_result_key_rejected": true,
+    "durable_flush_and_fsync": true,
+    "final_publication_package_implemented": false,
+    "incompatible_resume_rejected": true,
+    "matrix_completeness_check": true,
+    "periodic_compact_zip_supported": true,
+    "row_written_after_each_method_case": true,
+    "schema_version": 1
+  },
+  "claim_status": "prompt_runner_and_checkpoint_contract_implemented_synthetic_tests_only_no_model_inference",
+  "limitations": [
+    "No Qwen or other learned model backend was loaded or invoked.",
+    "The M3 pre-plan gate checks ledger structure, visible source paths, and internal decision consistency; it does not prove semantic correctness.",
+    "The compact checkpoint ZIP is not the final publication package with summaries, figures, failure examples, and full runtime metadata.",
+    "No unreviewed pilot case is eligible for model execution under the runner contract."
+  ],
+  "model_invoked": false,
+  "pilot_prompt_leakage_audit": {
+    "cases_audited": 150,
+    "clusters_audited": 30,
+    "dataset_status": "template_generated_unreviewed_pilot",
+    "errors": [],
+    "method_first_prompts_audited": 600,
+    "model_invoked": false,
+    "privileged_or_label_leak_count": 0,
+    "valid": true
+  },
+  "prompt_contract": {
+    "excluded_inputs": [
+      "proposed_decision",
+      "human_review_fields",
+      "related_apis",
+      "execution_check_apis",
+      "official_reference_plan",
+      "privileged_state"
+    ],
+    "first_call_prompt_equivalence_group": [
+      "M1_monolithic",
+      "M2_post_plan_deterministic",
+      "M4_post_plan_compute_matched"
+    ],
+    "methods": {
+      "M1_monolithic": {
+        "first_response_contract": "final_output",
+        "model_call_count": 1,
+        "model_call_purposes": [
+          "decision_and_api_plan"
+        ],
+        "second_response_contract": null
+      },
+      "M2_post_plan_deterministic": {
+        "first_response_contract": "final_output",
+        "model_call_count": 1,
+        "model_call_purposes": [
+          "decision_and_api_plan"
+        ],
+        "second_response_contract": null
+      },
+      "M3_stage_wise": {
+        "first_response_contract": "evidence_ledger",
+        "model_call_count": 2,
+        "model_call_purposes": [
+          "evidence_ledger_and_provisional_decision",
+          "api_plan_or_nonexecute_decision_finalization"
+        ],
+        "second_response_contract": "final_output"
+      },
+      "M4_post_plan_compute_matched": {
+        "first_response_contract": "final_output",
+        "model_call_count": 2,
+        "model_call_purposes": [
+          "decision_and_api_plan",
+          "learned_postplan_validation"
+        ],
+        "second_response_contract": "final_output"
+      }
+    },
+    "prompt_contract_version": "multiuav_prompt_contract_v1",
+    "visible_inputs": [
+      "agent_context",
+      "frozen_action_catalog",
+      "allowed_observation_endpoints"
+    ]
+  },
+  "prompt_contract_version": "multiuav_prompt_contract_v1",
+  "runner_contract": {
+    "backend_errors_retained_as_rows": true,
+    "deterministic_postplan_methods": [
+      "M2_post_plan_deterministic",
+      "M3_stage_wise",
+      "M4_post_plan_compute_matched"
+    ],
+    "m3_second_call_always_required": true,
+    "method_call_counts": {
+      "M1_monolithic": 1,
+      "M2_post_plan_deterministic": 1,
+      "M3_stage_wise": 2,
+      "M4_post_plan_compute_matched": 2
+    },
+    "parse_errors_retained": true,
+    "pending_human_review_allowed": false,
+    "provider_independent_backend_protocol": true,
+    "qwen_backend_implemented": false,
+    "raw_outputs_retained": true,
+    "runnable_case_statuses": [
+      "approved_evaluation_case",
+      "synthetic_unit_fixture"
+    ]
+  },
+  "schema_version": 1,
+  "source_code_sha256": {
+    "audit_multiuav_runner_contract.py": "89cdde427f892f7528461a3f75c8631ce03df929d6f2aae949e701fa6cbb1e2c",
+    "multiuav_checkpoints.py": "febc2a377d93fd46f5c333f426eadbeca9a421faf8e1e73d87e70040bb6ddd58",
+    "multiuav_experiment.py": "465a71a15a3f4a99ea9e13e26fdb9417c4f9952533fe4b537d2593f6a4ef5446",
+    "multiuav_ledger_contract.py": "1834b652f14ead55fc724d6a4fb8c1fc7e4b1ffaebf0337ef51d61a9ae2f83a3",
+    "multiuav_prompts.py": "27c49cc5e729bca57d736d0414daed1c0007a9719369a6c572dcf1f271068f2c",
+    "multiuav_runner.py": "a0aed7bea5c52419f11b7eaae6e2f5954d08aa4bddb5f96225c875350fd4cd5a"
+  },
+  "valid": true,
+  "weights_loaded": false
+}

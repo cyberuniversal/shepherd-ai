@@ -9,7 +9,8 @@ This document records the revised paper direction supplied by the user in
   `829cfa69e2a3365d0686163fbd1548e9e0c22455535a6d725cc3289a37102f63`
 - Source document date: 2026-07-25
 - Repository adoption date: 2026-07-28
-- Status: proposed protocol, not implemented, frozen, or evaluated
+- Status: proposed protocol with partial implementation; not fully frozen or
+  evaluated
 - Previous paper status: preserved as historical development evidence, but
   superseded as the active paper direction
 
@@ -173,6 +174,14 @@ The intended systems are:
 All methods must receive the same visible command, mission evidence, action
 schema, model family, and decoding policy. Method-specific prompts and
 intermediate records must be versioned and hashed.
+
+Versioned prompt construction, strict M3 evidence-ledger parsing, exact-call
+provider-independent runners, and config-bound checkpoint/resume are now
+implemented and source-hashed in
+`datasets/multiuav_plat/runner_contract_audit_v1.json`. The runner rejects
+unreviewed cases before backend invocation. No Qwen backend was loaded or
+invoked; implementation details and claim limits are in
+`docs/multiuav_runner_checkpoint_protocol.md`.
 
 The call budget is frozen in `docs/multiuav_method_contract.md`: M1 and M2 use
 one model call per case; M3 and M4 use exactly two. M3 makes its second call
@@ -344,6 +353,11 @@ Before the locked run:
 - test that empty plans and empty references are never rewarded;
 - label smoke results and exclude them from publication summaries; and
 - preserve every raw output and negative result.
+
+The prompt, runner, parser, grounding, and checkpoint/resume correctness gates
+have synthetic unit coverage. Offline Qwen loading, non-loopback isolation,
+runtime/resource metadata, approved study data, and locked experiment rows
+remain absent.
 
 The first two wiring gates above were completed on 2026-07-28. Known
 Whisper-derived action and count aliases were removed from the deterministic

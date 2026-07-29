@@ -39,6 +39,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     method_contract_path = metadata / "method_contract_audit_v1.json"
     grounding_contract_path = metadata / "grounding_contract_audit_v1.json"
     model_revision_path = metadata / "model_revision_audit_v1.json"
+    runner_contract_path = metadata / "runner_contract_audit_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -62,6 +63,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     method_contract = _read_object(method_contract_path, errors)
     grounding_contract = _read_object(grounding_contract_path, errors)
     model_revisions = _read_object(model_revision_path, errors)
+    runner_contract = _read_object(runner_contract_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -271,6 +273,70 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "audit_multiuav_model_revisions.py"
         ) != _sha256(model_revision_script):
             errors.append("model revision audit is not bound to audit source")
+    if runner_contract:
+        if runner_contract.get("valid") is not True:
+            errors.append("runner contract audit is not valid")
+        prompt_contract = runner_contract.get("prompt_contract", {})
+        if prompt_contract.get("prompt_contract_version") != (
+            "multiuav_prompt_contract_v1"
+        ):
+            errors.append("runner prompt contract version is not frozen")
+        runner = runner_contract.get("runner_contract", {})
+        if runner.get("method_call_counts") != {
+            "M1_monolithic": 1,
+            "M2_post_plan_deterministic": 1,
+            "M3_stage_wise": 2,
+            "M4_post_plan_compute_matched": 2,
+        }:
+            errors.append("runner call counts differ from the frozen methods")
+        if runner.get("m3_second_call_always_required") is not True:
+            errors.append("runner permits M3 to skip its second call")
+        if runner.get("pending_human_review_allowed") is not False:
+            errors.append("runner permits unreviewed cases")
+        if runner.get("qwen_backend_implemented") is not False:
+            errors.append("runner audit unexpectedly claims a Qwen backend")
+        checkpoint = runner_contract.get("checkpoint_contract", {})
+        if checkpoint.get("row_written_after_each_method_case") is not True:
+            errors.append("runner does not checkpoint every method-case row")
+        if checkpoint.get("incompatible_resume_rejected") is not True:
+            errors.append("runner does not reject incompatible resume")
+        if checkpoint.get("matrix_completeness_check") is not True:
+            errors.append("runner does not enforce complete result matrices")
+        if runner_contract.get("model_invoked") is not False:
+            errors.append("runner contract audit unexpectedly invoked a model")
+        if runner_contract.get("weights_loaded") is not False:
+            errors.append("runner contract audit unexpectedly loaded weights")
+        leakage = runner_contract.get("pilot_prompt_leakage_audit", {})
+        if leakage.get("method_first_prompts_audited") != 600:
+            errors.append("runner prompt leakage audit does not cover 600 prompts")
+        if leakage.get("privileged_or_label_leak_count") != 0:
+            errors.append("runner prompt leakage audit found privileged data")
+        source_hashes = runner_contract.get("source_code_sha256", {})
+        for filename in (
+            "multiuav_prompts.py",
+            "multiuav_ledger_contract.py",
+            "multiuav_runner.py",
+            "multiuav_checkpoints.py",
+            "multiuav_experiment.py",
+        ):
+            source_path = (
+                repository_root / "src" / "shepherd_ai" / filename
+            )
+            if source_path.is_file() and source_hashes.get(
+                filename
+            ) != _sha256(source_path):
+                errors.append(
+                    f"runner contract is not bound to source code: {filename}"
+                )
+        runner_audit_script = (
+            repository_root
+            / "scripts"
+            / "audit_multiuav_runner_contract.py"
+        )
+        if runner_audit_script.is_file() and source_hashes.get(
+            "audit_multiuav_runner_contract.py"
+        ) != _sha256(runner_audit_script):
+            errors.append("runner contract is not bound to its audit script")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -285,11 +351,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "strict_structural_output_contract",
         "deterministic_recursive_grounding_validator",
         "immutable_qwen_checkpoint_resolution",
+        "method_runners_and_prompts",
+        "row_checkpoint_resume_contract",
     ]
     blocking_gates = [
         "human_intervention_review_and_adjudication",
         "full_intervention_dataset_generation_and_review",
-        "method_runners_and_prompts",
         "offline_inference_isolation",
         "execution_scope",
         "hardware_measurement_protocol",
@@ -317,6 +384,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "deterministic_validator": (
                 "recursive_visible_evidence_grounding_v1"
             ),
+            "method_runner": "provider_independent_m1_m4_runner_v1",
+            "checkpoint_writer": "config_bound_jsonl_and_compact_zip_v1",
             "execution_backend": "not_selected",
         },
         "legacy_component_roles": {
@@ -375,12 +444,15 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "model_revision_audit": _artifact_record(
                 model_revision_path, repository_root
             ),
+            "runner_contract_audit": _artifact_record(
+                runner_contract_path, repository_root
+            ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root
             ),
         },
         "claim_status": (
-            "unreviewed_training_pilot_grounding_validator_and_model_"
+            "unreviewed_training_pilot_runner_checkpoint_and_model_"
             "revisions_wired_no_revised_inference"
         ),
     }

@@ -6,7 +6,7 @@ The primary revised experiment is text-first:
 
 ```text
 frozen MultiUAV source task
-  -> validated five-variant case (training pilot only; human review pending)
+  -> approved five-variant case (none exists; training pilot review pending)
   -> method M1, M2, M3, or M4
   -> strict API-plan parser
   -> deterministic evidence, provenance, and safety validation
@@ -19,14 +19,19 @@ recoverability, pilot-generation, pilot-validation, and standalone recursive
 grounding-validation gates are currently implemented. The method-call budget
 and strict structural output contract are also frozen, and both Qwen model
 repositories are pinned to remotely verified immutable revisions. The
-training-only pilot contains 30 clusters and 150 cases across all 15
-scenario/difficulty strata. All 30 clusters remain pending human review; none
-is approved or evaluated.
+versioned prompts, provider-independent exact-call runner, and config-bound
+JSONL/ZIP checkpoint contract are now implemented. The training-only pilot
+contains 30 clusters and 150 cases across all 15 scenario/difficulty strata.
+All 30 clusters remain pending human review; none is approved, runnable, or
+evaluated. All 600 method-first-prompt constructions over those cases pass the
+stored privileged/label leakage audit without invoking a model.
 Context and recoverability evidence are documented in
 `docs/multiuav_agent_context_protocol.md` and
 `docs/multiuav_recoverability_protocol.md`.
 Grounding behavior and claim limits are documented in
 `docs/multiuav_grounding_validator_protocol.md`.
+Runner and checkpoint behavior is documented in
+`docs/multiuav_runner_checkpoint_protocol.md`.
 
 ## Legacy Component Roles
 
@@ -76,7 +81,7 @@ tables, figures, or comparative claims.
 
 The pilot is ready for real human review. Revised-study model inference remains
 blocked until pilot review/adjudication, full intervention generation and
-review, method runners and prompts, isolation checks, execution scope, and
-hardware protocol are frozen and tested. The standalone recursive validator is
-implemented and audited, but has not yet been connected to method runners or
-evaluated.
+review, local model loading and isolation checks, execution scope, and hardware
+protocol are frozen and tested. Prompts, method orchestration, strict parsing,
+recursive validation, and checkpoint/resume are connected and tested only with
+scripted synthetic backends; they have not produced revised-study results.
