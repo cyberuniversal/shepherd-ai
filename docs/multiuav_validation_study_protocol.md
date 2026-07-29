@@ -163,18 +163,22 @@ The intended systems are:
 - `M1_monolithic`: one local model call produces the decision and API plan.
 - `M2_post_plan_deterministic`: the M1 plan passes through a deterministic
   post-plan safety and fidelity gate.
-- `M3_stage_wise`: evidence is represented in a ledger, checked before
-  planning, and validated again for plan provenance.
+- `M3_stage_wise`: a first model call creates an evidence ledger and
+  provisional decision; deterministic pre-plan checks run before a second call
+  creates the API plan or finalizes a non-execution decision. Deterministic
+  provenance validation follows.
 - `M4_post_plan_compute_matched`: a planner and a separate post-plan validator
-  use the same model-call budget as M3.
+  use the same two-model-call budget as M3.
 
 All methods must receive the same visible command, mission evidence, action
 schema, model family, and decoding policy. Method-specific prompts and
 intermediate records must be versioned and hashed.
 
-The exact number and purpose of model calls in M3 are not yet explicit in the
-source DOCX. M3 and M4 cannot be called compute-matched until this is resolved
-and tested.
+The call budget is frozen in `docs/multiuav_method_contract.md`: M1 and M2 use
+one model call per case; M3 and M4 use exactly two. M3 makes its second call
+even for `CLARIFY` and `BLOCK` cases to preserve the per-case match. The term
+`compute_matched` means model-call-count matched only. Tokens, latency, memory,
+and energy remain measured outcomes rather than matched quantities.
 
 ## Output Contract
 
@@ -187,6 +191,12 @@ Every method must return strict JSON containing:
 
 Malformed output is retained as `PARSE_ERROR`. It is not manually repaired,
 discarded, or converted into a valid decision.
+
+The strict structural parser is implemented in
+`src/shepherd_ai/multiuav_plan_contract.py` and frozen by
+`datasets/multiuav_plat/method_contract_audit_v1.json`. It does not yet
+establish endpoint validity, parameter grounding, plan fidelity, or mission
+success.
 
 Every planned API value must be validated recursively against the visible
 command and context, including:
@@ -322,14 +332,12 @@ DistilBERT remains excluded from M1-M4.
 
 The following decisions block a locked experiment:
 
-1. **M3 call budget:** Specify whether stage-wise validation uses one or two
-   model calls and make M4 exactly compute matched.
-2. **Execution scope:** Decide whether primary plan fidelity is static or
+1. **Execution scope:** Decide whether primary plan fidelity is static or
    includes submission to the official server. Static checks cannot be called
    live mission success.
-3. **Review protocol:** Register real author, reviewer, adjudicator, and
+2. **Review protocol:** Register real author, reviewer, adjudicator, and
    exclusion procedures without fabricating identities.
-4. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
+3. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
    thermal/warm-up controls for resource measurements.
 
 ## Definition Of Done

@@ -28,6 +28,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     pilot_dataset_path = metadata / "intervention_pilot_v1.json"
     pilot_summary_path = metadata / "intervention_pilot_summary_v1.json"
     pilot_validation_path = metadata / "intervention_pilot_validation_v1.json"
+    method_contract_path = metadata / "method_contract_audit_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -48,6 +49,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     recoverability = _read_object(recoverability_path, errors)
     pilot_summary = _read_object(pilot_summary_path, errors)
     pilot_validation = _read_object(pilot_validation_path, errors)
+    method_contract = _read_object(method_contract_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -154,6 +156,42 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "generation_summary_sha256"
         ) != _sha256(pilot_summary_path):
             errors.append("pilot validation is not bound to the generation summary")
+    if method_contract:
+        if method_contract.get("valid") is not True:
+            errors.append("method contract audit is not valid")
+        call_counts = method_contract.get("method_validation", {}).get(
+            "call_counts"
+        )
+        if call_counts != {
+            "M1_monolithic": 1,
+            "M2_post_plan_deterministic": 1,
+            "M3_stage_wise": 2,
+            "M4_post_plan_compute_matched": 2,
+        }:
+            errors.append("method call budgets do not match the frozen protocol")
+        contract = method_contract.get("strict_output_contract", {})
+        if contract.get("malformed_output_status") != "PARSE_ERROR":
+            errors.append("method contract does not preserve PARSE_ERROR")
+        if contract.get("execute_requires_nonempty_plan") is not True:
+            errors.append("method contract permits empty executable plans")
+        source_hashes = method_contract.get("source_code_sha256", {})
+        methods_source = (
+            repository_root / "src" / "shepherd_ai" / "multiuav_methods.py"
+        )
+        plan_contract_source = (
+            repository_root
+            / "src"
+            / "shepherd_ai"
+            / "multiuav_plan_contract.py"
+        )
+        if methods_source.is_file() and source_hashes.get(
+            "multiuav_methods.py"
+        ) != _sha256(methods_source):
+            errors.append("method contract is not bound to method source code")
+        if plan_contract_source.is_file() and source_hashes.get(
+            "multiuav_plan_contract.py"
+        ) != _sha256(plan_contract_source):
+            errors.append("method contract is not bound to parser source code")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -164,12 +202,13 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "recoverability_rule",
         "training_pilot_generation",
         "training_pilot_deterministic_validation",
+        "method_call_budget",
+        "strict_structural_output_contract",
     ]
     blocking_gates = [
         "human_intervention_review_and_adjudication",
         "full_intervention_dataset_generation_and_review",
-        "m1_to_m4_call_budget",
-        "strict_api_plan_contract",
+        "method_runners_and_prompts",
         "deterministic_recursive_validator",
         "immutable_qwen_checkpoint_resolution",
         "offline_inference_isolation",
@@ -194,7 +233,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "dataset": "training_pilot_30_clusters_pending_human_review",
             "model_family": "Qwen2.5-Instruct_planned_not_loaded",
             "methods": ["M1", "M2", "M3", "M4"],
-            "api_plan_parser": "not_implemented",
+            "api_plan_parser": "strict_multiuav_json_contract_v1",
             "deterministic_validator": "not_implemented",
             "execution_backend": "not_selected",
         },
@@ -244,6 +283,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             ),
             "intervention_pilot_review_packet": _artifact_record(
                 pilot_review_path, repository_root
+            ),
+            "method_contract_audit": _artifact_record(
+                method_contract_path, repository_root
             ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root

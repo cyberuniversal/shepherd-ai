@@ -16,6 +16,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_recoverability_protocol.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_pilot_protocol.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_review_protocol.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_method_contract.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
 

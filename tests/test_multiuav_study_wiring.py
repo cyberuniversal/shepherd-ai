@@ -53,6 +53,17 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "human_intervention_review_and_adjudication",
             result["blocking_gates"],
         )
+        self.assertIn("method_call_budget", result["completed_gates"])
+        self.assertIn(
+            "strict_structural_output_contract",
+            result["completed_gates"],
+        )
+        self.assertNotIn("m1_to_m4_call_budget", result["blocking_gates"])
+        self.assertNotIn("strict_api_plan_contract", result["blocking_gates"])
+        self.assertEqual(
+            result["primary_path"]["api_plan_parser"],
+            "strict_multiuav_json_contract_v1",
+        )
         self.assertTrue(
             result["artifact_bindings"]["agent_context_audit"]["exists"]
         )
@@ -67,6 +78,9 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["intervention_pilot_review_packet"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["method_contract_audit"]["exists"]
         )
         self.assertTrue(
             result["artifact_bindings"][

@@ -1,0 +1,92 @@
+{
+  "claim_status": "call_budget_and_structural_contract_frozen_recursive_grounding_not_implemented",
+  "limitations": [
+    "M3 and M4 are matched on model-call count only; tokens, latency, memory, and energy must be measured and reported.",
+    "The structural parser does not establish endpoint validity, parameter grounding, plan fidelity, or mission success.",
+    "No revised-study model was loaded or invoked."
+  ],
+  "method_validation": {
+    "call_counts": {
+      "M1_monolithic": 1,
+      "M2_post_plan_deterministic": 1,
+      "M3_stage_wise": 2,
+      "M4_post_plan_compute_matched": 2
+    },
+    "matching_scope": "model_call_count_only_tokens_latency_memory_and_energy_measured",
+    "method_count": 4,
+    "valid": true
+  },
+  "methods": [
+    {
+      "deterministic_postplan_gate": false,
+      "deterministic_preplan_gate": false,
+      "learned_postplan_validator": false,
+      "method_id": "M1_monolithic",
+      "model_call_count": 1,
+      "model_call_purposes": [
+        "decision_and_api_plan"
+      ]
+    },
+    {
+      "deterministic_postplan_gate": true,
+      "deterministic_preplan_gate": false,
+      "learned_postplan_validator": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_call_count": 1,
+      "model_call_purposes": [
+        "decision_and_api_plan"
+      ]
+    },
+    {
+      "deterministic_postplan_gate": true,
+      "deterministic_preplan_gate": true,
+      "learned_postplan_validator": false,
+      "method_id": "M3_stage_wise",
+      "model_call_count": 2,
+      "model_call_purposes": [
+        "evidence_ledger_and_provisional_decision",
+        "api_plan_or_nonexecute_decision_finalization"
+      ]
+    },
+    {
+      "deterministic_postplan_gate": true,
+      "deterministic_preplan_gate": false,
+      "learned_postplan_validator": true,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_call_count": 2,
+      "model_call_purposes": [
+        "decision_and_api_plan",
+        "learned_postplan_validation"
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "source_code_sha256": {
+    "multiuav_methods.py": "622e96196ed1aa7b9ba3829ce472332712e13c5fae2dfdcdb0d6cb0800c0124b",
+    "multiuav_plan_contract.py": "a2130159af2b5b5a8cab4265dd075c6d2b557cb832f9b864f1094b7e31831156"
+  },
+  "strict_output_contract": {
+    "api_call_fields": [
+      "endpoint",
+      "parameters"
+    ],
+    "api_plan_shape": "MultiUAV related_apis endpoint_parameters",
+    "clarify_requires_nonempty_question": true,
+    "decisions": [
+      "BLOCK",
+      "CLARIFY",
+      "EXECUTE"
+    ],
+    "execute_requires_nonempty_plan": true,
+    "malformed_output_status": "PARSE_ERROR",
+    "nonexecute_requires_empty_plan": true,
+    "output_fields": [
+      "api_plan",
+      "clarification_question",
+      "decision",
+      "reason"
+    ],
+    "silent_repair_allowed": false
+  },
+  "valid": true
+}

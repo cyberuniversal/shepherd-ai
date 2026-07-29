@@ -16,7 +16,8 @@ frozen MultiUAV source task
 
 The source, split, eligibility, official-alias, AGENT-visible context,
 recoverability, pilot-generation, and pilot-validation gates are currently
-implemented. The training-only pilot contains 30 clusters and 150 cases across
+implemented. The method-call budget and strict structural output contract are
+also frozen. The training-only pilot contains 30 clusters and 150 cases across
 all 15 scenario/difficulty strata. All 30 clusters remain pending human review;
 none is approved or evaluated.
 Context and recoverability evidence are documented in
@@ -71,6 +72,6 @@ tables, figures, or comparative claims.
 
 The pilot is ready for real human review. Revised-study model inference remains
 blocked until pilot review/adjudication, full intervention generation and
-review, method call budgets, plan contract, recursive plan validators,
-immutable Qwen revisions, isolation checks, execution scope, and hardware
-protocol are frozen and tested.
+review, method runners and prompts, recursive plan validators, immutable Qwen
+revisions, isolation checks, execution scope, and hardware protocol are frozen
+and tested.
