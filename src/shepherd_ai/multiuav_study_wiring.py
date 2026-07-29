@@ -14,6 +14,14 @@ EXPECTED_SOURCE_COMMIT = "1794e45e421fb5de03094f0b63f9ca95f86ab42f"
 EXPECTED_SOURCE_ARCHIVE_SHA256 = (
     "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3"
 )
+EXPECTED_MODEL_REVISIONS = {
+    "Qwen/Qwen2.5-3B-Instruct": (
+        "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+    ),
+    "Qwen/Qwen2.5-7B-Instruct": (
+        "a09a35458c702b33eeacc393d103063234e8bc28"
+    ),
+}
 
 
 def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
@@ -30,6 +38,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     pilot_validation_path = metadata / "intervention_pilot_validation_v1.json"
     method_contract_path = metadata / "method_contract_audit_v1.json"
     grounding_contract_path = metadata / "grounding_contract_audit_v1.json"
+    model_revision_path = metadata / "model_revision_audit_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -52,6 +61,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     pilot_validation = _read_object(pilot_validation_path, errors)
     method_contract = _read_object(method_contract_path, errors)
     grounding_contract = _read_object(grounding_contract_path, errors)
+    model_revisions = _read_object(model_revision_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -219,6 +229,48 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "multiuav_grounding_validator.py"
         ) != _sha256(grounding_source):
             errors.append("grounding contract is not bound to validator source code")
+    if model_revisions:
+        if model_revisions.get("valid") is not True:
+            errors.append("model revision audit is not valid")
+        if model_revisions.get("remote_verification_performed") is not True:
+            errors.append("model revisions were not verified remotely")
+        if model_revisions.get("weights_downloaded") is not False:
+            errors.append("model revision audit unexpectedly downloaded weights")
+        if model_revisions.get("model_invoked") is not False:
+            errors.append("model revision audit unexpectedly invoked a model")
+        observed_revisions = {
+            str(item.get("model_id")): item.get("revision")
+            for item in model_revisions.get("models", [])
+            if isinstance(item, dict)
+        }
+        if observed_revisions != EXPECTED_MODEL_REVISIONS:
+            errors.append("model revisions do not match the frozen registry")
+        if not all(
+            item.get("remote_verified") is True
+            for item in model_revisions.get("models", [])
+            if isinstance(item, dict)
+        ):
+            errors.append("one or more model revisions lack remote verification")
+        source_hashes = model_revisions.get("source_code_sha256", {})
+        model_revision_source = (
+            repository_root
+            / "src"
+            / "shepherd_ai"
+            / "multiuav_model_revisions.py"
+        )
+        model_revision_script = (
+            repository_root
+            / "scripts"
+            / "audit_multiuav_model_revisions.py"
+        )
+        if model_revision_source.is_file() and source_hashes.get(
+            "multiuav_model_revisions.py"
+        ) != _sha256(model_revision_source):
+            errors.append("model revision audit is not bound to registry source")
+        if model_revision_script.is_file() and source_hashes.get(
+            "audit_multiuav_model_revisions.py"
+        ) != _sha256(model_revision_script):
+            errors.append("model revision audit is not bound to audit source")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -232,12 +284,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "method_call_budget",
         "strict_structural_output_contract",
         "deterministic_recursive_grounding_validator",
+        "immutable_qwen_checkpoint_resolution",
     ]
     blocking_gates = [
         "human_intervention_review_and_adjudication",
         "full_intervention_dataset_generation_and_review",
         "method_runners_and_prompts",
-        "immutable_qwen_checkpoint_resolution",
         "offline_inference_isolation",
         "execution_scope",
         "hardware_measurement_protocol",
@@ -258,7 +310,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "input_modality": "text",
             "source_adapter": "multiuav_plat_pinned_source_v1",
             "dataset": "training_pilot_30_clusters_pending_human_review",
-            "model_family": "Qwen2.5-Instruct_planned_not_loaded",
+            "model_family": "Qwen2.5-Instruct_pinned_not_loaded",
+            "model_revisions": EXPECTED_MODEL_REVISIONS,
             "methods": ["M1", "M2", "M3", "M4"],
             "api_plan_parser": "strict_multiuav_json_contract_v1",
             "deterministic_validator": (
@@ -319,13 +372,16 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "grounding_contract_audit": _artifact_record(
                 grounding_contract_path, repository_root
             ),
+            "model_revision_audit": _artifact_record(
+                model_revision_path, repository_root
+            ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root
             ),
         },
         "claim_status": (
-            "unreviewed_training_pilot_and_grounding_validator_wired_"
-            "no_revised_inference"
+            "unreviewed_training_pilot_grounding_validator_and_model_"
+            "revisions_wired_no_revised_inference"
         ),
     }
 

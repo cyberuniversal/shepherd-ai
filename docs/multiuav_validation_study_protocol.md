@@ -240,6 +240,16 @@ Each model must resolve to an immutable 40-character Hugging Face commit before
 the locked run. The comparison is within one model family and does not support
 claims about all LLMs.
 
+The revisions are now frozen and remotely verified:
+
+- 3B: `aa8e72537993ba99e69dfaafa59ed015b17504d1`
+- 7B: `a09a35458c702b33eeacc393d103063234e8bc28`
+
+The source-bound audit is
+`datasets/multiuav_plat/model_revision_audit_v1.json`; details and claim limits
+are in `docs/multiuav_model_revisions.md`. This metadata verification did not
+download or invoke model weights.
+
 Measured inference requires:
 
 - weights cached before measurement;

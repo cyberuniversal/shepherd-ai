@@ -1,0 +1,55 @@
+{
+  "claim_status": "immutable_model_metadata_verified_no_weights_or_inference",
+  "errors": [],
+  "local_validation": {
+    "all_revisions_immutable": true,
+    "model_count": 2,
+    "model_ids": [
+      "Qwen/Qwen2.5-3B-Instruct",
+      "Qwen/Qwen2.5-7B-Instruct"
+    ],
+    "roles": [
+      "primary_scale",
+      "confirmation_scale"
+    ],
+    "valid": true
+  },
+  "model_invoked": false,
+  "models": [
+    {
+      "last_modified": "2024-09-25T12:33:00.000Z",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "remote_verified": true,
+      "reported_license": "other",
+      "reported_license_link": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE",
+      "reported_license_name": "qwen-research",
+      "reported_model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "reported_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "revision_api_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-3B-Instruct/revision/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "role": "primary_scale"
+    },
+    {
+      "last_modified": "2025-01-12T02:10:10.000Z",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "remote_verified": true,
+      "reported_license": "apache-2.0",
+      "reported_license_link": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/LICENSE",
+      "reported_license_name": null,
+      "reported_model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "reported_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "revision_api_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/revision/a09a35458c702b33eeacc393d103063234e8bc28",
+      "role": "confirmation_scale"
+    }
+  ],
+  "remote_verification_performed": true,
+  "resolved_at_utc": "2026-07-29T13:20:04.162576+00:00",
+  "schema_version": 1,
+  "source_code_sha256": {
+    "audit_multiuav_model_revisions.py": "c28352edccfb237c4fd8283625795173e9437aaed7ecee8937f11875bc720f33",
+    "multiuav_model_revisions.py": "d6ccd9a64ad1585901eb2bad3f5f2e38c7765c3142e510097d1c88aad5f39fe5"
+  },
+  "valid": true,
+  "weights_downloaded": false
+}

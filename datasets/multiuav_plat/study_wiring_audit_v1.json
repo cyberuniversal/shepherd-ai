@@ -41,6 +41,11 @@
       "path": "datasets/multiuav_plat/method_contract_audit_v1.json",
       "sha256": "771a25f33356c8a31b13166ff7a469b5c2a01218488fa5805d834a5a38b51c26"
     },
+    "model_revision_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/model_revision_audit_v1.json",
+      "sha256": "d309c019597a82978fe94170fac2f3d8a025417ef64a6aecd28b8a439962f817"
+    },
     "recoverability_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/recoverability_audit_v1.json",
@@ -66,12 +71,11 @@
     "human_intervention_review_and_adjudication",
     "full_intervention_dataset_generation_and_review",
     "method_runners_and_prompts",
-    "immutable_qwen_checkpoint_resolution",
     "offline_inference_isolation",
     "execution_scope",
     "hardware_measurement_protocol"
   ],
-  "claim_status": "unreviewed_training_pilot_and_grounding_validator_wired_no_revised_inference",
+  "claim_status": "unreviewed_training_pilot_grounding_validator_and_model_revisions_wired_no_revised_inference",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -83,7 +87,8 @@
     "training_pilot_deterministic_validation",
     "method_call_budget",
     "strict_structural_output_contract",
-    "deterministic_recursive_grounding_validator"
+    "deterministic_recursive_grounding_validator",
+    "immutable_qwen_checkpoint_resolution"
   ],
   "errors": [],
   "legacy_component_roles": {
@@ -104,7 +109,11 @@
       "M3",
       "M4"
     ],
-    "model_family": "Qwen2.5-Instruct_planned_not_loaded",
+    "model_family": "Qwen2.5-Instruct_pinned_not_loaded",
+    "model_revisions": {
+      "Qwen/Qwen2.5-3B-Instruct": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "Qwen/Qwen2.5-7B-Instruct": "a09a35458c702b33eeacc393d103063234e8bc28"
+    },
     "source_adapter": "multiuav_plat_pinned_source_v1"
   },
   "ready_for_human_review": true,

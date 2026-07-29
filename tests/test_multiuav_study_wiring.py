@@ -66,6 +66,14 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "deterministic_recursive_validator",
             result["blocking_gates"],
         )
+        self.assertIn(
+            "immutable_qwen_checkpoint_resolution",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "immutable_qwen_checkpoint_resolution",
+            result["blocking_gates"],
+        )
         self.assertNotIn("m1_to_m4_call_budget", result["blocking_gates"])
         self.assertNotIn("strict_api_plan_contract", result["blocking_gates"])
         self.assertEqual(
@@ -92,6 +100,9 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["grounding_contract_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["model_revision_audit"]["exists"]
         )
         self.assertEqual(
             result["primary_path"]["deterministic_validator"],
@@ -140,8 +151,8 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertEqual(
             result["claim_status"],
             (
-                "unreviewed_training_pilot_and_grounding_validator_wired_"
-                "no_revised_inference"
+                "unreviewed_training_pilot_grounding_validator_and_model_"
+                "revisions_wired_no_revised_inference"
             ),
         )
 

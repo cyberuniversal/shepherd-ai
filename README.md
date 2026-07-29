@@ -42,6 +42,7 @@ The current source of truth is:
 - `docs/multiuav_intervention_review_protocol.md`
 - `docs/multiuav_method_contract.md`
 - `docs/multiuav_grounding_validator_protocol.md`
+- `docs/multiuav_model_revisions.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`

@@ -17,6 +17,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_pilot_protocol.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_review_protocol.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_grounding_validator_protocol.md`
+- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_model_revisions.md`
 - `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_method_contract.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
@@ -52,6 +53,8 @@ particular:
 - treat `datasets/multiuav_plat/grounding_contract_audit_v1.json` as a
   standalone deterministic contract only; method-runner integration and
   evaluated containment results remain unimplemented.
+- treat immutable model revision resolution as metadata verification only;
+  it does not mean weights were cached, loaded, invoked, or evaluated.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They
