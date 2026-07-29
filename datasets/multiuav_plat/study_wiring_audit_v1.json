@@ -6,6 +6,11 @@
       "path": "datasets/multiuav_plat/agent_context_audit_v1.json",
       "sha256": "bf9b976dc857a9846abe6480e236c79b3f81c2fe72af81c6033d97956699d4f1"
     },
+    "grounding_contract_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/grounding_contract_audit_v1.json",
+      "sha256": "a33c60f025b769153f965bde09f35c0f18c723eff6bcfaa27c2645e907887d5b"
+    },
     "historical_distilbert_wiring_smoke": {
       "exists": true,
       "path": "outputs/evaluations/week7_distilbert_wiring_smoke_v1.json",
@@ -34,7 +39,7 @@
     "method_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/method_contract_audit_v1.json",
-      "sha256": "883438eaf20bee7b1d3e09c95c30e4d015f4e83f739112ee3f4c853c7fb9f3da"
+      "sha256": "771a25f33356c8a31b13166ff7a469b5c2a01218488fa5805d834a5a38b51c26"
     },
     "recoverability_audit": {
       "exists": true,
@@ -61,13 +66,12 @@
     "human_intervention_review_and_adjudication",
     "full_intervention_dataset_generation_and_review",
     "method_runners_and_prompts",
-    "deterministic_recursive_validator",
     "immutable_qwen_checkpoint_resolution",
     "offline_inference_isolation",
     "execution_scope",
     "hardware_measurement_protocol"
   ],
-  "claim_status": "unreviewed_training_pilot_wired_no_revised_inference",
+  "claim_status": "unreviewed_training_pilot_and_grounding_validator_wired_no_revised_inference",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -78,7 +82,8 @@
     "training_pilot_generation",
     "training_pilot_deterministic_validation",
     "method_call_budget",
-    "strict_structural_output_contract"
+    "strict_structural_output_contract",
+    "deterministic_recursive_grounding_validator"
   ],
   "errors": [],
   "legacy_component_roles": {
@@ -90,7 +95,7 @@
   "primary_path": {
     "api_plan_parser": "strict_multiuav_json_contract_v1",
     "dataset": "training_pilot_30_clusters_pending_human_review",
-    "deterministic_validator": "not_implemented",
+    "deterministic_validator": "recursive_visible_evidence_grounding_v1",
     "execution_backend": "not_selected",
     "input_modality": "text",
     "methods": [

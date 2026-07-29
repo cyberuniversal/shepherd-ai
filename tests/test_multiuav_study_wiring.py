@@ -58,6 +58,14 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "strict_structural_output_contract",
             result["completed_gates"],
         )
+        self.assertIn(
+            "deterministic_recursive_grounding_validator",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "deterministic_recursive_validator",
+            result["blocking_gates"],
+        )
         self.assertNotIn("m1_to_m4_call_budget", result["blocking_gates"])
         self.assertNotIn("strict_api_plan_contract", result["blocking_gates"])
         self.assertEqual(
@@ -81,6 +89,13 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["method_contract_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["grounding_contract_audit"]["exists"]
+        )
+        self.assertEqual(
+            result["primary_path"]["deterministic_validator"],
+            "recursive_visible_evidence_grounding_v1",
         )
         self.assertTrue(
             result["artifact_bindings"][
@@ -124,7 +139,10 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         self.assertEqual(
             result["claim_status"],
-            "unreviewed_training_pilot_wired_no_revised_inference",
+            (
+                "unreviewed_training_pilot_and_grounding_validator_wired_"
+                "no_revised_inference"
+            ),
         )
 
 

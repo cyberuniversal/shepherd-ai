@@ -53,7 +53,7 @@ def main() -> None:
         },
         "claim_status": (
             "call_budget_and_structural_contract_frozen_"
-            "recursive_grounding_not_implemented"
+            "separate_recursive_grounding_implemented"
         ),
         "limitations": [
             (

@@ -15,14 +15,16 @@ frozen MultiUAV source task
 ```
 
 The source, split, eligibility, official-alias, AGENT-visible context,
-recoverability, pilot-generation, and pilot-validation gates are currently
-implemented. The method-call budget and strict structural output contract are
-also frozen. The training-only pilot contains 30 clusters and 150 cases across
-all 15 scenario/difficulty strata. All 30 clusters remain pending human review;
-none is approved or evaluated.
+recoverability, pilot-generation, pilot-validation, and standalone recursive
+grounding-validation gates are currently implemented. The method-call budget
+and strict structural output contract are also frozen. The training-only pilot
+contains 30 clusters and 150 cases across all 15 scenario/difficulty strata.
+All 30 clusters remain pending human review; none is approved or evaluated.
 Context and recoverability evidence are documented in
 `docs/multiuav_agent_context_protocol.md` and
 `docs/multiuav_recoverability_protocol.md`.
+Grounding behavior and claim limits are documented in
+`docs/multiuav_grounding_validator_protocol.md`.
 
 ## Legacy Component Roles
 
@@ -72,6 +74,7 @@ tables, figures, or comparative claims.
 
 The pilot is ready for real human review. Revised-study model inference remains
 blocked until pilot review/adjudication, full intervention generation and
-review, method runners and prompts, recursive plan validators, immutable Qwen
-revisions, isolation checks, execution scope, and hardware protocol are frozen
-and tested.
+review, method runners and prompts, immutable Qwen revisions, isolation checks,
+execution scope, and hardware protocol are frozen and tested. The standalone
+recursive validator is implemented and audited, but has not yet been connected
+to those method runners or evaluated.

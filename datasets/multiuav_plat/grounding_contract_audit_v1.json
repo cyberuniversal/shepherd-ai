@@ -1,0 +1,157 @@
+{
+  "claim_status": "deterministic_structural_and_visible_evidence_validation_implemented_not_mission_success",
+  "containment_order": [
+    "post_plan_endpoint_schema",
+    "post_plan_identifier_grounding",
+    "post_plan_parameter_grounding",
+    "post_plan_safety_bounds",
+    "accepted"
+  ],
+  "endpoint_contract": {
+    "/drones/{id}/command/broadcast": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "id",
+        "message"
+      ]
+    },
+    "/drones/{id}/command/change_altitude": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "altitude",
+        "id"
+      ]
+    },
+    "/drones/{id}/command/hover": {
+      "optional_parameters": [
+        "duration"
+      ],
+      "required_parameters": [
+        "id"
+      ]
+    },
+    "/drones/{id}/command/land": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "id"
+      ]
+    },
+    "/drones/{id}/command/move_along_path": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "id",
+        "waypoints"
+      ]
+    },
+    "/drones/{id}/command/move_to": {
+      "optional_parameters": [
+        "z"
+      ],
+      "required_parameters": [
+        "id",
+        "x",
+        "y"
+      ]
+    },
+    "/drones/{id}/command/move_towards": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "distance",
+        "heading",
+        "id"
+      ]
+    },
+    "/drones/{id}/command/return_home": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "id"
+      ]
+    },
+    "/drones/{id}/command/rotate": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "heading",
+        "id"
+      ]
+    },
+    "/drones/{id}/command/take_off": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "altitude",
+        "id"
+      ]
+    },
+    "/drones/{id}/command/take_photo": {
+      "optional_parameters": [],
+      "required_parameters": [
+        "id"
+      ]
+    }
+  },
+  "endpoint_count": 11,
+  "grounding_contract": {
+    "context_numeric_sources": {
+      "altitude": [
+        "drone.position.z",
+        "drone.home_position.z"
+      ],
+      "distance": [],
+      "duration": [],
+      "heading": [
+        "drone.heading"
+      ],
+      "x": [
+        "drone.position.x",
+        "drone.home_position.x"
+      ],
+      "y": [
+        "drone.position.y",
+        "drone.home_position.y"
+      ],
+      "z": [
+        "drone.position.z",
+        "drone.home_position.z"
+      ]
+    },
+    "identifier_source": "exact_agent_visible_drone_id",
+    "instruction_number_source": "explicit_number_excluding_drone_or_uav_identifier_mentions",
+    "limits_are_not_grounding_evidence": true,
+    "message_rule": "normalized_instruction_substring",
+    "provenance_recorded_per_grounded_leaf": true,
+    "recursive_waypoint_validation": true,
+    "registered_derivations": {
+      "compass_heading_degrees": {
+        "east": 90,
+        "north": 0,
+        "northeast": 45,
+        "northwest": 315,
+        "south": 180,
+        "southeast": 135,
+        "southwest": 225,
+        "west": 270
+      }
+    }
+  },
+  "hidden_reference_inputs_used": false,
+  "limitations": [
+    "The validator establishes endpoint shape, visible-evidence grounding, and static bounds only.",
+    "It does not establish instruction fidelity, dynamic feasibility, collision avoidance, execution success, or mission success.",
+    "Equal visible numeric values can remain semantically ambiguous within a compatible parameter class.",
+    "No revised-study model was loaded or invoked."
+  ],
+  "model_invoked": false,
+  "safety_bounds": {
+    "altitude": "selected_agent_visible_drone.max_altitude",
+    "distance": "positive",
+    "duration": "positive",
+    "heading": "[0,360)",
+    "x": "agent_visible_session.canvas_width",
+    "y": "agent_visible_session.canvas_height",
+    "z": "selected_agent_visible_drone.max_altitude"
+  },
+  "schema_version": 1,
+  "source_code_sha256": {
+    "multiuav_grounding_validator.py": "d67f6c7a8d88e6e95669eaf0ba18cce37a983d498df9cca56edd4fcb0d19d5a9"
+  },
+  "valid": true
+}

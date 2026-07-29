@@ -29,6 +29,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     pilot_summary_path = metadata / "intervention_pilot_summary_v1.json"
     pilot_validation_path = metadata / "intervention_pilot_validation_v1.json"
     method_contract_path = metadata / "method_contract_audit_v1.json"
+    grounding_contract_path = metadata / "grounding_contract_audit_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -50,6 +51,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     pilot_summary = _read_object(pilot_summary_path, errors)
     pilot_validation = _read_object(pilot_validation_path, errors)
     method_contract = _read_object(method_contract_path, errors)
+    grounding_contract = _read_object(grounding_contract_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -192,6 +194,31 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "multiuav_plan_contract.py"
         ) != _sha256(plan_contract_source):
             errors.append("method contract is not bound to parser source code")
+    if grounding_contract:
+        if grounding_contract.get("valid") is not True:
+            errors.append("grounding contract audit is not valid")
+        if grounding_contract.get("endpoint_count") != 11:
+            errors.append("grounding endpoint count does not match the frozen catalog")
+        if grounding_contract.get("hidden_reference_inputs_used") is not False:
+            errors.append("grounding contract permits hidden reference inputs")
+        if grounding_contract.get("model_invoked") is not False:
+            errors.append("grounding contract audit unexpectedly invoked a model")
+        grounding = grounding_contract.get("grounding_contract", {})
+        if grounding.get("recursive_waypoint_validation") is not True:
+            errors.append("grounding contract does not recursively validate waypoints")
+        if grounding.get("provenance_recorded_per_grounded_leaf") is not True:
+            errors.append("grounding contract does not record leaf provenance")
+        source_hashes = grounding_contract.get("source_code_sha256", {})
+        grounding_source = (
+            repository_root
+            / "src"
+            / "shepherd_ai"
+            / "multiuav_grounding_validator.py"
+        )
+        if grounding_source.is_file() and source_hashes.get(
+            "multiuav_grounding_validator.py"
+        ) != _sha256(grounding_source):
+            errors.append("grounding contract is not bound to validator source code")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -204,12 +231,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "training_pilot_deterministic_validation",
         "method_call_budget",
         "strict_structural_output_contract",
+        "deterministic_recursive_grounding_validator",
     ]
     blocking_gates = [
         "human_intervention_review_and_adjudication",
         "full_intervention_dataset_generation_and_review",
         "method_runners_and_prompts",
-        "deterministic_recursive_validator",
         "immutable_qwen_checkpoint_resolution",
         "offline_inference_isolation",
         "execution_scope",
@@ -234,7 +261,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "model_family": "Qwen2.5-Instruct_planned_not_loaded",
             "methods": ["M1", "M2", "M3", "M4"],
             "api_plan_parser": "strict_multiuav_json_contract_v1",
-            "deterministic_validator": "not_implemented",
+            "deterministic_validator": (
+                "recursive_visible_evidence_grounding_v1"
+            ),
             "execution_backend": "not_selected",
         },
         "legacy_component_roles": {
@@ -287,12 +316,16 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "method_contract_audit": _artifact_record(
                 method_contract_path, repository_root
             ),
+            "grounding_contract_audit": _artifact_record(
+                grounding_contract_path, repository_root
+            ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root
             ),
         },
         "claim_status": (
-            "unreviewed_training_pilot_wired_no_revised_inference"
+            "unreviewed_training_pilot_and_grounding_validator_wired_"
+            "no_revised_inference"
         ),
     }
 

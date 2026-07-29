@@ -1,5 +1,5 @@
 {
-  "claim_status": "call_budget_and_structural_contract_frozen_recursive_grounding_not_implemented",
+  "claim_status": "call_budget_and_structural_contract_frozen_separate_recursive_grounding_implemented",
   "limitations": [
     "M3 and M4 are matched on model-call count only; tokens, latency, memory, and energy must be measured and reported.",
     "The structural parser does not establish endpoint validity, parameter grounding, plan fidelity, or mission success.",

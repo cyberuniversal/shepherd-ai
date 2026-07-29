@@ -26,13 +26,13 @@ results.
 | CP-31 | Produce a compact review packet and use real reviewer identities. | partial | `reports/multiuav_intervention_pilot_review_v1.csv` contains one row per pilot cluster and blank reviewer fields. Separate-copy creation and completed-packet validation are implemented under `docs/multiuav_intervention_review_protocol.md`. No identity was fabricated. Reviewer registration, review, and any needed adjudication are not completed. |
 | CP-32 | Implement M1-M4 and disclose any call-count confound. | partial | The method registry freezes M1/M2 at one call and M3/M4 at two calls per case. M3 always uses its second call. Matching is explicitly limited to model-call count; runners and prompts are not implemented. |
 | CP-33 | Enforce strict decisions and non-empty executable plans; retain `PARSE_ERROR`. | partial | `src/shepherd_ai/multiuav_plan_contract.py` strictly parses the three decisions, enforces decision-specific question/plan invariants, rejects empty executable plans and malformed structures, and preserves raw failures as `PARSE_ERROR`. Method-runner integration is not implemented. |
-| CP-34 | Recursively ground API values and record containment stage. | not implemented | Validator scope is documented but not coded. |
+| CP-34 | Recursively ground API values and record containment stage. | partial | `src/shepherd_ai/multiuav_grounding_validator.py` freezes 11 endpoint schemas, recursively validates waypoint leaves, grounds values against parameter-compatible AGENT-visible evidence, records per-leaf provenance, enforces static bounds, and records first containment stage. The source-bound audit is `datasets/multiuav_plat/grounding_contract_audit_v1.json`. Method-runner integration and evaluated containment outcomes do not exist. |
 | CP-35 | Resolve both Qwen checkpoints to immutable 40-character commits. | not implemented | Model family is selected; immutable revisions have not been resolved or frozen. |
 | CP-36 | Separate one deterministic accuracy run from three resource repetitions on 30 clusters. | not implemented | Sampling and run harness are not implemented. |
 | CP-37 | Record the full safety, utility, fidelity, latency, token, memory, call, and GPU-energy trade-off. | not implemented | Metrics are registered; no revised-study run exists. |
 | CP-38 | Use source-cluster bootstrap, paired differences, confidence intervals, and preregistered outcomes. | not implemented | Statistical unit is specified; primary outcomes and analysis code are not frozen. |
 | CP-39 | Checkpoint every row with compatible resume and complete raw packages. | not implemented | Revised-study runner and checkpoint/resume format do not exist. |
-| CP-40 | Add corruption, conflict, empty-value, partial-cluster, revision, and smoke-leak regression gates. | partial | Alias corruption, trained-parser substitution, global-evidence leakage, generic resource-conflict, partial-cluster, privileged-field, deterministic reconstruction, review-packet mutation, empty-plan, blank-reference, and strict-JSON gates exist. Mutable-model-revision and publication smoke-leak gates remain unimplemented. |
+| CP-40 | Add corruption, conflict, empty-value, partial-cluster, revision, and smoke-leak regression gates. | partial | Alias corruption, trained-parser substitution, global-evidence leakage, generic resource-conflict, partial-cluster, privileged-field, deterministic reconstruction, review-packet mutation, empty-plan, blank-reference, strict-JSON, endpoint-schema, recursive-grounding, and static-bound gates exist. Mutable-model-revision and publication smoke-leak gates remain unimplemented. |
 
 ## Locked Protocol
 
@@ -66,7 +66,8 @@ results.
 ## Immediate Gate
 
 Human review under CP-29/CP-31 remains pending, but independent correctness
-work may continue. The call budget and strict structural parser are now frozen.
-The next non-review-dependent gate is CP-34: recursively validate endpoint
-schemas and every planned value against only the visible command/context while
-recording containment stage. Model inference remains blocked.
+work may continue. The call budget, strict structural parser, and standalone
+recursive grounding validator are now frozen. The next non-review-dependent
+gate is CP-35: resolve both Qwen checkpoints to immutable 40-character commits.
+Method runners and prompts must also be implemented before any revised-study
+inference. Model inference remains blocked.

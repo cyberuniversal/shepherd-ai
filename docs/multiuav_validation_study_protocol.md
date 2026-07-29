@@ -194,9 +194,12 @@ discarded, or converted into a valid decision.
 
 The strict structural parser is implemented in
 `src/shepherd_ai/multiuav_plan_contract.py` and frozen by
-`datasets/multiuav_plat/method_contract_audit_v1.json`. It does not yet
-establish endpoint validity, parameter grounding, plan fidelity, or mission
-success.
+`datasets/multiuav_plat/method_contract_audit_v1.json`. The separate recursive
+grounding validator is implemented in
+`src/shepherd_ai/multiuav_grounding_validator.py` and frozen by
+`datasets/multiuav_plat/grounding_contract_audit_v1.json`. The parser alone does
+not establish endpoint validity or parameter grounding, and neither static
+component establishes plan fidelity or mission success.
 
 Every planned API value must be validated recursively against the visible
 command and context, including:
@@ -210,8 +213,21 @@ command and context, including:
 - messages and payload values; and
 - ordering or dependency constraints.
 
-The evaluator records containment as `pre_plan`, `post_plan`, `parse_error`, or
-`uncontained`.
+The current validator covers the frozen endpoint schemas, UAV identifiers,
+coordinates, headings, distances, altitudes, messages, recursive waypoint
+values, and static bounds. It records exact visible-evidence provenance for
+each grounded leaf. Region/target identifiers and ordering/dependency
+constraints are not present in the frozen 11-endpoint executable schema and
+remain method-level fidelity requirements rather than fabricated API
+parameters. Exact evidence and claim limits are in
+`docs/multiuav_grounding_validator_protocol.md`.
+
+The validator records fine-grained stages:
+`post_plan_endpoint_schema`, `post_plan_identifier_grounding`,
+`post_plan_parameter_grounding`, `post_plan_safety_bounds`, and `accepted`.
+The future evaluator will map these, pre-plan rejections, structural
+`PARSE_ERROR`, and uncontained outputs to the registered coarse containment
+categories without discarding the fine-grained stage.
 
 ## Models And Offline Runtime
 

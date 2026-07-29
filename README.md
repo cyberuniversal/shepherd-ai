@@ -8,8 +8,11 @@ preserved, but the active paper is now a proposed systems-and-measurement study
 of validation placement on paired MultiUAV-Plat source tasks. The study compares
 monolithic, deterministic post-plan, stage-wise, and compute-matched post-plan
 configurations while jointly measuring safety, utility, failure containment,
-and local inference cost. The new benchmark and experiments are not yet
-implemented or evaluated. See `docs/multiuav_validation_study_protocol.md`.
+and local inference cost. Source acquisition, split, a 30-cluster unreviewed
+training pilot, strict output parsing, and standalone recursive grounding
+validation are implemented; the comparison runners and locked experiments are
+not implemented or evaluated. See
+`docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
 
@@ -38,6 +41,7 @@ The current source of truth is:
 - `docs/multiuav_intervention_pilot_protocol.md`
 - `docs/multiuav_intervention_review_protocol.md`
 - `docs/multiuav_method_contract.md`
+- `docs/multiuav_grounding_validator_protocol.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`
