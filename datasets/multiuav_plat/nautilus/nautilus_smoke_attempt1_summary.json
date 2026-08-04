@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "attempt_id": "nautilus_smoke_attempt1",
+  "status": "completed",
+  "stage": "offline_gpu_model_smoke",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-smoke-models",
+  "job_uid": "d0bf933e-7072-48fd-9b1b-96d23afeb08b",
+  "pod_name": "shepherd-ai-smoke-models-5tsw4",
+  "pod_uid": "9ade0613-e436-4da4-a740-455c42f78ae7",
+  "node_name": "node-2-2.sdsc.optiputer.net",
+  "repository_commit": "87b06e7a07d9754762da14e6b70ebf9eb80d9d57",
+  "started_at_utc": "2026-08-04T07:51:38Z",
+  "completed_at_utc": "2026-08-04T08:01:31Z",
+  "pod_restarts": 0,
+  "hardware": {
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gpu_total_memory_bytes": 85094825984,
+    "torch_version": "2.7.1+cu118",
+    "cuda_runtime": "11.8",
+    "transformers_version": "4.57.6"
+  },
+  "offline_guards": {
+    "HF_HUB_OFFLINE": true,
+    "TRANSFORMERS_OFFLINE": true,
+    "non_loopback_socket_probe": "blocked"
+  },
+  "smokes": {
+    "Qwen/Qwen2.5-3B-Instruct": {
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "cache_verification_valid": true,
+      "weights_loaded": true,
+      "model_invoked": true,
+      "study_case": false,
+      "input_tokens": 769,
+      "output_tokens": 1,
+      "generation_status": "GENERATED",
+      "generation_latency_ms": 253.09228303376585,
+      "peak_allocated_bytes": 6273614336,
+      "smoke_audit_sha256": "a98491b18a4f74a185ddeb36bbf171af1d1565daf9c3aa35aedbe4085f1c8c3f"
+    },
+    "Qwen/Qwen2.5-7B-Instruct": {
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "cache_verification_valid": true,
+      "weights_loaded": true,
+      "model_invoked": true,
+      "study_case": false,
+      "input_tokens": 769,
+      "output_tokens": 1,
+      "generation_status": "GENERATED",
+      "generation_latency_ms": 252.4573029950261,
+      "peak_allocated_bytes": 15399103488,
+      "smoke_audit_sha256": "6fffdc4ff85f4499ef49b078d72d6e60e35f5073c1f84ec2a205bef80533153b"
+    }
+  },
+  "study_cases_evaluated": false,
+  "output_interpreted_as_plan": false,
+  "evidence_sha256": {
+    "nautilus_smoke_attempt1.log": "8d2e7ab3f3aad02b8abc1305edcf49f8d112f8822cedb4961c5dc47976b4821f",
+    "nautilus_smoke_attempt1_job.yaml": "a8ca83cbae8cea68f63d1b7f5d2bac0a72b601d33825fd2085998a0b77334575",
+    "nautilus_smoke_attempt1_pod.yaml": "698908046e20958573fe24ed228da085c85875f6ad90701f856099f2ee8f7099"
+  },
+  "next_gate": "locked Qwen2.5-3B-Instruct accuracy matrix execution without hidden-label scoring",
+  "claim_status": "both_pinned_qwen_models_loaded_and_invoked_on_synthetic_fixture_not_study_evidence"
+}
