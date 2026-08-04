@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from run_multiuav_accuracy import (  # noqa: E402
     _backend_config,
+    _failure_summary,
     _runtime_metadata,
     _validate_runtime_audits,
     load_bound_run_config,
@@ -51,6 +52,21 @@ def _artifact(config: RunConfig) -> dict:
 
 
 class RunMultiUavAccuracyTests(unittest.TestCase):
+    def test_failure_summary_preserves_stage_and_unscored_status(self) -> None:
+        result = _failure_summary(
+            {"config_hash": "a" * 64, "study_inference_started": False},
+            RuntimeError("load failed"),
+            stage="model_load",
+            completed_rows=0,
+        )
+
+        self.assertEqual(result["status"], "accuracy_run_failed_raw_results_unscored")
+        self.assertEqual(result["failure_stage"], "model_load")
+        self.assertEqual(result["error_type"], "RuntimeError")
+        self.assertEqual(result["error_message"], "load failed")
+        self.assertEqual(result["completed_rows"], 0)
+        self.assertFalse(result["scores_inspected"])
+
     def test_runtime_metadata_records_cuda_device(self) -> None:
         class Properties:
             name = "Synthetic GPU"

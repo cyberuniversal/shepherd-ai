@@ -112,7 +112,10 @@ count, decoding settings, registered cache/smoke metadata, and every cached
 snapshot file checksum. `--preflight-only` performs those checks without model
 loading or study inference. During a real run it reports progress only after a
 row has been durably appended, and resumes from the config-bound JSONL without
-repeating completed method-case calls.
+repeating completed method-case calls. It writes the passed preflight before
+model loading and preserves model-load or matrix-infrastructure failures with
+the failure stage and durable row count; raw model parse/backend failures remain
+ordinary retained matrix rows.
 
 `src/shepherd_ai/multiuav_publication.py` provides a separate fail-closed
 accuracy admission gate. It accepts only complete matrices from `accuracy`

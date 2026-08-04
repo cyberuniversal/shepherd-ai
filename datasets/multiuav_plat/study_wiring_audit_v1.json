@@ -1,5 +1,7 @@
 {
-  "accuracy_blocking_gates": [],
+  "accuracy_blocking_gates": [
+    "final_accuracy_run_config_commit_binding"
+  ],
   "active_branch": "codex/multiuav-validation-study",
   "artifact_bindings": {
     "accuracy_case_manifest": {
@@ -13,9 +15,9 @@
       "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16"
     },
     "accuracy_run_configs": {
-      "exists": true,
+      "exists": false,
       "path": "datasets/multiuav_plat/accuracy_run_configs_v1.json",
-      "sha256": "e22a6d2f1dbb306def0078afc91f6870ffd41ddf91d6cd7fbed29c7407b4bf7b"
+      "sha256": null
     },
     "agent_context_audit": {
       "exists": true,
@@ -165,7 +167,7 @@
     "runner_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/runner_contract_audit_v1.json",
-      "sha256": "b789b7b11d4285cb42d65a19279274b39af877098f71410008e1006adaaf05b7"
+      "sha256": "d2fa575e7184e2a4dd8253d9518ea9eadc6a0244c13c1c3cb286fe8c01873ab2"
     },
     "scoring_contract_audit": {
       "exists": true,
@@ -189,10 +191,11 @@
     }
   },
   "blocking_gates": [
+    "final_accuracy_run_config_commit_binding",
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
   ],
-  "claim_status": "accuracy_execution_ready_no_study_inference",
+  "claim_status": "expert_qc_protocol_manifest_and_scoring_contract_complete_final_commit_binding_pending",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -259,7 +262,7 @@
   "ready_for_accuracy_run_config_binding": true,
   "ready_for_human_review": false,
   "ready_for_intervention_generation": true,
-  "ready_for_model_inference": true,
+  "ready_for_model_inference": false,
   "resource_blocking_gates": [
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
@@ -272,7 +275,7 @@
     "qwen_study_cases_evaluated": false,
     "whisper_invoked": false
   },
-  "status": "ready_for_accuracy_model_inference",
+  "status": "accuracy_manifest_approved_final_commit_binding_pending",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }

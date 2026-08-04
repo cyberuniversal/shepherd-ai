@@ -147,7 +147,15 @@ def main() -> None:
         print(json.dumps(preflight, indent=2, sort_keys=True))
         return
 
-    backend = LocalQwenBackend.from_cached(backend_config)
+    _write_json(summary_path, preflight)
+    try:
+        backend = LocalQwenBackend.from_cached(backend_config)
+    except BaseException as error:
+        _write_json(
+            summary_path,
+            _failure_summary(preflight, error, stage="model_load", completed_rows=0),
+        )
+        raise
     checkpoint = JsonlCheckpoint(results_path, config)
 
     def report_progress(progress: Mapping[str, Any]) -> None:
@@ -165,15 +173,27 @@ def main() -> None:
                 flush=True,
             )
 
-    matrix = run_case_matrix(
-        config=config,
-        cases=cases,
-        backend=backend,
-        checkpoint=checkpoint,
-        compact_zip_path=checkpoint_zip,
-        compact_every_rows=args.compact_every_rows,
-        progress_callback=report_progress,
-    )
+    try:
+        matrix = run_case_matrix(
+            config=config,
+            cases=cases,
+            backend=backend,
+            checkpoint=checkpoint,
+            compact_zip_path=checkpoint_zip,
+            compact_every_rows=args.compact_every_rows,
+            progress_callback=report_progress,
+        )
+    except BaseException as error:
+        _write_json(
+            summary_path,
+            _failure_summary(
+                preflight,
+                error,
+                stage="matrix_execution",
+                completed_rows=_durable_row_count(checkpoint),
+            ),
+        )
+        raise
     summary = {
         **preflight,
         "status": "complete_accuracy_matrix_raw_results_unscored",
@@ -336,6 +356,32 @@ def _package_version(name: str) -> str:
         return version(name)
     except PackageNotFoundError:
         return "not installed"
+
+
+def _failure_summary(
+    preflight: Mapping[str, Any],
+    error: BaseException,
+    *,
+    stage: str,
+    completed_rows: int | None,
+) -> dict[str, Any]:
+    return {
+        **dict(preflight),
+        "status": "accuracy_run_failed_raw_results_unscored",
+        "failed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "failure_stage": stage,
+        "error_type": type(error).__name__,
+        "error_message": str(error),
+        "completed_rows": completed_rows,
+        "scores_inspected": False,
+    }
+
+
+def _durable_row_count(checkpoint: JsonlCheckpoint) -> int | None:
+    try:
+        return len(checkpoint.load_rows())
+    except (OSError, TypeError, ValueError):
+        return None
 
 
 def _validate_checkout(code_commit: str) -> None:
