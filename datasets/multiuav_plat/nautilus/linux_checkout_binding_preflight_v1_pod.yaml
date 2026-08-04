@@ -1,0 +1,196 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 0ff316a0d328c6a6877947d9e107140f6aabe212405057256573d6b79cb2522e
+    cni.projectcalico.org/podIP: ""
+    cni.projectcalico.org/podIPs: ""
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container check; ephemeral-storage limit for container check'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T08:20:08Z"
+  generateName: shepherd-ai-eol-check-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+    batch.kubernetes.io/job-name: shepherd-ai-eol-check
+    controller-uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+    job-name: shepherd-ai-eol-check
+    shepherd-ai/stage: eol-check
+  name: shepherd-ai-eol-check-d595s
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-eol-check
+    uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+  resourceVersion: "14336656377"
+  uid: d77fdf7c-4fee-4c4e-971c-d797cfc1c216
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update >/dev/null
+      apt-get install -y --no-install-recommends git ca-certificates >/dev/null
+      git clone --depth 1 --branch codex/multiuav-validation-study https://github.com/cyberuniversal/shepherd-ai.git /repo
+      git -C /repo checkout --detach f7f6383024248079117185cf269d9143510be0ff
+      python - <<'PY'
+      import hashlib
+      from pathlib import Path
+
+      expected = {
+          "datasets/multiuav_plat/accuracy_case_manifest_v1.json": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+          "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
+      }
+      for name, wanted in expected.items():
+          payload = (Path("/repo") / name).read_bytes()
+          observed = hashlib.sha256(payload).hexdigest()
+          print(f"{name} sha256={observed} crlf={payload.count(bytes([13, 10]))}")
+          if observed != wanted:
+              raise ValueError(f"Linux checkout hash mismatch: {name}")
+      print("linux_checkout_binding_status=passed")
+      PY
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: void
+    image: python:3.12-slim
+    imagePullPolicy: IfNotPresent
+    name: check
+    resources:
+      limits:
+        cpu: 500m
+        ephemeral-storage: 50Gi
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        ephemeral-storage: "0"
+        memory: 1Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-xvtb6
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: gp-engine.hpc.okstate.edu
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: kube-api-access-xvtb6
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T08:20:31Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T08:20:08Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T08:20:28Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T08:20:28Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T08:20:08Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: 500m
+      ephemeral-storage: "0"
+      memory: 1Gi
+    containerID: containerd://768ab7c287fd1fe8bbbd518e45bc80022fcc9e5a5fee53a1187ab7a0bafc037d
+    image: docker.io/library/python:3.12-slim
+    imageID: docker.io/library/python@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de
+    lastState: {}
+    name: check
+    ready: false
+    resources:
+      limits:
+        cpu: 500m
+        ephemeral-storage: 50Gi
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        ephemeral-storage: "0"
+        memory: 1Gi
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://768ab7c287fd1fe8bbbd518e45bc80022fcc9e5a5fee53a1187ab7a0bafc037d
+        exitCode: 0
+        finishedAt: "2026-08-04T08:20:27Z"
+        reason: Completed
+        startedAt: "2026-08-04T08:20:10Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-xvtb6
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 192.31.83.119
+  hostIPs:
+  - ip: 192.31.83.119
+  phase: Succeeded
+  podIP: 10.244.120.150
+  podIPs:
+  - ip: 10.244.120.150
+  qosClass: Guaranteed
+  startTime: "2026-08-04T08:20:08Z"

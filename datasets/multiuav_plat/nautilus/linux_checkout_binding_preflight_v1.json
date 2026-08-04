@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "stage": "clean_linux_checkout_frozen_binding_preflight",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-eol-check",
+  "job_uid": "65a2378a-65f6-4004-a539-1e4213a7f512",
+  "pod_uid": "d77fdf7c-4fee-4c4e-971c-d797cfc1c216",
+  "node_name": "gp-engine.hpc.okstate.edu",
+  "repository_commit": "f7f6383024248079117185cf269d9143510be0ff",
+  "started_at_utc": "2026-08-04T08:20:07Z",
+  "completed_at_utc": "2026-08-04T08:20:32Z",
+  "git_core_autocrlf": false,
+  "bindings": {
+    "datasets/multiuav_plat/accuracy_case_manifest_v1.json": {
+      "sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+      "crlf_count": 14229,
+      "matches_frozen_run_config": true
+    },
+    "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json": {
+      "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
+      "crlf_count": 149,
+      "matches_frozen_run_config": true
+    }
+  },
+  "model_loaded": false,
+  "model_invoked": false,
+  "study_cases_evaluated": false,
+  "evidence_sha256": {
+    "linux_checkout_binding_preflight_v1.log": "17a9a9da7ab9c9aa2e35baed82025a8f8d22b7d18066c669e1a75d6a2f8a39ca",
+    "linux_checkout_binding_preflight_v1_job.yaml": "d07c97ec644d1f7659160fee19fe6ec7fc5495545d2e963bd1cfe5664f400b77",
+    "linux_checkout_binding_preflight_v1_pod.yaml": "91a386613c981c7652287ddc151d7f0af9ce9a7ab45afab82f41162c48349bfd"
+  },
+  "claim_status": "frozen_accuracy_bindings_verified_in_clean_linux_checkout_no_model_inference"
+}

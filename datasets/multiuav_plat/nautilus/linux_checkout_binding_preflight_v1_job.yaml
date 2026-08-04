@@ -1,0 +1,103 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"eol-check"},"name":"shepherd-ai-eol-check","namespace":"aiea-interns"},"spec":{"backoffLimit":0,"template":{"metadata":{"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"eol-check"}},"spec":{"containers":[{"args":["set -euo pipefail\napt-get update \u003e/dev/null\napt-get install -y --no-install-recommends git ca-certificates \u003e/dev/null\ngit clone --depth 1 --branch codex/multiuav-validation-study https://github.com/cyberuniversal/shepherd-ai.git /repo\ngit -C /repo checkout --detach f7f6383024248079117185cf269d9143510be0ff\npython - \u003c\u003c'PY'\nimport hashlib\nfrom pathlib import Path\n\nexpected = {\n    \"datasets/multiuav_plat/accuracy_case_manifest_v1.json\": \"cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f\",\n    \"datasets/multiuav_plat/accuracy_protocol_freeze_v1.json\": \"063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16\",\n}\nfor name, wanted in expected.items():\n    payload = (Path(\"/repo\") / name).read_bytes()\n    observed = hashlib.sha256(payload).hexdigest()\n    print(f\"{name} sha256={observed} crlf={payload.count(bytes([13, 10]))}\")\n    if observed != wanted:\n        raise ValueError(f\"Linux checkout hash mismatch: {name}\")\nprint(\"linux_checkout_binding_status=passed\")\nPY\n"],"command":["/bin/bash","-lc"],"image":"python:3.12-slim","name":"check","resources":{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}}],"restartPolicy":"Never"}}}}
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T08:20:03Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: eol-check
+  name: shepherd-ai-eol-check
+  namespace: aiea-interns
+  resourceVersion: "14336656378"
+  uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+spec:
+  backoffLimit: 0
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        batch.kubernetes.io/controller-uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+        batch.kubernetes.io/job-name: shepherd-ai-eol-check
+        controller-uid: 65a2378a-65f6-4004-a539-1e4213a7f512
+        job-name: shepherd-ai-eol-check
+        shepherd-ai/stage: eol-check
+    spec:
+      containers:
+      - args:
+        - |
+          set -euo pipefail
+          apt-get update >/dev/null
+          apt-get install -y --no-install-recommends git ca-certificates >/dev/null
+          git clone --depth 1 --branch codex/multiuav-validation-study https://github.com/cyberuniversal/shepherd-ai.git /repo
+          git -C /repo checkout --detach f7f6383024248079117185cf269d9143510be0ff
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          expected = {
+              "datasets/multiuav_plat/accuracy_case_manifest_v1.json": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+              "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
+          }
+          for name, wanted in expected.items():
+              payload = (Path("/repo") / name).read_bytes()
+              observed = hashlib.sha256(payload).hexdigest()
+              print(f"{name} sha256={observed} crlf={payload.count(bytes([13, 10]))}")
+              if observed != wanted:
+                  raise ValueError(f"Linux checkout hash mismatch: {name}")
+          print("linux_checkout_binding_status=passed")
+          PY
+        command:
+        - /bin/bash
+        - -lc
+        image: python:3.12-slim
+        imagePullPolicy: IfNotPresent
+        name: check
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  ttlSecondsAfterFinished: 86400
+status:
+  completionTime: "2026-08-04T08:20:32Z"
+  conditions:
+  - lastProbeTime: "2026-08-04T08:20:32Z"
+    lastTransitionTime: "2026-08-04T08:20:32Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: SuccessCriteriaMet
+  - lastProbeTime: "2026-08-04T08:20:32Z"
+    lastTransitionTime: "2026-08-04T08:20:32Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: Complete
+  ready: 0
+  startTime: "2026-08-04T08:20:07Z"
+  succeeded: 1
+  terminating: 0
+  uncountedTerminatedPods: {}
