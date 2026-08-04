@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "attempt_id": "nautilus_cache_attempt3",
+  "status": "completed",
+  "stage": "nautilus_model_cache",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-cache-models",
+  "job_uid": "df365423-009a-4de7-b0a2-b23a5eb67f77",
+  "pod_name": "shepherd-ai-cache-models-5sp62",
+  "pod_uid": "fdf6eaa3-dc3b-41f8-bad8-0d34fceaa507",
+  "node_name": "gp-argo.usd.edu",
+  "repository_commit": "687cc725c7cd30532e7b042136b3fe51e4323e08",
+  "started_at_utc": "2026-08-04T07:19:53Z",
+  "completed_at_utc": "2026-08-04T07:45:29Z",
+  "pod_restarts": 0,
+  "model_invoked": false,
+  "study_cases_evaluated": false,
+  "cache_audits": {
+    "Qwen/Qwen2.5-3B-Instruct": {
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "audit_origin": "nautilus_cache_attempt1",
+      "audit_reused_after_identity_and_file_size_validation": true,
+      "file_count": 12,
+      "weight_file_count": 2,
+      "weight_bytes": 6171926992,
+      "audit_sha256": "10d37e85af2df8a0fcaf6bb5bf4cbd08864afe25bfcb2f75a135b7061e3f5dbf"
+    },
+    "Qwen/Qwen2.5-7B-Instruct": {
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "audit_origin": "nautilus_cache_attempt3",
+      "full_checksum_inventory_completed": true,
+      "file_count": 14,
+      "weight_file_count": 4,
+      "weight_bytes": 15231271888,
+      "duration_seconds": 1431.902879,
+      "audit_sha256": "7937fce5fb0c5dd6e416829a81106ec8c4e0eac05b0eee41485010c57bb1086a"
+    }
+  },
+  "evidence_sha256": {
+    "nautilus_cache_attempt3.log": "aa3a65cb1a646ada3b38b1a86f2b54819d60fd9c7a5c061bb41be35c9aa61357",
+    "nautilus_cache_attempt3_job.yaml": "c37939429eb2b07e236e3160130a87dd26638e791ff895b8fad781318e633c48",
+    "nautilus_cache_attempt3_pod.yaml": "4d13005558ceb425f331ac4f62cfb825f46f964cc30a61a1b15806ad4c274a12"
+  },
+  "next_gate": "offline GPU load-and-one-token-generation smoke for both frozen checkpoints",
+  "claim_status": "pinned_model_caches_verified_no_model_inference"
+}

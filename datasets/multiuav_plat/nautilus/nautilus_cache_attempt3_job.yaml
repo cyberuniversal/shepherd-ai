@@ -1,0 +1,148 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"cache"},"name":"shepherd-ai-cache-models","namespace":"aiea-interns"},"spec":{"backoffLimit":0,"template":{"metadata":{"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"cache"}},"spec":{"containers":[{"args":["set -euo pipefail\napt-get update\napt-get install -y --no-install-recommends git ca-certificates\nrm -rf /var/lib/apt/lists/*\nrepo=\"/workspace/repo-${SHEPHERD_GIT_COMMIT}\"\nif [[ ! -d \"${repo}/.git\" ]]; then\n  git clone https://github.com/cyberuniversal/shepherd-ai.git \"${repo}\"\nfi\ngit -C \"${repo}\" fetch origin\ngit -C \"${repo}\" checkout --detach \"${SHEPHERD_GIT_COMMIT}\"\npython -m pip install --no-cache-dir -e \"${repo}\" \"huggingface-hub\u003e=0.26,\u003c1\"\nmkdir -p /workspace/artifacts /workspace/hf-cache\naudit_3b=/workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json\nif [[ -s \"${audit_3b}\" ]]; then\n  python - \"${audit_3b}\" \u003c\u003c'PY'\nimport json\nfrom pathlib import Path\nimport sys\n\naudit = json.loads(Path(sys.argv[1]).read_text(encoding=\"utf-8\"))\nexpected = {\n    \"model_id\": \"Qwen/Qwen2.5-3B-Instruct\",\n    \"revision\": \"aa8e72537993ba99e69dfaafa59ed015b17504d1\",\n    \"weights_cached\": True,\n    \"model_invoked\": False,\n    \"study_cases_evaluated\": False,\n}\nfor key, value in expected.items():\n    if audit.get(key) != value:\n        raise ValueError(f\"existing 3B audit has invalid {key}\")\nsnapshot = Path(audit[\"snapshot_dir\"])\nfor row in audit[\"files\"]:\n    path = snapshot / row[\"path\"]\n    if not path.is_file() or path.stat().st_size != row[\"bytes\"]:\n        raise ValueError(f\"existing 3B cache file is absent or truncated: {path}\")\nprint(\"Reusing the existing 3B checksum audit; full re-hash remains required at smoke.\")\nPY\nelse\n  python \"${repo}/scripts/cache_multiuav_qwen.py\" \\\n    --model-id Qwen/Qwen2.5-3B-Instruct \\\n    --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \\\n    --cache-dir /workspace/hf-cache \\\n    --output \"${audit_3b}\" \\\n    --max-workers 4\nfi\npython \"${repo}/scripts/cache_multiuav_qwen.py\" \\\n  --model-id Qwen/Qwen2.5-7B-Instruct \\\n  --revision a09a35458c702b33eeacc393d103063234e8bc28 \\\n  --cache-dir /workspace/hf-cache \\\n  --output /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \\\n  --max-workers 4\n"],"command":["/bin/bash","-lc"],"env":[{"name":"SHEPHERD_GIT_COMMIT","value":"687cc725c7cd30532e7b042136b3fe51e4323e08"},{"name":"HF_HOME","value":"/workspace/hf-cache"},{"name":"HF_HUB_DISABLE_XET","value":"1"}],"image":"python:3.12-slim","name":"cache-models","resources":{"limits":{"cpu":"2","memory":"8Gi"},"requests":{"cpu":"2","memory":"8Gi"}},"volumeMounts":[{"mountPath":"/workspace","name":"workspace"}]}],"priorityClassName":"opportunistic","restartPolicy":"Never","volumes":[{"name":"workspace","persistentVolumeClaim":{"claimName":"shepherd-ai-539948"}}]}}}}
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T07:19:53Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: cache
+  name: shepherd-ai-cache-models
+  namespace: aiea-interns
+  resourceVersion: "14336399203"
+  uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+spec:
+  backoffLimit: 0
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        batch.kubernetes.io/controller-uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+        batch.kubernetes.io/job-name: shepherd-ai-cache-models
+        controller-uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+        job-name: shepherd-ai-cache-models
+        shepherd-ai/stage: cache
+    spec:
+      containers:
+      - args:
+        - |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+          rm -rf /var/lib/apt/lists/*
+          repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+          if [[ ! -d "${repo}/.git" ]]; then
+            git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+          fi
+          git -C "${repo}" fetch origin
+          git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+          python -m pip install --no-cache-dir -e "${repo}" "huggingface-hub>=0.26,<1"
+          mkdir -p /workspace/artifacts /workspace/hf-cache
+          audit_3b=/workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json
+          if [[ -s "${audit_3b}" ]]; then
+            python - "${audit_3b}" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          audit = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          expected = {
+              "model_id": "Qwen/Qwen2.5-3B-Instruct",
+              "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+              "weights_cached": True,
+              "model_invoked": False,
+              "study_cases_evaluated": False,
+          }
+          for key, value in expected.items():
+              if audit.get(key) != value:
+                  raise ValueError(f"existing 3B audit has invalid {key}")
+          snapshot = Path(audit["snapshot_dir"])
+          for row in audit["files"]:
+              path = snapshot / row["path"]
+              if not path.is_file() or path.stat().st_size != row["bytes"]:
+                  raise ValueError(f"existing 3B cache file is absent or truncated: {path}")
+          print("Reusing the existing 3B checksum audit; full re-hash remains required at smoke.")
+          PY
+          else
+            python "${repo}/scripts/cache_multiuav_qwen.py" \
+              --model-id Qwen/Qwen2.5-3B-Instruct \
+              --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \
+              --cache-dir /workspace/hf-cache \
+              --output "${audit_3b}" \
+              --max-workers 4
+          fi
+          python "${repo}/scripts/cache_multiuav_qwen.py" \
+            --model-id Qwen/Qwen2.5-7B-Instruct \
+            --revision a09a35458c702b33eeacc393d103063234e8bc28 \
+            --cache-dir /workspace/hf-cache \
+            --output /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+            --max-workers 4
+        command:
+        - /bin/bash
+        - -lc
+        env:
+        - name: SHEPHERD_GIT_COMMIT
+          value: 687cc725c7cd30532e7b042136b3fe51e4323e08
+        - name: HF_HOME
+          value: /workspace/hf-cache
+        - name: HF_HUB_DISABLE_XET
+          value: "1"
+        image: python:3.12-slim
+        imagePullPolicy: IfNotPresent
+        name: cache-models
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "2"
+            memory: 8Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+      dnsPolicy: ClusterFirst
+      priorityClassName: opportunistic
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: shepherd-ai-539948
+  ttlSecondsAfterFinished: 86400
+status:
+  completionTime: "2026-08-04T07:45:29Z"
+  conditions:
+  - lastProbeTime: "2026-08-04T07:45:29Z"
+    lastTransitionTime: "2026-08-04T07:45:29Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: SuccessCriteriaMet
+  - lastProbeTime: "2026-08-04T07:45:29Z"
+    lastTransitionTime: "2026-08-04T07:45:29Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: Complete
+  ready: 0
+  startTime: "2026-08-04T07:19:53Z"
+  succeeded: 1
+  terminating: 0
+  uncountedTerminatedPods: {}

@@ -1,0 +1,240 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 522cd3e3538d7cd6253f79bfaf4aee0677f25b9eb8e2b7beb13bc55b411f7a99
+    cni.projectcalico.org/podIP: ""
+    cni.projectcalico.org/podIPs: ""
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container cache-models; ephemeral-storage limit for container cache-models'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T07:19:53Z"
+  generateName: shepherd-ai-cache-models-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+    batch.kubernetes.io/job-name: shepherd-ai-cache-models
+    controller-uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+    job-name: shepherd-ai-cache-models
+    shepherd-ai/stage: cache
+  name: shepherd-ai-cache-models-5sp62
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-cache-models
+    uid: df365423-009a-4de7-b0a2-b23a5eb67f77
+  resourceVersion: "14336399190"
+  uid: fdf6eaa3-dc3b-41f8-bad8-0d34fceaa507
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}" "huggingface-hub>=0.26,<1"
+      mkdir -p /workspace/artifacts /workspace/hf-cache
+      audit_3b=/workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json
+      if [[ -s "${audit_3b}" ]]; then
+        python - "${audit_3b}" <<'PY'
+      import json
+      from pathlib import Path
+      import sys
+
+      audit = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+      expected = {
+          "model_id": "Qwen/Qwen2.5-3B-Instruct",
+          "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+          "weights_cached": True,
+          "model_invoked": False,
+          "study_cases_evaluated": False,
+      }
+      for key, value in expected.items():
+          if audit.get(key) != value:
+              raise ValueError(f"existing 3B audit has invalid {key}")
+      snapshot = Path(audit["snapshot_dir"])
+      for row in audit["files"]:
+          path = snapshot / row["path"]
+          if not path.is_file() or path.stat().st_size != row["bytes"]:
+              raise ValueError(f"existing 3B cache file is absent or truncated: {path}")
+      print("Reusing the existing 3B checksum audit; full re-hash remains required at smoke.")
+      PY
+      else
+        python "${repo}/scripts/cache_multiuav_qwen.py" \
+          --model-id Qwen/Qwen2.5-3B-Instruct \
+          --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \
+          --cache-dir /workspace/hf-cache \
+          --output "${audit_3b}" \
+          --max-workers 4
+      fi
+      python "${repo}/scripts/cache_multiuav_qwen.py" \
+        --model-id Qwen/Qwen2.5-7B-Instruct \
+        --revision a09a35458c702b33eeacc393d103063234e8bc28 \
+        --cache-dir /workspace/hf-cache \
+        --output /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+        --max-workers 4
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: SHEPHERD_GIT_COMMIT
+      value: 687cc725c7cd30532e7b042136b3fe51e4323e08
+    - name: HF_HOME
+      value: /workspace/hf-cache
+    - name: HF_HUB_DISABLE_XET
+      value: "1"
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: void
+    image: python:3.12-slim
+    imagePullPolicy: IfNotPresent
+    name: cache-models
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 8Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-s642c
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: gp-argo.usd.edu
+  preemptionPolicy: PreemptLowerPriority
+  priority: -2000000000
+  priorityClassName: opportunistic
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: shepherd-ai-539948
+  - name: kube-api-access-s642c
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T07:45:28Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T07:19:54Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T07:45:25Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T07:45:25Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T07:19:53Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "2"
+      ephemeral-storage: "0"
+      memory: 8Gi
+    containerID: containerd://298e1e9a6279130fc5e12f677ceea50e8d49cfcc717372e2abf07d6a0c6c64d9
+    image: docker.io/library/python:3.12-slim
+    imageID: docker.io/library/python@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
+    lastState: {}
+    name: cache-models
+    ready: false
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 8Gi
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://298e1e9a6279130fc5e12f677ceea50e8d49cfcc717372e2abf07d6a0c6c64d9
+        exitCode: 0
+        finishedAt: "2026-08-04T07:45:05Z"
+        reason: Completed
+        startedAt: "2026-08-04T07:20:28Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-s642c
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 206.209.0.17
+  hostIPs:
+  - ip: 206.209.0.17
+  phase: Succeeded
+  podIP: 10.244.73.161
+  podIPs:
+  - ip: 10.244.73.161
+  qosClass: Guaranteed
+  startTime: "2026-08-04T07:19:54Z"
