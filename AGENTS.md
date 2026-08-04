@@ -76,7 +76,9 @@ particular:
   `qwen25_3b_*_v1.json` and `qwen25_7b_*_v1.json` artifacts under
   `datasets/multiuav_plat/`. Both current smokes used synthetic fixtures and
   produced one-token, uninterpreted outputs. The historical 32-token 3B smoke
-  remains separately preserved. No study case has been evaluated.
+  remains separately preserved. One approved row was invoked in an aborted
+  local feasibility attempt; preserve it under `failed_attempts/`, disclose the
+  raw-output inspection deviation, and exclude it from every study result.
 - treat the primary evaluation scope as static plan fidelity under
   `datasets/multiuav_plat/execution_scope_audit_v1.json`; do not call static
   API, parameter, or official-command checks live mission success.

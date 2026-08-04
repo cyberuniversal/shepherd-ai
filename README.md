@@ -30,8 +30,10 @@ checksummed, and successfully loaded and invoked under the local socket guard
 on synthetic fixtures only. The current smokes generated one token each and
 were not interpreted as plans; the earlier 32-token 3B smoke is preserved as
 historical infrastructure evidence. The 7B smoke required CPU and disk
-offload on the local 4 GB GPU. No study case has been evaluated and no locked
-experiment has run. See
+offload on the local 4 GB GPU. A one-row local 3B feasibility attempt was
+aborted after its first call required 389.9 seconds; its raw row, logs, config,
+and protocol-deviation record are preserved and excluded from study results.
+No complete locked matrix has run. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

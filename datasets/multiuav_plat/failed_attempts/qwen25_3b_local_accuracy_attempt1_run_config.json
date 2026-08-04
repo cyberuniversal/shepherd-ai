@@ -1,0 +1,29 @@
+{
+  "config": {
+    "code_commit": "419409e3bbfa8573b19b5c52cbfc4bdbc7d261e3",
+    "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+    "decoding": {
+      "do_sample": false,
+      "max_new_tokens": 512,
+      "num_beams": 1
+    },
+    "hardware_protocol_sha256": null,
+    "methods": [
+      "M1_monolithic",
+      "M2_post_plan_deterministic",
+      "M3_stage_wise",
+      "M4_post_plan_compute_matched"
+    ],
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "prompt_contract_version": "multiuav_prompt_contract_v1",
+    "resource_condition_order": null,
+    "resource_repetition": null,
+    "resource_schedule_sha256": null,
+    "run_id": "multiuav_validation_placement_v1.accuracy.Qwen2.5-3B-Instruct",
+    "run_kind": "accuracy",
+    "study_id": "multiuav_validation_placement_v1"
+  },
+  "config_hash": "c52816f2a7b45a7cbd41154ec946d6c9bdeb19e05510043bb9eab2ec2fc9a3ed",
+  "schema_version": 3
+}

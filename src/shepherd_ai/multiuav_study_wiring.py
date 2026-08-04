@@ -94,6 +94,19 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     accuracy_manifest_path = metadata / "accuracy_case_manifest_v1.json"
     scoring_contract_path = metadata / "scoring_contract_audit_v1.json"
     accuracy_run_configs_path = metadata / "accuracy_run_configs_v1.json"
+    failed_attempts = metadata / "failed_attempts"
+    excluded_local_attempt_summary_path = (
+        failed_attempts / "qwen25_3b_local_accuracy_attempt1_summary.json"
+    )
+    excluded_local_attempt_results_path = (
+        failed_attempts / "qwen25_3b_local_accuracy_attempt1_results.jsonl"
+    )
+    excluded_local_attempt_config_path = (
+        failed_attempts / "qwen25_3b_local_accuracy_attempt1_run_config.json"
+    )
+    excluded_local_attempt_stderr_path = (
+        failed_attempts / "qwen25_3b_local_accuracy_attempt1_stderr.log"
+    )
     distilbert_smoke_path = (
         repository_root
         / "outputs"
@@ -150,6 +163,10 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     accuracy_manifest = _read_object(accuracy_manifest_path, errors)
     scoring_contract = _read_object(scoring_contract_path, errors)
     accuracy_run_configs = _read_optional_object(accuracy_run_configs_path, errors)
+    excluded_local_attempt = _read_optional_object(
+        excluded_local_attempt_summary_path,
+        errors,
+    )
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -406,6 +423,13 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         accuracy_run_configs_path=accuracy_run_configs_path,
         accuracy_manifest_path=accuracy_manifest_path,
         accuracy_protocol_path=accuracy_protocol_path,
+        errors=errors,
+    )
+    excluded_local_attempt_registered = _validate_excluded_local_attempt(
+        excluded_local_attempt,
+        results_path=excluded_local_attempt_results_path,
+        config_path=excluded_local_attempt_config_path,
+        stderr_path=excluded_local_attempt_stderr_path,
         errors=errors,
     )
     if intervention_negative_controls:
@@ -936,6 +960,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "resource_run_config_builder_with_approval_gate",
         "publication_accuracy_smoke_leak_gate",
     ]
+    if excluded_local_attempt_registered:
+        completed_gates.append("excluded_local_feasibility_attempt_preserved")
     accuracy_blocking_gates = (
         [] if accuracy_config_ready else ["final_accuracy_run_config_commit_binding"]
     )
@@ -995,8 +1021,15 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "distilbert_invoked": False,
             "legacy_week8_pipeline_invoked": False,
             "qwen_invoked": True,
-            "qwen_invocation_scope": "synthetic_fixture_only",
-            "qwen_study_cases_evaluated": False,
+            "qwen_invocation_scope": (
+                "synthetic_fixture_and_excluded_local_feasibility_attempt"
+                if excluded_local_attempt_registered
+                else "synthetic_fixture_only"
+            ),
+            "qwen_study_cases_evaluated": excluded_local_attempt_registered,
+            "qwen_study_rows_evaluated": (
+                1 if excluded_local_attempt_registered else 0
+            ),
         },
         "ready_for_intervention_generation": not errors,
         "ready_for_human_review": False,
@@ -1066,6 +1099,18 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "accuracy_run_configs": _artifact_record(
                 accuracy_run_configs_path, repository_root
             ),
+            "excluded_local_accuracy_attempt_summary": _artifact_record(
+                excluded_local_attempt_summary_path, repository_root
+            ),
+            "excluded_local_accuracy_attempt_results": _artifact_record(
+                excluded_local_attempt_results_path, repository_root
+            ),
+            "excluded_local_accuracy_attempt_config": _artifact_record(
+                excluded_local_attempt_config_path, repository_root
+            ),
+            "excluded_local_accuracy_attempt_stderr": _artifact_record(
+                excluded_local_attempt_stderr_path, repository_root
+            ),
             "method_contract_audit": _artifact_record(
                 method_contract_path, repository_root
             ),
@@ -1113,7 +1158,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             ),
         },
         "claim_status": (
-            "accuracy_execution_ready_no_study_inference"
+            "accuracy_execution_ready_after_excluded_local_feasibility_attempt"
+            if not errors and accuracy_config_ready and excluded_local_attempt_registered
+            else "accuracy_execution_ready_no_study_inference"
             if not errors and accuracy_config_ready
             else "expert_qc_protocol_manifest_and_scoring_contract_complete_"
             "final_commit_binding_pending"
@@ -1219,6 +1266,41 @@ def _validate_accuracy_run_configs(
             errors.append(f"invalid accuracy run config {index}: {error}")
     if observed_models != set(EXPECTED_MODEL_REVISIONS):
         errors.append("accuracy run configs do not cover both frozen Qwen models")
+    return len(errors) == initial_error_count
+
+
+def _validate_excluded_local_attempt(
+    summary: dict[str, Any],
+    *,
+    results_path: Path,
+    config_path: Path,
+    stderr_path: Path,
+    errors: list[str],
+) -> bool:
+    if not summary:
+        return False
+    initial_error_count = len(errors)
+    if summary.get("status") != (
+        "accuracy_run_aborted_feasibility_attempt_raw_results_unscored"
+    ):
+        errors.append("excluded local attempt has the wrong status")
+    if summary.get("study_inference_started") is not True:
+        errors.append("excluded local attempt does not record study inference")
+    if summary.get("completed_rows") != 1:
+        errors.append("excluded local attempt must contain exactly one durable row")
+    if summary.get("scores_inspected") is not False:
+        errors.append("excluded local attempt reports score inspection")
+    if not summary.get("protocol_deviation"):
+        errors.append("excluded local attempt omits the protocol deviation")
+    for label, path, field in (
+        ("results", results_path, "results_sha256"),
+        ("run config", config_path, "run_config_sha256"),
+        ("stderr", stderr_path, "stderr_sha256"),
+    ):
+        if not path.is_file():
+            errors.append(f"excluded local attempt is missing {label}")
+        elif summary.get(field) != _sha256(path):
+            errors.append(f"excluded local attempt {label} hash differs")
     return len(errors) == initial_error_count
 
 

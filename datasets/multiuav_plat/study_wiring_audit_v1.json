@@ -1,5 +1,7 @@
 {
-  "accuracy_blocking_gates": [],
+  "accuracy_blocking_gates": [
+    "final_accuracy_run_config_commit_binding"
+  ],
   "active_branch": "codex/multiuav-validation-study",
   "artifact_bindings": {
     "accuracy_case_manifest": {
@@ -13,9 +15,9 @@
       "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16"
     },
     "accuracy_run_configs": {
-      "exists": true,
+      "exists": false,
       "path": "datasets/multiuav_plat/accuracy_run_configs_v1.json",
-      "sha256": "2bc14da759d9208299cad22ff77692dc9e1fd1a20892967b2811ba86a0468834"
+      "sha256": null
     },
     "agent_context_audit": {
       "exists": true,
@@ -31,6 +33,26 @@
       "exists": true,
       "path": "datasets/multiuav_plat/intervention_pilot_review_validation_v2.json",
       "sha256": "39e5785845428783f5c1c119bb6a94b56df07cf92ccc3628b76f9ea4bcfc7d22"
+    },
+    "excluded_local_accuracy_attempt_config": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/failed_attempts/qwen25_3b_local_accuracy_attempt1_run_config.json",
+      "sha256": "9c543ed523d0d93234dc321093e633838d6d78d796114542781f216f0b366102"
+    },
+    "excluded_local_accuracy_attempt_results": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/failed_attempts/qwen25_3b_local_accuracy_attempt1_results.jsonl",
+      "sha256": "83e7b649def463afb8b06fd52b284fff4fed39940d6a6b20501587afac6cc439"
+    },
+    "excluded_local_accuracy_attempt_stderr": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/failed_attempts/qwen25_3b_local_accuracy_attempt1_stderr.log",
+      "sha256": "6946c8750cf8cb46ea890fbad152494691cfa0696ff04bea6931df1b0129fea0"
+    },
+    "excluded_local_accuracy_attempt_summary": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/failed_attempts/qwen25_3b_local_accuracy_attempt1_summary.json",
+      "sha256": "7afe2bb678696bcf33b5ceab11af0a9d3c1429e1b4ca267949b202fcd1377717"
     },
     "execution_scope_audit": {
       "exists": true,
@@ -189,10 +211,11 @@
     }
   },
   "blocking_gates": [
+    "final_accuracy_run_config_commit_binding",
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
   ],
-  "claim_status": "accuracy_execution_ready_no_study_inference",
+  "claim_status": "expert_qc_protocol_manifest_and_scoring_contract_complete_final_commit_binding_pending",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -222,7 +245,8 @@
     "method_case_hardware_measurement_instrumentation",
     "resource_candidate_subset_and_condition_order",
     "resource_run_config_builder_with_approval_gate",
-    "publication_accuracy_smoke_leak_gate"
+    "publication_accuracy_smoke_leak_gate",
+    "excluded_local_feasibility_attempt_preserved"
   ],
   "errors": [],
   "expert_qc_complete": true,
@@ -259,7 +283,7 @@
   "ready_for_accuracy_run_config_binding": true,
   "ready_for_human_review": false,
   "ready_for_intervention_generation": true,
-  "ready_for_model_inference": true,
+  "ready_for_model_inference": false,
   "resource_blocking_gates": [
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
@@ -267,12 +291,13 @@
   "runtime_invocation": {
     "distilbert_invoked": false,
     "legacy_week8_pipeline_invoked": false,
-    "qwen_invocation_scope": "synthetic_fixture_only",
+    "qwen_invocation_scope": "synthetic_fixture_and_excluded_local_feasibility_attempt",
     "qwen_invoked": true,
-    "qwen_study_cases_evaluated": false,
+    "qwen_study_cases_evaluated": true,
+    "qwen_study_rows_evaluated": 1,
     "whisper_invoked": false
   },
-  "status": "ready_for_accuracy_model_inference",
+  "status": "accuracy_manifest_approved_final_commit_binding_pending",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }

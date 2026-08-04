@@ -389,9 +389,11 @@ The prompt, runner, parser, grounding, checkpoint/resume, local Qwen backend,
 and Python-process socket-isolation contracts have synthetic unit coverage.
 Real 3B and 7B cache checksums and synthetic load smokes now exist. The
 1,420-case held-out manifest is approved under deterministic-label provenance
-and sampled expert QC, with zero gold fields in model context. Final
-commit-bound run configs, measured-run metadata, and locked result rows remain
-absent.
+and sampled expert QC, with zero gold fields in model context. A one-row local
+3B feasibility attempt is preserved and excluded after a 389.9-second call; one
+raw output and parse status were inspected during diagnosis, but no aggregate,
+comparative, or hidden-label score was inspected. Complete locked matrices and
+their measured-run metadata remain absent.
 
 The first two wiring gates above were completed on 2026-07-28. Known
 Whisper-derived action and count aliases were removed from the deterministic

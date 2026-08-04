@@ -26,8 +26,9 @@ pinned 3B and 7B checkpoints are cached, checksummed, and have successful
 synthetic load/generation smokes. The current outputs generated one token each
 and were not interpreted as plans. The earlier failed 3B load and successful
 32-token 3B smoke are preserved separately. The 7B smoke required CPU and disk
-offload on the local 4 GB GPU. No study case has been invoked. The
-training-only pilot
+offload on the local 4 GB GPU. A one-row local 3B feasibility attempt was
+aborted after a 389.9-second generation. Its raw row and diagnostic inspection
+are disclosed and excluded; no complete matrix has run. The training-only pilot
 contains 30 clusters and 150 cases across all 15 scenario/difficulty strata,
 with 15 explicit-UAV-identity and 15 coverage-threshold interventions. Its
 version 2 review packet contains one exact instruction per row plus compact
@@ -135,3 +136,7 @@ candidate subset, 24 condition orders, and an approval-gated resource-config
 builder now exist. Static fidelity and method-case NVML instrumentation are
 implemented, but neither model smoke nor the telemetry probe has produced a
 revised-study result.
+
+The locked accuracy matrix is being moved to Nautilus A100 execution because
+the local 4 GB GPU required CPU/disk offload and was not operationally viable.
+Cluster manifests and storage protocol are under `infra/nautilus/`.

@@ -18,6 +18,13 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         configs_exist = (
             ROOT / "datasets" / "multiuav_plat" / "accuracy_run_configs_v1.json"
         ).is_file()
+        excluded_attempt_exists = (
+            ROOT
+            / "datasets"
+            / "multiuav_plat"
+            / "failed_attempts"
+            / "qwen25_3b_local_accuracy_attempt1_summary.json"
+        ).is_file()
 
         self.assertTrue(result["valid"])
         self.assertEqual(result["primary_path"]["input_modality"], "text")
@@ -29,10 +36,19 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertTrue(result["runtime_invocation"]["qwen_invoked"])
         self.assertEqual(
             result["runtime_invocation"]["qwen_invocation_scope"],
-            "synthetic_fixture_only",
+            (
+                "synthetic_fixture_and_excluded_local_feasibility_attempt"
+                if excluded_attempt_exists
+                else "synthetic_fixture_only"
+            ),
         )
-        self.assertFalse(
-            result["runtime_invocation"]["qwen_study_cases_evaluated"]
+        self.assertEqual(
+            result["runtime_invocation"]["qwen_study_cases_evaluated"],
+            excluded_attempt_exists,
+        )
+        self.assertEqual(
+            result["runtime_invocation"]["qwen_study_rows_evaluated"],
+            1 if excluded_attempt_exists else 0,
         )
         self.assertEqual(result["ready_for_model_inference"], configs_exist)
         self.assertNotIn(
@@ -249,6 +265,12 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             result["artifact_bindings"]["accuracy_run_configs"]["exists"],
             configs_exist,
         )
+        self.assertEqual(
+            result["artifact_bindings"][
+                "excluded_local_accuracy_attempt_summary"
+            ]["exists"],
+            excluded_attempt_exists,
+        )
         self.assertTrue(
             result["artifact_bindings"]["method_contract_audit"]["exists"]
         )
@@ -349,7 +371,16 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertEqual(
             result["claim_status"],
             (
-                "accuracy_execution_ready_no_study_inference"
+                "accuracy_execution_ready_after_excluded_local_feasibility_attempt"
+                if configs_exist
+                and (
+                    ROOT
+                    / "datasets"
+                    / "multiuav_plat"
+                    / "failed_attempts"
+                    / "qwen25_3b_local_accuracy_attempt1_summary.json"
+                ).is_file()
+                else "accuracy_execution_ready_no_study_inference"
                 if configs_exist
                 else "expert_qc_protocol_manifest_and_scoring_contract_complete_"
                 "final_commit_binding_pending"
