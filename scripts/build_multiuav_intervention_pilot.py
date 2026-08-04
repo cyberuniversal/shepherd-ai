@@ -19,7 +19,8 @@ from shepherd_ai.multiuav_interventions import (  # noqa: E402
     PILOT_SEED,
     VARIANTS,
     build_draft_cluster,
-    compact_review_row,
+    classify_intervention_fact_kind,
+    compact_review_rows,
     select_stratified_training_pilot,
 )
 from shepherd_ai.multiuav_source import (  # noqa: E402
@@ -56,14 +57,24 @@ def main() -> None:
     eligibility = json.loads(args.eligibility.read_text(encoding="utf-8"))
     if eligibility.get("source_archive_sha256") != archive_hash:
         raise ValueError("eligibility manifest is not bound to the source archive")
+    eligible_train_ids = {
+        str(row["task_id"])
+        for row in eligibility["records"]
+        if row.get("eligible") and row.get("split") == "train"
+    }
+    source_by_id = _load_selected_source(args.archive, eligible_train_ids)
+    fact_kind_by_task_id = {
+        task_id: classify_intervention_fact_kind(str(source["task"]["content"]))
+        for task_id, source in source_by_id.items()
+    }
     selected = select_stratified_training_pilot(
         eligibility["records"],
         per_stratum=args.per_stratum,
         seed=args.seed,
+        fact_kind_by_task_id=fact_kind_by_task_id,
     )
     selected_by_id = {row["task_id"]: row for row in selected}
-    source_by_id = _load_selected_source(args.archive, set(selected_by_id))
-    if set(source_by_id) != set(selected_by_id):
+    if not set(selected_by_id).issubset(source_by_id):
         raise ValueError("source archive did not contain every selected pilot task")
 
     clusters = [
@@ -80,12 +91,13 @@ def main() -> None:
             f"pilot has {len(clusters)} clusters; expected {expected_cluster_count}"
         )
     dataset = {
-        "schema_version": 1,
+        "schema_version": 2,
         "metadata": {
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "source_archive_sha256": archive_hash,
             "eligibility_sha256": sha256_file(args.eligibility),
             "selection_seed": args.seed,
+            "selection_strategy": "balanced_fact_kind_per_stratum",
             "per_scenario_difficulty_stratum": args.per_stratum,
             "split": "train",
             "data_status": "template_generated_unreviewed_pilot",
@@ -99,7 +111,9 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    review_rows = [compact_review_row(cluster) for cluster in clusters]
+    review_rows = [
+        row for cluster in clusters for row in compact_review_rows(cluster)
+    ]
     args.review_output.parent.mkdir(parents=True, exist_ok=True)
     with args.review_output.open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(review_rows[0]))
@@ -113,7 +127,7 @@ def main() -> None:
         cluster["intervention"]["missing_fact_kind"] for cluster in clusters
     )
     summary = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "source_archive_sha256": archive_hash,
         "eligibility_sha256": sha256_file(args.eligibility),
@@ -122,6 +136,7 @@ def main() -> None:
         "summary": {
             "clusters": len(clusters),
             "cases": sum(len(cluster["cases"]) for cluster in clusters),
+            "review_rows": len(review_rows),
             "cases_per_cluster": len(VARIANTS),
             "split_counts": {"train": len(clusters)},
             "stratum_counts": dict(sorted(strata.items())),
@@ -141,8 +156,12 @@ def main() -> None:
                 "or publication summaries."
             ),
             (
-                "The compact CSV contains blank reviewer fields; no reviewer "
-                "identity was fabricated."
+                "The compact per-case CSV contains one exact instruction and "
+                "short entity, UAV-status, and intervention summaries per row."
+            ),
+            (
+                "Reviewer fields are intentionally blank; no reviewer identity "
+                "or judgment was fabricated."
             ),
         ],
     }

@@ -1,0 +1,171 @@
+{
+  "backend_config": {
+    "cache_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache",
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 1,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "num_beams": 1,
+    "offload_folder": "D:\\Users\\momoa\\shepherd-ai-runtime\\offload\\qwen25-7b-a09a3545",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "snapshot_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache\\models--Qwen--Qwen2.5-7B-Instruct\\snapshots\\a09a35458c702b33eeacc393d103063234e8bc28",
+    "trust_remote_code": false,
+    "use_safetensors": true
+  },
+  "cache_audit_path": "datasets/multiuav_plat/qwen25_7b_cache_audit_v1.json",
+  "cache_audit_sha256": "cf5a36eedce0206d3dec82eac24351b85dfa1c463daa7a21dd845fa88f82b022",
+  "cache_verification": {
+    "file_count": 14,
+    "total_bytes": 15242807270,
+    "valid": true,
+    "weight_bytes": 15231271888,
+    "weight_file_count": 4
+  },
+  "claim_status": "pinned_qwen_loaded_and_invoked_on_synthetic_fixture_not_study_evidence",
+  "completed_at_utc": "2026-07-31T21:31:59.883815+00:00",
+  "duration_seconds": 300.973562,
+  "error": null,
+  "generation": {
+    "error_message": null,
+    "error_type": null,
+    "generation_status": "GENERATED",
+    "input_tokens": 769,
+    "latency_ms": 128103.53190000023,
+    "metadata": {
+      "backend_type": "LocalQwenBackend",
+      "cache_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache",
+      "device": "cuda:0",
+      "device_map": "auto",
+      "do_sample": false,
+      "dtype": "float16",
+      "local_files_only": true,
+      "max_new_tokens": 1,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "non_loopback_sockets_blocked": true,
+      "num_beams": 1,
+      "offline_environment": [
+        "HF_HUB_OFFLINE",
+        "TRANSFORMERS_OFFLINE"
+      ],
+      "offload_folder": "D:\\Users\\momoa\\shepherd-ai-runtime\\offload\\qwen25-7b-a09a3545",
+      "snapshot_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache\\models--Qwen--Qwen2.5-7B-Instruct\\snapshots\\a09a35458c702b33eeacc393d103063234e8bc28",
+      "torch_version": "2.7.1+cu118",
+      "transformers_version": "4.57.6",
+      "trust_remote_code": false,
+      "use_safetensors": true
+    },
+    "output_tokens": 1,
+    "raw_output": "{\n"
+  },
+  "generation_reached_token_limit": true,
+  "hardware": {
+    "cpu": "Intel64 Family 6 Model 158 Stepping 13, GenuineIntel",
+    "cuda_available": true,
+    "cuda_runtime": "11.8",
+    "gpu_count": 1,
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce GTX 1650 SUPER",
+        "peak_allocated_bytes": 3795313664,
+        "peak_reserved_bytes": 3856662528,
+        "total_memory_bytes": 4294508544
+      }
+    ],
+    "torch_version": "2.7.1+cu118"
+  },
+  "model_invoked": true,
+  "network_block_probe": {
+    "attempted_host": "huggingface.co",
+    "error": "non-loopback network access blocked: 'huggingface.co'",
+    "expected": "blocked",
+    "observed": "blocked"
+  },
+  "output_interpreted_as_plan": false,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.12.10",
+  "raw_output": "{\n",
+  "request": {
+    "call_index": 0,
+    "context_sha256": "578a5d1e8f2783fb95ea7f01c6e078bcf46f880415a6cbe5a6de53ab1ab3c86f",
+    "messages": [
+      {
+        "content": "You are a high-level MultiUAV mission planner. Use only evidence in AGENT_CONTEXT, ACTION_CATALOG, and ALLOWED_OBSERVATIONS. Never invent UAV identifiers, endpoint names, coordinates, headings, distances, altitudes, messages, or unavailable facts. Return only one JSON object matching RESPONSE_CONTRACT. Do not emit Markdown or code.",
+        "role": "system"
+      },
+      {
+        "content": "{\"ACTION_CATALOG\":{\"/drones/{id}/command/broadcast\":{\"optional_parameters\":[],\"required_parameters\":[\"id\",\"message\"]},\"/drones/{id}/command/change_altitude\":{\"optional_parameters\":[],\"required_parameters\":[\"altitude\",\"id\"]},\"/drones/{id}/command/hover\":{\"optional_parameters\":[\"duration\"],\"required_parameters\":[\"id\"]},\"/drones/{id}/command/land\":{\"optional_parameters\":[],\"required_parameters\":[\"id\"]},\"/drones/{id}/command/move_along_path\":{\"optional_parameters\":[],\"required_parameters\":[\"id\",\"waypoints\"]},\"/drones/{id}/command/move_to\":{\"optional_parameters\":[\"z\"],\"required_parameters\":[\"id\",\"x\",\"y\"]},\"/drones/{id}/command/move_towards\":{\"optional_parameters\":[],\"required_parameters\":[\"distance\",\"heading\",\"id\"]},\"/drones/{id}/command/return_home\":{\"optional_parameters\":[],\"required_parameters\":[\"id\"]},\"/drones/{id}/command/rotate\":{\"optional_parameters\":[],\"required_parameters\":[\"heading\",\"id\"]},\"/drones/{id}/command/take_off\":{\"optional_parameters\":[],\"required_parameters\":[\"altitude\",\"id\"]},\"/drones/{id}/command/take_photo\":{\"optional_parameters\":[],\"required_parameters\":[\"id\"]}},\"AGENT_CONTEXT\":{\"drones\":[{\"heading\":0,\"home_position\":{\"x\":0,\"y\":0,\"z\":0},\"id\":\"synthetic-drone-1\",\"max_altitude\":50,\"name\":\"Drone 1\",\"position\":{\"x\":0,\"y\":0,\"z\":0},\"status\":\"idle\"}],\"environment\":{\"id\":\"synthetic-environment\",\"name\":\"Synthetic clear environment\",\"weather\":\"clear\"},\"instruction\":\"Return Drone 1 to its visible home position.\",\"observation_contract\":{\"allowed_endpoints\":[\"GET /drones\",\"GET /drones/{id}\",\"GET /drones/{id}/nearby\",\"GET /drones/{id}/nearby/drones\",\"GET /drones/{id}/nearby/targets\",\"GET /drones/{id}/nearby/obstacles\",\"GET /environments/current\"],\"global_obstacles_visible\":false,\"global_targets_visible\":false,\"local_perception_required\":true},\"role\":\"AGENT\",\"schema_version\":1,\"session\":{\"canvas_height\":100,\"canvas_width\":100,\"id\":\"synthetic-cache-smoke-session\",\"is_distance_3d\":true,\"status\":\"active\",\"task_type\":\"return\"},\"task_id\":\"synthetic-cache-smoke-task\"},\"ALLOWED_OBSERVATIONS\":[\"GET /drones\",\"GET /drones/{id}\",\"GET /drones/{id}/nearby\",\"GET /drones/{id}/nearby/drones\",\"GET /drones/{id}/nearby/targets\",\"GET /drones/{id}/nearby/obstacles\",\"GET /environments/current\"],\"RESPONSE_CONTRACT\":{\"additionalProperties\":false,\"properties\":{\"api_plan\":{\"items\":{\"additionalProperties\":false,\"properties\":{\"endpoint\":{\"type\":\"string\"},\"parameters\":{\"type\":\"object\"}},\"required\":[\"endpoint\",\"parameters\"],\"type\":\"object\"},\"type\":\"array\"},\"clarification_question\":{\"type\":[\"string\",\"null\"]},\"decision\":{\"enum\":[\"EXECUTE\",\"CLARIFY\",\"BLOCK\"]},\"reason\":{\"minLength\":1,\"type\":\"string\"}},\"required\":[\"decision\",\"reason\",\"clarification_question\",\"api_plan\"],\"type\":\"object\"}}",
+        "role": "user"
+      }
+    ],
+    "method_id": "M1_monolithic",
+    "prompt_contract_version": "multiuav_prompt_contract_v1",
+    "purpose": "decision_and_api_plan",
+    "request_sha256": "183d99ff7aca8f10ca55a6426a1cfcd98557117f77394c33d81cd7ee2ab5f563",
+    "response_contract": {
+      "additionalProperties": false,
+      "properties": {
+        "api_plan": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "endpoint": {
+                "type": "string"
+              },
+              "parameters": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "endpoint",
+              "parameters"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "clarification_question": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "EXECUTE",
+            "CLARIFY",
+            "BLOCK"
+          ]
+        },
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "reason",
+        "clarification_question",
+        "api_plan"
+      ],
+      "type": "object"
+    }
+  },
+  "schema_version": 1,
+  "smoke_status": "passed",
+  "source_code_sha256": {
+    "multiuav_model_cache.py": "b4652123fdbdf7f72f83b3fad1d256400e7423814b370b046968f02c3f802f62",
+    "multiuav_offline_runtime.py": "54ffc7055d4f1c71c7c27dce427a4a1739ca8e9f93cc6e8fad8dbecee254501d",
+    "multiuav_qwen_backend.py": "a3a21b78e1b65138cf300513d107c60ae69064328beba496ca466e63355fd537",
+    "smoke_multiuav_qwen.py": "b3d490b635f5d51ce9c7ddf43f0a2219ef4739d5cb6b1c7fd3859b2a07e3bd1e"
+  },
+  "started_at_utc": "2026-07-31T21:26:58.910253+00:00",
+  "study_case": false,
+  "study_cases_evaluated": false,
+  "synthetic_fixture": true,
+  "weights_cached": true,
+  "weights_loaded": true
+}

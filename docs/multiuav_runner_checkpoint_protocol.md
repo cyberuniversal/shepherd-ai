@@ -97,13 +97,36 @@ every 250 newly appended rows by default, plus a final archive, containing:
 - `results.jsonl`; and
 - `manifest.json` with checksums and row count.
 
+Resource runs use checkpoint schema version 3. Their config hashes additionally
+bind repetition 1-3, condition order, the resource-schedule artifact, and the
+hardware-protocol artifact. The run-config builder refuses any dataset status
+other than `approved_evaluation_data`. A resource monitor wraps the complete
+method-case and its report is retained in the same durable row. Accuracy runs
+reject resource monitors so hardware repetitions remain separate from the
+locked deterministic accuracy matrix.
+
+`src/shepherd_ai/multiuav_publication.py` provides a separate fail-closed
+accuracy admission gate. It accepts only complete matrices from `accuracy`
+runs whose rows are all `approved_evaluation_case`, rejects any resource
+measurement or synthetic fixture, and retains parse-error rows for scoring.
+It has synthetic unit coverage but has not admitted or scored study data.
+
+`src/shepherd_ai/multiuav_scoring.py` is the downstream, label-separated scorer.
+It re-parses retained raw outputs, verifies stored deterministic reports, derives
+post-gate system disposition, applies the external grounding validator to M1-M4,
+and records official-command fidelity from hidden upstream labels. Its frozen
+audit read no study checkpoint row.
+
 ## Claim Limits
 
-This infrastructure has only been exercised with scripted synthetic test
-backends. No Qwen weights were cached, loaded, or invoked. No pilot row was
-evaluated. The compact ZIP is not the final publication package, which must
-also contain runtime metadata, summaries, figures, failure examples,
-dependency versions, and code checksums.
+The provider-independent runner has only been exercised with scripted
+synthetic test backends. A local Qwen implementation now exists under
+`docs/multiuav_offline_runtime_protocol.md`. The pinned 3B and 7B checkpoints
+were cached, checksummed, loaded, and invoked directly for synthetic backend
+smokes, but neither has been exercised through the full M1-M4 experiment
+runner. No pilot row was evaluated. The compact ZIP is not the final publication
+package, which must also contain runtime metadata, summaries, figures, failure
+examples, dependency versions, and code checksums.
 
 ## Reproduce
 

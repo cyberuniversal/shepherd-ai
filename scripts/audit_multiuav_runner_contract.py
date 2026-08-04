@@ -33,6 +33,26 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    qwen_artifacts = {
+        scale: {
+            "cache_path": ROOT
+            / "datasets"
+            / "multiuav_plat"
+            / f"qwen25_{scale}_cache_audit_v1.json",
+            "smoke_path": ROOT
+            / "datasets"
+            / "multiuav_plat"
+            / f"qwen25_{scale}_load_smoke_v1.json",
+        }
+        for scale in ("3b", "7b")
+    }
+    for paths in qwen_artifacts.values():
+        paths["cache"] = json.loads(
+            paths["cache_path"].read_text(encoding="utf-8")
+        )
+        paths["smoke"] = json.loads(
+            paths["smoke_path"].read_text(encoding="utf-8")
+        )
 
     source_names = (
         "multiuav_prompts.py",
@@ -40,6 +60,11 @@ def main() -> None:
         "multiuav_runner.py",
         "multiuav_checkpoints.py",
         "multiuav_experiment.py",
+        "multiuav_resources.py",
+        "multiuav_resource_schedule.py",
+        "multiuav_publication.py",
+        "multiuav_offline_runtime.py",
+        "multiuav_qwen_backend.py",
     )
     prompt_leakage = _audit_pilot_first_prompts()
     result = {
@@ -63,7 +88,21 @@ def main() -> None:
             "runnable_case_statuses": sorted(RUNNABLE_CASE_STATUSES),
             "pending_human_review_allowed": False,
             "provider_independent_backend_protocol": True,
-            "qwen_backend_implemented": False,
+            "qwen_backend_implemented": True,
+            "qwen_local_files_only_required": True,
+            "qwen_non_loopback_socket_guard_implemented": True,
+            "qwen_weights_loaded_by_this_audit": False,
+            "resource_measurement_unit": "complete_method_case",
+            "resource_monitor_required_for_resource_runs": True,
+            "resource_monitor_forbidden_for_accuracy_runs": True,
+            **{
+                f"qwen_{scale}_synthetic_load_smoke_registered": (
+                    paths["smoke"].get("smoke_status") == "passed"
+                    and paths["smoke"].get("model_invoked") is True
+                    and paths["smoke"].get("study_cases_evaluated") is False
+                )
+                for scale, paths in qwen_artifacts.items()
+            },
         },
         "checkpoint_contract": {
             "schema_version": CHECKPOINT_SCHEMA_VERSION,
@@ -80,6 +119,19 @@ def main() -> None:
                 "run_config.json",
             ],
             "final_publication_package_implemented": False,
+            "resource_repetition_bound_in_config_hash": True,
+            "hardware_protocol_hash_bound_in_config_hash": True,
+            "resource_condition_order_bound_in_config_hash": True,
+            "resource_schedule_hash_bound_in_config_hash": True,
+            "resource_measurement_retained_per_row": True,
+        },
+        "publication_accuracy_gate": {
+            "accuracy_run_only": True,
+            "approved_evaluation_cases_only": True,
+            "complete_matrix_required": True,
+            "synthetic_and_resource_rows_rejected": True,
+            "parse_errors_retained": True,
+            "study_rows_scored_by_this_audit": False,
         },
         "prompt_contract_version": PROMPT_CONTRACT_VERSION,
         "source_code_sha256": {
@@ -91,14 +143,35 @@ def main() -> None:
                 ROOT / "scripts" / "audit_multiuav_runner_contract.py"
             ),
         },
-        "model_invoked": False,
-        "weights_loaded": False,
+        "registered_qwen_smokes": {
+            scale: {
+                "cache_audit_sha256": sha256_file(paths["cache_path"]),
+                "load_smoke_sha256": sha256_file(paths["smoke_path"]),
+                "model_id": paths["cache"].get("model_id"),
+                "revision": paths["cache"].get("revision"),
+                "weights_cached": paths["cache"].get("weights_cached"),
+                "weights_loaded": paths["smoke"].get("weights_loaded"),
+                "model_invoked": paths["smoke"].get("model_invoked"),
+                "study_cases_evaluated": paths["smoke"].get(
+                    "study_cases_evaluated"
+                ),
+                "smoke_status": paths["smoke"].get("smoke_status"),
+            }
+            for scale, paths in qwen_artifacts.items()
+        },
+        "model_invoked_by_this_audit": False,
+        "weights_loaded_by_this_audit": False,
         "claim_status": (
-            "prompt_runner_and_checkpoint_contract_implemented_"
-            "synthetic_tests_only_no_model_inference"
+            "prompt_runner_checkpoint_and_local_qwen_backend_implemented_"
+            "qwen3b_and_qwen7b_synthetic_load_smokes_registered_"
+            "no_study_inference"
         ),
         "limitations": [
-            "No Qwen or other learned model backend was loaded or invoked.",
+            (
+                "The pinned Qwen 3B and 7B checkpoints were loaded and invoked "
+                "only in separately registered synthetic smokes; this contract "
+                "audit itself does not load weights or invoke a model."
+            ),
             (
                 "The M3 pre-plan gate checks ledger structure, visible source "
                 "paths, and internal decision consistency; it does not prove "
@@ -130,7 +203,7 @@ def _audit_pilot_first_prompts() -> dict[str, Any]:
         ROOT
         / "datasets"
         / "multiuav_plat"
-        / "intervention_pilot_v1.json"
+        / "intervention_pilot_v2.json"
     )
     pilot = json.loads(pilot_path.read_text(encoding="utf-8"))
     methods = tuple(spec.method_id for spec in METHOD_SPECS)

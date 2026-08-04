@@ -79,6 +79,7 @@ class MethodCaseResult:
     preplan_report: Mapping[str, Any] | None
     final_parse: Mapping[str, Any]
     deterministic_postplan_report: Mapping[str, Any] | None
+    resource_measurement: Mapping[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -102,6 +103,11 @@ class MethodCaseResult:
             "deterministic_postplan_report": (
                 dict(self.deterministic_postplan_report)
                 if self.deterministic_postplan_report is not None
+                else None
+            ),
+            "resource_measurement": (
+                dict(self.resource_measurement)
+                if self.resource_measurement is not None
                 else None
             ),
         }

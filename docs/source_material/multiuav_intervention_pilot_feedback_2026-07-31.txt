@@ -1,0 +1,21 @@
+A few important things need correction:
+
+1. Please re-read the instructions before exporting the CSV. The plan clearly says not to include multiple full copies of the mission context, but the current CSV contains four copies. Keep only the case ID and a short summary of the entities, UAV status, and intervention. First prepare one sample row manually, check that it is concise, and then generate the remaining rows.
+
+2. The fifth variant, `resource_conflict_summary`, has not actually been created properly. The column exists, but all 30 rows contain the same sentence. That sentence describes a missing-identity issue, not a real resource conflict. It looks like placeholder text that was never replaced. Please create a genuine resource conflict for each task.
+
+3. Always spot-check generated columns before moving ahead. If the same text appears in all 30 rows, check whether this repetition is genuinely expected or caused by copy-pasting.
+
+4. The pilot should also prove that the validator can detect errors. At present, every automatic-validation result says “passed.” Deliberately insert one or two known incorrect cases and confirm that the pipeline flags them. Otherwise, we only know that the validator accepts correct cases; we do not know whether it can reject incorrect ones.
+
+5. The sample needs better coverage. All 30 cases are from the `train` split, and 29 cases have the same missing-fact type. Include cases from the calibration and test splits and cover different missing-fact categories. The purpose of a pilot is to reveal problems before scaling.
+
+6. The empty reviewer columns are fine at this stage. Clearly communicate this to whoever performs the manual review later.
+
+8. Please make the corrections in this order:
+
+   * Rebuild the CSV in the compact format.
+   * Create a genuine resource-conflict variant for every task.
+   * Add one or two deliberately incorrect cases to test the validator.
+   * Expand the sample across splits and missing-fact types.
+   * Check each stage before moving to the next.

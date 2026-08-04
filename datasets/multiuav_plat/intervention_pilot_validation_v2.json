@@ -1,0 +1,38 @@
+{
+  "claim_status": "unreviewed_pilot_validated_not_evaluation_data",
+  "dataset_sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796",
+  "eligibility_sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff",
+  "generation_summary_sha256": "9d549ffb9a34bb310a6e0ef69d73e375cb6eaa193760f68b6fab8c4d01bc5c54",
+  "review_packet_sha256": "08ba7e3eebbb6c00f3bca49e2027e68c699b1e951b7d2128d08fb35beeb73126",
+  "schema_version": 2,
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "summary": {
+    "approved_clusters": 0,
+    "cases": 150,
+    "cases_per_cluster": 5,
+    "clusters": 30,
+    "pending_human_review_clusters": 30,
+    "split_counts": {
+      "train": 30
+    },
+    "stratum_counts": {
+      "area_assignment_and_patrol|easy": 2,
+      "area_assignment_and_patrol|extreme": 2,
+      "area_assignment_and_patrol|hard": 2,
+      "area_assignment_and_patrol|intermediate": 2,
+      "area_assignment_and_patrol|moderate": 2,
+      "area_search|easy": 2,
+      "area_search|extreme": 2,
+      "area_search|hard": 2,
+      "area_search|intermediate": 2,
+      "area_search|moderate": 2,
+      "target_assignment|easy": 2,
+      "target_assignment|extreme": 2,
+      "target_assignment|hard": 2,
+      "target_assignment|intermediate": 2,
+      "target_assignment|moderate": 2
+    },
+    "valid": true
+  },
+  "valid": true
+}

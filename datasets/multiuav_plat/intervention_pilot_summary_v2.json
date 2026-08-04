@@ -1,0 +1,48 @@
+{
+  "claim_status": "pilot_generation_completed_human_review_not_started",
+  "dataset_sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796",
+  "eligibility_sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff",
+  "generated_at_utc": "2026-07-31T15:12:09.856787+00:00",
+  "limitations": [
+    "This pilot uses training clusters only.",
+    "All proposed decisions and template rewrites remain unreviewed.",
+    "No pilot case may enter calibration, test, model inference, or publication summaries.",
+    "The compact per-case CSV contains one exact instruction and short entity, UAV-status, and intervention summaries per row.",
+    "Reviewer fields are intentionally blank; no reviewer identity or judgment was fabricated."
+  ],
+  "review_packet_sha256": "08ba7e3eebbb6c00f3bca49e2027e68c699b1e951b7d2128d08fb35beeb73126",
+  "schema_version": 2,
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "summary": {
+    "approved_clusters": 0,
+    "cases": 150,
+    "cases_per_cluster": 5,
+    "clusters": 30,
+    "missing_fact_kind_counts": {
+      "coverage_threshold": 15,
+      "explicit_drone_identity": 15
+    },
+    "pending_human_review_clusters": 30,
+    "review_rows": 150,
+    "split_counts": {
+      "train": 30
+    },
+    "stratum_counts": {
+      "area_assignment_and_patrol|easy": 2,
+      "area_assignment_and_patrol|extreme": 2,
+      "area_assignment_and_patrol|hard": 2,
+      "area_assignment_and_patrol|intermediate": 2,
+      "area_assignment_and_patrol|moderate": 2,
+      "area_search|easy": 2,
+      "area_search|extreme": 2,
+      "area_search|hard": 2,
+      "area_search|intermediate": 2,
+      "area_search|moderate": 2,
+      "target_assignment|easy": 2,
+      "target_assignment|extreme": 2,
+      "target_assignment|hard": 2,
+      "target_assignment|intermediate": 2,
+      "target_assignment|moderate": 2
+    }
+  }
+}

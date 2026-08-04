@@ -1,0 +1,22 @@
+{
+  "claim_status": "review_packet_structurally_valid_identity_provenance_requires_project_attestation",
+  "dataset_sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796",
+  "review_packet_sha256": "f15bebaf7a91abb470d57e1c8bc03ecf4e6f8bb3708c89168f9cbdee63824357",
+  "schema_version": 2,
+  "summary": {
+    "cases_reviewed": 150,
+    "cluster_status_counts": {
+      "approved": 30
+    },
+    "clusters_covered": 30,
+    "identity_provenance": "project_attestation_required_not_machine_verifiable",
+    "reviewer_ids": [
+      "1"
+    ],
+    "status_counts": {
+      "approved": 150
+    },
+    "valid": true
+  },
+  "valid": true
+}

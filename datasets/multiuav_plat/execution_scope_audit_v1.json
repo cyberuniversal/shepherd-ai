@@ -1,0 +1,29 @@
+{
+  "claim_status": "static_fidelity_scope_frozen_no_live_execution",
+  "live_simulator_execution_in_primary_scope": false,
+  "model_invoked_by_this_audit": false,
+  "official_server_invoked_by_this_audit": false,
+  "official_server_submission_in_primary_scope": false,
+  "permitted_claim": "static API, parameter, and official-command fidelity",
+  "primary_fidelity_metrics": [
+    "json_schema_validity",
+    "endpoint_validity",
+    "parameter_grounding",
+    "official_command_fidelity"
+  ],
+  "primary_scope": "static_plan_fidelity",
+  "prohibited_claims": [
+    "live mission success",
+    "simulator mission success",
+    "physical UAV mission success"
+  ],
+  "schema_version": 1,
+  "scope_version": "multiuav_static_fidelity_v1",
+  "source_code_sha256": {
+    "audit_multiuav_execution_scope.py": "68ee79b4cb384972171255f7d9f28949ea11501f18c2110cca9afa386180d753",
+    "multiuav_execution_scope.py": "4936150ccd16e146aa4b232a182921927f7f6ee7bb1b8e28eb011a0c804c2067"
+  },
+  "study_cases_evaluated": false,
+  "upgrade_rule": "execution claims require separate official-server submission, recorded server checks, and a new frozen scope version",
+  "valid": true
+}

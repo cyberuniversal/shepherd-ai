@@ -37,12 +37,12 @@ def main() -> None:
     parser.add_argument(
         "--dataset",
         type=Path,
-        default=ROOT / "datasets" / "multiuav_plat" / "intervention_pilot_v1.json",
+        default=ROOT / "datasets" / "multiuav_plat" / "intervention_pilot_v2.json",
     )
     parser.add_argument(
         "--review-packet",
         type=Path,
-        default=ROOT / "reports" / "multiuav_intervention_pilot_review_v1.csv",
+        default=ROOT / "reports" / "multiuav_intervention_pilot_review_v2.csv",
     )
     parser.add_argument(
         "--generation-summary",
@@ -50,7 +50,7 @@ def main() -> None:
         default=ROOT
         / "datasets"
         / "multiuav_plat"
-        / "intervention_pilot_summary_v1.json",
+        / "intervention_pilot_summary_v2.json",
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -75,10 +75,12 @@ def main() -> None:
 
     with args.review_packet.open(encoding="utf-8-sig", newline="") as stream:
         review_rows = list(csv.DictReader(stream))
-    selected_ids = {
-        str(cluster["source_task_id"]) for cluster in dataset["clusters"]
+    eligible_train_ids = {
+        str(row["task_id"])
+        for row in eligibility["records"]
+        if row.get("eligible") and row.get("split") == "train"
     }
-    source_by_id = _load_selected_source(args.archive, selected_ids)
+    source_by_id = _load_selected_source(args.archive, eligible_train_ids)
     result = validate_unreviewed_pilot_dataset(
         dataset,
         review_rows,
@@ -89,7 +91,7 @@ def main() -> None:
         ),
     )
     output = {
-        "schema_version": 1,
+        "schema_version": 2,
         "valid": True,
         "source_archive_sha256": archive_hash,
         "eligibility_sha256": eligibility_hash,

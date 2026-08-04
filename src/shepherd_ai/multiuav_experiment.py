@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping, Protocol, TypeVar
 
 from shepherd_ai.multiuav_checkpoints import (
     JsonlCheckpoint,
@@ -14,6 +14,14 @@ from shepherd_ai.multiuav_checkpoints import (
     result_key,
 )
 from shepherd_ai.multiuav_runner import ModelBackend, run_method_case
+
+
+T = TypeVar("T")
+
+
+class ResourceMonitor(Protocol):
+    def measure(self, operation: Callable[[], T]) -> tuple[T, dict[str, Any]]:
+        """Measure one complete method-case operation."""
 
 
 @dataclass(frozen=True)
@@ -31,6 +39,7 @@ def run_case_matrix(
     checkpoint: JsonlCheckpoint,
     compact_zip_path: Path | None = None,
     compact_every_rows: int = 250,
+    resource_monitor_factory: Callable[[], ResourceMonitor] | None = None,
 ) -> dict[str, Any]:
     """Run missing case-method rows and durably checkpoint each result."""
 
@@ -40,6 +49,10 @@ def run_case_matrix(
         raise ValueError("case matrix must be non-empty")
     if compact_every_rows < 1:
         raise ValueError("compact_every_rows must be positive")
+    if config.run_kind == "resource" and resource_monitor_factory is None:
+        raise ValueError("resource runs require a resource monitor factory")
+    if config.run_kind != "resource" and resource_monitor_factory is not None:
+        raise ValueError("resource monitor is only valid for resource runs")
     case_ids = [case.case_id for case in cases]
     if len(set(case_ids)) != len(case_ids):
         raise ValueError("case ids must be unique")
@@ -54,13 +67,20 @@ def run_case_matrix(
             if key in completed:
                 skipped += 1
                 continue
-            result = run_method_case(
-                case_id=case.case_id,
-                case_status=case.case_status,
-                method_id=method_id,
-                context=case.context,
-                backend=backend,
-            )
+            def operation():
+                return run_method_case(
+                    case_id=case.case_id,
+                    case_status=case.case_status,
+                    method_id=method_id,
+                    context=case.context,
+                    backend=backend,
+                )
+
+            if resource_monitor_factory is not None:
+                result, measurement = resource_monitor_factory().measure(operation)
+                result = replace(result, resource_measurement=measurement)
+            else:
+                result = operation()
             checkpoint.append(result)
             completed.add(key)
             appended += 1
@@ -84,4 +104,5 @@ def run_case_matrix(
         "checkpoint_path": checkpoint.results_path.as_posix(),
         "compact_archive": archive,
         "model_inference_backend": type(backend).__name__,
+        "resource_measurement_enabled": resource_monitor_factory is not None,
     }

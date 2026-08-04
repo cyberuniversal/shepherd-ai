@@ -1,0 +1,36 @@
+{
+  "artifact_bindings": {
+    "full_dataset_sha256": "1ba9575ff4a2b0342b2fa20afa242e052f263ff7bd3ed18734a923687a9c27d1",
+    "pilot_dataset_sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796",
+    "review_validation_sha256": "39e5785845428783f5c1c119bb6a94b56df07cf92ccc3628b76f9ea4bcfc7d22"
+  },
+  "claim_limit": "full labels are deterministic controlled derivatives with sampled expert QC, not 7,365 human-authored judgments",
+  "full_row_level_human_review_performed": false,
+  "full_row_level_human_review_required": false,
+  "interpretation": "stratified_expert_quality_control_of_deterministic_construction",
+  "reviewer": {
+    "identity_provenance": "project_owner_attested_private_identity",
+    "independence_provenance": "human_review_external_to_automated_generation_not_machine_verifiable",
+    "pseudonym": "1",
+    "qualification": "PhD",
+    "role": "mentor"
+  },
+  "sample": {
+    "approved_cases": 150,
+    "approved_clusters": 30,
+    "cases": 150,
+    "clusters_per_stratum": 2,
+    "intervention_fact_kind_counts": {
+      "coverage_threshold": 15,
+      "explicit_drone_identity": 15
+    },
+    "scenario_difficulty_strata": 15,
+    "source_clusters": 30
+  },
+  "schema_version": 1,
+  "transfer_check": {
+    "reviewed_clusters_byte_equivalent": 30,
+    "reviewed_clusters_present_in_full_draft": 30
+  },
+  "valid": true
+}

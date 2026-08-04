@@ -9,20 +9,25 @@
     "duplicate_result_key_rejected": true,
     "durable_flush_and_fsync": true,
     "final_publication_package_implemented": false,
+    "hardware_protocol_hash_bound_in_config_hash": true,
     "incompatible_resume_rejected": true,
     "matrix_completeness_check": true,
     "periodic_compact_zip_supported": true,
+    "resource_condition_order_bound_in_config_hash": true,
+    "resource_measurement_retained_per_row": true,
+    "resource_repetition_bound_in_config_hash": true,
+    "resource_schedule_hash_bound_in_config_hash": true,
     "row_written_after_each_method_case": true,
-    "schema_version": 1
+    "schema_version": 3
   },
-  "claim_status": "prompt_runner_and_checkpoint_contract_implemented_synthetic_tests_only_no_model_inference",
+  "claim_status": "prompt_runner_checkpoint_and_local_qwen_backend_implemented_qwen3b_and_qwen7b_synthetic_load_smokes_registered_no_study_inference",
   "limitations": [
-    "No Qwen or other learned model backend was loaded or invoked.",
+    "The pinned Qwen 3B and 7B checkpoints were loaded and invoked only in separately registered synthetic smokes; this contract audit itself does not load weights or invoke a model.",
     "The M3 pre-plan gate checks ledger structure, visible source paths, and internal decision consistency; it does not prove semantic correctness.",
     "The compact checkpoint ZIP is not the final publication package with summaries, figures, failure examples, and full runtime metadata.",
     "No unreviewed pilot case is eligible for model execution under the runner contract."
   ],
-  "model_invoked": false,
+  "model_invoked_by_this_audit": false,
   "pilot_prompt_leakage_audit": {
     "cases_audited": 150,
     "clusters_audited": 30,
@@ -91,6 +96,38 @@
     ]
   },
   "prompt_contract_version": "multiuav_prompt_contract_v1",
+  "publication_accuracy_gate": {
+    "accuracy_run_only": true,
+    "approved_evaluation_cases_only": true,
+    "complete_matrix_required": true,
+    "parse_errors_retained": true,
+    "study_rows_scored_by_this_audit": false,
+    "synthetic_and_resource_rows_rejected": true
+  },
+  "registered_qwen_smokes": {
+    "3b": {
+      "cache_audit_sha256": "a9b56368301faa859b244f8e782abd12b04c0f4f895666081ed1125e13361cdd",
+      "load_smoke_sha256": "1e2d897ba15d5602c0f6ed4f0cc3257a6b55caea6afe46dcc5fb5e58ff3a7c61",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_invoked": true,
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "smoke_status": "passed",
+      "study_cases_evaluated": false,
+      "weights_cached": true,
+      "weights_loaded": true
+    },
+    "7b": {
+      "cache_audit_sha256": "cf5a36eedce0206d3dec82eac24351b85dfa1c463daa7a21dd845fa88f82b022",
+      "load_smoke_sha256": "4552290edef3d5b0d63b2c9c62c62dde85fe65296f53afa0c00fc87721f22ac3",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_invoked": true,
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "smoke_status": "passed",
+      "study_cases_evaluated": false,
+      "weights_cached": true,
+      "weights_loaded": true
+    }
+  },
   "runner_contract": {
     "backend_errors_retained_as_rows": true,
     "deterministic_postplan_methods": [
@@ -108,8 +145,16 @@
     "parse_errors_retained": true,
     "pending_human_review_allowed": false,
     "provider_independent_backend_protocol": true,
-    "qwen_backend_implemented": false,
+    "qwen_3b_synthetic_load_smoke_registered": true,
+    "qwen_7b_synthetic_load_smoke_registered": true,
+    "qwen_backend_implemented": true,
+    "qwen_local_files_only_required": true,
+    "qwen_non_loopback_socket_guard_implemented": true,
+    "qwen_weights_loaded_by_this_audit": false,
     "raw_outputs_retained": true,
+    "resource_measurement_unit": "complete_method_case",
+    "resource_monitor_forbidden_for_accuracy_runs": true,
+    "resource_monitor_required_for_resource_runs": true,
     "runnable_case_statuses": [
       "approved_evaluation_case",
       "synthetic_unit_fixture"
@@ -117,13 +162,18 @@
   },
   "schema_version": 1,
   "source_code_sha256": {
-    "audit_multiuav_runner_contract.py": "89cdde427f892f7528461a3f75c8631ce03df929d6f2aae949e701fa6cbb1e2c",
-    "multiuav_checkpoints.py": "febc2a377d93fd46f5c333f426eadbeca9a421faf8e1e73d87e70040bb6ddd58",
-    "multiuav_experiment.py": "465a71a15a3f4a99ea9e13e26fdb9417c4f9952533fe4b537d2593f6a4ef5446",
+    "audit_multiuav_runner_contract.py": "b4d8a4ebdb6484e521762fdc8ae6a3b6d62433f541018fa84908ba6e985f43fc",
+    "multiuav_checkpoints.py": "6dc19298b86e6321ab6db0186cf13f0f3d4cb31b249afd1d7e8ef70784c9a5d0",
+    "multiuav_experiment.py": "a9109860944cc29facd8445c7e9f863d8549c5327a1cfd7345c6efd13d4da255",
     "multiuav_ledger_contract.py": "1834b652f14ead55fc724d6a4fb8c1fc7e4b1ffaebf0337ef51d61a9ae2f83a3",
+    "multiuav_offline_runtime.py": "54ffc7055d4f1c71c7c27dce427a4a1739ca8e9f93cc6e8fad8dbecee254501d",
     "multiuav_prompts.py": "27c49cc5e729bca57d736d0414daed1c0007a9719369a6c572dcf1f271068f2c",
-    "multiuav_runner.py": "a0aed7bea5c52419f11b7eaae6e2f5954d08aa4bddb5f96225c875350fd4cd5a"
+    "multiuav_publication.py": "3b4368e0db71121747cb9e9181486822f7de6bcadb7eb16a3672edfcaf1a72e9",
+    "multiuav_qwen_backend.py": "a3a21b78e1b65138cf300513d107c60ae69064328beba496ca466e63355fd537",
+    "multiuav_resource_schedule.py": "b947c59fa4b30247d16c808cfe235970ce99f3fcddb719aacea47846fd0bf14e",
+    "multiuav_resources.py": "25ca199447fdcc76a56edba9eb267a1bf1f1c8b8abc27b69267edaa1583c5aaa",
+    "multiuav_runner.py": "6d3ea6305880695f91ee86405470c283a884cb873d06ede42224706d8f363756"
   },
   "valid": true,
-  "weights_loaded": false
+  "weights_loaded_by_this_audit": false
 }

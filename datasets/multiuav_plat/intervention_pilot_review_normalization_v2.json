@@ -1,0 +1,33 @@
+{
+  "case_count": 150,
+  "changed_field_counts": {
+    "case_valid": 150,
+    "review_status": 150,
+    "reviewer_id": 150
+  },
+  "cluster_count": 30,
+  "input": {
+    "path": "docs/source_material/multiuav_intervention_pilot_review_response_2026-08-04.csv",
+    "sha256": "657337f90dbfdc85115a84e0432942ac7c8168f63fa0a2ab1bad8c1ca22b9672"
+  },
+  "interpretation": {
+    "case_valid": "yes",
+    "exclusion_reason": "",
+    "note_prefix_required": "Accept:",
+    "review_status": "approved",
+    "reviewer_id": "1"
+  },
+  "notes_preserved_exactly": true,
+  "operation": "derive_formal_approval_fields_from_reviewer_authored_accept_notes",
+  "output": {
+    "path": "reports/multiuav_intervention_pilot_review_completed_v2.csv",
+    "sha256": "f15bebaf7a91abb470d57e1c8bc03ecf4e6f8bb3708c89168f9cbdee63824357"
+  },
+  "provenance_limit": "normalization_does_not_machine_verify_reviewer_identity_or_independence",
+  "schema_version": 1,
+  "validation": {
+    "path": "datasets/multiuav_plat/intervention_pilot_review_validation_v2.json",
+    "sha256": "39e5785845428783f5c1c119bb6a94b56df07cf92ccc3628b76f9ea4bcfc7d22",
+    "valid": true
+  }
+}

@@ -21,7 +21,7 @@ def main() -> None:
     parser.add_argument(
         "--template",
         type=Path,
-        default=ROOT / "reports" / "multiuav_intervention_pilot_review_v1.csv",
+        default=ROOT / "reports" / "multiuav_intervention_pilot_review_v2.csv",
     )
     parser.add_argument("--reviewer-id", required=True)
     parser.add_argument("--output", type=Path, required=True)

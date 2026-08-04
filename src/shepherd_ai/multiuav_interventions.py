@@ -35,15 +35,9 @@ PROPOSED_DECISIONS = {
     "restored_information_execute": "EXECUTE",
     "resource_conflict_block": "BLOCK",
 }
-PILOT_SEED = "shepherd-multiuav-intervention-pilot-v1"
+PILOT_SEED = "shepherd-multiuav-intervention-pilot-v2"
 CASE_INSTRUCTION_SENTINEL = "__CASE_INSTRUCTION__"
-REVIEW_VALIDITY_FIELDS = (
-    "canonical_valid",
-    "alias_valid",
-    "missing_valid",
-    "restored_valid",
-    "conflict_valid",
-)
+REVIEW_VALIDITY_FIELDS = ("case_valid",)
 REVIEW_HUMAN_FIELDS = frozenset(
     {
         "reviewer_id",
@@ -85,6 +79,15 @@ _COVERAGE_REWRITES = (
         "exceeds the required threshold",
     ),
 )
+_TARGET_REFERENCE_PATTERN = re.compile(
+    r"\b(?:Fixed|Moving|Circle|Polygon)\s+Target\s+\d+\b"
+    r"|\bWaypoint\s+\d+\b",
+    re.IGNORECASE,
+)
+_COORDINATE_PATTERN = re.compile(
+    r"\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?"
+    r"(?:\s*,\s*-?\d+(?:\.\d+)?)?\s*\)"
+)
 
 
 def select_stratified_training_pilot(
@@ -92,8 +95,9 @@ def select_stratified_training_pilot(
     *,
     per_stratum: int = 2,
     seed: str = PILOT_SEED,
+    fact_kind_by_task_id: Mapping[str, str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Select a deterministic training-only pilot by scenario/difficulty."""
+    """Select a deterministic training-only pilot by stratum and fact kind."""
 
     if per_stratum < 1:
         raise ValueError("per_stratum must be positive")
@@ -107,16 +111,45 @@ def select_stratified_training_pilot(
     for key, rows in sorted(groups.items()):
         if len(rows) < per_stratum:
             raise ValueError(f"pilot stratum {key} has fewer than {per_stratum} tasks")
-        selected.extend(
-            sorted(
-                rows,
-                key=lambda row: (
-                    _rank(seed, str(row["task_id"])),
-                    str(row["task_id"]),
-                ),
-            )[:per_stratum]
+        ranked = sorted(
+            rows,
+            key=lambda row: (
+                _rank(seed, str(row["task_id"])),
+                str(row["task_id"]),
+            ),
         )
+        chosen: list[dict[str, Any]] = []
+        if fact_kind_by_task_id is not None:
+            kinds = ("explicit_drone_identity", "coverage_threshold")
+            if per_stratum < len(kinds):
+                raise ValueError("balanced pilot requires at least two tasks per stratum")
+            for kind in kinds:
+                candidates = [
+                    row
+                    for row in ranked
+                    if fact_kind_by_task_id.get(str(row["task_id"])) == kind
+                ]
+                if not candidates:
+                    raise ValueError(f"pilot stratum {key} has no {kind} candidate")
+                chosen.append(candidates[0])
+        chosen_ids = {str(row["task_id"]) for row in chosen}
+        chosen.extend(
+            row
+            for row in ranked
+            if str(row["task_id"]) not in chosen_ids
+        )
+        selected.extend(chosen[:per_stratum])
     return sorted(selected, key=lambda row: str(row["task_id"]))
+
+
+def classify_intervention_fact_kind(text: str) -> str:
+    """Return the supported intervention template for one source instruction."""
+
+    if extract_explicit_drone_references(text):
+        return "explicit_drone_identity"
+    if any(pattern.search(text) for pattern, _ in _COVERAGE_REWRITES):
+        return "coverage_threshold"
+    raise ValueError("instruction has no supported intervention fact")
 
 
 def build_draft_cluster(
@@ -142,16 +175,15 @@ def build_draft_cluster(
     validate_agent_visible_context(context)
 
     references = extract_explicit_drone_references(canonical)
-    if references:
+    missing_fact_kind = classify_intervention_fact_kind(canonical)
+    if missing_fact_kind == "explicit_drone_identity":
         missing, restored, removed_values = _rewrite_drone_identities(canonical)
-        missing_fact_kind = "explicit_drone_identity"
         resource_patch = {
             "operation": "remove_required_drones",
             "drone_references": list(references),
         }
     else:
         missing, restored, removed_values = _rewrite_coverage_threshold(canonical)
-        missing_fact_kind = "coverage_threshold"
         resource_patch = {
             "operation": "empty_fleet",
             "required_count": 1,
@@ -310,42 +342,78 @@ def validate_draft_cluster(cluster: Mapping[str, Any]) -> None:
         materialized = materialize_case_context(cluster, case)
         if materialized["instruction"] != case["instruction"]:
             raise ValueError("materialized context contains the wrong instruction")
+    conflict_case = by_variant["resource_conflict_block"]
+    conflict_context = materialize_case_context(cluster, conflict_case)
+    patch = conflict_case["context_patch"]
+    intervention = cluster.get("intervention")
+    if not isinstance(intervention, Mapping):
+        raise ValueError("draft cluster requires intervention metadata")
+    if patch["operation"] == "remove_required_drones":
+        expected_references = {
+            _normalize(str(value)) for value in intervention["removed_values"]
+        }
+        patched_references = {
+            _normalize(str(value)) for value in patch["drone_references"]
+        }
+        if patched_references != expected_references:
+            raise ValueError("resource conflict patch differs from required UAVs")
+        observed_conflict = assess_resource_conflict(
+            conflict_context,
+            required_drone_references=patch["drone_references"],
+        )
+    else:
+        observed_conflict = assess_resource_conflict(
+            conflict_context,
+            required_count=patch["required_count"],
+        )
+    if not observed_conflict.block_allowed:
+        raise ValueError("resource conflict patch does not justify BLOCK")
+    stored_conflict = json.loads(json.dumps(intervention.get("resource_conflict")))
+    recomputed_conflict = json.loads(json.dumps(observed_conflict.to_dict()))
+    if stored_conflict != recomputed_conflict:
+        raise ValueError("resource conflict metadata differs from applied patch")
     leaked = _find_forbidden_keys(cluster, PRIVILEGED_SOURCE_FIELDS)
     if leaked:
         raise ValueError(f"draft cluster contains privileged fields: {sorted(leaked)}")
 
 
-def compact_review_row(cluster: Mapping[str, Any]) -> dict[str, Any]:
-    cases = {
-        str(case["variant"]): case
-        for case in cluster["cases"]
-    }
+def compact_review_rows(cluster: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Create one concise review row per case, never four texts in one row."""
+
     intervention = cluster["intervention"]
-    conflict = intervention["resource_conflict"]
-    return {
-        "cluster_id": cluster["cluster_id"],
-        "source_task_id": cluster["source_task_id"],
-        "split": cluster["split"],
-        "scenario": cluster["scenario"],
-        "difficulty": cluster["difficulty"],
-        "missing_fact_kind": intervention["missing_fact_kind"],
-        "removed_values": " | ".join(intervention["removed_values"]),
-        "canonical_instruction": cases["canonical_execute"]["instruction"],
-        "official_alias": cases["official_alias_execute"]["instruction"],
-        "missing_instruction": cases["missing_information_clarify"]["instruction"],
-        "restored_instruction": cases["restored_information_execute"]["instruction"],
-        "resource_conflict_summary": conflict["reason"],
-        "automatic_validation": "passed",
-        "reviewer_id": "",
-        "review_status": "",
-        "canonical_valid": "",
-        "alias_valid": "",
-        "missing_valid": "",
-        "restored_valid": "",
-        "conflict_valid": "",
-        "exclusion_reason": "",
-        "reviewer_notes": "",
-    }
+    canonical = next(
+        case["instruction"]
+        for case in cluster["cases"]
+        if case["variant"] == "canonical_execute"
+    )
+    rows: list[dict[str, Any]] = []
+    for case in cluster["cases"]:
+        context = materialize_case_context(cluster, case)
+        rows.append(
+            {
+                "case_id": case["case_id"],
+                "cluster_id": cluster["cluster_id"],
+                "source_task_id": cluster["source_task_id"],
+                "split": cluster["split"],
+                "scenario": cluster["scenario"],
+                "difficulty": cluster["difficulty"],
+                "variant": case["variant"],
+                "proposed_decision": case["proposed_decision"],
+                "instruction": case["instruction"],
+                "entity_summary": _entity_summary(canonical, intervention),
+                "uav_status_summary": _uav_status_summary(
+                    cluster["context"]["payload"], context
+                ),
+                "intervention_summary": _intervention_summary(case, intervention),
+                "automatic_validation": "passed_expected_valid_case_checks",
+                "reviewer_id": "",
+                "review_status": "",
+                "case_valid": "",
+                "exclusion_reason": "",
+                "reviewer_notes": "",
+            }
+        )
+    return rows
 
 
 def validate_unreviewed_pilot_dataset(
@@ -366,10 +434,17 @@ def validate_unreviewed_pilot_dataset(
     if metadata.get("data_status") != "template_generated_unreviewed_pilot":
         raise ValueError("pilot dataset has an unexpected data status")
     seed = _text(metadata.get("selection_seed"), "pilot selection seed")
+    fact_kind_by_task_id = None
+    if metadata.get("selection_strategy") == "balanced_fact_kind_per_stratum":
+        fact_kind_by_task_id = {
+            task_id: classify_intervention_fact_kind(str(source["task"]["content"]))
+            for task_id, source in source_by_id.items()
+        }
     selected = select_stratified_training_pilot(
         list(eligibility_rows),
         per_stratum=expected_per_stratum,
         seed=seed,
+        fact_kind_by_task_id=fact_kind_by_task_id,
     )
     selected_by_id = {str(row["task_id"]): row for row in selected}
 
@@ -381,7 +456,7 @@ def validate_unreviewed_pilot_dataset(
         raise ValueError("pilot source task ids must be unique")
     if set(source_ids) != set(selected_by_id):
         raise ValueError("pilot source tasks do not match deterministic selection")
-    if set(source_by_id) != set(selected_by_id):
+    if not set(selected_by_id).issubset(source_by_id):
         raise ValueError("source records do not cover the deterministic selection")
 
     expected_clusters: dict[str, dict[str, Any]] = {}
@@ -402,23 +477,25 @@ def validate_unreviewed_pilot_dataset(
                 f"{task_id}: stored cluster differs from source construction"
             )
 
-    if len(review_rows) != len(clusters):
-        raise ValueError("review packet must contain one row per cluster")
+    expected_case_count = len(clusters) * len(VARIANTS)
+    if len(review_rows) != expected_case_count:
+        raise ValueError("review packet must contain one row per case")
     review_by_id: dict[str, Mapping[str, Any]] = {}
     for row in review_rows:
-        cluster_id = str(row.get("cluster_id"))
-        if cluster_id in review_by_id:
-            raise ValueError("review packet cluster ids must be unique")
-        review_by_id[cluster_id] = row
+        case_id = str(row.get("case_id"))
+        if case_id in review_by_id:
+            raise ValueError("review packet case ids must be unique")
+        review_by_id[case_id] = row
     expected_review = {
-        str(cluster["cluster_id"]): compact_review_row(cluster)
+        str(row["case_id"]): row
         for cluster in clusters
+        for row in compact_review_rows(cluster)
     }
     if set(review_by_id) != set(expected_review):
         raise ValueError("review packet cluster ids do not match the dataset")
-    for cluster_id, expected_row in expected_review.items():
-        if dict(review_by_id[cluster_id]) != expected_row:
-            raise ValueError(f"{cluster_id}: review row differs from unreviewed draft")
+    for case_id, expected_row in expected_review.items():
+        if dict(review_by_id[case_id]) != expected_row:
+            raise ValueError(f"{case_id}: review row differs from unreviewed draft")
 
     strata = Counter(
         f"{cluster['scenario']}|{cluster['difficulty']}" for cluster in clusters
@@ -440,6 +517,151 @@ def validate_unreviewed_pilot_dataset(
     }
 
 
+def validate_unreviewed_intervention_dataset(
+    dataset: Mapping[str, Any],
+    review_rows: Sequence[Mapping[str, Any]],
+    eligibility_rows: Sequence[Mapping[str, Any]],
+    source_by_id: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Validate the complete eligible dataset against pinned source records."""
+
+    metadata = dataset.get("metadata")
+    if not isinstance(metadata, Mapping):
+        raise ValueError("intervention dataset requires metadata")
+    if metadata.get("data_status") != "template_generated_unreviewed_dataset":
+        raise ValueError("intervention dataset has an unexpected data status")
+
+    expected_by_id = {
+        str(row["task_id"]): row for row in eligibility_rows if row.get("eligible")
+    }
+    if not expected_by_id:
+        raise ValueError("eligibility manifest contains no eligible tasks")
+    if set(source_by_id) != set(expected_by_id):
+        raise ValueError("source records do not exactly cover eligible tasks")
+
+    clusters = dataset.get("clusters")
+    if not isinstance(clusters, list):
+        raise ValueError("intervention dataset requires a cluster list")
+    source_ids = [str(cluster.get("source_task_id")) for cluster in clusters]
+    if len(set(source_ids)) != len(source_ids):
+        raise ValueError("intervention dataset source task ids must be unique")
+    if set(source_ids) != set(expected_by_id):
+        raise ValueError("intervention dataset does not cover every eligible task")
+
+    for cluster in clusters:
+        validate_draft_cluster(cluster)
+        task_id = str(cluster["source_task_id"])
+        source = source_by_id[task_id]
+        expected_cluster = build_draft_cluster(
+            source["session"],
+            source["task"],
+            expected_by_id[task_id],
+        )
+        if json.loads(json.dumps(cluster)) != json.loads(json.dumps(expected_cluster)):
+            raise ValueError(
+                f"{task_id}: stored cluster differs from source construction"
+            )
+
+    expected_review = {
+        str(row["case_id"]): row
+        for cluster in clusters
+        for row in compact_review_rows(cluster)
+    }
+    if len(review_rows) != len(expected_review):
+        raise ValueError("review packet must contain one row per eligible case")
+    observed_review: dict[str, Mapping[str, Any]] = {}
+    for row in review_rows:
+        case_id = str(row.get("case_id"))
+        if case_id in observed_review:
+            raise ValueError("review packet case ids must be unique")
+        observed_review[case_id] = row
+    if set(observed_review) != set(expected_review):
+        raise ValueError("review packet does not cover every eligible case")
+    for case_id, expected_row in expected_review.items():
+        if dict(observed_review[case_id]) != expected_row:
+            raise ValueError(f"{case_id}: review row differs from unreviewed draft")
+
+    split_counts = Counter(cluster["split"] for cluster in clusters)
+    fact_kinds = Counter(
+        cluster["intervention"]["missing_fact_kind"] for cluster in clusters
+    )
+    pending = sum(
+        cluster["review_status"] == "pending_human_review"
+        for cluster in clusters
+    )
+    if pending != len(clusters):
+        raise ValueError("every generated cluster must remain pending human review")
+    return {
+        "valid": True,
+        "source_tasks_total": len(eligibility_rows),
+        "eligible_clusters": len(clusters),
+        "excluded_source_tasks": len(eligibility_rows) - len(clusters),
+        "cases": len(expected_review),
+        "cases_per_cluster": len(VARIANTS),
+        "split_cluster_counts": dict(sorted(split_counts.items())),
+        "split_case_counts": {
+            split: count * len(VARIANTS)
+            for split, count in sorted(split_counts.items())
+        },
+        "missing_fact_kind_counts": dict(sorted(fact_kinds.items())),
+        "pending_human_review_clusters": pending,
+        "approved_clusters": 0,
+    }
+
+
+def run_validator_negative_controls(
+    dataset: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Prove known-bad synthetic mutations are rejected outside study data."""
+
+    clusters = dataset.get("clusters")
+    if not isinstance(clusters, list) or not clusters:
+        raise ValueError("negative controls require a non-empty pilot dataset")
+    probes: list[tuple[str, dict[str, Any]]] = []
+
+    partial = deepcopy(clusters[0])
+    partial["cases"].pop()
+    probes.append(("partial_cluster", partial))
+
+    identity_source = next(
+        (
+            cluster
+            for cluster in clusters
+            if cluster["intervention"]["missing_fact_kind"]
+            == "explicit_drone_identity"
+        ),
+        None,
+    )
+    if identity_source is None:
+        raise ValueError("negative controls require an identity-removal cluster")
+    wrong_conflict = deepcopy(identity_source)
+    conflict_case = next(
+        case
+        for case in wrong_conflict["cases"]
+        if case["variant"] == "resource_conflict_block"
+    )
+    conflict_case["context_patch"]["drone_references"] = ["Drone 999"]
+    probes.append(("wrong_required_uav_conflict", wrong_conflict))
+
+    results: list[dict[str, Any]] = []
+    for probe_id, mutated in probes:
+        try:
+            validate_draft_cluster(mutated)
+        except ValueError as error:
+            results.append(
+                {
+                    "probe_id": probe_id,
+                    "data_status": "synthetic_negative_control_not_study_data",
+                    "expected": "rejected",
+                    "observed": "rejected",
+                    "validator_error": str(error),
+                }
+            )
+        else:
+            raise AssertionError(f"negative control was accepted: {probe_id}")
+    return results
+
+
 def prepare_pilot_review_rows(
     template_rows: Sequence[Mapping[str, Any]],
     reviewer_id: str,
@@ -457,6 +679,44 @@ def prepare_pilot_review_rows(
     return prepared
 
 
+def normalize_accepted_review_rows(
+    review_rows: Sequence[Mapping[str, Any]],
+    reviewer_id: str,
+) -> list[dict[str, Any]]:
+    """Derive formal approvals from reviewer-authored ``Accept:`` notes."""
+
+    reviewer = _reviewer_id(reviewer_id)
+    if not review_rows:
+        raise ValueError("review response is empty")
+    normalized: list[dict[str, Any]] = []
+    formal_fields = ("reviewer_id", "review_status", "case_valid", "exclusion_reason")
+    for source_row in review_rows:
+        row = dict(source_row)
+        case_id = str(row.get("case_id", "<unknown>"))
+        populated = [
+            field for field in formal_fields if str(row.get(field, "")).strip()
+        ]
+        if populated:
+            raise ValueError(
+                f"{case_id}: formal review fields already populated: {populated}"
+            )
+        notes = str(row.get("reviewer_notes", "")).strip()
+        if not re.match(r"accept\s*:", notes, flags=re.IGNORECASE):
+            raise ValueError(
+                f"{case_id}: reviewer_notes must begin with 'Accept:'"
+            )
+        row.update(
+            {
+                "reviewer_id": reviewer,
+                "review_status": "approved",
+                "case_valid": "yes",
+                "exclusion_reason": "",
+            }
+        )
+        normalized.append(row)
+    return normalized
+
+
 def validate_completed_pilot_review(
     dataset: Mapping[str, Any],
     review_rows: Sequence[Mapping[str, Any]],
@@ -467,32 +727,34 @@ def validate_completed_pilot_review(
     if not isinstance(clusters, list) or not clusters:
         raise ValueError("pilot dataset requires non-empty clusters")
     expected_rows = {
-        str(cluster["cluster_id"]): compact_review_row(cluster)
+        str(row["case_id"]): row
         for cluster in clusters
+        for row in compact_review_rows(cluster)
     }
     if len(review_rows) != len(expected_rows):
-        raise ValueError("completed review must contain one row per cluster")
+        raise ValueError("completed review must contain one row per case")
 
     statuses: Counter[str] = Counter()
+    statuses_by_cluster: dict[str, list[str]] = {}
     reviewers: set[str] = set()
     seen: set[str] = set()
     for review_row in review_rows:
         row = dict(review_row)
-        cluster_id = str(row.get("cluster_id", ""))
-        if cluster_id in seen:
-            raise ValueError("completed review cluster ids must be unique")
-        seen.add(cluster_id)
-        if cluster_id not in expected_rows:
-            raise ValueError(f"unknown reviewed cluster: {cluster_id}")
-        expected = expected_rows[cluster_id]
+        case_id = str(row.get("case_id", ""))
+        if case_id in seen:
+            raise ValueError("completed review case ids must be unique")
+        seen.add(case_id)
+        if case_id not in expected_rows:
+            raise ValueError(f"unknown reviewed case: {case_id}")
+        expected = expected_rows[case_id]
         if set(row) != set(expected):
-            raise ValueError(f"{cluster_id}: review packet schema changed")
+            raise ValueError(f"{case_id}: review packet schema changed")
         for field, expected_value in expected.items():
             if field in REVIEW_HUMAN_FIELDS:
                 continue
             if row.get(field) != expected_value:
                 raise ValueError(
-                    f"{cluster_id}: immutable review field changed: {field}"
+                    f"{case_id}: immutable review field changed: {field}"
                 )
 
         reviewer = _reviewer_id(str(row.get("reviewer_id", "")))
@@ -508,44 +770,126 @@ def validate_completed_pilot_review(
         }
         if invalid_values:
             raise ValueError(
-                f"{cluster_id}: validity fields must be yes or no: "
+                f"{case_id}: validity fields must be yes or no: "
                 f"{sorted(invalid_values)}"
             )
         status = str(row.get("review_status", "")).strip().lower()
         if status not in REVIEW_STATUSES:
-            raise ValueError(f"{cluster_id}: unsupported review status: {status!r}")
+            raise ValueError(f"{case_id}: unsupported review status: {status!r}")
         exclusion_reason = str(row.get("exclusion_reason", "")).strip()
         notes = str(row.get("reviewer_notes", "")).strip()
         rejected_fields = [field for field, value in validity.items() if value == "no"]
         if status == "approved":
             if rejected_fields:
                 raise ValueError(
-                    f"{cluster_id}: approved row contains rejected variants"
+                    f"{case_id}: approved row contains a rejected case"
                 )
             if exclusion_reason:
                 raise ValueError(
-                    f"{cluster_id}: approved row has an exclusion reason"
+                    f"{case_id}: approved row has an exclusion reason"
                 )
         elif status == "needs_revision":
             if not rejected_fields or not notes:
                 raise ValueError(
-                    f"{cluster_id}: needs_revision requires a no value and notes"
+                    f"{case_id}: needs_revision requires a no value and notes"
                 )
         elif not exclusion_reason:
             raise ValueError(
-                f"{cluster_id}: excluded row requires an exclusion reason"
+                f"{case_id}: excluded row requires an exclusion reason"
             )
         statuses[status] += 1
+        statuses_by_cluster.setdefault(str(row["cluster_id"]), []).append(status)
 
     if seen != set(expected_rows):
         raise ValueError("completed review does not cover every pilot cluster")
+    cluster_statuses: Counter[str] = Counter()
+    for cluster in clusters:
+        cluster_id = str(cluster["cluster_id"])
+        case_statuses = statuses_by_cluster.get(cluster_id, [])
+        if "excluded" in case_statuses:
+            cluster_statuses["excluded"] += 1
+        elif "needs_revision" in case_statuses:
+            cluster_statuses["needs_revision"] += 1
+        else:
+            cluster_statuses["approved"] += 1
     return {
         "valid": True,
-        "clusters_reviewed": len(review_rows),
+        "cases_reviewed": len(review_rows),
+        "clusters_covered": len(clusters),
         "reviewer_ids": sorted(reviewers),
         "status_counts": dict(sorted(statuses.items())),
+        "cluster_status_counts": dict(sorted(cluster_statuses.items())),
         "identity_provenance": "project_attestation_required_not_machine_verifiable",
     }
+
+
+def _entity_summary(
+    canonical: str,
+    intervention: Mapping[str, Any],
+) -> str:
+    drones = extract_explicit_drone_references(canonical)
+    drone_text = ", ".join(_display_drone(value) for value in drones) or "generic fleet"
+    targets = tuple(dict.fromkeys(match.group(0) for match in _TARGET_REFERENCE_PATTERN.finditer(canonical)))
+    coordinates = tuple(dict.fromkeys(match.group(0) for match in _COORDINATE_PATTERN.finditer(canonical)))
+    parts = [f"UAVs={drone_text}"]
+    if targets:
+        parts.append(f"targets={_summarize_values(targets)}")
+    if coordinates:
+        parts.append(f"coordinates={_summarize_values(coordinates)}")
+    parts.append(
+        "removed=" + _summarize_values(tuple(str(value) for value in intervention["removed_values"]))
+    )
+    return "; ".join(parts)
+
+
+def _uav_status_summary(
+    base_context: Mapping[str, Any],
+    case_context: Mapping[str, Any],
+) -> str:
+    return f"base {_fleet_summary(base_context)}; case {_fleet_summary(case_context)}"
+
+
+def _fleet_summary(context: Mapping[str, Any]) -> str:
+    drones = context["drones"]
+    statuses = Counter(str(drone.get("status", "unknown")) for drone in drones)
+    status_text = ",".join(f"{key}={value}" for key, value in sorted(statuses.items()))
+    return f"fleet={len(drones)}" + (f" ({status_text})" if status_text else "")
+
+
+def _intervention_summary(
+    case: Mapping[str, Any],
+    intervention: Mapping[str, Any],
+) -> str:
+    variant = str(case["variant"])
+    removed = _summarize_values(tuple(str(value) for value in intervention["removed_values"]))
+    if variant == "canonical_execute":
+        return "unchanged canonical instruction"
+    if variant == "official_alias_execute":
+        return "official source alias; no context mutation"
+    if variant == "missing_information_clarify":
+        return f"removed {intervention['missing_fact_kind']}: {removed}"
+    if variant == "restored_information_execute":
+        return f"restored {intervention['missing_fact_kind']}: {removed}"
+    conflict = intervention["resource_conflict"]
+    missing = conflict.get("missing_required_drones") or ()
+    if missing:
+        detail = "removed required UAVs=" + _summarize_values(
+            tuple(_display_drone(str(value)) for value in missing)
+        )
+    else:
+        detail = f"required fleet={conflict['required_count']}; visible fleet=0"
+    return f"irrecoverable fleet conflict; {detail}; proposed BLOCK"
+
+
+def _summarize_values(values: Sequence[str], *, limit: int = 4) -> str:
+    shown = list(values[:limit])
+    suffix = f" (+{len(values) - limit} more)" if len(values) > limit else ""
+    return " | ".join(shown) + suffix
+
+
+def _display_drone(value: str) -> str:
+    match = re.fullmatch(r"drone\s+(\d+)", value, re.IGNORECASE)
+    return f"Drone {match.group(1)}" if match else value
 
 
 def _case(
@@ -661,8 +1005,8 @@ def _text(value: Any, label: str) -> str:
 
 def _reviewer_id(value: str) -> str:
     reviewer = value.strip()
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{2,63}", reviewer):
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", reviewer):
         raise ValueError(
-            "reviewer_id must be a 3-64 character project-supplied pseudonym"
+            "reviewer_id must be a 1-64 character project-supplied pseudonym"
         )
     return reviewer

@@ -8,11 +8,27 @@ preserved, but the active paper is now a proposed systems-and-measurement study
 of validation placement on paired MultiUAV-Plat source tasks. The study compares
 monolithic, deterministic post-plan, stage-wise, and compute-matched post-plan
 configurations while jointly measuring safety, utility, failure containment,
-and local inference cost. Source acquisition, split, a 30-cluster unreviewed
-training pilot, strict output parsing, and standalone recursive grounding
-validation are implemented. Versioned M1-M4 prompts, a provider-independent
+and local inference cost. Source acquisition, split, strict output parsing, and
+standalone recursive grounding validation are implemented. The corrected
+30-cluster pilot is balanced across its two supported intervention templates
+and its 150 cases are structurally approved. The same construction has produced
+a deterministically validated full draft of 1,473 clusters and 7,365 cases;
+the 30-cluster, 150-case expert sample validates the construction templates
+without claiming full row-level human labeling. A score-blind protocol and
+approved 1,420-case held-out manifest are now frozen pending final commit-bound
+run configurations. The label-separated scorer is frozen and source-hashed: it
+preserves raw model behavior, derives the post-gate system disposition, applies
+the same external grounding validator to every method, and reads hidden
+official command inventories only after complete-matrix admission. Versioned
+M1-M4 prompts, a provider-independent
 runner, and config-bound checkpoint/resume are also implemented with scripted
-tests; no Qwen backend or locked experiment has run. See
+tests. The pinned Qwen 2.5 3B and 7B checkpoints are cached outside Git, fully
+checksummed, and successfully loaded and invoked under the local socket guard
+on synthetic fixtures only. The current smokes generated one token each and
+were not interpreted as plans; the earlier 32-token 3B smoke is preserved as
+historical infrastructure evidence. The 7B smoke required CPU and disk
+offload on the local 4 GB GPU. No study case has been evaluated and no locked
+experiment has run. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
@@ -41,10 +57,18 @@ The current source of truth is:
 - `docs/multiuav_recoverability_protocol.md`
 - `docs/multiuav_intervention_pilot_protocol.md`
 - `docs/multiuav_intervention_review_protocol.md`
+- `docs/multiuav_intervention_dataset_protocol.md`
+- `docs/multiuav_intervention_feedback_resolution.md`
 - `docs/multiuav_method_contract.md`
 - `docs/multiuav_grounding_validator_protocol.md`
 - `docs/multiuav_model_revisions.md`
 - `docs/multiuav_runner_checkpoint_protocol.md`
+- `docs/multiuav_offline_runtime_protocol.md`
+- `docs/multiuav_statistical_analysis_protocol.md`
+- `docs/multiuav_scoring_protocol.md`
+- `docs/multiuav_qwen_cache_smoke.md`
+- `docs/multiuav_execution_scope_protocol.md`
+- `docs/multiuav_hardware_measurement_protocol.md`
 - `docs/week2_data_collection_protocol.md`
 - `docs/week2_audio_split_policy.md`
 - `docs/week2_training_explainer.md`
@@ -80,6 +104,16 @@ The repository now includes the roadmap's Colab-style notebook sequence:
 - `notebooks/Notebook9_Evaluation.ipynb`
 
 Notebooks should orchestrate Colab workflows. Reusable implementation belongs in `src/shepherd_ai/`, with tests in `tests/`. Transformer fine-tuning is Colab-first and should use a GPU runtime, not local CPU training.
+
+The active MultiUAV inference environment is optional:
+
+```powershell
+python -m pip install -e .[multiuav-inference]
+```
+
+That command installs runtime libraries only. It does not cache either pinned
+Qwen checkpoint or start the locked experiment. Accuracy inference still
+requires clean-commit run configurations bound to the approved case manifest.
 
 Dataset and artifact locations:
 

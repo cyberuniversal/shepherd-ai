@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument(
         "--dataset",
         type=Path,
-        default=ROOT / "datasets" / "multiuav_plat" / "intervention_pilot_v1.json",
+        default=ROOT / "datasets" / "multiuav_plat" / "intervention_pilot_v2.json",
     )
     parser.add_argument("--review-packet", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -34,7 +34,7 @@ def main() -> None:
         review_rows = list(csv.DictReader(stream))
     result = validate_completed_pilot_review(dataset, review_rows)
     output = {
-        "schema_version": 1,
+        "schema_version": 2,
         "valid": True,
         "dataset_sha256": sha256_file(args.dataset),
         "review_packet_sha256": sha256_file(args.review_packet),

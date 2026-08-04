@@ -1,0 +1,95 @@
+{
+  "backend_contracts": [
+    {
+      "cache_dir": null,
+      "device_map": "auto",
+      "do_sample": false,
+      "dtype": "float16",
+      "local_files_only": true,
+      "max_new_tokens": 1024,
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "num_beams": 1,
+      "offload_folder": null,
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "snapshot_dir": null,
+      "trust_remote_code": false,
+      "use_safetensors": true
+    },
+    {
+      "cache_dir": null,
+      "device_map": "auto",
+      "do_sample": false,
+      "dtype": "float16",
+      "local_files_only": true,
+      "max_new_tokens": 1024,
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "num_beams": 1,
+      "offload_folder": null,
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "snapshot_dir": null,
+      "trust_remote_code": false,
+      "use_safetensors": true
+    }
+  ],
+  "claim_status": "local_qwen_backend_and_process_socket_isolation_implemented_synthetic_tests_only",
+  "decoding_contract": {
+    "chat_template_add_generation_prompt": true,
+    "do_sample": false,
+    "num_beams": 1,
+    "raw_generated_text_retained_by_runner": true
+  },
+  "generation_metadata_contract": [
+    "model_id",
+    "model_revision",
+    "dtype",
+    "device",
+    "device_map",
+    "cache_dir",
+    "snapshot_dir",
+    "offload_folder",
+    "input_tokens",
+    "output_tokens",
+    "latency_ms",
+    "transformers_version",
+    "torch_version",
+    "non_loopback_sockets_blocked",
+    "offline_environment"
+  ],
+  "limitations": [
+    "No Qwen weights were cached, loaded, or invoked while creating this contract artifact.",
+    "Python socket patching is process-level isolation, not an operating-system firewall, container boundary, or proof that native extensions cannot perform network I/O.",
+    "Deterministic greedy decoding does not establish model correctness or bitwise equality across hardware and package stacks.",
+    "The unreviewed intervention pilot remains blocked from every model backend."
+  ],
+  "model_invoked": false,
+  "offline_contract": {
+    "blocked_python_socket_operations": [
+      "socket.socket.connect",
+      "socket.socket.connect_ex",
+      "socket.create_connection",
+      "socket.getaddrinfo"
+    ],
+    "guard_applies_during_generation": true,
+    "guard_applies_during_model_loading": true,
+    "isolation_scope": "python_process",
+    "local_files_only_required": true,
+    "loopback_allowed": true,
+    "non_loopback_blocked": true,
+    "offline_environment": {
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1"
+    },
+    "safetensors_required": true,
+    "trust_remote_code": false
+  },
+  "schema_version": 1,
+  "source_code_sha256": {
+    "audit_multiuav_offline_runtime.py": "15a2f8874e0d4e367efb37c97b2ba82503a4c0a2ae8738d8cdbe725629a52dfc",
+    "multiuav_offline_runtime.py": "54ffc7055d4f1c71c7c27dce427a4a1739ca8e9f93cc6e8fad8dbecee254501d",
+    "multiuav_qwen_backend.py": "a3a21b78e1b65138cf300513d107c60ae69064328beba496ca466e63355fd537"
+  },
+  "study_cases_evaluated": false,
+  "valid": true,
+  "weights_cached": false,
+  "weights_loaded": false
+}

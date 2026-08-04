@@ -1,0 +1,27 @@
+{
+  "claim_status": "synthetic_validator_negative_controls_not_study_data",
+  "generated_at_utc": "2026-07-31T15:12:37.359614+00:00",
+  "pilot_dataset_sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796",
+  "probes": [
+    {
+      "data_status": "synthetic_negative_control_not_study_data",
+      "expected": "rejected",
+      "observed": "rejected",
+      "probe_id": "partial_cluster",
+      "validator_error": "draft cluster must contain exactly five cases"
+    },
+    {
+      "data_status": "synthetic_negative_control_not_study_data",
+      "expected": "rejected",
+      "observed": "rejected",
+      "probe_id": "wrong_required_uav_conflict",
+      "validator_error": "resource conflict patch differs from required UAVs"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "expected_rejections": 2,
+    "observed_rejections": 2,
+    "probe_count": 2
+  }
+}

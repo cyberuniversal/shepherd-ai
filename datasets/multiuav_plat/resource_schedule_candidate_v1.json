@@ -1,0 +1,534 @@
+{
+  "claim_status": "candidate_source_subset_and_condition_order_only",
+  "condition_schedule": {
+    "rows": [
+      {
+        "condition_order": 1,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "13fa059c5d8bdca54e93d83d39b58f515a1ffcffc4b85058c57776c8511c3459",
+        "repetition": 1
+      },
+      {
+        "condition_order": 2,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "1ae39dc3a9e10f3e4b8ce80fee551945de8e0ed69930dd05b495a536bf01fb43",
+        "repetition": 1
+      },
+      {
+        "condition_order": 3,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "1d9d33bc3390534c1c956eeafbf03acdc43001accd02767b526ffce553285013",
+        "repetition": 1
+      },
+      {
+        "condition_order": 4,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "7776b2f91bf1a8226006e97969aeda8a160de65af747893a4131a01aec7e601e",
+        "repetition": 1
+      },
+      {
+        "condition_order": 5,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "82aef29f95457c02882d219c9a4352390000496d4423e1c98b522e70f44f3065",
+        "repetition": 1
+      },
+      {
+        "condition_order": 6,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "853d98d0b63b7ae4f777e946108170b59d5f9861b3a69b03320bdc87cdce1304",
+        "repetition": 1
+      },
+      {
+        "condition_order": 7,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "b581c18cdd6f8fc4126285fdf715a5312b5d53bf037737bd0a4881f0875ce47d",
+        "repetition": 1
+      },
+      {
+        "condition_order": 8,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "f1b3ea964d215ddaf2f57d665f059a97d97a4c7af03f74478cd6e15760b39a4b",
+        "repetition": 1
+      },
+      {
+        "condition_order": 1,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "368a292500d94fa75fe38a4e3917efc7a071c0b6ec89fcf9a52d7c8ab350ac92",
+        "repetition": 2
+      },
+      {
+        "condition_order": 2,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "56fcc42159875b138a97ddd809820c0763537b6a4a4f78d6716cf02500a4800d",
+        "repetition": 2
+      },
+      {
+        "condition_order": 3,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "81272eea09e628ac1b38f621608aabc2134b6d666bbb2e1a80524dd424b2a6d0",
+        "repetition": 2
+      },
+      {
+        "condition_order": 4,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "8528d311df91e8ea6be9f550aa54928f62a35d95648e48bb3f8d95c87f35db56",
+        "repetition": 2
+      },
+      {
+        "condition_order": 5,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "8d37a146f1aa4dbb01d85d5884a7fc41e4fecf464ff136af01dd77f66f48a6e0",
+        "repetition": 2
+      },
+      {
+        "condition_order": 6,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "ae856fc9895c64c064c6263eb24ac1ed5d06a54ad5d180f3f8d58d854ecd0ea6",
+        "repetition": 2
+      },
+      {
+        "condition_order": 7,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "c14de5ad06a7a2d3268244f734e63d9925896050d632606ba56bc5e07725d572",
+        "repetition": 2
+      },
+      {
+        "condition_order": 8,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "c361029bb684423f240d9459bf4be7f260aa6f89ff715a52d621330e839dc164",
+        "repetition": 2
+      },
+      {
+        "condition_order": 1,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "038c6f0ee680ba85e85e48a43399be306ee90c8887b4ff86657e3a801fe87e6a",
+        "repetition": 3
+      },
+      {
+        "condition_order": 2,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "215e1fd58de67426d56f78f6f9c8fc6cecf54701cbc3ea752c94a0c1c9740dc5",
+        "repetition": 3
+      },
+      {
+        "condition_order": 3,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "748b02109d0f3eac8103285280e81a9341dcba0771913b2f1b4def381734b21c",
+        "repetition": 3
+      },
+      {
+        "condition_order": 4,
+        "method_id": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "876fc85639229a1c880ee0b52f93114f41517eeff69e922266ec8331cf4f03c4",
+        "repetition": 3
+      },
+      {
+        "condition_order": 5,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "8d028bc9947d4d4247a827f93ead8907ae1270492bce3b721a9748748674fb8a",
+        "repetition": 3
+      },
+      {
+        "condition_order": 6,
+        "method_id": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "order_rank_sha256": "973ce4c9e8966c73f18cf83aad2f271e3675afa163c2030d0d4e0a794191a882",
+        "repetition": 3
+      },
+      {
+        "condition_order": 7,
+        "method_id": "M4_post_plan_compute_matched",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "9819e4d4e1e602522d179dd2a9c497b21f477a01f6df1da4e448054f0ee9e8db",
+        "repetition": 3
+      },
+      {
+        "condition_order": 8,
+        "method_id": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "order_rank_sha256": "f50d94cd4a50be882eb75078d44eb4616c1b9ea1d0ab344f950a829699d9df9c",
+        "repetition": 3
+      }
+    ],
+    "seed": "shepherd-multiuav-resource-condition-order-v1",
+    "strategy": "sha256_rank_per_repetition"
+  },
+  "eligibility_sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff",
+  "generated_at_utc": "2026-08-01T09:16:06.154292+00:00",
+  "limitations": [
+    "The selected source tasks do not yet have approved five-case clusters.",
+    "This artifact is not an evaluation dataset, run config, or result.",
+    "Selection must be revalidated against the complete approved test dataset.",
+    "Warm-up, thermal-start, and background-workload controls remain unresolved.",
+    "No model was loaded or invoked."
+  ],
+  "model_invocation": {
+    "performed": false,
+    "study_cases_used": false
+  },
+  "schema_version": 1,
+  "selection": {
+    "seed": "shepherd-multiuav-resource-subset-v1",
+    "source_tasks": [
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "0bb4ce2e569c8cc00284ba8f709f5b7cf6e30e05fd8851ae9b7a144dcada9b5c",
+        "session_id": "a2931e29",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "07ed037a"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "0a2c671a9b1d68f54fd6724e9f2e0b6d027d841e71fb1b08f903a616b3fe50fa",
+        "session_id": "c5fb45ca",
+        "split": "test",
+        "supported_intervention_fact_kind": "coverage_threshold",
+        "task_id": "0de0e523"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "37a80a2256ace9b5601de01f8574440c97e098d88d354fa7a105d89a4c60ff51",
+        "session_id": "9ddae16c",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "2106aa9c"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "1b628ff905295440aca8719efeb2c5e0157d293cfe0a9a67f9a8ea10887268cc",
+        "session_id": "09aae7d9",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "2f31346f"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "13f20b9cdf3a0764f3a42335f170dc9e7b96906376dc43a2f63b480b7d0caa65",
+        "session_id": "ec1f47f4",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "3ec9e27a"
+      },
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "081dc1e8fc94577891786addb059cb27860c7ef074689940d5bd8aad259e1dca",
+        "session_id": "1a9c1abc",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "4304096c"
+      },
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "03588b2d420fa88fd9e129fc05505b245717fdc943b7c0b826fce3786e6b6276",
+        "session_id": "c67bc3cd",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "4455a781"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0eef926d2016b9e2f6a942ad0812ec42afed91b7e6cbbead3cae23fc98c192fd",
+        "session_id": "76802002",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "4820e8d6"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "001aa5241bda549456fb3272bfc2c9be4efbd9f65de26f9409b355ec889f7af9",
+        "session_id": "83533bc1",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "61d07c2b"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "218d73cc956c18be9c201ad58947ae46ee8e8a58b45f55fef5507e3b357a838f",
+        "session_id": "9d4d90ca",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "6264f184"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "1abf63610f2a32d399fe440a06262cd066b037cb97c0d9fdbed531119cb2a175",
+        "session_id": "9d4d90ca",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "65f39bbb"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "4541390dce5e81daa78a8cb17f8cb0a31e3504f36697f00c1ab9fa0d8e736519",
+        "session_id": "4aa67fd7",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "691c5866"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "0448db377b041e249ec0d2386cd09d32565be6f5bf453b336c6f4e6f6f3c9c7b",
+        "session_id": "be5d648b",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "6bd8a6e0"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "09542a0f08a65c09d4c50b34ee0132e16a42b910ce775df6df01e64841419310",
+        "session_id": "c5fb45ca",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "70785a8e"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "0640a641f3f31c0784fafffc0b538e7defd94770fd60c0b1a53fbc70f71d1123",
+        "session_id": "dc6b1d11",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "7305cfd4"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0262d6ebcb747e2c8c9091a05589ada1bcb84d44a5c30134c79877e413317597",
+        "session_id": "640b66d4",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "77193827"
+      },
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0faee11502db6d665fc28d925fc611f9921632d3c0a8a41a623f46009db10e4c",
+        "session_id": "c67bc3cd",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "792d2ae0"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "37d3cf54172d0cebcab1bcc20fd888a78956a2abf8a187ea91e29e22c574952d",
+        "session_id": "0cec9497",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "81160720"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0f31ed8b34c2c8de170d83584d409e92babb95f75b98ce6d88361a0703238671",
+        "session_id": "4aa67fd7",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "a025b625"
+      },
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "04a2e8c354a4efba186def8ff8c508affc19e3b7b49397148976f9e137932287",
+        "session_id": "a2931e29",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "aa8f4481"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0258b297e6cfb8734344a27e9c066be81232b5eab58122963912cfd1947e8b0f",
+        "session_id": "640b66d4",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "ab0ea02f"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "3978098db8aefc4573607831ada528a0fb66f0fc87b05bb7d173ea469c330fc3",
+        "session_id": "0cec9497",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "b25fcecb"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "0e9e195132751eae667eef15bd74571170e7cb6a0b12624b971f8a0b338a2c90",
+        "session_id": "76802002",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "b85176d9"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "04336de34aa6985ab13c91dc2c0491acc78d467c6d08aa7f9606e24ad3fa14b1",
+        "session_id": "be5d648b",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "bda1cbf0"
+      },
+      {
+        "difficulty": "moderate",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "0f8a46ce11375777a066d205ce8f0771e589b63a13824de58a78cc9edcd776b3",
+        "session_id": "1a9c1abc",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "d0c4452d"
+      },
+      {
+        "difficulty": "easy",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "3225c15330c73b0b829a03d5b24a560fa31df959c55939315df8853db178369c",
+        "session_id": "9ddae16c",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "ded67b10"
+      },
+      {
+        "difficulty": "extreme",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "0f480c62bd14bd9935ca9d5584c7249c608f3b1370e2948c6883970d93ab5ac4",
+        "session_id": "dc6b1d11",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "df22d657"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "area_assignment_and_patrol",
+        "selection_rank_sha256": "22ce8e24d7bef562954a676e6a6dd307b424a731248c1ac2d12b8d88d51f18d5",
+        "session_id": "09aae7d9",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "eb80ab66"
+      },
+      {
+        "difficulty": "intermediate",
+        "eligible": true,
+        "scenario": "area_search",
+        "selection_rank_sha256": "08034da506fb494805397458ec527c61fa08ec816506d7e2015ec06615dab79a",
+        "session_id": "83533bc1",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "fbc88230"
+      },
+      {
+        "difficulty": "hard",
+        "eligible": true,
+        "scenario": "target_assignment",
+        "selection_rank_sha256": "2cc13e03f17c4ac7cc79689568081c9c1c651b3d5bbcc5bf104a4c829a5cc73d",
+        "session_id": "ec1f47f4",
+        "split": "test",
+        "supported_intervention_fact_kind": "explicit_drone_identity",
+        "task_id": "ff54f1c2"
+      }
+    ],
+    "split": "test",
+    "strategy": "lowest_sha256_rank_two_per_scenario_difficulty_stratum",
+    "stratum_counts": {
+      "area_assignment_and_patrol|easy": 2,
+      "area_assignment_and_patrol|extreme": 2,
+      "area_assignment_and_patrol|hard": 2,
+      "area_assignment_and_patrol|intermediate": 2,
+      "area_assignment_and_patrol|moderate": 2,
+      "area_search|easy": 2,
+      "area_search|extreme": 2,
+      "area_search|hard": 2,
+      "area_search|intermediate": 2,
+      "area_search|moderate": 2,
+      "target_assignment|easy": 2,
+      "target_assignment|extreme": 2,
+      "target_assignment|hard": 2,
+      "target_assignment|intermediate": 2,
+      "target_assignment|moderate": 2
+    },
+    "supported_intervention_fact_kind_counts": {
+      "coverage_threshold": 1,
+      "explicit_drone_identity": 29
+    }
+  },
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "source_code_sha256": {
+    "build_multiuav_resource_schedule.py": "c1da09fc3e4a087aaebf2bfb3bafef09b0af762063990ff9557cca8b43367bdc",
+    "multiuav_resource_schedule.py": "b947c59fa4b30247d16c808cfe235970ce99f3fcddb719aacea47846fd0bf14e"
+  },
+  "summary": {
+    "conditions": 24,
+    "methods": 4,
+    "models": 2,
+    "planned_cases": 150,
+    "planned_method_case_rows": 3600,
+    "repetitions": 3,
+    "source_tasks": 30,
+    "strata": 15
+  }
+}

@@ -1,40 +1,108 @@
 {
+  "accuracy_blocking_gates": [
+    "final_accuracy_run_config_commit_binding"
+  ],
   "active_branch": "codex/multiuav-validation-study",
   "artifact_bindings": {
+    "accuracy_case_manifest": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/accuracy_case_manifest_v1.json",
+      "sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f"
+    },
+    "accuracy_protocol_freeze": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json",
+      "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16"
+    },
     "agent_context_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/agent_context_audit_v1.json",
       "sha256": "bf9b976dc857a9846abe6480e236c79b3f81c2fe72af81c6033d97956699d4f1"
+    },
+    "completed_intervention_pilot_review_packet": {
+      "exists": true,
+      "path": "reports/multiuav_intervention_pilot_review_completed_v2.csv",
+      "sha256": "f15bebaf7a91abb470d57e1c8bc03ecf4e6f8bb3708c89168f9cbdee63824357"
+    },
+    "completed_intervention_pilot_review_validation": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_pilot_review_validation_v2.json",
+      "sha256": "39e5785845428783f5c1c119bb6a94b56df07cf92ccc3628b76f9ea4bcfc7d22"
+    },
+    "execution_scope_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/execution_scope_audit_v1.json",
+      "sha256": "2aab8a18e3d7af68805fc6da0c17640430db8957327d659b24c1c278b31a7b59"
+    },
+    "expert_qc_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/expert_qc_audit_v1.json",
+      "sha256": "8a0c3cc5c694ee5239374f1c9dae57e0296928b866caad148f2c5bd229335918"
     },
     "grounding_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/grounding_contract_audit_v1.json",
       "sha256": "a33c60f025b769153f965bde09f35c0f18c723eff6bcfaa27c2645e907887d5b"
     },
+    "hardware_measurement_contract_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/hardware_measurement_contract_audit_v1.json",
+      "sha256": "903aa5bbdeef437753b516c4076fda4a562157ebc27875b76d507f2352e5bd02"
+    },
     "historical_distilbert_wiring_smoke": {
       "exists": true,
       "path": "outputs/evaluations/week7_distilbert_wiring_smoke_v1.json",
       "sha256": "d53a0521e1abb7f75ae72beba886b63fc9138f43803389199ceceb487096ceba"
     },
+    "intervention_dataset": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_dataset_v1.json",
+      "sha256": "1ba9575ff4a2b0342b2fa20afa242e052f263ff7bd3ed18734a923687a9c27d1"
+    },
+    "intervention_dataset_summary": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_dataset_summary_v1.json",
+      "sha256": "b4e87e67627946f673608ee5536a597060d93f05546d9420ed04d256c6ee78fd"
+    },
+    "intervention_dataset_validation": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_dataset_validation_v1.json",
+      "sha256": "500c8abcf6e7349d4b9488651e5be66c0e70299f616d4a4bda6fbcf161d40d94"
+    },
     "intervention_pilot": {
       "exists": true,
-      "path": "datasets/multiuav_plat/intervention_pilot_v1.json",
-      "sha256": "a4726f9fd80afc3740b68465daa1b495ad8ee017390d641f32b1e2fb0892feab"
+      "path": "datasets/multiuav_plat/intervention_pilot_v2.json",
+      "sha256": "6f2e9edccc3af55ac09f2b5879739f2371e5e8a60b1daa0fa90564050b0f0796"
+    },
+    "intervention_pilot_review_normalization": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_pilot_review_normalization_v2.json",
+      "sha256": "e43ccfc6c96a81dbeb5abf6208f10b52ebb715cbdc14ccf7b5981404c02ef94c"
     },
     "intervention_pilot_review_packet": {
       "exists": true,
-      "path": "reports/multiuav_intervention_pilot_review_v1.csv",
-      "sha256": "869827b8699785271e590c8814286b3be7fc27b99cd7acebca257cbfff678ed3"
+      "path": "reports/multiuav_intervention_pilot_review_v2.csv",
+      "sha256": "08ba7e3eebbb6c00f3bca49e2027e68c699b1e951b7d2128d08fb35beeb73126"
     },
     "intervention_pilot_summary": {
       "exists": true,
-      "path": "datasets/multiuav_plat/intervention_pilot_summary_v1.json",
-      "sha256": "a9a389363246772f7c77c97140a15b442d76de49a7a9b286edf923bdae4029cb"
+      "path": "datasets/multiuav_plat/intervention_pilot_summary_v2.json",
+      "sha256": "9d549ffb9a34bb310a6e0ef69d73e375cb6eaa193760f68b6fab8c4d01bc5c54"
     },
     "intervention_pilot_validation": {
       "exists": true,
-      "path": "datasets/multiuav_plat/intervention_pilot_validation_v1.json",
-      "sha256": "e4ab12099b889dd669abb5d692096a31449cbbcbb7a46d40c1280928abe55e48"
+      "path": "datasets/multiuav_plat/intervention_pilot_validation_v2.json",
+      "sha256": "835cdfd83358c67817550a6e9dea8ee696b0a7ebf9b9ce392f6bddc97f5bf4b6"
+    },
+    "intervention_review_packet": {
+      "exists": true,
+      "path": "reports/multiuav_intervention_review_v1.csv",
+      "sha256": "9627ac9062062ef6e54476266e550df4e4afdf404aaa9f3ce78456e11db450a4"
+    },
+    "intervention_validator_negative_controls": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/intervention_validator_negative_controls_v1.json",
+      "sha256": "cde098034b8d55e0cf1e79c620a8fbcb92a0df216e3de7ddcc0a0ee46e473a69"
     },
     "method_contract_audit": {
       "exists": true,
@@ -46,15 +114,60 @@
       "path": "datasets/multiuav_plat/model_revision_audit_v1.json",
       "sha256": "d309c019597a82978fe94170fac2f3d8a025417ef64a6aecd28b8a439962f817"
     },
+    "offline_runtime_contract_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/offline_runtime_contract_audit_v1.json",
+      "sha256": "d6170f0a52d7357da0f37b1b820f39b3b513df4550554a749f7393edf9045fd1"
+    },
+    "qwen_3b_cache_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_3b_cache_audit_v1.json",
+      "sha256": "a9b56368301faa859b244f8e782abd12b04c0f4f895666081ed1125e13361cdd"
+    },
+    "qwen_3b_failed_load_smoke": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_3b_load_smoke_attempt1_failed_v1.json",
+      "sha256": "fdcb8de2fbeba37100603d0523918955d8e3ba165a6d7410912d8ccd818843d0"
+    },
+    "qwen_3b_historical_load_smoke": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_3b_load_smoke_pre_offload_option_v1.json",
+      "sha256": "035fdac80aa26566440b0de5b8e3e3bc0ff5575cf3afc7af15c8f3be19b1fe32"
+    },
+    "qwen_3b_load_smoke": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_3b_load_smoke_v1.json",
+      "sha256": "1e2d897ba15d5602c0f6ed4f0cc3257a6b55caea6afe46dcc5fb5e58ff3a7c61"
+    },
+    "qwen_7b_cache_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_7b_cache_audit_v1.json",
+      "sha256": "cf5a36eedce0206d3dec82eac24351b85dfa1c463daa7a21dd845fa88f82b022"
+    },
+    "qwen_7b_load_smoke": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/qwen25_7b_load_smoke_v1.json",
+      "sha256": "4552290edef3d5b0d63b2c9c62c62dde85fe65296f53afa0c00fc87721f22ac3"
+    },
     "recoverability_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/recoverability_audit_v1.json",
       "sha256": "e04e06981d2207af1c7bd34ad3e7891e76b558bb9e03851bc4173388d8862f59"
     },
+    "resource_schedule_candidate": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/resource_schedule_candidate_v1.json",
+      "sha256": "2ee4d6a3d1bd208232f9fadd04fd2c62de6b175182408230745b2925d85ce91c"
+    },
     "runner_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/runner_contract_audit_v1.json",
-      "sha256": "49dd540fd7f6f6b1585e78f6f6998de2db6254d465f6fb662d59a22f49837e1c"
+      "sha256": "3b75d8d60e553404a50bb80528e7d35e9f73383ed8931e0c4b16b4d46636861d"
+    },
+    "scoring_contract_audit": {
+      "exists": true,
+      "path": "datasets/multiuav_plat/scoring_contract_audit_v1.json",
+      "sha256": "04be38d2fb34620a888a0f1f6ca4129bf07f36c722071073c450e19bf2902cec"
     },
     "session_split": {
       "exists": true,
@@ -63,8 +176,8 @@
     },
     "source_audit": {
       "exists": true,
-      "path": "src/shepherd_ai/multiuav_experiment.py",
-      "sha256": "465a71a15a3f4a99ea9e13e26fdb9417c4f9952533fe4b537d2593f6a4ef5446"
+      "path": "datasets/multiuav_plat/source_audit_v1.json",
+      "sha256": "34208e2f438f24c35770c02802bf1affb1d31f3981dba026aa79aa276bd7d491"
     },
     "task_eligibility": {
       "exists": true,
@@ -73,13 +186,11 @@
     }
   },
   "blocking_gates": [
-    "human_intervention_review_and_adjudication",
-    "full_intervention_dataset_generation_and_review",
-    "offline_inference_isolation",
-    "execution_scope",
-    "hardware_measurement_protocol"
+    "final_accuracy_run_config_commit_binding",
+    "hardware_warmup_and_thermal_controls",
+    "resource_subset_approval_and_final_config_binding"
   ],
-  "claim_status": "unreviewed_training_pilot_runner_checkpoint_and_model_revisions_wired_no_revised_inference",
+  "claim_status": "expert_qc_protocol_manifest_and_scoring_contract_complete_final_commit_binding_pending",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -89,14 +200,29 @@
     "recoverability_rule",
     "training_pilot_generation",
     "training_pilot_deterministic_validation",
+    "training_pilot_structural_review_validation",
+    "full_intervention_dataset_generation_and_deterministic_validation",
+    "stratified_expert_construction_qc",
+    "score_blind_accuracy_protocol_registration",
+    "heldout_accuracy_case_manifest_approval",
+    "deterministic_label_separated_scoring_contract",
     "method_call_budget",
     "strict_structural_output_contract",
     "deterministic_recursive_grounding_validator",
     "immutable_qwen_checkpoint_resolution",
     "method_runners_and_prompts",
-    "row_checkpoint_resume_contract"
+    "row_checkpoint_resume_contract",
+    "local_qwen_backend_and_process_socket_isolation_contract",
+    "qwen_3b_cached_checksums_and_synthetic_load_smoke",
+    "qwen_7b_cached_checksums_and_synthetic_load_smoke",
+    "static_plan_fidelity_execution_scope",
+    "method_case_hardware_measurement_instrumentation",
+    "resource_candidate_subset_and_condition_order",
+    "resource_run_config_builder_with_approval_gate",
+    "publication_accuracy_smoke_leak_gate"
   ],
   "errors": [],
+  "expert_qc_complete": true,
   "legacy_component_roles": {
     "distilbert_week2_span_tagger": "wired and smoke-tested in the historical Shepherd end-to-end path; excluded from the primary study because it was trained for Shepherd intent spans, not MultiUAV API planning",
     "week8_deterministic_mission_pipeline": "historical_roadmap_evidence_not_a_primary_comparison_method",
@@ -104,11 +230,12 @@
     "whisper": "excluded_from_primary_text_first_study"
   },
   "primary_path": {
+    "accuracy_scorer": "multiuav_accuracy_scoring_v1",
     "api_plan_parser": "strict_multiuav_json_contract_v1",
     "checkpoint_writer": "config_bound_jsonl_and_compact_zip_v1",
-    "dataset": "training_pilot_30_clusters_pending_human_review",
+    "dataset": "approved_test_manifest_284_clusters_1420_cases",
     "deterministic_validator": "recursive_visible_evidence_grounding_v1",
-    "execution_backend": "not_selected",
+    "execution_backend": "static_plan_fidelity_only",
     "input_modality": "text",
     "method_runner": "provider_independent_m1_m4_runner_v1",
     "methods": [
@@ -117,23 +244,31 @@
       "M3",
       "M4"
     ],
-    "model_family": "Qwen2.5-Instruct_pinned_not_loaded",
+    "model_backend": "local_qwen_3b_and_7b_synthetic_smokes_passed",
+    "model_family": "Qwen2.5-3B_and_7B_synthetic_smokes_passed",
     "model_revisions": {
       "Qwen/Qwen2.5-3B-Instruct": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
       "Qwen/Qwen2.5-7B-Instruct": "a09a35458c702b33eeacc393d103063234e8bc28"
     },
     "source_adapter": "multiuav_plat_pinned_source_v1"
   },
-  "ready_for_human_review": true,
+  "ready_for_accuracy_run_config_binding": true,
+  "ready_for_human_review": false,
   "ready_for_intervention_generation": true,
   "ready_for_model_inference": false,
+  "resource_blocking_gates": [
+    "hardware_warmup_and_thermal_controls",
+    "resource_subset_approval_and_final_config_binding"
+  ],
   "runtime_invocation": {
     "distilbert_invoked": false,
     "legacy_week8_pipeline_invoked": false,
-    "qwen_invoked": false,
+    "qwen_invocation_scope": "synthetic_fixture_only",
+    "qwen_invoked": true,
+    "qwen_study_cases_evaluated": false,
     "whisper_invoked": false
   },
-  "status": "training_pilot_ready_for_human_review",
+  "status": "accuracy_manifest_approved_final_commit_binding_pending",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }

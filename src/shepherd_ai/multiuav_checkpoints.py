@@ -17,7 +17,7 @@ from shepherd_ai.multiuav_prompts import PROMPT_CONTRACT_VERSION
 from shepherd_ai.multiuav_runner import MethodCaseResult
 
 
-CHECKPOINT_SCHEMA_VERSION = 1
+CHECKPOINT_SCHEMA_VERSION = 3
 _METHOD_IDS = frozenset(spec.method_id for spec in METHOD_SPECS)
 _MODEL_REVISIONS = {
     item.model_id: item.revision for item in REGISTERED_MODEL_REVISIONS
@@ -38,6 +38,10 @@ class RunConfig:
     prompt_contract_version: str
     decoding: Mapping[str, Any]
     code_commit: str
+    resource_repetition: int | None = None
+    hardware_protocol_sha256: str | None = None
+    resource_condition_order: int | None = None
+    resource_schedule_sha256: str | None = None
 
     def validate(self) -> None:
         if not self.run_id.strip() or not self.study_id.strip():
@@ -67,6 +71,32 @@ class RunConfig:
             raise ValueError("max_new_tokens must be a positive integer")
         if _COMMIT_PATTERN.fullmatch(self.code_commit) is None:
             raise ValueError("code_commit must be a lowercase 40-character commit")
+        if self.run_kind == "resource":
+            if self.resource_repetition not in {1, 2, 3}:
+                raise ValueError("resource runs require repetition 1, 2, or 3")
+            if (
+                self.hardware_protocol_sha256 is None
+                or _SHA256_PATTERN.fullmatch(self.hardware_protocol_sha256) is None
+            ):
+                raise ValueError("resource runs require hardware protocol SHA-256")
+            if (
+                not isinstance(self.resource_condition_order, int)
+                or isinstance(self.resource_condition_order, bool)
+                or self.resource_condition_order < 1
+            ):
+                raise ValueError("resource runs require a positive condition order")
+            if (
+                self.resource_schedule_sha256 is None
+                or _SHA256_PATTERN.fullmatch(self.resource_schedule_sha256) is None
+            ):
+                raise ValueError("resource runs require resource schedule SHA-256")
+        elif (
+            self.resource_repetition is not None
+            or self.hardware_protocol_sha256 is not None
+            or self.resource_condition_order is not None
+            or self.resource_schedule_sha256 is not None
+        ):
+            raise ValueError("resource metadata is only valid for resource runs")
 
     @property
     def config_hash(self) -> str:

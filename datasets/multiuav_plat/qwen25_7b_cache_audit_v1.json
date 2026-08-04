@@ -1,0 +1,120 @@
+{
+  "all_weights_safetensors": true,
+  "cache_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache",
+  "claim_status": "pinned_qwen_cache_verified_no_model_inference",
+  "completed_at_utc": "2026-07-31T21:23:28.233450+00:00",
+  "duration_seconds": 606.500236,
+  "file_count": 14,
+  "files": [
+    {
+      "bytes": 1519,
+      "is_safetensors_weight": false,
+      "path": ".gitattributes",
+      "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+    },
+    {
+      "bytes": 663,
+      "is_safetensors_weight": false,
+      "path": "config.json",
+      "sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c"
+    },
+    {
+      "bytes": 243,
+      "is_safetensors_weight": false,
+      "path": "generation_config.json",
+      "sha256": "3a8f9087e486054c8a4a08dae2e5a3ba62e23da212b5b8c08bc42cb983c3459f"
+    },
+    {
+      "bytes": 11343,
+      "is_safetensors_weight": false,
+      "path": "LICENSE",
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    },
+    {
+      "bytes": 1671839,
+      "is_safetensors_weight": false,
+      "path": "merges.txt",
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "bytes": 3945441440,
+      "is_safetensors_weight": true,
+      "path": "model-00001-of-00004.safetensors",
+      "sha256": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7"
+    },
+    {
+      "bytes": 3864726352,
+      "is_safetensors_weight": true,
+      "path": "model-00002-of-00004.safetensors",
+      "sha256": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185"
+    },
+    {
+      "bytes": 3864726424,
+      "is_safetensors_weight": true,
+      "path": "model-00003-of-00004.safetensors",
+      "sha256": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5"
+    },
+    {
+      "bytes": 3556377672,
+      "is_safetensors_weight": true,
+      "path": "model-00004-of-00004.safetensors",
+      "sha256": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+    },
+    {
+      "bytes": 27752,
+      "is_safetensors_weight": false,
+      "path": "model.safetensors.index.json",
+      "sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028"
+    },
+    {
+      "bytes": 6240,
+      "is_safetensors_weight": false,
+      "path": "README.md",
+      "sha256": "f366f33bbf6bcadbb7d87f0a21a7b65584a56b8d58b0743c77c88bee625b93a6"
+    },
+    {
+      "bytes": 7031645,
+      "is_safetensors_weight": false,
+      "path": "tokenizer.json",
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "bytes": 7305,
+      "is_safetensors_weight": false,
+      "path": "tokenizer_config.json",
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "bytes": 2776833,
+      "is_safetensors_weight": false,
+      "path": "vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "free_bytes_after": 659794526208,
+  "free_bytes_before": 675037368320,
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_invoked": false,
+  "package_versions": {
+    "huggingface-hub": "0.36.2",
+    "safetensors": "0.8.0",
+    "torch": "2.7.1+cu118",
+    "transformers": "4.57.6"
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python_version": "3.12.10",
+  "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "schema_version": 1,
+  "snapshot_dir": "D:\\Users\\momoa\\shepherd-ai-runtime\\hf-cache\\models--Qwen--Qwen2.5-7B-Instruct\\snapshots\\a09a35458c702b33eeacc393d103063234e8bc28",
+  "source_code_sha256": {
+    "cache_multiuav_qwen.py": "b2066bef87a37600efdcab54a37dffbc46337861833885d5e0040321ac6b874a",
+    "multiuav_model_cache.py": "b4652123fdbdf7f72f83b3fad1d256400e7423814b370b046968f02c3f802f62"
+  },
+  "started_at_utc": "2026-07-31T21:13:21.733214+00:00",
+  "study_cases_evaluated": false,
+  "total_bytes": 15242807270,
+  "weight_bytes": 15231271888,
+  "weight_file_count": 4,
+  "weights_cached": true,
+  "weights_loaded": false
+}

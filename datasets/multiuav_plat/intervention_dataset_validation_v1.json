@@ -1,0 +1,34 @@
+{
+  "claim_status": "unreviewed_full_dataset_validated_not_evaluation_data",
+  "dataset_sha256": "1ba9575ff4a2b0342b2fa20afa242e052f263ff7bd3ed18734a923687a9c27d1",
+  "eligibility_sha256": "70e9b0ac8644eabe2dc3fa58fcce8cbb40781577c48f94a05e82ffe7bd6f6dff",
+  "generation_summary_sha256": "b4e87e67627946f673608ee5536a597060d93f05546d9420ed04d256c6ee78fd",
+  "review_packet_sha256": "9627ac9062062ef6e54476266e550df4e4afdf404aaa9f3ce78456e11db450a4",
+  "schema_version": 1,
+  "source_archive_sha256": "b5040097d2bfdd44600f3bf486fdb43ee3eb1247fec9c67900b5fcda6feb94a3",
+  "summary": {
+    "approved_clusters": 0,
+    "cases": 7365,
+    "cases_per_cluster": 5,
+    "eligible_clusters": 1473,
+    "excluded_source_tasks": 27,
+    "missing_fact_kind_counts": {
+      "coverage_threshold": 83,
+      "explicit_drone_identity": 1390
+    },
+    "pending_human_review_clusters": 1473,
+    "source_tasks_total": 1500,
+    "split_case_counts": {
+      "calibration": 1450,
+      "test": 1420,
+      "train": 4495
+    },
+    "split_cluster_counts": {
+      "calibration": 290,
+      "test": 284,
+      "train": 899
+    },
+    "valid": true
+  },
+  "valid": true
+}

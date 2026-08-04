@@ -6,20 +6,26 @@ This file governs work in the Shepherd-AI repository. Do not treat planned roadm
 
 Before making architectural, research, dataset, evaluation, roadmap, or implementation decisions, read:
 
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\roadmap.pdf`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_review\ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\roadmap.pdf`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\literature_review\ExportBlock-44375080-06b3-45d5-a3ed-ac880ba80cd6-Part-1.zip`
 - Every Markdown file inside that literature-review export, including each paper page and its `Complete Summary ...md`.
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\literature_to_implementation.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\code_plan_compliance.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_recoverability_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_pilot_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_review_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_grounding_validator_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_model_revisions.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_runner_checkpoint_protocol.md`
-- `C:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_method_contract.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\literature_to_implementation.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\code_plan_compliance.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\source_material\code_plan_2026-07-25.docx`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_validation_study_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_recoverability_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_pilot_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_review_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_intervention_feedback_resolution.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_grounding_validator_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_model_revisions.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_runner_checkpoint_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_method_contract.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_offline_runtime_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_statistical_analysis_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_execution_scope_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_hardware_measurement_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_qwen_cache_smoke.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
 
@@ -30,16 +36,17 @@ study in `docs/multiuav_validation_study_protocol.md`. It supersedes the prior
 evidence-aware paper direction but does not erase its implementation, raw
 outputs, or negative evidence.
 
-Treat the new study as proposed until its unresolved protocol decisions are
-registered, its comparison code exists, and locked experiments are stored. In
+Treat the new study as proposed until its locked experiments are stored. Its
+data, method, scoring, and statistical contracts may be described as
+implemented only through their source-hashed audits; they are not results. In
 particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;
-- do not call 7,500 derived cases collected until all five-case source clusters
-  exist and pass validation;
-- do not call the 30-cluster, 150-case training pilot reviewed, approved, gold,
-  final, or evaluation data while its reviewer fields remain blank;
+- distinguish the 7,500 pre-exclusion design from the deterministically
+  validated 7,365-case controlled-derivative dataset;
+- describe the 30-cluster, 150-case expert-reviewed pilot as sampled
+  construction QC, not full row-level human labeling or final evaluation data;
 - do not claim that M3 and M4 are compute matched until their model-call budgets
   are explicit and tested;
 - preserve the registered exclusion of DistilBERT from M1-M4 because its
@@ -52,13 +59,37 @@ particular:
   state to any evaluated model; and
 - do not describe static plan checks as live simulator mission success.
 - treat `datasets/multiuav_plat/grounding_contract_audit_v1.json` as a
-  standalone deterministic contract only; method-runner integration and
-  evaluated containment results remain unimplemented.
-- treat immutable model revision resolution as metadata verification only;
-  it does not mean weights were cached, loaded, invoked, or evaluated.
+  deterministic contract integrated into M2-M4 and externally reapplied to all
+  methods by the frozen scorer; evaluated containment results remain absent.
+- treat immutable model revision resolution as metadata verification only.
+  Separate artifacts now prove that the pinned 3B and 7B checkpoints were
+  cached, checksummed, loaded, and invoked on synthetic fixtures; they do not
+  alter the meaning of the revision audit or establish study evaluation.
 - do not run `pending_human_review` cases through a model backend; the runner
   status gate permits only approved evaluation cases or explicit synthetic
   unit fixtures.
+- use the corrected training-only `intervention_pilot_v2.json` and compact
+  per-case review packet. Version 1 is superseded diagnostic evidence. Keep
+  calibration/test cases out of template debugging, and keep known-bad
+  validator probes separate from study and review data.
+- cite checkpoint cache/load events only through the corresponding
+  `qwen25_3b_*_v1.json` and `qwen25_7b_*_v1.json` artifacts under
+  `datasets/multiuav_plat/`. Both current smokes used synthetic fixtures and
+  produced one-token, uninterpreted outputs. The historical 32-token 3B smoke
+  remains separately preserved. No study case has been evaluated.
+- treat the primary evaluation scope as static plan fidelity under
+  `datasets/multiuav_plat/execution_scope_audit_v1.json`; do not call static
+  API, parameter, or official-command checks live mission success.
+- treat `datasets/multiuav_plat/scoring_contract_audit_v1.json` as score-blind
+  method infrastructure. It read no study checkpoint rows. Preserve raw model
+  decisions separately from post-gate system disposition, and never expose
+  hidden official command labels to model prompts.
+- treat `hardware_measurement_contract_audit_v1.json` as a synthetic tooling
+  probe only. It implements method-case telemetry and is not a study energy
+  result. `resource_schedule_candidate_v1.json` separately freezes a
+  deterministic 30-task candidate and 24 condition orders, but it is not a
+  final subset, run config, or result. Warm-up, thermal controls, and final
+  resource binding remain unresolved.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They
@@ -135,7 +166,9 @@ The roadmap proposes this pipeline:
 9. Feedback/status updates, clarification dialogue, integration, and final reports.
 10. Evaluation and research-paper preparation.
 
-Planned modules are not yet implemented. When implementing, keep module names and boundaries traceable to the roadmap unless new project documents supersede it.
+Roadmap modules now have mixed implementation status. Inspect source, tests,
+acceptance audits, and `docs/code_plan_compliance.md` before describing any
+module as planned, implemented, evaluated, or complete.
 
 ## Planned Technology Stack
 
@@ -181,7 +214,7 @@ The roadmap proposes, but does not yet provide, these data locations:
 - `src/`
 - `notebooks/`
 
-Planned datasets include self-recorded WAV commands with transcripts, custom CSV or GeoJSON mission locations, and public imagery datasets such as VisDrone, UAVDT, DOTA, xView, and Agriculture-Vision. No dataset is currently present. When adding data, record source, license/access notes, preprocessing steps, and train/test/evaluation splits in documentation.
+Planned datasets include self-recorded WAV commands with transcripts, custom CSV or GeoJSON mission locations, and public imagery datasets such as VisDrone, UAVDT, DOTA, xView, and Agriculture-Vision. The repository now contains curated metadata and benchmark artifacts, while licensed pixels, audio, model weights, and upstream benchmark archives may remain local or private. When adding data, record source, license/access notes, preprocessing steps, and train/test/evaluation splits in documentation.
 
 Roadmap evaluation metrics are:
 
@@ -244,9 +277,9 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: final preregistered outcomes,
-  M3/M4 model-call budgets, execution scope, review procedure, immutable Qwen
-  revisions, and hardware measurement controls.
+- Currently unresolved for the active study: clean-commit accuracy run-config
+  binding, execution of both locked accuracy matrices, final approved resource
+  binding, and hardware warm-up/thermal controls.
 
 ## Known Conflicts And Caveats
 

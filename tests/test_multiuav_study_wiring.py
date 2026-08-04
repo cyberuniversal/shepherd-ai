@@ -23,7 +23,14 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertFalse(
             result["runtime_invocation"]["legacy_week8_pipeline_invoked"]
         )
-        self.assertFalse(result["runtime_invocation"]["qwen_invoked"])
+        self.assertTrue(result["runtime_invocation"]["qwen_invoked"])
+        self.assertEqual(
+            result["runtime_invocation"]["qwen_invocation_scope"],
+            "synthetic_fixture_only",
+        )
+        self.assertFalse(
+            result["runtime_invocation"]["qwen_study_cases_evaluated"]
+        )
         self.assertFalse(result["ready_for_model_inference"])
         self.assertNotIn(
             "agent_visible_context_projection",
@@ -36,22 +43,52 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertNotIn("recoverability_rule", result["blocking_gates"])
         self.assertIn("recoverability_rule", result["completed_gates"])
         self.assertTrue(result["ready_for_intervention_generation"])
-        self.assertTrue(result["ready_for_human_review"])
+        self.assertFalse(result["ready_for_human_review"])
+        self.assertTrue(result["expert_qc_complete"])
+        self.assertTrue(result["ready_for_accuracy_run_config_binding"])
         self.assertEqual(
             result["status"],
-            "training_pilot_ready_for_human_review",
+            "accuracy_manifest_approved_final_commit_binding_pending",
         )
         self.assertEqual(
             result["primary_path"]["dataset"],
-            "training_pilot_30_clusters_pending_human_review",
+            "approved_test_manifest_284_clusters_1420_cases",
         )
         self.assertIn(
             "training_pilot_deterministic_validation",
             result["completed_gates"],
         )
-        self.assertIn(
-            "human_intervention_review_and_adjudication",
+        self.assertNotIn(
+            "reviewer_identity_and_independence_attestation",
             result["blocking_gates"],
+        )
+        self.assertIn(
+            "training_pilot_structural_review_validation",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "full_intervention_dataset_generation_and_deterministic_validation",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "full_intervention_dataset_review",
+            result["blocking_gates"],
+        )
+        self.assertIn(
+            "stratified_expert_construction_qc",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "score_blind_accuracy_protocol_registration",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "heldout_accuracy_case_manifest_approval",
+            result["completed_gates"],
+        )
+        self.assertEqual(
+            result["accuracy_blocking_gates"],
+            ["final_accuracy_run_config_commit_binding"],
         )
         self.assertIn("method_call_budget", result["completed_gates"])
         self.assertIn(
@@ -86,8 +123,61 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "method_runners_and_prompts",
             result["blocking_gates"],
         )
+        self.assertIn(
+            "local_qwen_backend_and_process_socket_isolation_contract",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "offline_inference_isolation",
+            result["blocking_gates"],
+        )
+        self.assertIn(
+            "qwen_3b_cached_checksums_and_synthetic_load_smoke",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "qwen_7b_cached_checksums_and_synthetic_load_smoke",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "qwen_7b_cache_checksums_and_synthetic_load_smoke",
+            result["blocking_gates"],
+        )
         self.assertNotIn("m1_to_m4_call_budget", result["blocking_gates"])
         self.assertNotIn("strict_api_plan_contract", result["blocking_gates"])
+        self.assertIn(
+            "static_plan_fidelity_execution_scope",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "method_case_hardware_measurement_instrumentation",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "resource_candidate_subset_and_condition_order",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "resource_run_config_builder_with_approval_gate",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "publication_accuracy_smoke_leak_gate",
+            result["completed_gates"],
+        )
+        self.assertNotIn(
+            "resource_subset_and_repetition_orchestration",
+            result["blocking_gates"],
+        )
+        self.assertIn(
+            "resource_subset_approval_and_final_config_binding",
+            result["blocking_gates"],
+        )
+        self.assertNotIn("execution_scope", result["blocking_gates"])
+        self.assertIn(
+            "hardware_warmup_and_thermal_controls",
+            result["blocking_gates"],
+        )
         self.assertEqual(
             result["primary_path"]["api_plan_parser"],
             "strict_multiuav_json_contract_v1",
@@ -105,7 +195,48 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             result["artifact_bindings"]["intervention_pilot_validation"]["exists"]
         )
         self.assertTrue(
+            result["artifact_bindings"][
+                "intervention_validator_negative_controls"
+            ]["exists"]
+        )
+        self.assertTrue(
             result["artifact_bindings"]["intervention_pilot_review_packet"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "completed_intervention_pilot_review_packet"
+            ]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "completed_intervention_pilot_review_validation"
+            ]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "intervention_pilot_review_normalization"
+            ]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_dataset"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_dataset_summary"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_dataset_validation"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["intervention_review_packet"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["expert_qc_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["accuracy_protocol_freeze"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["accuracy_case_manifest"]["exists"]
         )
         self.assertTrue(
             result["artifact_bindings"]["method_contract_audit"]["exists"]
@@ -118,6 +249,44 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["runner_contract_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "offline_runtime_contract_audit"
+            ]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_3b_cache_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_3b_load_smoke"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_3b_failed_load_smoke"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_3b_historical_load_smoke"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_7b_cache_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["qwen_7b_load_smoke"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["execution_scope_audit"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"][
+                "hardware_measurement_contract_audit"
+            ]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["resource_schedule_candidate"]["exists"]
+        )
+        self.assertEqual(
+            result["artifact_bindings"]["source_audit"]["path"],
+            "datasets/multiuav_plat/source_audit_v1.json",
         )
         self.assertEqual(
             result["primary_path"]["deterministic_validator"],
@@ -166,8 +335,8 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertEqual(
             result["claim_status"],
             (
-                "unreviewed_training_pilot_runner_checkpoint_and_model_"
-                "revisions_wired_no_revised_inference"
+                "expert_qc_protocol_manifest_and_scoring_contract_complete_"
+                "final_commit_binding_pending"
             ),
         )
 

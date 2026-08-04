@@ -21,8 +21,18 @@ vision = [
     "torch>=2.2",
     "ultralytics>=8.0",
 ]
+multiuav-inference = [
+    "accelerate>=0.33,<2",
+    "huggingface-hub>=0.26,<1",
+    "nvidia-ml-py>=13.595,<14",
+    "psutil>=5.9,<8",
+    "safetensors>=0.4,<1",
+    "torch>=2.2,<3",
+    "transformers>=4.45,<5",
+]
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]

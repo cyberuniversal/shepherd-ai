@@ -149,7 +149,7 @@ class MultiUavPromptTests(unittest.TestCase):
                 ROOT
                 / "datasets"
                 / "multiuav_plat"
-                / "intervention_pilot_v1.json"
+                / "intervention_pilot_v2.json"
             ).read_text(encoding="utf-8")
         )
         for cluster in pilot["clusters"]:

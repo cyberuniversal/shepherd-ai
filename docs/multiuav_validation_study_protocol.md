@@ -122,10 +122,11 @@ The session split is now frozen in `docs/multiuav_split_protocol.md` and
 `shepherd-multiuav-split-v1`. Exact and normalized source-text overlap is
 reported in that manifest. Task eligibility and official-alias selection are
 frozen in `docs/multiuav_task_eligibility_protocol.md`. A training-only
-construction pilot now contains 30 complete clusters and 150 unreviewed cases,
-selected as two tasks from each scenario/difficulty stratum. This pilot is for
-template review only; it does not change the prospective full-dataset counts
-and cannot enter calibration, test, model inference, or publication summaries.
+construction pilot contains 30 complete clusters and 150 expert-reviewed cases,
+selected as two tasks from each scenario/difficulty stratum and balanced across
+the two intervention templates. This sample provides construction quality
+control; it does not change the full-dataset counts or imply that every
+generated row was independently reviewed.
 
 ## Intervention Validity Rules
 
@@ -142,8 +143,9 @@ evidence condition without changing unrelated mission semantics.
   documentation. A manually invented paraphrase is not an official alias.
 - Hidden validators, reference API sequences, and privileged state must never
   appear in model prompts.
-- Automatic generation is draft construction, not final labeling. Review and
-  adjudication identities must be real and pseudonymous.
+- Automatic generation creates controlled-derivative labels, not human-authored
+  gold labels. Sampled expert quality control and its claim limits must be
+  explicit. Review identities must be real and pseudonymous.
 
 The recoverability decision is now frozen in
 `docs/multiuav_recoverability_protocol.md`. Operator requirements support
@@ -154,8 +156,10 @@ registration action.
 
 Pilot construction and its claim limits are registered in
 `docs/multiuav_intervention_pilot_protocol.md`. The stored pilot is
-deterministically reconstructed from the pinned source during validation. All
-proposed decisions and text transformations remain pending human review.
+deterministically reconstructed from the pinned source during validation. The
+completed review approves all 150 pilot cases. The same 30 reviewed clusters
+are byte-equivalent in the full 1,473-cluster draft. This supports template-level
+QC only, as recorded in `expert_qc_audit_v1.json`.
 
 ## Comparison Configurations
 
@@ -179,9 +183,23 @@ Versioned prompt construction, strict M3 evidence-ledger parsing, exact-call
 provider-independent runners, and config-bound checkpoint/resume are now
 implemented and source-hashed in
 `datasets/multiuav_plat/runner_contract_audit_v1.json`. The runner rejects
-unreviewed cases before backend invocation. No Qwen backend was loaded or
-invoked; implementation details and claim limits are in
+unreviewed cases before backend invocation. The pinned 3B backend was later
+loaded and invoked only on a synthetic fixture; implementation details and
+claim limits are in
 `docs/multiuav_runner_checkpoint_protocol.md`.
+
+A local Hugging Face Qwen backend and Python-process non-loopback socket guard
+are now implemented and tested. They require immutable
+registered revisions, local-files-only loading, safetensors, deterministic
+greedy decoding, and raw generation metadata. The source-hashed contract is
+`datasets/multiuav_plat/offline_runtime_contract_audit_v1.json`, with claim
+limits in `docs/multiuav_offline_runtime_protocol.md`. The pinned 3B snapshot
+is now cached and fully checksummed; one failed network-blocked load and one
+successful synthetic load/generation smoke are preserved under
+`docs/multiuav_qwen_cache_smoke.md`. Both pinned checkpoints now have complete
+cache inventories and current one-token synthetic smokes. The 7B run required
+CPU and disk offload. No smoke output was interpreted as a plan, and no study
+case was evaluated.
 
 The call budget is frozen in `docs/multiuav_method_contract.md`: M1 and M2 use
 one model call per case; M3 and M4 use exactly two. M3 makes its second call
@@ -234,9 +252,11 @@ parameters. Exact evidence and claim limits are in
 The validator records fine-grained stages:
 `post_plan_endpoint_schema`, `post_plan_identifier_grounding`,
 `post_plan_parameter_grounding`, `post_plan_safety_bounds`, and `accepted`.
-The future evaluator will map these, pre-plan rejections, structural
-`PARSE_ERROR`, and uncontained outputs to the registered coarse containment
-categories without discarding the fine-grained stage.
+The frozen evaluator maps these, pre-plan rejections, structural `PARSE_ERROR`,
+and uncontained outputs to the registered coarse containment categories without
+discarding the fine-grained stage. It preserves raw model decisions separately
+from the final system disposition after method-specific gates. Exact definitions
+are in `docs/multiuav_scoring_protocol.md`.
 
 ## Models And Offline Runtime
 
@@ -292,6 +312,10 @@ Plan fidelity:
 - official-command fidelity; and
 - source-task or official-server completion when actually executed.
 
+The current primary scope stops at static fidelity. Official command inventories
+are read from hidden upstream labels only after complete-matrix admission and
+never enter a model prompt.
+
 Containment:
 
 - pre-plan containment;
@@ -335,6 +359,13 @@ Statistics:
 - a registered primary contrast and primary outcomes; and
 - secondary labeling or multiplicity correction for additional comparisons.
 
+The cluster-aware paired bootstrap implementation exists under
+`src/shepherd_ai/multiuav_statistics.py` and has synthetic unit coverage.
+`accuracy_protocol_freeze_v1.json` now registers the primary and confirmatory
+contrasts, outcomes, failure scoring, interval policy, and exploratory status
+of secondary outcomes. It was generated before study inference and has not
+analyzed study data.
+
 ## Reproducibility And Readiness Gates
 
 Before the locked run:
@@ -354,10 +385,13 @@ Before the locked run:
 - label smoke results and exclude them from publication summaries; and
 - preserve every raw output and negative result.
 
-The prompt, runner, parser, grounding, and checkpoint/resume correctness gates
-have synthetic unit coverage. Offline Qwen loading, non-loopback isolation,
-runtime/resource metadata, approved study data, and locked experiment rows
-remain absent.
+The prompt, runner, parser, grounding, checkpoint/resume, local Qwen backend,
+and Python-process socket-isolation contracts have synthetic unit coverage.
+Real 3B and 7B cache checksums and synthetic load smokes now exist. The
+1,420-case held-out manifest is approved under deterministic-label provenance
+and sampled expert QC, with zero gold fields in model context. Final
+commit-bound run configs, measured-run metadata, and locked result rows remain
+absent.
 
 The first two wiring gates above were completed on 2026-07-28. Known
 Whisper-derived action and count aliases were removed from the deterministic
@@ -370,15 +404,22 @@ DistilBERT remains excluded from M1-M4.
 
 ## Unresolved Decisions
 
-The following decisions block a locked experiment:
+The following bindings or controls remain:
 
-1. **Execution scope:** Decide whether primary plan fidelity is static or
-   includes submission to the official server. Static checks cannot be called
-   live mission success.
-2. **Review protocol:** Register real author, reviewer, adjudicator, and
-   exclusion procedures without fabricating identities.
-3. **Hardware protocol:** Register the GPU, precision, sampling mechanism, and
-   thermal/warm-up controls for resource measurements.
+1. **Accuracy configuration:** Commit the score-blind protocol and approved
+   case manifest, then bind final accuracy configs to that exact commit.
+2. **Resource hardware protocol:** The GPU, NVML energy mechanism, 20 Hz fallback,
+   method-case unit, and repetition hashes are registered. A deterministic
+   30-task candidate subset and 24-condition order are recorded, but final
+   approved-cluster binding, precision/offload freeze, run configs, and
+   thermal/warm-up controls remain.
+
+Item 1 blocks the accuracy run. Item 2 blocks only the later resource run;
+hardware warm-up is not an accuracy-run requirement.
+
+Primary plan fidelity is frozen as static under
+`docs/multiuav_execution_scope_protocol.md`. It excludes official-server and
+live simulator execution.
 
 ## Definition Of Done
 

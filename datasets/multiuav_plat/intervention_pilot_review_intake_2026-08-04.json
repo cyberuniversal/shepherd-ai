@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "recorded_before_normalization": true,
+  "source": {
+    "path": "docs/source_material/multiuav_intervention_pilot_review_response_2026-08-04.csv",
+    "sha256": "657337f90dbfdc85115a84e0432942ac7c8168f63fa0a2ab1bad8c1ca22b9672",
+    "size_bytes": 102699
+  },
+  "summary": {
+    "rows": 150,
+    "clusters": 30,
+    "rows_with_reviewer_notes": 150,
+    "notes_prefixed_accept": 150,
+    "notes_requesting_minor_wording_edits": 35,
+    "blank_reviewer_id": 150,
+    "blank_review_status": 150,
+    "blank_case_valid": 150,
+    "blank_exclusion_reason": 150
+  },
+  "structural_validation": {
+    "passed": false,
+    "first_error": "reviewer_id must be a 3-64 character project-supplied pseudonym"
+  },
+  "review_gate_advanced": false,
+  "model_invoked": false,
+  "claim_status": "review_notes_received_formal_judgments_and_identity_missing",
+  "required_resolution": [
+    "The real reviewer must supply one registered pseudonymous reviewer_id.",
+    "Every row must contain review_status and case_valid.",
+    "The reviewer must decide whether each minor wording edit is advisory while approved or requires revision.",
+    "No generated instruction may be edited directly in the review CSV."
+  ],
+  "subsequent_resolution": {
+    "normalization_audit": "datasets/multiuav_plat/intervention_pilot_review_normalization_v2.json",
+    "status": "formal_fields_derived_from_accept_notes_under_project_instruction"
+  }
+}

@@ -93,6 +93,15 @@ class _Backend:
         )
 
 
+class _ResourceMonitor:
+    def measure(self, operation):
+        return operation(), {
+            "schema_version": 1,
+            "valid": True,
+            "energy": {"scope": "nvidia_gpu_board_only", "joules": 1.25},
+        }
+
+
 class MultiUavCheckpointTests(unittest.TestCase):
     def test_run_config_rejects_mutable_or_nondeterministic_settings(self) -> None:
         with self.assertRaisesRegex(ValueError, "frozen registry"):
@@ -105,6 +114,50 @@ class MultiUavCheckpointTests(unittest.TestCase):
                     "max_new_tokens": 512,
                 }
             ).validate()
+        with self.assertRaisesRegex(ValueError, "repetition"):
+            _config(run_kind="resource").validate()
+        with self.assertRaisesRegex(ValueError, "only valid for resource"):
+            _config(resource_repetition=1).validate()
+
+    def test_resource_run_requires_monitor_and_checkpoints_measurement(self) -> None:
+        config = _config(
+            run_kind="resource",
+            resource_repetition=1,
+            hardware_protocol_sha256="c" * 64,
+            resource_condition_order=1,
+            resource_schedule_sha256="d" * 64,
+            methods=("M1_monolithic",),
+        )
+        cases = (
+            EvaluationCase("case-1", "synthetic_unit_fixture", _context("task-1")),
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            checkpoint = JsonlCheckpoint(
+                Path(temp_dir) / "results.jsonl",
+                config,
+            )
+            with self.assertRaisesRegex(ValueError, "monitor factory"):
+                run_case_matrix(
+                    config=config,
+                    cases=cases,
+                    backend=_Backend(output_count=1),
+                    checkpoint=checkpoint,
+                )
+            result = run_case_matrix(
+                config=config,
+                cases=cases,
+                backend=_Backend(output_count=1),
+                checkpoint=checkpoint,
+                resource_monitor_factory=_ResourceMonitor,
+            )
+            row = checkpoint.load_rows()[0]
+
+        self.assertTrue(result["resource_measurement_enabled"])
+        self.assertTrue(row["result"]["resource_measurement"]["valid"])
+        self.assertEqual(
+            row["result"]["resource_measurement"]["energy"]["joules"],
+            1.25,
+        )
 
     def test_matrix_checkpoints_every_row_and_resumes_without_calls(self) -> None:
         cases = (

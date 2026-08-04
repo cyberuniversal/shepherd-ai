@@ -25,6 +25,16 @@ mean that weights were downloaded, cached, loaded, or invoked. It does not
 establish package compatibility, offline isolation, deterministic decoding,
 resource feasibility, or model quality.
 
+The subsequent backend and process-isolation contract is documented in
+`docs/multiuav_offline_runtime_protocol.md`. Its existence does not change this
+artifact's claim boundary: no model weights were downloaded or invoked by the
+revision audit.
+
+A later, separate gate cached and checksummed both pinned revisions and loaded
+each for a synthetic smoke. That evidence is documented in
+`docs/multiuav_qwen_cache_smoke.md`; it does not retroactively turn this
+metadata audit into inference evidence.
+
 The 3B repository reports the Qwen Research license through its model metadata;
 the 7B repository reports Apache-2.0. License compliance and redistribution
 requirements must be checked before packaging weights. Weights must not be

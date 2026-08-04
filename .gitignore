@@ -49,10 +49,15 @@ outputs/model_artifacts/hf_token_classifier*/
 outputs/**
 !outputs/
 !outputs/README.md
+output/
+tmp/
 reports/**
 !reports/
 !reports/README.md
 !reports/multiuav_intervention_pilot_review_v1.csv
+!reports/multiuav_intervention_pilot_review_v2.csv
+!reports/multiuav_intervention_pilot_review_completed_v2.csv
+!reports/multiuav_intervention_review_v1.csv
 
 # One-off local helpers and backups.
 fill_postdev_packet.py
