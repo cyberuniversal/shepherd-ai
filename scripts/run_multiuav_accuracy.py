@@ -252,18 +252,25 @@ def _validate_runtime_audits(
     cache_audit: Mapping[str, Any],
     smoke_audit: Mapping[str, Any],
 ) -> None:
-    for label, audit in (("cache", cache_audit), ("smoke", smoke_audit)):
-        if audit.get("model_id") != config.model_id:
-            raise ValueError(f"{label} audit model id differs from run config")
-        if audit.get("revision") != config.model_revision:
-            raise ValueError(f"{label} audit revision differs from run config")
-    if smoke_audit.get("smoke_status") != "passed":
-        raise ValueError("registered model load smoke did not pass")
-    if smoke_audit.get("study_cases_evaluated") is not False:
-        raise ValueError("registered model smoke used study cases")
+    if cache_audit.get("model_id") != config.model_id:
+        raise ValueError("cache audit model id differs from run config")
+    if cache_audit.get("revision") != config.model_revision:
+        raise ValueError("cache audit revision differs from run config")
     backend = smoke_audit.get("backend_config")
     if not isinstance(backend, Mapping):
         raise ValueError("registered smoke backend config is absent")
+    if backend.get("model_id") != config.model_id:
+        raise ValueError("smoke audit model id differs from run config")
+    if backend.get("revision") != config.model_revision:
+        raise ValueError("smoke audit revision differs from run config")
+    if smoke_audit.get("smoke_status") != "passed":
+        raise ValueError("registered model load smoke did not pass")
+    if smoke_audit.get("weights_loaded") is not True:
+        raise ValueError("registered model smoke did not load weights")
+    if smoke_audit.get("model_invoked") is not True:
+        raise ValueError("registered model smoke did not invoke the model")
+    if smoke_audit.get("study_cases_evaluated") is not False:
+        raise ValueError("registered model smoke used study cases")
     if backend.get("do_sample") is not False or backend.get("num_beams") != 1:
         raise ValueError("registered smoke was not deterministic")
 

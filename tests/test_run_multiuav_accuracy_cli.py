@@ -112,11 +112,13 @@ class RunMultiUavAccuracyTests(unittest.TestCase):
             "revision": config.model_revision,
         }
         smoke = {
-            "model_id": config.model_id,
-            "revision": config.model_revision,
             "smoke_status": "passed",
+            "weights_loaded": True,
+            "model_invoked": True,
             "study_cases_evaluated": False,
             "backend_config": {
+                "model_id": config.model_id,
+                "revision": config.model_revision,
                 "do_sample": False,
                 "num_beams": 1,
                 "dtype": "float16",
