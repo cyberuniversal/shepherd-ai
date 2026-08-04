@@ -1,7 +1,5 @@
 {
-  "accuracy_blocking_gates": [
-    "final_accuracy_run_config_commit_binding"
-  ],
+  "accuracy_blocking_gates": [],
   "active_branch": "codex/multiuav-validation-study",
   "artifact_bindings": {
     "accuracy_case_manifest": {
@@ -15,9 +13,9 @@
       "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16"
     },
     "accuracy_run_configs": {
-      "exists": false,
+      "exists": true,
       "path": "datasets/multiuav_plat/accuracy_run_configs_v1.json",
-      "sha256": null
+      "sha256": "e7fe911387d7c4d72c894875ade6ccc88f7cb7063ae5476355ee93db8f9bbe0f"
     },
     "agent_context_audit": {
       "exists": true,
@@ -211,11 +209,10 @@
     }
   },
   "blocking_gates": [
-    "final_accuracy_run_config_commit_binding",
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
   ],
-  "claim_status": "expert_qc_protocol_manifest_and_scoring_contract_complete_final_commit_binding_pending",
+  "claim_status": "accuracy_execution_ready_after_excluded_local_feasibility_attempt",
   "completed_gates": [
     "pinned_source_integrity",
     "session_split",
@@ -283,7 +280,7 @@
   "ready_for_accuracy_run_config_binding": true,
   "ready_for_human_review": false,
   "ready_for_intervention_generation": true,
-  "ready_for_model_inference": false,
+  "ready_for_model_inference": true,
   "resource_blocking_gates": [
     "hardware_warmup_and_thermal_controls",
     "resource_subset_approval_and_final_config_binding"
@@ -297,7 +294,7 @@
     "qwen_study_rows_evaluated": 1,
     "whisper_invoked": false
   },
-  "status": "accuracy_manifest_approved_final_commit_binding_pending",
+  "status": "ready_for_accuracy_model_inference",
   "study_id": "multiuav_validation_placement_v1",
   "valid": true
 }
