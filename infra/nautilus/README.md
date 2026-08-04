@@ -18,7 +18,9 @@ The stages are deliberately separate:
    load/generation smoke for each cached checkpoint. It evaluates no study case.
 4. `accuracy-3b-job.yaml` runs the locked 3B matrix with the cluster cache and
    smoke audits, one durable JSONL row per completed method-case, and periodic
-   ZIP checkpoints. It never reads hidden scoring labels.
+   ZIP checkpoints. It never reads hidden scoring labels. Opportunistic
+   preemptions marked `DisruptionTarget` do not consume the bounded retry
+   budget; replacement pods revalidate the cache and resume durable rows.
 
 Every job template contains `__SHEPHERD_GIT_COMMIT__`. Replace it with the exact
 committed repository state that contains the final run configurations before

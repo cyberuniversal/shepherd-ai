@@ -1,0 +1,12 @@
+﻿
+> 40m         Normal    Preempted                pod/shepherd-ai-accuracy-3b-p9hlx   Preempted by pod 
+8ba6e702-71f9-4b93-9c43-daa37e03d721 on node gpengine-uark.areon.net
+> 40m         Normal    Killing                  pod/shepherd-ai-accuracy-3b-p9hlx   Stopping container accuracy-3b
+> 38m         Warning   BackoffLimitExceeded     job/shepherd-ai-accuracy-3b         Job has reached the specified 
+backoff limit
+  18m         Warning   FailedKillPod            pod/seanc-desktop-f4d4bb74-fczdx    error killing pod: [failed to 
+"KillContainer" for "seanc-desktop" with KillContainerError: "rpc error: code = DeadlineExceeded desc = context 
+deadline exceeded", failed to "KillPodSandbox" for "adda919f-8f5e-40b5-8ab8-14db439c463d" with KillPodSandboxError: 
+"rpc error: code = DeadlineExceeded desc = stream terminated by RST_STREAM with error code: CANCEL"]
+
+

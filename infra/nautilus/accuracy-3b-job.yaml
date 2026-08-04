@@ -8,7 +8,13 @@ metadata:
     shepherd-ai/stage: accuracy-3b
 spec:
   activeDeadlineSeconds: 604800
-  backoffLimit: 0
+  backoffLimit: 20
+  podFailurePolicy:
+    rules:
+      - action: Ignore
+        onPodConditions:
+          - type: DisruptionTarget
+            status: "True"
   template:
     metadata:
       labels:

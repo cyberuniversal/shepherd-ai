@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "attempt_id": "nautilus_accuracy_3b_attempt2",
+  "status": "preempted_with_durable_partial_results",
+  "stage": "locked_accuracy_matrix_execution",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-accuracy-3b",
+  "job_uid": "883be49a-ac0f-4ea5-bc23-b21ebfbba83b",
+  "pod_name": "shepherd-ai-accuracy-3b-p9hlx",
+  "node_name": "gpengine-uark.areon.net",
+  "repository_commit": "b880aaa2b43af2f4b3fa32c1ec6db8d2ec54cc24",
+  "job_started_at_utc": "2026-08-04T08:21:48Z",
+  "preempted_at_utc": "2026-08-04T09:10:54Z",
+  "failure_reason": "Preempted",
+  "failure_message": "Preempted by another pod on the opportunistic GPU node",
+  "durable_rows_observed": 156,
+  "expected_rows": 5680,
+  "checkpoint_zip_present": false,
+  "checkpoint_zip_threshold_rows": 250,
+  "raw_results_preserved": true,
+  "raw_results_scored": false,
+  "raw_outputs_inspected": false,
+  "scores_inspected": false,
+  "run_summary_note": "The run summary remains at its pre-model-load preflight state because SIGTERM preemption did not pass through the script's model-load or matrix exception handlers. Durable JSONL rows prove that model inference had begun.",
+  "resume_disposition": {
+    "eligible": true,
+    "same_frozen_config_required": true,
+    "resume_source": "/workspace/results/qwen25-3b/results.jsonl",
+    "restart_from_zero": false,
+    "corrective_action": "ignore DisruptionTarget failures in the Job policy and relaunch from the append-only JSONL"
+  },
+  "artifacts_sha256": {
+    "events.txt": "a13dfcd4b7e767c748574f4f9eba0736f2b1d8d85d145abb61c8e693de95546f",
+    "job.yaml": "6d2e92c6f70abf93b9c3867d62680e828b3b36f18326e4ec86c1b54c6ac206bc",
+    "results.jsonl": "5982910e62b41e869249dffabbb15f5e9831ea325363d1c9d25b32285479a9a5",
+    "results.jsonl.config.json": "8782c3ef825d092294bf199ae14699518e1246ec32863686b5de9c306bc17c92",
+    "run_summary.json": "7955835d694d08b2d36493824ba11865c63df51409f5bcb97fdcc5b9e0483576"
+  },
+  "claim_status": "preempted_accuracy_attempt_preserved_raw_partial_results_unscored"
+}
