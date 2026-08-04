@@ -25,7 +25,14 @@ spec:
           args:
             - |
               set -euo pipefail
+              apt-get update
+              apt-get install -y --no-install-recommends git ca-certificates
+              rm -rf /var/lib/apt/lists/*
               repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+              if [[ ! -d "${repo}/.git" ]]; then
+                git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+              fi
+              git -C "${repo}" fetch origin
               git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
               python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
               output=/workspace/results/qwen25-3b
@@ -44,6 +51,10 @@ spec:
               value: __SHEPHERD_GIT_COMMIT__
             - name: HF_HOME
               value: /workspace/hf-cache
+            - name: HF_HUB_OFFLINE
+              value: "1"
+            - name: TRANSFORMERS_OFFLINE
+              value: "1"
           resources:
             requests:
               cpu: "4"

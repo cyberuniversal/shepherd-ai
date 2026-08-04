@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "attempt_id": "nautilus_cache_attempt2",
+  "status": "aborted_during_reverification_of_existing_3b_cache_due_to_remote_rbd_throughput",
+  "started_at_utc": "2026-08-04T06:56:49Z",
+  "terminated_at_utc": "not recorded",
+  "repository_commit": "8ac37e86808436c5673fa01abce2c5fe6add52fd",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-cache-models",
+  "job_uid": "500082ae-07f8-4277-9cba-2a02ba42edf0",
+  "pod_name": "shepherd-ai-cache-models-dkfpp",
+  "pod_uid": "8d6f9f38-791e-44aa-ab21-0abcc0017c38",
+  "node_name": "ren-gp-argo-01.madren.org",
+  "observations": {
+    "qwen25_3b_audit_origin": "nautilus_cache_attempt1",
+    "qwen25_3b_audit_completed_before_attempt2_at_utc": "2026-08-04T06:54:22.240303+00:00",
+    "qwen25_3b_existing_audit_valid_json_preserved": true,
+    "qwen25_3b_weight_bytes": 6171926992,
+    "qwen25_7b_command_started": false,
+    "model_weights_loaded": false,
+    "model_invoked": false,
+    "study_cases_evaluated": false,
+    "stalled_process_state": "D (disk sleep)",
+    "slow_process_wait_channel": "folio_wait_bit_common",
+    "measured_read_progress_bytes_per_minute": 33846385
+  },
+  "disposition": {
+    "qwen25_3b_attempt1_audit_reused_for_next_cache_attempt": true,
+    "qwen25_7b_cache_incomplete": true,
+    "job_deleted_after_evidence_capture": true,
+    "corrective_action": "validate the existing 3B audit identity and file sizes without repeating the cold RBD hash, download 7B over standard HTTP, and require full checksum verification in the smoke stage"
+  },
+  "artifacts": {
+    "qwen25_3b_cache_audit_nautilus_v1.json": "10d37e85af2df8a0fcaf6bb5bf4cbd08864afe25bfcb2f75a135b7061e3f5dbf",
+    "nautilus_cache_attempt2_rbd_reverification_stall.log": "fcdbacd1dea76e9c72b8a1012ab5744b171e173ce8e8f9b6e9cf68b01ce8f6aa",
+    "nautilus_cache_attempt2_job.yaml": "6a512494f9db30849565f4cc4a23fcd708ced6bb3bcf22b4845a38b83a3adea0",
+    "nautilus_cache_attempt2_pod.yaml": "b27272a6cf2b864c71fd2bc83e02150072925ba20b48a26bca02b24c72bf6262"
+  },
+  "claim_status": "cache_infrastructure_attempt_preserved_no_model_inference"
+}

@@ -1,0 +1,207 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 8c1694bc9e26e71f099f124f1b8265a51e06e2d421b679522f32a2e1e70d7859
+    cni.projectcalico.org/podIP: 10.244.108.233/32
+    cni.projectcalico.org/podIPs: 10.244.108.233/32,fdf0:17b3:c3ec:1f79:10:0:f:7fe4/128
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container cache-models; ephemeral-storage limit for container cache-models'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T06:56:49Z"
+  finalizers:
+  - batch.kubernetes.io/job-tracking
+  generateName: shepherd-ai-cache-models-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: 500082ae-07f8-4277-9cba-2a02ba42edf0
+    batch.kubernetes.io/job-name: shepherd-ai-cache-models
+    controller-uid: 500082ae-07f8-4277-9cba-2a02ba42edf0
+    job-name: shepherd-ai-cache-models
+    shepherd-ai/stage: cache
+  name: shepherd-ai-cache-models-dkfpp
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-cache-models
+    uid: 500082ae-07f8-4277-9cba-2a02ba42edf0
+  resourceVersion: "14336050218"
+  uid: 8d6f9f38-791e-44aa-ab21-0abcc0017c38
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}" "huggingface-hub>=0.26,<1"
+      mkdir -p /workspace/artifacts /workspace/hf-cache
+      python "${repo}/scripts/cache_multiuav_qwen.py" \
+        --model-id Qwen/Qwen2.5-3B-Instruct \
+        --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \
+        --cache-dir /workspace/hf-cache \
+        --output /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+        --max-workers 4
+      python "${repo}/scripts/cache_multiuav_qwen.py" \
+        --model-id Qwen/Qwen2.5-7B-Instruct \
+        --revision a09a35458c702b33eeacc393d103063234e8bc28 \
+        --cache-dir /workspace/hf-cache \
+        --output /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+        --max-workers 4
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: SHEPHERD_GIT_COMMIT
+      value: 8ac37e86808436c5673fa01abce2c5fe6add52fd
+    - name: HF_HOME
+      value: /workspace/hf-cache
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: void
+    image: python:3.12-slim
+    imagePullPolicy: IfNotPresent
+    name: cache-models
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 8Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llhr9
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: ren-gp-argo-01.madren.org
+  preemptionPolicy: PreemptLowerPriority
+  priority: -2000000000
+  priorityClassName: opportunistic
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: shepherd-ai-539948
+  - name: kube-api-access-llhr9
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T06:58:07Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T06:56:49Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T06:58:07Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T06:58:07Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T06:56:49Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "2"
+      ephemeral-storage: "0"
+      memory: 8Gi
+    containerID: containerd://c365fb80e1a0d3f92b314bd2ce217e0916bfc89aa79dd589747a58dc2c514561
+    image: docker.io/library/python:3.12-slim
+    imageID: docker.io/library/python@sha256:b03eed4944bc758029e0506ec41acb6a4be6d1b2b875d6e04ac4759db343a370
+    lastState: {}
+    name: cache-models
+    ready: true
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 8Gi
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2026-08-04T06:58:06Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llhr9
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 138.247.1.251
+  hostIPs:
+  - ip: 138.247.1.251
+  phase: Running
+  podIP: 10.244.108.233
+  podIPs:
+  - ip: 10.244.108.233
+  - ip: fdf0:17b3:c3ec:1f79:10:0:f:7fe4
+  qosClass: Guaranteed
+  startTime: "2026-08-04T06:56:49Z"

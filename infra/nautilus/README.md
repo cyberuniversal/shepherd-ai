@@ -8,7 +8,12 @@ The stages are deliberately separate:
 1. `pvc.yaml` creates persistent storage for pinned weights, audits, raw rows,
    summaries, and checkpoints.
 2. `cache-job.yaml` is the only networked model-acquisition stage. It downloads
-   both immutable Qwen revisions and records every cached file checksum.
+   both immutable Qwen revisions over standard HTTP with Xet disabled and
+   records every cached file checksum. An existing completed 3B audit is reused
+   only after its immutable identity, research-integrity flags, file presence,
+   and file sizes pass. The smoke stage still re-hashes every file before model
+   loading. Automatic job retries are disabled so a failed attempt cannot
+   silently duplicate work.
 3. `smoke-job.yaml` requests one A100 and performs one synthetic, offline-guarded
    load/generation smoke for each cached checkpoint. It evaluates no study case.
 4. `accuracy-3b-job.yaml` runs the locked 3B matrix with the cluster cache and
@@ -18,6 +23,10 @@ The stages are deliberately separate:
 Every job template contains `__SHEPHERD_GIT_COMMIT__`. Replace it with the exact
 committed repository state that contains the final run configurations before
 applying the job. Do not point a job at a moving branch.
+
+The smoke and accuracy jobs operate with Hugging Face and Transformers offline
+mode enabled. They may clone the pinned Shepherd-AI commit if its checkout is
+not already on the PVC, but they cannot fetch or substitute model weights.
 
 ```powershell
 kubectl apply -f infra/nautilus/pvc.yaml

@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: shepherd-ai
     shepherd-ai/stage: cache
 spec:
-  backoffLimit: 1
+  backoffLimit: 0
   template:
     metadata:
       labels:
@@ -34,12 +34,39 @@ spec:
               git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
               python -m pip install --no-cache-dir -e "${repo}" "huggingface-hub>=0.26,<1"
               mkdir -p /workspace/artifacts /workspace/hf-cache
-              python "${repo}/scripts/cache_multiuav_qwen.py" \
-                --model-id Qwen/Qwen2.5-3B-Instruct \
-                --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \
-                --cache-dir /workspace/hf-cache \
-                --output /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
-                --max-workers 4
+              audit_3b=/workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json
+              if [[ -s "${audit_3b}" ]]; then
+                python - "${audit_3b}" <<'PY'
+              import json
+              from pathlib import Path
+              import sys
+
+              audit = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+              expected = {
+                  "model_id": "Qwen/Qwen2.5-3B-Instruct",
+                  "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+                  "weights_cached": True,
+                  "model_invoked": False,
+                  "study_cases_evaluated": False,
+              }
+              for key, value in expected.items():
+                  if audit.get(key) != value:
+                      raise ValueError(f"existing 3B audit has invalid {key}")
+              snapshot = Path(audit["snapshot_dir"])
+              for row in audit["files"]:
+                  path = snapshot / row["path"]
+                  if not path.is_file() or path.stat().st_size != row["bytes"]:
+                      raise ValueError(f"existing 3B cache file is absent or truncated: {path}")
+              print("Reusing the existing 3B checksum audit; full re-hash remains required at smoke.")
+              PY
+              else
+                python "${repo}/scripts/cache_multiuav_qwen.py" \
+                  --model-id Qwen/Qwen2.5-3B-Instruct \
+                  --revision aa8e72537993ba99e69dfaafa59ed015b17504d1 \
+                  --cache-dir /workspace/hf-cache \
+                  --output "${audit_3b}" \
+                  --max-workers 4
+              fi
               python "${repo}/scripts/cache_multiuav_qwen.py" \
                 --model-id Qwen/Qwen2.5-7B-Instruct \
                 --revision a09a35458c702b33eeacc393d103063234e8bc28 \
@@ -51,6 +78,8 @@ spec:
               value: __SHEPHERD_GIT_COMMIT__
             - name: HF_HOME
               value: /workspace/hf-cache
+            - name: HF_HUB_DISABLE_XET
+              value: "1"
           resources:
             requests:
               cpu: "2"
