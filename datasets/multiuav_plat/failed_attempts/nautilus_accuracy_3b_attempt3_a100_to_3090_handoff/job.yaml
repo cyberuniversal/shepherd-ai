@@ -1,0 +1,116 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"accuracy-3b"},"name":"shepherd-ai-accuracy-3b","namespace":"aiea-interns"},"spec":{"activeDeadlineSeconds":604800,"backoffLimit":20,"podFailurePolicy":{"rules":[{"action":"Ignore","onPodConditions":[{"status":"True","type":"DisruptionTarget"}]}]},"template":{"metadata":{"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"accuracy-3b"}},"spec":{"containers":[{"args":["set -euo pipefail\napt-get update\napt-get install -y --no-install-recommends git ca-certificates\nrm -rf /var/lib/apt/lists/*\nrepo=\"/workspace/repo-${SHEPHERD_GIT_COMMIT}\"\nif [[ ! -d \"${repo}/.git\" ]]; then\n  git clone https://github.com/cyberuniversal/shepherd-ai.git \"${repo}\"\nfi\ngit -C \"${repo}\" fetch origin\ngit -C \"${repo}\" checkout --detach \"${SHEPHERD_GIT_COMMIT}\"\npython -m pip install --no-cache-dir -e \"${repo}[multiuav-inference]\"\noutput=/workspace/results/qwen25-3b\nmkdir -p \"${output}\"\npython \"${repo}/scripts/run_multiuav_accuracy.py\" \\\n  --model-id Qwen/Qwen2.5-3B-Instruct \\\n  --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \\\n  --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \\\n  --results \"${output}/results.jsonl\" \\\n  --checkpoint-zip \"${output}/checkpoint.zip\" \\\n  --run-summary \"${output}/run_summary.json\" \\\n  --progress-every-rows 10 \\\n  --compact-every-rows 250\n"],"command":["/bin/bash","-lc"],"env":[{"name":"SHEPHERD_GIT_COMMIT","value":"44c4048c86e231565d1a83cb88c1584175aced42"},{"name":"HF_HOME","value":"/workspace/hf-cache"},{"name":"HF_HUB_OFFLINE","value":"1"},{"name":"TRANSFORMERS_OFFLINE","value":"1"}],"image":"pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime","name":"accuracy-3b","resources":{"limits":{"cpu":"4","memory":"32Gi","nvidia.com/a100":"1"},"requests":{"cpu":"4","memory":"32Gi","nvidia.com/a100":"1"}},"volumeMounts":[{"mountPath":"/workspace","name":"workspace"}]}],"priorityClassName":"opportunistic","restartPolicy":"Never","terminationGracePeriodSeconds":120,"volumes":[{"name":"workspace","persistentVolumeClaim":{"claimName":"shepherd-ai-539948"}}]}}}}
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T09:53:13Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: accuracy-3b
+  name: shepherd-ai-accuracy-3b
+  namespace: aiea-interns
+  resourceVersion: "14337648590"
+  uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+spec:
+  activeDeadlineSeconds: 604800
+  backoffLimit: 20
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podFailurePolicy:
+    rules:
+    - action: Ignore
+      onPodConditions:
+      - status: "True"
+        type: DisruptionTarget
+  podReplacementPolicy: Failed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        batch.kubernetes.io/controller-uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+        batch.kubernetes.io/job-name: shepherd-ai-accuracy-3b
+        controller-uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+        job-name: shepherd-ai-accuracy-3b
+        shepherd-ai/stage: accuracy-3b
+    spec:
+      containers:
+      - args:
+        - |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+          rm -rf /var/lib/apt/lists/*
+          repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+          if [[ ! -d "${repo}/.git" ]]; then
+            git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+          fi
+          git -C "${repo}" fetch origin
+          git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+          python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+          output=/workspace/results/qwen25-3b
+          mkdir -p "${output}"
+          python "${repo}/scripts/run_multiuav_accuracy.py" \
+            --model-id Qwen/Qwen2.5-3B-Instruct \
+            --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+            --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
+            --results "${output}/results.jsonl" \
+            --checkpoint-zip "${output}/checkpoint.zip" \
+            --run-summary "${output}/run_summary.json" \
+            --progress-every-rows 10 \
+            --compact-every-rows 250
+        command:
+        - /bin/bash
+        - -lc
+        env:
+        - name: SHEPHERD_GIT_COMMIT
+          value: 44c4048c86e231565d1a83cb88c1584175aced42
+        - name: HF_HOME
+          value: /workspace/hf-cache
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: TRANSFORMERS_OFFLINE
+          value: "1"
+        image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+        imagePullPolicy: IfNotPresent
+        name: accuracy-3b
+        resources:
+          limits:
+            cpu: "4"
+            memory: 32Gi
+            nvidia.com/a100: "1"
+          requests:
+            cpu: "4"
+            memory: 32Gi
+            nvidia.com/a100: "1"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+      dnsPolicy: ClusterFirst
+      priorityClassName: opportunistic
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: shepherd-ai-539948
+  ttlSecondsAfterFinished: 86400
+status:
+  active: 1
+  ready: 1
+  startTime: "2026-08-04T09:53:13Z"
+  terminating: 0
+  uncountedTerminatedPods: {}

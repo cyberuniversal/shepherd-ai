@@ -1,0 +1,4 @@
+﻿observed_at_utc=2026-08-04T11:05:05.9036201Z
+pod=shepherd-ai-accuracy-3b-mcl5f
+rows=259 /workspace/results/qwen25-3b/results.jsonl
+gpu=NVIDIA A100 80GB PCIe, 8463 MiB, 81920 MiB, 43 %

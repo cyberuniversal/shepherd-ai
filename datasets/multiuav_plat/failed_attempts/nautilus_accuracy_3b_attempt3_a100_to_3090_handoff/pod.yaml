@@ -1,0 +1,211 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 56075e415508b5f5141db558eb9a516df366dce8fff0ca7d810da664ac178cb5
+    cni.projectcalico.org/podIP: 10.244.159.253/32
+    cni.projectcalico.org/podIPs: 10.244.159.253/32
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container accuracy-3b; ephemeral-storage limit for container accuracy-3b'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-04T10:37:51Z"
+  finalizers:
+  - batch.kubernetes.io/job-tracking
+  generateName: shepherd-ai-accuracy-3b-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+    batch.kubernetes.io/job-name: shepherd-ai-accuracy-3b
+    controller-uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+    job-name: shepherd-ai-accuracy-3b
+    shepherd-ai/stage: accuracy-3b
+  name: shepherd-ai-accuracy-3b-mcl5f
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-accuracy-3b
+    uid: ab56215a-f2e9-412c-956c-e8cb3c8fb838
+  resourceVersion: "14337648475"
+  uid: bfbffc5e-2f8b-434e-b5c3-184bc5d3e51e
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+      output=/workspace/results/qwen25-3b
+      mkdir -p "${output}"
+      python "${repo}/scripts/run_multiuav_accuracy.py" \
+        --model-id Qwen/Qwen2.5-3B-Instruct \
+        --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+        --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
+        --results "${output}/results.jsonl" \
+        --checkpoint-zip "${output}/checkpoint.zip" \
+        --run-summary "${output}/run_summary.json" \
+        --progress-every-rows 10 \
+        --compact-every-rows 250
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: SHEPHERD_GIT_COMMIT
+      value: 44c4048c86e231565d1a83cb88c1584175aced42
+    - name: HF_HOME
+      value: /workspace/hf-cache
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imagePullPolicy: IfNotPresent
+    name: accuracy-3b
+    resources:
+      limits:
+        cpu: "4"
+        ephemeral-storage: 50Gi
+        memory: 32Gi
+        nvidia.com/a100: "1"
+      requests:
+        cpu: "4"
+        ephemeral-storage: "0"
+        memory: 32Gi
+        nvidia.com/a100: "1"
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-kvbdl
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: rci-nrp-gpu-03.sdsu.edu
+  preemptionPolicy: PreemptLowerPriority
+  priority: -2000000000
+  priorityClassName: opportunistic
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 120
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: shepherd-ai-539948
+  - name: kube-api-access-kvbdl
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T10:39:25Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T10:37:51Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T10:39:25Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T10:39:25Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-04T10:37:51Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "4"
+      ephemeral-storage: "0"
+      memory: 32Gi
+      nvidia.com/a100: "1"
+    containerID: containerd://aa6bb1735fcd14d3627056caa70bbbe5d275aa4529db1c776bb2e7f4783937d3
+    image: docker.io/pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imageID: docker.io/pytorch/pytorch@sha256:8d409f72f99e5968b5c4c9396a21f4b723982cfdf2c1a5b9cc045c5d0a7345a1
+    lastState: {}
+    name: accuracy-3b
+    ready: true
+    resources:
+      limits:
+        cpu: "4"
+        ephemeral-storage: 50Gi
+        memory: 32Gi
+        nvidia.com/a100: "1"
+      requests:
+        cpu: "4"
+        ephemeral-storage: "0"
+        memory: 32Gi
+        nvidia.com/a100: "1"
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2026-08-04T10:39:24Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-kvbdl
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 146.244.204.7
+  hostIPs:
+  - ip: 146.244.204.7
+  phase: Running
+  podIP: 10.244.159.253
+  podIPs:
+  - ip: 10.244.159.253
+  qosClass: Guaranteed
+  startTime: "2026-08-04T10:37:51Z"

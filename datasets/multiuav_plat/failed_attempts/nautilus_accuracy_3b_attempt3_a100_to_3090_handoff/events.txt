@@ -1,0 +1,3 @@
+﻿LAST SEEN   TYPE     REASON             OBJECT                        MESSAGE
+53m         Normal   SuccessfulCreate   job/shepherd-ai-accuracy-3b   Created pod: shepherd-ai-accuracy-3b-hfr5j
+27m         Normal   SuccessfulCreate   job/shepherd-ai-accuracy-3b   Created pod: shepherd-ai-accuracy-3b-mcl5f

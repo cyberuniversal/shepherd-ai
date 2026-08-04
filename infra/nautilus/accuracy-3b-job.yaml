@@ -22,6 +22,8 @@ spec:
         shepherd-ai/stage: accuracy-3b
     spec:
       priorityClassName: opportunistic
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
       restartPolicy: Never
       terminationGracePeriodSeconds: 120
       containers:
@@ -65,11 +67,11 @@ spec:
             requests:
               cpu: "4"
               memory: 32Gi
-              nvidia.com/a100: "1"
+              nvidia.com/gpu: "1"
             limits:
               cpu: "4"
               memory: 32Gi
-              nvidia.com/a100: "1"
+              nvidia.com/gpu: "1"
           volumeMounts:
             - name: workspace
               mountPath: /workspace
