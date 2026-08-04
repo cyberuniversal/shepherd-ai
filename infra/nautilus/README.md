@@ -16,11 +16,12 @@ The stages are deliberately separate:
    silently duplicate work.
 3. `smoke-job.yaml` requests one A100 and performs one synthetic, offline-guarded
    load/generation smoke for each cached checkpoint. It evaluates no study case.
-4. `accuracy-3b-job.yaml` runs the locked 3B matrix on an allowed 16 GiB or larger GPU,
-   preferring an RTX 3090, with the cluster cache and smoke audits, one durable
-   JSONL row per completed method-case, and periodic
-   ZIP checkpoints. It never reads hidden scoring labels. Opportunistic
-   preemptions marked `DisruptionTarget` do not consume the bounded retry
+4. `accuracy-3b-job.yaml` runs the locked 3B matrix at normal priority on a
+   controlled GPU allowlist with at least 11 GiB, preferring an RTX 3090. It
+   uses the cluster cache and smoke audits, writes one durable JSONL row per
+   completed method-case, and creates periodic
+   ZIP checkpoints. It never reads hidden scoring labels. Disruptions marked
+   `DisruptionTarget` do not consume the bounded retry
    budget; replacement pods revalidate the cache and resume durable rows.
 
 Every job template contains `__SHEPHERD_GIT_COMMIT__`. Replace it with the exact
