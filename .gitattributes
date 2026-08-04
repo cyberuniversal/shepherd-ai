@@ -1,0 +1,3 @@
+# These frozen study hashes were registered against CRLF-normalized bytes.
+datasets/multiuav_plat/accuracy_case_manifest_v1.json text eol=crlf
+datasets/multiuav_plat/accuracy_protocol_freeze_v1.json text eol=crlf

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -52,6 +53,25 @@ def _artifact(config: RunConfig) -> dict:
 
 
 class RunMultiUavAccuracyTests(unittest.TestCase):
+    def test_frozen_accuracy_inputs_have_cross_platform_crlf_contract(self) -> None:
+        paths = (
+            "datasets/multiuav_plat/accuracy_case_manifest_v1.json",
+            "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json",
+        )
+        completed = subprocess.run(
+            ["git", "check-attr", "eol", "--", *paths],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        for path in paths:
+            self.assertIn(f"{path}: eol: crlf", completed.stdout)
+            payload = (ROOT / path).read_bytes()
+            self.assertIn(b"\r\n", payload)
+            self.assertEqual(payload.count(b"\n"), payload.count(b"\r\n"))
+
     def test_failure_summary_preserves_stage_and_unscored_status(self) -> None:
         result = _failure_summary(
             {"config_hash": "a" * 64, "study_inference_started": False},
