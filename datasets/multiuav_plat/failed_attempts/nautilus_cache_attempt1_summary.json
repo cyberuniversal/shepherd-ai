@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "status": "failed_cache_setup_attempt_preserved",
+  "study_id": "multiuav_validation_placement_v1",
+  "stage": "nautilus_model_cache",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-cache-models",
+  "repository_commit": "1b831dd767114b96f1c9d4aaf026b963b32f2fd2",
+  "model_invoked": false,
+  "study_cases_evaluated": false,
+  "qwen_3b_cache_completed": true,
+  "qwen_7b_cache_completed": false,
+  "error_type": "ValueError",
+  "error_message": "model id/revision is absent from the frozen registry",
+  "root_cause": "The 7B cache command supplied the 7B model ID but omitted its explicit frozen revision, so the CLI retained the default 3B revision and correctly rejected the mismatch.",
+  "resolution": "Both cache commands now supply their exact registered 40-character revisions.",
+  "job_deleted_after_artifact_capture": true,
+  "artifact_sha256": {
+    "first_pod_log": "649d7780743f808aa0ff6b8e713925c62d4a13e4d8bef3d07b121b7edff92cda",
+    "retry_pod_partial_log": "ada728a6490b38d41bf93c9862bc174ea393b11fa4cb8f2cb73dca58246c40f1",
+    "job_yaml": "99e3f6df8fdfe8b456b80679cad7c06e5304b68b38f31a1b18584d80e33ba7e7",
+    "first_pod_yaml": "00ec3cc951defd6d865865c46faa14cb27900f176757596cddffd90c50bc4746"
+  },
+  "claim_limit": "Infrastructure failure only; no model or study result was produced."
+}
