@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from run_multiuav_accuracy import (  # noqa: E402
     _backend_config,
+    _runtime_metadata,
     _validate_runtime_audits,
     load_bound_run_config,
     validate_bound_inputs,
@@ -50,6 +51,36 @@ def _artifact(config: RunConfig) -> dict:
 
 
 class RunMultiUavAccuracyTests(unittest.TestCase):
+    def test_runtime_metadata_records_cuda_device(self) -> None:
+        class Properties:
+            name = "Synthetic GPU"
+            total_memory = 4_000
+
+        class Cuda:
+            @staticmethod
+            def is_available() -> bool:
+                return True
+
+            @staticmethod
+            def device_count() -> int:
+                return 1
+
+            @staticmethod
+            def get_device_properties(index: int) -> Properties:
+                self.assertEqual(index, 0)
+                return Properties()
+
+        class Torch:
+            cuda = Cuda()
+            version = type("Version", (), {"cuda": "synthetic"})()
+
+        runtime = _runtime_metadata(Torch())
+
+        self.assertTrue(runtime["cuda_available"])
+        self.assertEqual(runtime["cuda_runtime"], "synthetic")
+        self.assertEqual(runtime["gpus"][0]["name"], "Synthetic GPU")
+        self.assertIn("transformers", runtime["package_versions"])
+
     def test_loads_and_revalidates_bound_config(self) -> None:
         config = _config()
 

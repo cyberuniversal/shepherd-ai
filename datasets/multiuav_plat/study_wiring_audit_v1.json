@@ -167,7 +167,7 @@
     "runner_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/runner_contract_audit_v1.json",
-      "sha256": "7f9c2a8939de1586a68ee4e85b7752d4e60b076a931a2cc88bd5c3eb6c08633b"
+      "sha256": "b789b7b11d4285cb42d65a19279274b39af877098f71410008e1006adaaf05b7"
     },
     "scoring_contract_audit": {
       "exists": true,

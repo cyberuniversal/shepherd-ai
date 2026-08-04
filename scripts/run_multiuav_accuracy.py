@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import importlib
+from importlib.metadata import PackageNotFoundError, version
 import json
 from pathlib import Path
+import platform
 import subprocess
 import sys
 from typing import Any, Mapping
@@ -135,6 +138,7 @@ def main() -> None:
         "smoke_audit_sha256": sha256_file(smoke_audit_path),
         "cache_verification": cache_verification,
         "backend_config": backend_config.to_dict(),
+        "runtime": _runtime_metadata(),
         "model_loaded": False,
         "study_inference_started": False,
     }
@@ -290,6 +294,48 @@ def _backend_config(
         offload_folder=backend.get("offload_folder"),
         device_map=str(backend["device_map"]),
     )
+
+
+def _runtime_metadata(torch_module: Any | None = None) -> dict[str, Any]:
+    torch = torch_module or importlib.import_module("torch")
+    cuda_available = bool(torch.cuda.is_available())
+    gpus = []
+    if cuda_available:
+        for index in range(torch.cuda.device_count()):
+            properties = torch.cuda.get_device_properties(index)
+            gpus.append(
+                {
+                    "index": index,
+                    "name": properties.name,
+                    "total_memory_bytes": properties.total_memory,
+                }
+            )
+    return {
+        "python_executable": sys.executable,
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "cpu": platform.processor() or "not stated",
+        "package_versions": {
+            name: _package_version(name)
+            for name in (
+                "accelerate",
+                "huggingface-hub",
+                "safetensors",
+                "torch",
+                "transformers",
+            )
+        },
+        "cuda_available": cuda_available,
+        "cuda_runtime": torch.version.cuda,
+        "gpus": gpus,
+    }
+
+
+def _package_version(name: str) -> str:
+    try:
+        return version(name)
+    except PackageNotFoundError:
+        return "not installed"
 
 
 def _validate_checkout(code_commit: str) -> None:
