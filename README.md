@@ -16,7 +16,9 @@ a deterministically validated full draft of 1,473 clusters and 7,365 cases;
 the 30-cluster, 150-case expert sample validates the construction templates
 without claiming full row-level human labeling. A score-blind protocol and
 approved 1,420-case held-out manifest are now frozen pending final commit-bound
-run configurations. The label-separated scorer is frozen and source-hashed: it
+run configurations. A reusable accuracy CLI validates the commit, data,
+protocol, cache, and row counts before model loading, then writes durable
+resumable rows and checkpoints. The label-separated scorer is frozen and source-hashed: it
 preserves raw model behavior, derives the post-gate system disposition, applies
 the same external grounding validator to every method, and reads hidden
 official command inventories only after complete-matrix admission. Versioned
@@ -114,6 +116,16 @@ python -m pip install -e .[multiuav-inference]
 That command installs runtime libraries only. It does not cache either pinned
 Qwen checkpoint or start the locked experiment. Accuracy inference still
 requires clean-commit run configurations bound to the approved case manifest.
+Once that artifact exists, a no-inference preflight is:
+
+```powershell
+.venv312\Scripts\python.exe scripts/run_multiuav_accuracy.py `
+  --model-id Qwen/Qwen2.5-3B-Instruct `
+  --preflight-only
+```
+
+Use the project `.venv312` environment for local Qwen execution. The system
+Python may run repository tests but is not the registered inference runtime.
 
 Dataset and artifact locations:
 

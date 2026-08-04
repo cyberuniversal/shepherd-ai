@@ -63,6 +63,11 @@ separate resource experiment.
 protocol and manifest. It verifies all 284 hidden official-command inventories,
 preserves raw model output separately from post-gate system disposition, and
 records that zero checkpoint rows or study scores were read.
+The commit-bound accuracy CLI is implemented with a no-inference preflight,
+full cache checksum verification, durable per-row progress, resumable JSONL,
+and periodic ZIP checkpoints. The readiness audit recognizes a final
+`accuracy_run_configs_v1.json` only after validating both canonical model
+configs and their protocol, manifest, count, method-order, and commit bindings.
 Context and recoverability evidence are documented in
 `docs/multiuav_agent_context_protocol.md` and
 `docs/multiuav_recoverability_protocol.md`.
@@ -121,8 +126,8 @@ tables, figures, or comparative claims.
 
 The pilot expert-QC packet, full-dataset generation, score-blind protocol,
 held-out accuracy manifest, and label-separated scoring contract are complete.
-Accuracy inference is blocked only until these changes are committed and final
-run configurations bind that exact commit. Hardware warm-up and thermal
+Accuracy inference is blocked only until the execution changes are committed
+and final run configurations bind that exact commit. Hardware warm-up and thermal
 controls apply only to the later resource experiment. A deterministic 30-task
 candidate subset, 24 condition orders, and an approval-gated resource-config
 builder now exist. Static fidelity and method-case NVML instrumentation are

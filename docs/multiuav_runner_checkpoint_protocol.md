@@ -105,6 +105,15 @@ method-case and its report is retained in the same durable row. Accuracy runs
 reject resource monitors so hardware repetitions remain separate from the
 locked deterministic accuracy matrix.
 
+`scripts/run_multiuav_accuracy.py` is the reusable accuracy-run entry point.
+Before loading a model it verifies the selected config's canonical hash, bound
+Git commit, clean execution source, manifest and protocol hashes, approved case
+count, decoding settings, registered cache/smoke metadata, and every cached
+snapshot file checksum. `--preflight-only` performs those checks without model
+loading or study inference. During a real run it reports progress only after a
+row has been durably appended, and resumes from the config-bound JSONL without
+repeating completed method-case calls.
+
 `src/shepherd_ai/multiuav_publication.py` provides a separate fail-closed
 accuracy admission gate. It accepts only complete matrices from `accuracy`
 runs whose rows are all `approved_evaluation_case`, rejects any resource
@@ -119,8 +128,8 @@ audit read no study checkpoint row.
 
 ## Claim Limits
 
-The provider-independent runner has only been exercised with scripted
-synthetic test backends. A local Qwen implementation now exists under
+The complete matrix runner has only been exercised with scripted synthetic test
+backends. A local Qwen implementation now exists under
 `docs/multiuav_offline_runtime_protocol.md`. The pinned 3B and 7B checkpoints
 were cached, checksummed, loaded, and invoked directly for synthetic backend
 smokes, but neither has been exercised through the full M1-M4 experiment
@@ -133,6 +142,10 @@ examples, dependency versions, and code checksums.
 ```powershell
 python scripts/audit_multiuav_runner_contract.py `
   --output datasets/multiuav_plat/runner_contract_audit_v1.json
+
+.venv312\Scripts\python.exe scripts/run_multiuav_accuracy.py `
+  --model-id Qwen/Qwen2.5-3B-Instruct `
+  --preflight-only
 
 python -m unittest `
   tests.test_multiuav_prompts `

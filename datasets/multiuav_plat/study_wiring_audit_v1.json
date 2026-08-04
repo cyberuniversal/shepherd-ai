@@ -14,6 +14,11 @@
       "path": "datasets/multiuav_plat/accuracy_protocol_freeze_v1.json",
       "sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16"
     },
+    "accuracy_run_configs": {
+      "exists": false,
+      "path": "datasets/multiuav_plat/accuracy_run_configs_v1.json",
+      "sha256": null
+    },
     "agent_context_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/agent_context_audit_v1.json",
@@ -47,7 +52,7 @@
     "hardware_measurement_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/hardware_measurement_contract_audit_v1.json",
-      "sha256": "903aa5bbdeef437753b516c4076fda4a562157ebc27875b76d507f2352e5bd02"
+      "sha256": "c763ed3e8922bb61759ccda72c160350fff7b8ce7eb2fb91b254fc1030dc19b2"
     },
     "historical_distilbert_wiring_smoke": {
       "exists": true,
@@ -162,7 +167,7 @@
     "runner_contract_audit": {
       "exists": true,
       "path": "datasets/multiuav_plat/runner_contract_audit_v1.json",
-      "sha256": "3b75d8d60e553404a50bb80528e7d35e9f73383ed8931e0c4b16b4d46636861d"
+      "sha256": "97ec0fba750ee92d2cac59cc510623f5e2ab5fb375cd05c12b124e67be503837"
     },
     "scoring_contract_audit": {
       "exists": true,
@@ -211,6 +216,7 @@
     "deterministic_recursive_grounding_validator",
     "immutable_qwen_checkpoint_resolution",
     "method_runners_and_prompts",
+    "commit_bound_accuracy_execution_cli",
     "row_checkpoint_resume_contract",
     "local_qwen_backend_and_process_socket_isolation_contract",
     "qwen_3b_cached_checksums_and_synthetic_load_smoke",
@@ -230,6 +236,7 @@
     "whisper": "excluded_from_primary_text_first_study"
   },
   "primary_path": {
+    "accuracy_execution_cli": "commit_bound_accuracy_matrix_runner_v1",
     "accuracy_scorer": "multiuav_accuracy_scoring_v1",
     "api_plan_parser": "strict_multiuav_json_contract_v1",
     "checkpoint_writer": "config_bound_jsonl_and_compact_zip_v1",

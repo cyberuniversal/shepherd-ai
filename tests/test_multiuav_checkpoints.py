@@ -170,6 +170,7 @@ class MultiUavCheckpointTests(unittest.TestCase):
             archive = Path(temp_dir) / "checkpoint.zip"
             checkpoint = JsonlCheckpoint(results, config)
             backend = _Backend(output_count=4)
+            progress = []
             first = run_case_matrix(
                 config=config,
                 cases=cases,
@@ -177,6 +178,7 @@ class MultiUavCheckpointTests(unittest.TestCase):
                 checkpoint=checkpoint,
                 compact_zip_path=archive,
                 compact_every_rows=2,
+                progress_callback=progress.append,
             )
             resumed_backend = _Backend(output_count=0)
             second = run_case_matrix(
@@ -192,6 +194,10 @@ class MultiUavCheckpointTests(unittest.TestCase):
                 names = set(zipped.namelist())
 
         self.assertEqual(first["appended_rows"], 4)
+        self.assertEqual(
+            [row["completed_rows"] for row in progress],
+            [1, 2, 3, 4],
+        )
         self.assertEqual(second["appended_rows"], 0)
         self.assertEqual(second["resumed_rows"], 4)
         self.assertEqual(len(rows), 4)

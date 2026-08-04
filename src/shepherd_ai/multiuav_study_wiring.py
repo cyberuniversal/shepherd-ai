@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from shepherd_ai.multiuav_checkpoints import RunConfig
+
 
 STUDY_ID = "multiuav_validation_placement_v1"
 ACTIVE_BRANCH = "codex/multiuav-validation-study"
@@ -91,6 +93,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     accuracy_protocol_path = metadata / "accuracy_protocol_freeze_v1.json"
     accuracy_manifest_path = metadata / "accuracy_case_manifest_v1.json"
     scoring_contract_path = metadata / "scoring_contract_audit_v1.json"
+    accuracy_run_configs_path = metadata / "accuracy_run_configs_v1.json"
     distilbert_smoke_path = (
         repository_root
         / "outputs"
@@ -146,6 +149,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     accuracy_protocol = _read_object(accuracy_protocol_path, errors)
     accuracy_manifest = _read_object(accuracy_manifest_path, errors)
     scoring_contract = _read_object(scoring_contract_path, errors)
+    accuracy_run_configs = _read_optional_object(accuracy_run_configs_path, errors)
     if source:
         if source.get("valid") is not True:
             errors.append("source audit is not valid")
@@ -397,6 +401,13 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             errors,
             label="accuracy scoring contract audit",
         )
+    accuracy_config_ready = _validate_accuracy_run_configs(
+        accuracy_run_configs,
+        accuracy_run_configs_path=accuracy_run_configs_path,
+        accuracy_manifest_path=accuracy_manifest_path,
+        accuracy_protocol_path=accuracy_protocol_path,
+        errors=errors,
+    )
     if intervention_negative_controls:
         controls_summary = intervention_negative_controls.get("summary", {})
         if controls_summary.get("probe_count") != 2:
@@ -536,6 +547,14 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             errors.append("runner audit does not require local-only Qwen loading")
         if runner.get("qwen_weights_loaded_by_this_audit") is not False:
             errors.append("runner contract audit unexpectedly loaded Qwen weights")
+        if runner.get("accuracy_execution_cli_implemented") is not True:
+            errors.append("runner audit does not register the accuracy execution CLI")
+        if runner.get(
+            "accuracy_preflight_validates_commit_data_cache_and_counts"
+        ) is not True:
+            errors.append("accuracy execution preflight is not fully registered")
+        if runner.get("durable_row_progress_reporting") is not True:
+            errors.append("runner audit does not register durable row progress")
         if runner.get("qwen_3b_synthetic_load_smoke_registered") is not True:
             errors.append("runner audit does not register the Qwen 3B smoke")
         if runner.get("qwen_7b_synthetic_load_smoke_registered") is not True:
@@ -614,6 +633,11 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "audit_multiuav_runner_contract.py"
         ) != _sha256(runner_audit_script):
             errors.append("runner contract is not bound to its audit script")
+        accuracy_run_script = repository_root / "scripts" / "run_multiuav_accuracy.py"
+        if accuracy_run_script.is_file() and source_hashes.get(
+            "run_multiuav_accuracy.py"
+        ) != _sha256(accuracy_run_script):
+            errors.append("runner contract is not bound to the accuracy execution CLI")
     if offline_runtime:
         if offline_runtime.get("valid") is not True:
             errors.append("offline runtime contract audit is not valid")
@@ -901,6 +925,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "deterministic_recursive_grounding_validator",
         "immutable_qwen_checkpoint_resolution",
         "method_runners_and_prompts",
+        "commit_bound_accuracy_execution_cli",
         "row_checkpoint_resume_contract",
         "local_qwen_backend_and_process_socket_isolation_contract",
         "qwen_3b_cached_checksums_and_synthetic_load_smoke",
@@ -911,8 +936,11 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "resource_run_config_builder_with_approval_gate",
         "publication_accuracy_smoke_leak_gate",
     ]
+    accuracy_blocking_gates = (
+        [] if accuracy_config_ready else ["final_accuracy_run_config_commit_binding"]
+    )
     blocking_gates = [
-        "final_accuracy_run_config_commit_binding",
+        *accuracy_blocking_gates,
         "hardware_warmup_and_thermal_controls",
         "resource_subset_approval_and_final_config_binding",
     ]
@@ -922,7 +950,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "valid": not errors,
         "errors": errors,
         "status": (
-            "accuracy_manifest_approved_final_commit_binding_pending"
+            "ready_for_accuracy_model_inference"
+            if not errors and accuracy_config_ready
+            else "accuracy_manifest_approved_final_commit_binding_pending"
             if not errors
             else "invalid_completed_gate_wiring"
         ),
@@ -943,6 +973,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "model_backend": "local_qwen_3b_and_7b_synthetic_smokes_passed",
             "checkpoint_writer": "config_bound_jsonl_and_compact_zip_v1",
             "accuracy_scorer": "multiuav_accuracy_scoring_v1",
+            "accuracy_execution_cli": "commit_bound_accuracy_matrix_runner_v1",
             "execution_backend": "static_plan_fidelity_only",
         },
         "legacy_component_roles": {
@@ -971,7 +1002,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "ready_for_human_review": False,
         "expert_qc_complete": not errors,
         "ready_for_accuracy_run_config_binding": not errors,
-        "ready_for_model_inference": False,
+        "ready_for_model_inference": not errors and accuracy_config_ready,
         "artifact_bindings": {
             "source_audit": _artifact_record(source_path, repository_root),
             "session_split": _artifact_record(split_path, repository_root),
@@ -1032,6 +1063,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "scoring_contract_audit": _artifact_record(
                 scoring_contract_path, repository_root
             ),
+            "accuracy_run_configs": _artifact_record(
+                accuracy_run_configs_path, repository_root
+            ),
             "method_contract_audit": _artifact_record(
                 method_contract_path, repository_root
             ),
@@ -1079,12 +1113,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             ),
         },
         "claim_status": (
-            "expert_qc_protocol_manifest_and_scoring_contract_complete_"
+            "accuracy_execution_ready_no_study_inference"
+            if not errors and accuracy_config_ready
+            else "expert_qc_protocol_manifest_and_scoring_contract_complete_"
             "final_commit_binding_pending"
         ),
-        "accuracy_blocking_gates": [
-            "final_accuracy_run_config_commit_binding",
-        ],
+        "accuracy_blocking_gates": accuracy_blocking_gates,
         "resource_blocking_gates": [
             "hardware_warmup_and_thermal_controls",
             "resource_subset_approval_and_final_config_binding",
@@ -1119,6 +1153,73 @@ def _read_object(path: Path, errors: list[str]) -> dict[str, Any]:
         errors.append(f"wiring artifact must contain an object: {path}")
         return {}
     return payload
+
+
+def _read_optional_object(path: Path, errors: list[str]) -> dict[str, Any]:
+    if not path.is_file():
+        return {}
+    return _read_object(path, errors)
+
+
+def _validate_accuracy_run_configs(
+    artifact: dict[str, Any],
+    *,
+    accuracy_run_configs_path: Path,
+    accuracy_manifest_path: Path,
+    accuracy_protocol_path: Path,
+    errors: list[str],
+) -> bool:
+    if not accuracy_run_configs_path.is_file():
+        return False
+    if not artifact:
+        return False
+    initial_error_count = len(errors)
+    if artifact.get("status") != "final_accuracy_configs_bound_no_inference_started":
+        errors.append("accuracy run configs are not in the final pre-inference state")
+    if accuracy_manifest_path.is_file() and artifact.get(
+        "accuracy_manifest_sha256"
+    ) != _sha256(accuracy_manifest_path):
+        errors.append("accuracy run configs are not bound to the accuracy manifest")
+    if accuracy_protocol_path.is_file() and artifact.get(
+        "protocol_freeze_sha256"
+    ) != _sha256(accuracy_protocol_path):
+        errors.append("accuracy run configs are not bound to the frozen protocol")
+    if artifact.get("expected_rows_per_model") != 5_680:
+        errors.append("accuracy run configs have the wrong per-model row count")
+    if artifact.get("expected_rows_total") != 11_360:
+        errors.append("accuracy run configs have the wrong total row count")
+    code_commit = artifact.get("code_commit")
+    records = artifact.get("configs")
+    if not isinstance(records, list) or len(records) != 2:
+        errors.append("accuracy run configs must contain exactly two model configs")
+        return False
+    observed_models: set[str] = set()
+    for index, record in enumerate(records):
+        try:
+            if not isinstance(record, dict) or not isinstance(record.get("config"), dict):
+                raise ValueError("config record must contain an object payload")
+            payload = dict(record["config"])
+            payload["methods"] = tuple(payload["methods"])
+            config = RunConfig(**payload)
+            if config.to_dict() != record:
+                raise ValueError("stored config hash or payload is invalid")
+            if config.code_commit != code_commit:
+                raise ValueError("model config commit differs from artifact commit")
+            if config.run_kind != "accuracy":
+                raise ValueError("model config is not an accuracy run")
+            if config.methods != (
+                "M1_monolithic",
+                "M2_post_plan_deterministic",
+                "M3_stage_wise",
+                "M4_post_plan_compute_matched",
+            ):
+                raise ValueError("model config method order differs from the protocol")
+            observed_models.add(config.model_id)
+        except (KeyError, TypeError, ValueError) as error:
+            errors.append(f"invalid accuracy run config {index}: {error}")
+    if observed_models != set(EXPECTED_MODEL_REVISIONS):
+        errors.append("accuracy run configs do not cover both frozen Qwen models")
+    return len(errors) == initial_error_count
 
 
 def _artifact_record(path: Path, repository_root: Path) -> dict[str, Any]:

@@ -92,6 +92,9 @@ def main() -> None:
             "qwen_local_files_only_required": True,
             "qwen_non_loopback_socket_guard_implemented": True,
             "qwen_weights_loaded_by_this_audit": False,
+            "accuracy_execution_cli_implemented": True,
+            "accuracy_preflight_validates_commit_data_cache_and_counts": True,
+            "durable_row_progress_reporting": True,
             "resource_measurement_unit": "complete_method_case",
             "resource_monitor_required_for_resource_runs": True,
             "resource_monitor_forbidden_for_accuracy_runs": True,
@@ -142,6 +145,9 @@ def main() -> None:
             "audit_multiuav_runner_contract.py": sha256_file(
                 ROOT / "scripts" / "audit_multiuav_runner_contract.py"
             ),
+            "run_multiuav_accuracy.py": sha256_file(
+                ROOT / "scripts" / "run_multiuav_accuracy.py"
+            ),
         },
         "registered_qwen_smokes": {
             scale: {
@@ -162,7 +168,7 @@ def main() -> None:
         "model_invoked_by_this_audit": False,
         "weights_loaded_by_this_audit": False,
         "claim_status": (
-            "prompt_runner_checkpoint_and_local_qwen_backend_implemented_"
+            "prompt_runner_checkpoint_accuracy_cli_and_local_qwen_backend_implemented_"
             "qwen3b_and_qwen7b_synthetic_load_smokes_registered_"
             "no_study_inference"
         ),

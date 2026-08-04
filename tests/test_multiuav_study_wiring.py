@@ -15,6 +15,9 @@ SCRIPT = ROOT / "scripts" / "audit_multiuav_study_wiring.py"
 class MultiUavStudyWiringTests(unittest.TestCase):
     def test_primary_path_excludes_legacy_nlp_and_reports_blockers(self) -> None:
         result = audit_primary_study_wiring(ROOT)
+        configs_exist = (
+            ROOT / "datasets" / "multiuav_plat" / "accuracy_run_configs_v1.json"
+        ).is_file()
 
         self.assertTrue(result["valid"])
         self.assertEqual(result["primary_path"]["input_modality"], "text")
@@ -31,7 +34,7 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertFalse(
             result["runtime_invocation"]["qwen_study_cases_evaluated"]
         )
-        self.assertFalse(result["ready_for_model_inference"])
+        self.assertEqual(result["ready_for_model_inference"], configs_exist)
         self.assertNotIn(
             "agent_visible_context_projection",
             result["blocking_gates"],
@@ -48,7 +51,11 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertTrue(result["ready_for_accuracy_run_config_binding"])
         self.assertEqual(
             result["status"],
-            "accuracy_manifest_approved_final_commit_binding_pending",
+            (
+                "ready_for_accuracy_model_inference"
+                if configs_exist
+                else "accuracy_manifest_approved_final_commit_binding_pending"
+            ),
         )
         self.assertEqual(
             result["primary_path"]["dataset"],
@@ -88,7 +95,7 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertEqual(
             result["accuracy_blocking_gates"],
-            ["final_accuracy_run_config_commit_binding"],
+            [] if configs_exist else ["final_accuracy_run_config_commit_binding"],
         )
         self.assertIn("method_call_budget", result["completed_gates"])
         self.assertIn(
@@ -238,6 +245,10 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         self.assertTrue(
             result["artifact_bindings"]["accuracy_case_manifest"]["exists"]
         )
+        self.assertEqual(
+            result["artifact_bindings"]["accuracy_run_configs"]["exists"],
+            configs_exist,
+        )
         self.assertTrue(
             result["artifact_bindings"]["method_contract_audit"]["exists"]
         )
@@ -332,10 +343,15 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             result = json.loads(output.read_text(encoding="utf-8"))
 
         self.assertTrue(result["valid"])
+        configs_exist = (
+            ROOT / "datasets" / "multiuav_plat" / "accuracy_run_configs_v1.json"
+        ).is_file()
         self.assertEqual(
             result["claim_status"],
             (
-                "expert_qc_protocol_manifest_and_scoring_contract_complete_"
+                "accuracy_execution_ready_no_study_inference"
+                if configs_exist
+                else "expert_qc_protocol_manifest_and_scoring_contract_complete_"
                 "final_commit_binding_pending"
             ),
         )

@@ -40,6 +40,7 @@ def run_case_matrix(
     compact_zip_path: Path | None = None,
     compact_every_rows: int = 250,
     resource_monitor_factory: Callable[[], ResourceMonitor] | None = None,
+    progress_callback: Callable[[Mapping[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Run missing case-method rows and durably checkpoint each result."""
 
@@ -84,6 +85,17 @@ def run_case_matrix(
             checkpoint.append(result)
             completed.add(key)
             appended += 1
+            if progress_callback is not None:
+                progress_callback(
+                    {
+                        "case_id": case.case_id,
+                        "method_id": method_id,
+                        "completed_rows": len(completed),
+                        "expected_rows": len(expected),
+                        "appended_rows": appended,
+                        "resumed_rows": skipped,
+                    }
+                )
             if (
                 compact_zip_path is not None
                 and appended % compact_every_rows == 0

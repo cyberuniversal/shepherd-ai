@@ -277,9 +277,11 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: clean-commit accuracy run-config
-  binding, execution of both locked accuracy matrices, final approved resource
-  binding, and hardware warm-up/thermal controls.
+- Currently unresolved for the active study: final accuracy run-config binding,
+  execution of both locked accuracy matrices, final approved resource binding,
+  and hardware warm-up/thermal controls. The commit-bound accuracy CLI and its
+  no-inference preflight are implemented; do not bypass them with ad hoc model
+  invocation.
 
 ## Known Conflicts And Caveats
 

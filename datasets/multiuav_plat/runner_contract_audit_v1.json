@@ -20,7 +20,7 @@
     "row_written_after_each_method_case": true,
     "schema_version": 3
   },
-  "claim_status": "prompt_runner_checkpoint_and_local_qwen_backend_implemented_qwen3b_and_qwen7b_synthetic_load_smokes_registered_no_study_inference",
+  "claim_status": "prompt_runner_checkpoint_accuracy_cli_and_local_qwen_backend_implemented_qwen3b_and_qwen7b_synthetic_load_smokes_registered_no_study_inference",
   "limitations": [
     "The pinned Qwen 3B and 7B checkpoints were loaded and invoked only in separately registered synthetic smokes; this contract audit itself does not load weights or invoke a model.",
     "The M3 pre-plan gate checks ledger structure, visible source paths, and internal decision consistency; it does not prove semantic correctness.",
@@ -129,12 +129,15 @@
     }
   },
   "runner_contract": {
+    "accuracy_execution_cli_implemented": true,
+    "accuracy_preflight_validates_commit_data_cache_and_counts": true,
     "backend_errors_retained_as_rows": true,
     "deterministic_postplan_methods": [
       "M2_post_plan_deterministic",
       "M3_stage_wise",
       "M4_post_plan_compute_matched"
     ],
+    "durable_row_progress_reporting": true,
     "m3_second_call_always_required": true,
     "method_call_counts": {
       "M1_monolithic": 1,
@@ -162,9 +165,9 @@
   },
   "schema_version": 1,
   "source_code_sha256": {
-    "audit_multiuav_runner_contract.py": "b4d8a4ebdb6484e521762fdc8ae6a3b6d62433f541018fa84908ba6e985f43fc",
+    "audit_multiuav_runner_contract.py": "77421fed23b847b25cab11d0959e377e31be8280d2d46c9f55ab228c7544726b",
     "multiuav_checkpoints.py": "6dc19298b86e6321ab6db0186cf13f0f3d4cb31b249afd1d7e8ef70784c9a5d0",
-    "multiuav_experiment.py": "a9109860944cc29facd8445c7e9f863d8549c5327a1cfd7345c6efd13d4da255",
+    "multiuav_experiment.py": "82243f4ff553364fd8fc0d878fde93334b57131966e4e412ab4dae0b752f59b6",
     "multiuav_ledger_contract.py": "1834b652f14ead55fc724d6a4fb8c1fc7e4b1ffaebf0337ef51d61a9ae2f83a3",
     "multiuav_offline_runtime.py": "54ffc7055d4f1c71c7c27dce427a4a1739ca8e9f93cc6e8fad8dbecee254501d",
     "multiuav_prompts.py": "27c49cc5e729bca57d736d0414daed1c0007a9719369a6c572dcf1f271068f2c",
@@ -172,7 +175,8 @@
     "multiuav_qwen_backend.py": "a3a21b78e1b65138cf300513d107c60ae69064328beba496ca466e63355fd537",
     "multiuav_resource_schedule.py": "b947c59fa4b30247d16c808cfe235970ce99f3fcddb719aacea47846fd0bf14e",
     "multiuav_resources.py": "25ca199447fdcc76a56edba9eb267a1bf1f1c8b8abc27b69267edaa1583c5aaa",
-    "multiuav_runner.py": "6d3ea6305880695f91ee86405470c283a884cb873d06ede42224706d8f363756"
+    "multiuav_runner.py": "6d3ea6305880695f91ee86405470c283a884cb873d06ede42224706d8f363756",
+    "run_multiuav_accuracy.py": "ad6fa2a0af69b9fd8689c9386a38a2597feadb9abc31d45d111226b484f5224c"
   },
   "valid": true,
   "weights_loaded_by_this_audit": false
