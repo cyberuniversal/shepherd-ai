@@ -406,16 +406,15 @@ DistilBERT remains excluded from M1-M4.
 
 The following bindings or controls remain:
 
-1. **Accuracy configuration:** Commit the score-blind protocol and approved
-   case manifest, then bind final accuracy configs to that exact commit.
-2. **Resource hardware protocol:** The GPU, NVML energy mechanism, 20 Hz fallback,
+1. **Resource hardware protocol:** The GPU, NVML energy mechanism, 20 Hz fallback,
    method-case unit, and repetition hashes are registered. A deterministic
    30-task candidate subset and 24-condition order are recorded, but final
    approved-cluster binding, precision/offload freeze, run configs, and
    thermal/warm-up controls remain.
 
-Item 1 blocks the accuracy run. Item 2 blocks only the later resource run;
-hardware warm-up is not an accuracy-run requirement.
+The accuracy configuration is now bound to the frozen execution commit and both
+no-inference runtime/cache preflights pass. The remaining item blocks only the
+later resource run; hardware warm-up is not an accuracy-run requirement.
 
 Primary plan fidelity is frozen as static under
 `docs/multiuav_execution_scope_protocol.md`. It excludes official-server and

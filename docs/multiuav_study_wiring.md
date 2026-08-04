@@ -126,9 +126,11 @@ tables, figures, or comparative claims.
 
 The pilot expert-QC packet, full-dataset generation, score-blind protocol,
 held-out accuracy manifest, and label-separated scoring contract are complete.
-Accuracy inference is blocked only until the execution changes are committed
-and final run configurations bind that exact commit. Hardware warm-up and thermal
-controls apply only to the later resource experiment. A deterministic 30-task
+Final accuracy configurations now bind the execution code, protocol, manifest,
+model revisions, decoding, methods, and row counts. Both complete cache/runtime
+preflights pass without loading a model, and the wiring audit reports no
+accuracy blocker. Hardware warm-up and thermal controls apply only to the later
+resource experiment. A deterministic 30-task
 candidate subset, 24 condition orders, and an approval-gated resource-config
 builder now exist. Static fidelity and method-case NVML instrumentation are
 implemented, but neither model smoke nor the telemetry probe has produced a

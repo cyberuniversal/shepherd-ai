@@ -15,8 +15,9 @@ and its 150 cases are structurally approved. The same construction has produced
 a deterministically validated full draft of 1,473 clusters and 7,365 cases;
 the 30-cluster, 150-case expert sample validates the construction templates
 without claiming full row-level human labeling. A score-blind protocol and
-approved 1,420-case held-out manifest are now frozen pending final commit-bound
-run configurations. A reusable accuracy CLI validates the commit, data,
+approved 1,420-case held-out manifest are frozen. Final run configurations are
+bound to the exact execution-code commit, and both no-inference cache/runtime
+preflights pass. A reusable accuracy CLI validates the commit, data,
 protocol, cache, and row counts before model loading, then writes durable
 resumable rows and checkpoints. The label-separated scorer is frozen and source-hashed: it
 preserves raw model behavior, derives the post-gate system disposition, applies
@@ -114,9 +115,9 @@ python -m pip install -e .[multiuav-inference]
 ```
 
 That command installs runtime libraries only. It does not cache either pinned
-Qwen checkpoint or start the locked experiment. Accuracy inference still
-requires clean-commit run configurations bound to the approved case manifest.
-Once that artifact exists, a no-inference preflight is:
+Qwen checkpoint or start the locked experiment. Accuracy inference requires the
+committed run configurations bound to the approved case manifest. The stored 3B
+and 7B preflights pass. Reproduce one without loading a model using:
 
 ```powershell
 .venv312\Scripts\python.exe scripts/run_multiuav_accuracy.py `
