@@ -23,6 +23,10 @@ The stages are deliberately separate:
    ZIP checkpoints. It never reads hidden scoring labels. Disruptions marked
    `DisruptionTarget` do not consume the bounded retry
    budget; replacement pods revalidate the cache and resume durable rows.
+5. `accuracy-7b-job.yaml` runs the second locked matrix only after the 3B raw
+   checkpoint is preserved. It uses the same score-blind runner and normal
+   priority, but restricts scheduling to 24 GiB-or-larger GPUs because the
+   registered 7B smoke reserved 15.43 GB before full-length generation.
 
 Every job template contains `__SHEPHERD_GIT_COMMIT__`. Replace it with the exact
 committed repository state that contains the final run configurations before
