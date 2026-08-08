@@ -44,8 +44,10 @@ historical infrastructure evidence. The 7B smoke required CPU and disk
 offload on the local 4 GB GPU. A one-row local 3B feasibility attempt was
 aborted after its first call required 389.9 seconds; its raw row, logs, config,
 and protocol-deviation record are preserved and excluded from study results.
-The next gates are accuracy figures and the separately registered resource
-experiment. See
+The registered accuracy figures and their source tables are now reproducible
+under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
+`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The next gate
+is the separately registered resource experiment. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

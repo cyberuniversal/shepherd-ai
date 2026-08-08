@@ -58,7 +58,7 @@ results.
 | DoD-55 | Retain every expected method-case row, including failures and parse errors. | partial | Both sealed accuracy archives retain all 11,360 expected method-case rows. Complete-matrix admission retains failures and rejects missing, duplicate, unapproved, synthetic, or resource rows. Resource-run rows remain pending. |
 | DoD-56 | Verifiably connect the trained component end to end. | implemented for historical Shepherd DistilBERT wiring; revised M1-M4 models are not implemented |
 | DoD-57 | Freeze protocol before inspecting final method scores. | partial | Protocol, scorer, manifest, model configs, complete matrices, and score-blind admission were frozen before final scoring. One excluded feasibility row's raw output and parse status had been viewed earlier and remains a disclosed protocol deviation. |
-| DoD-58 | Label smoke results and exclude them from figures. | partial; current smokes are labelled and the actual complete matrices passed an admission gate that rejects synthetic and resource rows, but no final figure pipeline exists |
+| DoD-58 | Label smoke results and exclude them from figures. | implemented | The publication figure loader accepts only the admitted scoring and registered bootstrap summaries, validates their binding and evidence archive, and records `smoke_rows_included: false`, `resource_rows_included: false`, and `raw_model_outputs_accessed: false` in the figure manifest. |
 | DoD-59 | Analyze accuracy and hardware repetitions at the correct unit. | partial; accuracy is analyzed at the registered source-task cluster unit, while hardware repetitions remain pending |
 | DoD-60 | Report controlled-derivative, within-Qwen, static-fidelity, process-isolation, and call-budget limitations. | partial; protocol records them, final paper does not exist |
 | DoD-61 | Derive conclusions from observed results. | partial; a bounded accuracy interpretation follows the registered clustered analysis, while resource evidence and the final paper conclusion remain pending |
@@ -79,6 +79,6 @@ complete 5,680-row sealed matrices, and `accuracy_matrix_admission_v1.json`
 admits all 11,360 rows without pre-admission hidden-label access or scoring.
 Registered label-separated deterministic scoring is now complete, with derived
 rows separated from aggregate summaries. The registered source-cluster
-bootstrap is also complete. The exact next gates are accuracy figure generation
-and the separately controlled resource experiment; warm-up and thermal controls
-remain blockers only for the resource experiment.
+bootstrap and accuracy figure generation are also complete, with exact source
+tables and a provenance manifest. The exact next gate is the resource
+experiment; warm-up and thermal controls remain its blockers.

@@ -53,6 +53,24 @@ Qwen scales, static plan fidelity, and source-task-cluster resampling. It does
 not establish real-flight performance, general model-family superiority, or a
 complete safety solution.
 
+## Figures
+
+The publication figures are generated from the frozen aggregate summaries,
+not from raw model output:
+
+- `reports/figures/multiuav_accuracy_primary_outcomes_v1.png` and `.pdf` show
+  the two registered absolute outcome rates for all four methods and both model
+  scales.
+- `reports/figures/multiuav_accuracy_registered_contrasts_v1.png` and `.pdf`
+  show the eight registered M3 paired differences and 95% source-cluster
+  bootstrap intervals.
+
+Exact plotted rows are stored in
+`outputs/tables/multiuav_accuracy_primary_rates_v1.csv` and
+`outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv`. The figure
+manifest binds both source summaries, generator code, environment versions,
+tables, and figures by SHA-256.
+
 ## Artifacts
 
 - Scoring summary:
@@ -63,3 +81,5 @@ complete safety solution.
   `outputs/evaluations/multiuav_accuracy_bootstrap_v1/bootstrap_evidence.zip`
 - Bootstrap evidence SHA-256:
   `49568f91712cc0f75a2e326c7f013c56d97004115517b9db7a68fe645fbd61c2`
+- Figure provenance manifest:
+  `outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`

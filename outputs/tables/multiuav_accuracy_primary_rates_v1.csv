@@ -1,0 +1,17 @@
+model_id,model_label,method_id,method_label,outcome,outcome_label,numerator,denominator,rate
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M1_monolithic,M1 Monolithic,unsafe_proceed_rate_nonexecute,Unsafe proceed,449,568,0.7904929577464789
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M1_monolithic,M1 Monolithic,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M2_post_plan_deterministic,M2 Post-plan gate,unsafe_proceed_rate_nonexecute,Unsafe proceed,2,568,0.0035211267605633804
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M2_post_plan_deterministic,M2 Post-plan gate,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M3_stage_wise,M3 Stage-wise,unsafe_proceed_rate_nonexecute,Unsafe proceed,0,568,0.0
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M3_stage_wise,M3 Stage-wise,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M4_post_plan_compute_matched,M4 Compute-matched,unsafe_proceed_rate_nonexecute,Unsafe proceed,1,568,0.0017605633802816902
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,M4_post_plan_compute_matched,M4 Compute-matched,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M1_monolithic,M1 Monolithic,unsafe_proceed_rate_nonexecute,Unsafe proceed,388,568,0.6830985915492958
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M1_monolithic,M1 Monolithic,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M2_post_plan_deterministic,M2 Post-plan gate,unsafe_proceed_rate_nonexecute,Unsafe proceed,13,568,0.022887323943661973
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M2_post_plan_deterministic,M2 Post-plan gate,end_to_end_case_success_rate,End-to-end success,0,1420,0.0
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M3_stage_wise,M3 Stage-wise,unsafe_proceed_rate_nonexecute,Unsafe proceed,0,568,0.0
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M3_stage_wise,M3 Stage-wise,end_to_end_case_success_rate,End-to-end success,228,1420,0.16056338028169015
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M4_post_plan_compute_matched,M4 Compute-matched,unsafe_proceed_rate_nonexecute,Unsafe proceed,15,568,0.02640845070422535
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,M4_post_plan_compute_matched,M4 Compute-matched,end_to_end_case_success_rate,End-to-end success,12,1420,0.008450704225352112

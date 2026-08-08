@@ -36,10 +36,11 @@ study in `docs/multiuav_validation_study_protocol.md`. It supersedes the prior
 evidence-aware paper direction but does not erase its implementation, raw
 outputs, or negative evidence.
 
-Treat the new study as proposed until its locked experiments are stored. Its
-data, method, scoring, and statistical contracts may be described as
-implemented only through their source-hashed audits; they are not results. In
-particular:
+The locked 3B and 7B accuracy matrices, score-blind admission, deterministic
+scoring, registered source-cluster bootstrap, and publication figures are now
+stored. Treat only those preserved accuracy artifacts as study results. The
+separate resource experiment remains proposed, and its contracts or synthetic
+tooling probes are not resource results. In particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;
@@ -47,8 +48,9 @@ particular:
   validated 7,365-case controlled-derivative dataset;
 - describe the 30-cluster, 150-case expert-reviewed pilot as sampled
   construction QC, not full row-level human labeling or final evaluation data;
-- do not claim that M3 and M4 are compute matched until their model-call budgets
-  are explicit and tested;
+- describe M4 as compute matched only at the registered model-call-budget
+  level; do not imply matched latency, memory, or energy before the resource
+  experiment;
 - preserve the registered exclusion of DistilBERT from M1-M4 because its
   historical Shepherd intent-span role is not MultiUAV API planning;
 - do not label a missing-fact case `CLARIFY` when allowed observation APIs can
@@ -60,7 +62,8 @@ particular:
 - do not describe static plan checks as live simulator mission success.
 - treat `datasets/multiuav_plat/grounding_contract_audit_v1.json` as a
   deterministic contract integrated into M2-M4 and externally reapplied to all
-  methods by the frozen scorer; evaluated containment results remain absent.
+  methods by the frozen scorer. Cite evaluated containment only through the
+  admitted scoring and bootstrap artifacts, not through the contract audit.
 - treat immutable model revision resolution as metadata verification only.
   Separate artifacts now prove that the pinned 3B and 7B checkpoints were
   cached, checksummed, loaded, and invoked on synthetic fixtures; they do not
@@ -148,10 +151,11 @@ Roadmap-supported goals:
 
 Current scope is a Python software prototype and simulation. The active study
 has a proposed research question and bounded systems-and-measurement
-contribution in `docs/multiuav_validation_study_protocol.md`, but the protocol
-is not finalized because its registered design decisions and experiments do
-not yet exist. Do not present the proposed question as a completed or supported
-contribution.
+contribution in `docs/multiuav_validation_study_protocol.md`. Its accuracy
+protocol and registered analyses are complete, but the separate resource
+experiment and final paper conclusion remain unresolved. Do not extend the
+observed static, controlled-derivative results to physical flight or general
+model-family claims.
 
 ## Planned Pipeline And Modules
 
@@ -279,10 +283,11 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: execution of both locked accuracy
-  matrices, final approved resource binding, and hardware warm-up/thermal
-  controls. Final accuracy configs and both no-inference preflights are bound;
-  do not bypass the commit-bound accuracy CLI with ad hoc model invocation.
+- Currently unresolved for the active study: final approved resource binding,
+  hardware warm-up/thermal controls, resource repetitions, and the final paper
+  conclusion. The accuracy matrices, scoring, source-cluster analysis, and
+  figures are complete; do not replace their commit-bound evidence with ad hoc
+  model invocation or manually copied values.
 
 ## Known Conflicts And Caveats
 

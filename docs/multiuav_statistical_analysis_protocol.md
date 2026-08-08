@@ -71,10 +71,19 @@ derived rows separated from aggregate summaries under
 model-contrast-outcome source-cluster bootstrap analyses then completed with
 10,000 fixed-seed draws each. Their raw draws, per-cluster summaries, hashes,
 and aggregate intervals are separated under
-`outputs/evaluations/multiuav_accuracy_bootstrap_v1/`. Figure generation still
-does not exist.
+`outputs/evaluations/multiuav_accuracy_bootstrap_v1/`. Publication figures are
+generated only from the frozen scoring and bootstrap summaries by
+`scripts/build_multiuav_accuracy_figures.py`. The figure manifest explicitly
+records that no raw model output, smoke row, or resource row entered the
+pipeline.
 
 The registered paired differences and percentile intervals are reported in
 `reports/multiuav_accuracy_bootstrap_v1.md`. No null-hypothesis test was run,
 and the observed intervals must be interpreted within the registered static,
 controlled-derivative benchmark scope.
+
+The generated primary-outcome and registered-contrast figures are stored in
+PNG and PDF formats under `reports/figures/`. Their exact source rows are stored
+as CSV files under `outputs/tables/`, and all source, code, table, and figure
+hashes are bound in
+`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`.

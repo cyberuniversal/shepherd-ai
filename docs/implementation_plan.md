@@ -385,7 +385,9 @@ study outcomes were accessed at admission. Registered label-separated scoring
 has now completed for all 11,360 rows, with derived row archives separated from
 the aggregate summary. All eight registered source-cluster bootstrap analyses
 have also completed with 10,000 fixed-seed draws each. Accuracy figure
-generation and the separate resource experiment remain pending.
+generation is complete in both PNG and PDF formats, with exact CSV source rows
+and a source-hashed provenance manifest. The separate resource experiment
+remains pending.
 
 Known uncertainties: Hardware measurement controls and the later resource
 repetitions remain unresolved. Call budgets, recoverability rules, static

@@ -401,7 +401,8 @@ no hidden labels or study scores were accessed. Accuracy scoring has not
 started at that boundary. Registered deterministic scoring subsequently
 completed for all 11,360 admitted rows. All eight registered source-cluster
 bootstrap analyses subsequently completed with 10,000 fixed-seed draws each;
-accuracy figure generation and resource-run measurements remain absent.
+the registered accuracy figures, exact source tables, and provenance manifest
+subsequently completed. Resource-run measurements remain absent.
 
 The first two wiring gates above were completed on 2026-07-28. Known
 Whisper-derived action and count aliases were removed from the deterministic
@@ -425,9 +426,9 @@ The following bindings or controls remain:
 The accuracy configuration is bound to the frozen execution commit, both
 accuracy matrices are complete and structurally admitted, and registered
 label-separated scoring and source-cluster bootstrap analysis are complete.
-The next accuracy gate is figure generation from the frozen summaries. The
-remaining unresolved item blocks only the later resource run; hardware warm-up
-is not an accuracy-run requirement.
+Figure generation from the frozen summaries is also complete. The remaining
+experimental gate is the resource run; its hardware warm-up and measurement
+controls do not change the completed accuracy results.
 
 Primary plan fidelity is frozen as static under
 `docs/multiuav_execution_scope_protocol.md`. It excludes official-server and

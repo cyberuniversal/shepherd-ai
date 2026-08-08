@@ -1,0 +1,74 @@
+{
+  "environment": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.0",
+    "python": "3.14.3"
+  },
+  "figure_data_sha256": "38e270e165844636f85b3d09c6a8c8d564ade48b9a8ba0669d0434119b02c8bc",
+  "figure_formats": [
+    "pdf",
+    "png"
+  ],
+  "figure_run_version": "multiuav_accuracy_figures_v1",
+  "figures": 2,
+  "next_gate": "resource_experiment_controls_and_execution_pending",
+  "outputs": [
+    {
+      "bytes": 2343,
+      "path": "outputs/tables/multiuav_accuracy_primary_rates_v1.csv",
+      "sha256": "df910caf840dba7d18f6fc9d42fadb19309de262abf249f259f9931912eedf14"
+    },
+    {
+      "bytes": 1683,
+      "path": "outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv",
+      "sha256": "5934ade13c1d5ae529065d7b59a524237f35fae3e230c83ff474ebec32dc770e"
+    },
+    {
+      "bytes": 132344,
+      "path": "reports/figures/multiuav_accuracy_primary_outcomes_v1.png",
+      "sha256": "c1f4868f4b1bed336b8ee1e7c07a717d5b7161b3bb752c37a31042042c481f4b"
+    },
+    {
+      "bytes": 19434,
+      "path": "reports/figures/multiuav_accuracy_primary_outcomes_v1.pdf",
+      "sha256": "a70c909ee2719c16da6203411c82b910330be1e2e8c84a0cf61fec012ae9c812"
+    },
+    {
+      "bytes": 136037,
+      "path": "reports/figures/multiuav_accuracy_registered_contrasts_v1.png",
+      "sha256": "c3f547a7b35d33d286ad7b34e1cfa8affb69d6b6ac26ea3d841d4b5392ccf35b"
+    },
+    {
+      "bytes": 22558,
+      "path": "reports/figures/multiuav_accuracy_registered_contrasts_v1.pdf",
+      "sha256": "47510004b24ce23f418e3aea659637bbdc5d1752d7edd49cbae4b95c0bb15e07"
+    }
+  ],
+  "schema_version": 1,
+  "source_code_sha256": {
+    "build_multiuav_accuracy_figures.py": "a7c1778b6b54e1d950e58985c8eef04f7429c237ea803a00ace4e2c88ea8498d",
+    "multiuav_study_figures.py": "3024c83f6c6b2f6a39c9632b82f2c7033fa29b8f79167ff468d54c701d848cb1"
+  },
+  "source_files": [
+    {
+      "bytes": 34273,
+      "path": "outputs/evaluations/multiuav_accuracy_scoring_v1/summary.json",
+      "sha256": "9b800a4ab2a06ba7f4a3de2848640f19c8cfe06e58924d9d1a508d5710076b2c"
+    },
+    {
+      "bytes": 14082,
+      "path": "outputs/evaluations/multiuav_accuracy_bootstrap_v1/summary.json",
+      "sha256": "def83d931ce3b827e7f4afc6a91b71e74708ab5b4c6ac4fe6b3d1177ca54ac57"
+    }
+  ],
+  "source_scope": {
+    "admitted_accuracy_summaries_only": true,
+    "new_metrics_computed": false,
+    "null_hypothesis_tests_run": false,
+    "raw_model_outputs_accessed": false,
+    "resource_rows_included": false,
+    "smoke_rows_included": false
+  },
+  "status": "accuracy_publication_figures_complete",
+  "tables": 2
+}

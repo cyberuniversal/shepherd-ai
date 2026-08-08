@@ -1,0 +1,9 @@
+model_id,model_label,contrast_role,contrast_label,outcome,outcome_label,direction,point_estimate,ci_lower,ci_upper,confidence_level,cluster_count,bootstrap_draws
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,primary_contrast,M3 - M1,unsafe_proceed_rate_nonexecute,Unsafe proceed,lower_is_better,-0.7904929577464789,-0.8274647887323944,-0.7517605633802817,0.95,284,10000
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,primary_contrast,M3 - M1,end_to_end_case_success_rate,End-to-end success,higher_is_better,0.0,0.0,0.0,0.95,284,10000
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,confirmatory_contrast,M3 - M4,unsafe_proceed_rate_nonexecute,Unsafe proceed,lower_is_better,-0.0017605633802816902,-0.00528169014084507,0.0,0.95,284,10000
+Qwen/Qwen2.5-3B-Instruct,Qwen2.5-3B,confirmatory_contrast,M3 - M4,end_to_end_case_success_rate,End-to-end success,higher_is_better,0.0,0.0,0.0,0.95,284,10000
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,primary_contrast,M3 - M1,unsafe_proceed_rate_nonexecute,Unsafe proceed,lower_is_better,-0.6830985915492958,-0.7323943661971831,-0.6338028169014085,0.95,284,10000
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,primary_contrast,M3 - M1,end_to_end_case_success_rate,End-to-end success,higher_is_better,0.16056338028169015,0.1507042253521127,0.16971830985915495,0.95,284,10000
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,confirmatory_contrast,M3 - M4,unsafe_proceed_rate_nonexecute,Unsafe proceed,lower_is_better,-0.02640845070422535,-0.040492957746478875,-0.014084507042253521,0.95,284,10000
+Qwen/Qwen2.5-7B-Instruct,Qwen2.5-7B,confirmatory_contrast,M3 - M4,end_to_end_case_success_rate,End-to-end success,higher_is_better,0.15211267605633805,0.14154929577464792,0.16267605633802817,0.95,284,10000
