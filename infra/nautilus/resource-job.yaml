@@ -51,7 +51,7 @@ spec:
                 --cache-audit-root /workspace/artifacts
           env:
             - name: SHEPHERD_GIT_COMMIT
-              value: 29af6e1980623a219866cbbee6901bfe1fad668a
+              value: 2ba2c400953906245e75572cb2901b4a23f814fa
             - name: HF_HOME
               value: /workspace/hf-cache
             - name: HF_HUB_OFFLINE

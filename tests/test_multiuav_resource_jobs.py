@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import unittest
 
 
@@ -6,6 +7,20 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class MultiUavResourceJobTests(unittest.TestCase):
+    def test_preflight_and_campaign_use_the_same_pinned_checkout(self) -> None:
+        pins = []
+        for name in ("resource-preflight-job.yaml", "resource-job.yaml"):
+            manifest = (ROOT / "infra" / "nautilus" / name).read_text(
+                encoding="utf-8"
+            )
+            match = re.search(
+                r"name: SHEPHERD_GIT_COMMIT\s+value: ([0-9a-f]{40})", manifest
+            )
+            self.assertIsNotNone(match)
+            pins.append(match.group(1))
+
+        self.assertEqual(pins[0], pins[1])
+
     def test_frozen_resource_bindings_preserve_registered_crlf_bytes(self) -> None:
         attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
 
