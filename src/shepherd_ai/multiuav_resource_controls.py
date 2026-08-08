@@ -27,6 +27,50 @@ class MeasuredOperation(Protocol):
     def measure(self, operation: Callable[[], T]) -> tuple[T, dict[str, Any]]: ...
 
 
+def probe_nvml_preflight(
+    *,
+    telemetry: ControlTelemetry,
+    protocol: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Verify exact-GPU NVML capabilities without loading a model."""
+
+    hardware = _mapping(protocol.get("hardware"), "hardware")
+    try:
+        identity = telemetry.identity()
+        _validate_identity(identity, hardware)
+        sample = telemetry.sample()
+        process_ids = telemetry.compute_process_ids()
+        energy_counter = getattr(telemetry, "total_energy_millijoules", None)
+        total_energy = energy_counter() if callable(energy_counter) else None
+    finally:
+        telemetry.close()
+    required_sample_fields = (
+        "power_milliwatts",
+        "board_memory_used_bytes",
+        "gpu_utilization_percent",
+        "temperature_celsius",
+    )
+    for field in required_sample_fields:
+        if not isinstance(sample.get(field), int):
+            raise ValueError(f"NVML preflight field is unavailable: {field}")
+    if process_ids is None:
+        raise ValueError("NVML compute-process enumeration is unsupported")
+    if len(process_ids) > int(hardware["maximum_gpu_compute_processes"]):
+        raise ValueError("foreign GPU compute process detected during preflight")
+    return {
+        "status": "nvml_resource_preflight_passed_no_model_loaded",
+        "gpu": identity,
+        "sample": {
+            field: int(sample[field]) for field in required_sample_fields
+        },
+        "compute_process_count": len(process_ids),
+        "total_energy_counter_supported": total_energy is not None,
+        "power_integration_fallback_available": True,
+        "model_loaded": False,
+        "measurement_started": False,
+    }
+
+
 def prepare_resource_condition(
     *,
     telemetry: ControlTelemetry,

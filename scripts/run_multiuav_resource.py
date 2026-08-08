@@ -38,6 +38,7 @@ from shepherd_ai.multiuav_model_cache import verify_cached_snapshot  # noqa: E40
 from shepherd_ai.multiuav_resource_controls import (  # noqa: E402
     ProtocolBoundResourceMonitor,
     prepare_resource_condition,
+    probe_nvml_preflight,
 )
 from shepherd_ai.multiuav_resource_execution import (  # noqa: E402
     load_bound_resource_config,
@@ -114,6 +115,10 @@ def main() -> None:
     _validate_packages(hardware)
     runtime = _runtime_metadata()
     _validate_runtime_gpu(runtime, hardware)
+    nvml_preflight = probe_nvml_preflight(
+        telemetry=NvmlDeviceTelemetry(),
+        protocol=hardware,
+    )
     all_cases = load_accuracy_evaluation_cases(dataset, manifest)
     cases = ordered_resource_cases(
         all_cases, schedule=schedule, repetition=args.repetition
@@ -160,6 +165,7 @@ def main() -> None:
         "cache_verification": cache_verification,
         "backend_config": backend_config.to_dict(),
         "runtime": runtime,
+        "nvml_preflight": nvml_preflight,
         "node_name": args.node_name,
         "segment_id": segment_id,
         "model_loaded": False,

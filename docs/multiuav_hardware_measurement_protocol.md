@@ -87,7 +87,9 @@ outputs unscored until the separate resource admission and analysis gate.
 
 All 24 run configs are commit-bound. The remaining pre-measurement gate is a
 no-inference RTX 3090 cluster preflight that independently verifies the 3B and
-7B config, cache inventory, successful smoke audit, runtime, and GPU binding.
+7B config, cache inventory, successful smoke audit, runtime, GPU binding, NVML
+identity, board telemetry, energy-counter/fallback availability, and
+compute-process enumeration.
 Final condition admission also resolves every row's start-control hash to its
 untampered warm-up, thermal, and hardware-lock report.
 

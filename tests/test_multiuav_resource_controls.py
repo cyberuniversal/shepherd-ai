@@ -5,6 +5,7 @@ import unittest
 from shepherd_ai.multiuav_resource_controls import (
     acquire_hardware_lock,
     prepare_resource_condition,
+    probe_nvml_preflight,
     validate_resource_measurement,
 )
 from shepherd_ai.multiuav_resource_protocol import build_resource_hardware_protocol
@@ -35,11 +36,27 @@ class _Telemetry:
     def compute_process_ids(self):
         return tuple(self.processes)
 
+    def total_energy_millijoules(self):
+        return 1234
+
     def close(self):
         self.closed = True
 
 
 class MultiUavResourceControlTests(unittest.TestCase):
+    def test_nvml_preflight_validates_capabilities_without_model(self) -> None:
+        report = probe_nvml_preflight(
+            telemetry=_Telemetry(processes=()),
+            protocol=build_resource_hardware_protocol(),
+        )
+
+        self.assertEqual(
+            report["status"], "nvml_resource_preflight_passed_no_model_loaded"
+        )
+        self.assertEqual(report["compute_process_count"], 0)
+        self.assertTrue(report["total_energy_counter_supported"])
+        self.assertFalse(report["model_loaded"])
+
     def test_passes_warmup_idle_control_and_locks_hardware(self) -> None:
         protocol = build_resource_hardware_protocol()
         telemetry = _Telemetry()
