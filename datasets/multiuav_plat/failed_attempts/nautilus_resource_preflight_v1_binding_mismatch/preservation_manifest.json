@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "artifact_status": "resource_preflight_failed_binding_mismatch",
+  "preserved_at_utc": "2026-08-08T13:27:25.5957481Z",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-resource-preflight-v1",
+  "pod_name": "shepherd-ai-resource-preflight-v1-f482q",
+  "job_failure_time_utc": "2026-08-08T13:24:14Z",
+  "job_failure_reason": "resource_config_artifact_binding_mismatch",
+  "pod_exit_code": 1,
+  "pod_restarts": 0,
+  "assigned_node": "suncave-14",
+  "assigned_gpu": "NVIDIA GeForce RTX 3090",
+  "measurement_started": false,
+  "model_loaded": false,
+  "three_b_summary_present": false,
+  "seven_b_summary_present": false,
+  "campaign_submitted": false,
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "files": {
+    "events.txt": {
+      "bytes": 10055,
+      "sha256": "8ab82a25b326939657fd6b8e28a44f28462df4717e4c3520cfbb34bb82e3b7e0"
+    },
+    "failure_summary.json": {
+      "bytes": 1291,
+      "sha256": "8bcaa3e30cf0a05a1ca1af379f3799d3322035fb83b602a29d12d8c87e842453"
+    },
+    "job.yaml": {
+      "bytes": 8969,
+      "sha256": "13311dbb75773be462468ff18f9806612d73bc102c9eed2d290cf544d3338943"
+    },
+    "pod.log": {
+      "bytes": 31176,
+      "sha256": "1767cc45a440d914e831e41452ce0282010ef30dada74d9bf90a376cb1a99cdc"
+    },
+    "pod.yaml": {
+      "bytes": 8157,
+      "sha256": "aad56c1b26e5d3fdfa98f37870305e223b297ac7bb3276485e65867fa87d5a69"
+    }
+  },
+  "availability_note": "The process failed before either preflight summary was written. Kubernetes Job YAML, pod YAML, pod logs, and pod events are preserved."
+}
