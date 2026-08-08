@@ -49,7 +49,8 @@ under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
 `outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The approved
 30-cluster resource schedule and RTX 3090 controls are now frozen without
 measurement. All 24 resource configs are commit-bound. The next gate is the
-no-inference cluster preflight, followed by the registered resource experiment. See
+no-inference cluster preflight for both frozen models, followed by the registered
+resource experiment. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

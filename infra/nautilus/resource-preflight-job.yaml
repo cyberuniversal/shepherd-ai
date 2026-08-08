@@ -44,16 +44,29 @@ spec:
                 psutil==7.2.0
               output=/workspace/results/resource-v1-preflight
               mkdir -p "${output}"
+              mkdir -p "${output}/3b" "${output}/7b"
               python "${repo}/scripts/run_multiuav_resource.py" \
                 --repetition 1 \
                 --condition-order 1 \
                 --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
                 --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
-                --results "${output}/unused-results.jsonl" \
-                --checkpoint-zip "${output}/unused-checkpoint.zip" \
-                --run-summary "${output}/run_summary.json" \
-                --start-control-dir "${output}/start-controls" \
-                --hardware-lock "${output}/unused-hardware-lock.json" \
+                --results "${output}/3b/unused-results.jsonl" \
+                --checkpoint-zip "${output}/3b/unused-checkpoint.zip" \
+                --run-summary "${output}/3b/run_summary.json" \
+                --start-control-dir "${output}/3b/start-controls" \
+                --hardware-lock "${output}/3b/unused-hardware-lock.json" \
+                --node-name "${SHEPHERD_NODE_NAME}" \
+                --preflight-only
+              python "${repo}/scripts/run_multiuav_resource.py" \
+                --repetition 1 \
+                --condition-order 3 \
+                --cache-audit /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+                --smoke-audit /workspace/artifacts/qwen25_7b_load_smoke_nautilus_v1.json \
+                --results "${output}/7b/unused-results.jsonl" \
+                --checkpoint-zip "${output}/7b/unused-checkpoint.zip" \
+                --run-summary "${output}/7b/run_summary.json" \
+                --start-control-dir "${output}/7b/start-controls" \
+                --hardware-lock "${output}/7b/unused-hardware-lock.json" \
                 --node-name "${SHEPHERD_NODE_NAME}" \
                 --preflight-only
           env:

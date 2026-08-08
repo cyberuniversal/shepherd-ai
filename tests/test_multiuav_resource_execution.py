@@ -1,6 +1,8 @@
 import copy
+import hashlib
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
 from shepherd_ai.multiuav_checkpoints import RunConfig
@@ -81,6 +83,7 @@ class MultiUavResourceExecutionTests(unittest.TestCase):
                         "run_control": {
                             "protocol_sha256": config.hardware_protocol_sha256,
                             "segment_id": "segment-1",
+                            "start_control_sha256": "e" * 64,
                         },
                     }
                 },
@@ -96,6 +99,59 @@ class MultiUavResourceExecutionTests(unittest.TestCase):
         invalid = summarize_resource_rows(invalid_rows, config=config)
         self.assertFalse(invalid["valid"])
         self.assertEqual(invalid["invalid_rows_or_controls"], 1)
+
+    def test_validates_start_control_report_hash(self) -> None:
+        config = _config()
+        report = {
+            "schema_version": 1,
+            "status": "resource_start_control_passed",
+            "protocol_sha256": config.hardware_protocol_sha256,
+            "hardware_lock": {"node_name": "node", "gpu_uuid": "GPU-fixed"},
+            "warmup": {"complete_method_cases": 1, "output_retained": False},
+            "measurement_started": False,
+        }
+        encoded = json.dumps(
+            report, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+        )
+        report_hash = hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+        report["sha256"] = report_hash
+        rows = [
+            {
+                "result_key": f"case-{index}",
+                "result": {
+                    "resource_measurement": {
+                        "valid": True,
+                        "run_control": {
+                            "protocol_sha256": config.hardware_protocol_sha256,
+                            "segment_id": "segment-1",
+                            "start_control_sha256": report_hash,
+                        },
+                    }
+                },
+            }
+            for index in range(150)
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "segment-1.json"
+            path.write_text(json.dumps(report), encoding="utf-8")
+            valid = summarize_resource_rows(
+                rows,
+                config=config,
+                start_control_dir=Path(temporary),
+            )
+            self.assertTrue(valid["valid"])
+            report["warmup"]["output_retained"] = True
+            path.write_text(json.dumps(report), encoding="utf-8")
+            invalid = summarize_resource_rows(
+                rows,
+                config=config,
+                start_control_dir=Path(temporary),
+            )
+
+        self.assertFalse(invalid["valid"])
+        self.assertTrue(
+            any("report hash differs" in error for error in invalid["errors"])
+        )
 
 
 if __name__ == "__main__":

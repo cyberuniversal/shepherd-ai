@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -161,12 +163,16 @@ def warmup_case_id(schedule: Mapping[str, Any], *, repetition: int) -> str:
 
 
 def summarize_resource_rows(
-    rows: Sequence[Mapping[str, Any]], *, config: RunConfig
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    config: RunConfig,
+    start_control_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Validate condition completeness without reading model outputs or labels."""
 
     invalid: list[str] = []
     segments: set[str] = set()
+    start_control_hashes: dict[str, str] = {}
     if len(rows) != EXPECTED_CASES:
         invalid.append("condition row count is not 150")
     for row in rows:
@@ -189,6 +195,27 @@ def summarize_resource_rows(
             invalid.append(f"{row.get('result_key')}: segment id is absent")
         else:
             segments.add(segment_id)
+            control_hash = str(run_control.get("start_control_sha256", ""))
+            if len(control_hash) != 64:
+                invalid.append(
+                    f"{row.get('result_key')}: start-control hash is absent"
+                )
+            elif segment_id in start_control_hashes and (
+                start_control_hashes[segment_id] != control_hash
+            ):
+                invalid.append(
+                    f"{row.get('result_key')}: segment start-control hash differs"
+                )
+            else:
+                start_control_hashes[segment_id] = control_hash
+    if start_control_dir is not None:
+        invalid.extend(
+            _validate_start_control_reports(
+                start_control_hashes,
+                start_control_dir=start_control_dir,
+                protocol_sha256=str(config.hardware_protocol_sha256),
+            )
+        )
     return {
         "schema_version": 1,
         "status": (
@@ -203,6 +230,67 @@ def summarize_resource_rows(
         "errors": invalid,
         "segments": sorted(segments),
         "segment_count": len(segments),
+        "start_control_reports_validated": (
+            len(start_control_hashes) if start_control_dir is not None else 0
+        ),
         "raw_model_outputs_inspected": False,
         "hidden_labels_inspected": False,
     }
+
+
+def _validate_start_control_reports(
+    expected: Mapping[str, str],
+    *,
+    start_control_dir: Path,
+    protocol_sha256: str,
+) -> list[str]:
+    errors: list[str] = []
+    hardware_lock: Mapping[str, Any] | None = None
+    for segment_id, expected_hash in sorted(expected.items()):
+        if Path(segment_id).name != segment_id:
+            errors.append(f"{segment_id}: unsafe start-control segment id")
+            continue
+        path = start_control_dir / f"{segment_id}.json"
+        if not path.is_file():
+            errors.append(f"{segment_id}: start-control report is absent")
+            continue
+        try:
+            report = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            errors.append(f"{segment_id}: invalid start-control report: {error}")
+            continue
+        if not isinstance(report, Mapping):
+            errors.append(f"{segment_id}: start-control report is not an object")
+            continue
+        stored_hash = report.get("sha256")
+        payload = dict(report)
+        payload.pop("sha256", None)
+        observed_hash = _sha256_json(payload)
+        if stored_hash != expected_hash or observed_hash != expected_hash:
+            errors.append(f"{segment_id}: start-control report hash differs")
+        if report.get("status") != "resource_start_control_passed":
+            errors.append(f"{segment_id}: start-control status is not passed")
+        if report.get("protocol_sha256") != protocol_sha256:
+            errors.append(f"{segment_id}: start-control protocol differs")
+        if report.get("measurement_started") is not False:
+            errors.append(f"{segment_id}: start-control measurement flag differs")
+        warmup = report.get("warmup")
+        if not isinstance(warmup, Mapping) or warmup.get(
+            "complete_method_cases"
+        ) != 1 or warmup.get("output_retained") is not False:
+            errors.append(f"{segment_id}: warm-up evidence is invalid")
+        current_lock = report.get("hardware_lock")
+        if not isinstance(current_lock, Mapping):
+            errors.append(f"{segment_id}: hardware lock is absent")
+        elif hardware_lock is None:
+            hardware_lock = current_lock
+        elif current_lock != hardware_lock:
+            errors.append(f"{segment_id}: hardware lock differs across segments")
+    return errors
+
+
+def _sha256_json(value: Mapping[str, Any]) -> str:
+    rendered = json.dumps(
+        value, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+    )
+    return hashlib.sha256(rendered.encode("utf-8")).hexdigest()

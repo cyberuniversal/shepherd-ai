@@ -233,7 +233,11 @@ def main() -> None:
             resource_monitor_factory=monitor_factory,
             progress_callback=progress,
         )
-        row_summary = summarize_resource_rows(checkpoint.load_rows(), config=config)
+        row_summary = summarize_resource_rows(
+            checkpoint.load_rows(),
+            config=config,
+            start_control_dir=args.start_control_dir,
+        )
         summary = {
             **preflight,
             "status": (
@@ -256,7 +260,7 @@ def main() -> None:
         if not row_summary["valid"]:
             raise RuntimeError("resource condition contains invalid measurements")
     except BaseException as error:
-        if args.results.exists() and not args.checkpoint_zip.exists():
+        if args.results.exists():
             try:
                 create_compact_checkpoint_zip(
                     JsonlCheckpoint(args.results, config), args.checkpoint_zip

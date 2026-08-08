@@ -86,7 +86,10 @@ Publication summaries exclude invalid conditions. The campaign keeps raw
 outputs unscored until the separate resource admission and analysis gate.
 
 All 24 run configs are commit-bound. The remaining pre-measurement gate is a
-no-inference RTX 3090 cluster preflight.
+no-inference RTX 3090 cluster preflight that independently verifies the 3B and
+7B config, cache inventory, successful smoke audit, runtime, and GPU binding.
+Final condition admission also resolves every row's start-control hash to its
+untampered warm-up, thermal, and hardware-lock report.
 
 ## Reproduce The Probe
 
