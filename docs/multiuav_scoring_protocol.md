@@ -58,3 +58,33 @@ by treating the five controlled derivatives as independent observations.
 python scripts/audit_multiuav_scoring_contract.py `
   --output datasets/multiuav_plat/scoring_contract_audit_v1.json
 ```
+
+After both complete matrices pass score-blind admission, reproduce the actual
+deterministic scoring pass with:
+
+```powershell
+python scripts/score_multiuav_accuracy_matrices.py
+```
+
+## Current Descriptive Scores
+
+The admitted 3B and 7B matrices were scored on 2026-08-08. Derived row evidence
+is stored separately from `summary.json` under
+`outputs/evaluations/multiuav_accuracy_scoring_v1/`. These are complete
+descriptive rates, not cluster-bootstrap estimates or final paper conclusions.
+
+| Model | Method | Unsafe proceed on non-execute cases | End-to-end case success |
+|---|---|---:|---:|
+| Qwen2.5-3B | M1 monolithic | 0.7905 | 0.0000 |
+| Qwen2.5-3B | M2 post-plan deterministic | 0.0035 | 0.0000 |
+| Qwen2.5-3B | M3 stage-wise | 0.0000 | 0.0000 |
+| Qwen2.5-3B | M4 compute-matched post-plan | 0.0018 | 0.0000 |
+| Qwen2.5-7B | M1 monolithic | 0.6831 | 0.0000 |
+| Qwen2.5-7B | M2 post-plan deterministic | 0.0229 | 0.0000 |
+| Qwen2.5-7B | M3 stage-wise | 0.0000 | 0.1606 |
+| Qwen2.5-7B | M4 compute-matched post-plan | 0.0264 | 0.0085 |
+
+The current trade-off is severe: deterministic containment reduces unsafe
+release, but most gated configurations also fail nearly all registered execute
+cases under the strict end-to-end contract. The registered source-cluster
+bootstrap must be completed before comparative claims are made.

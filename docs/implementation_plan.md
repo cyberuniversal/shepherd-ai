@@ -381,8 +381,10 @@ Current status: The frozen 3B and 7B deterministic accuracy runs are complete,
 with 5,680 retained method-case rows per model. Both sealed matrices passed the
 score-blind admission gate in
 `datasets/multiuav_plat/accuracy_matrix_admission_v1.json`; no hidden labels or
-study outcomes were accessed. Registered label-separated scoring is the next
-gate and has not started.
+study outcomes were accessed at admission. Registered label-separated scoring
+has now completed for all 11,360 rows, with derived row archives separated from
+the aggregate summary. The registered source-cluster bootstrap is the next gate
+and has not started.
 
 Known uncertainties: Hardware measurement controls and the later resource
 repetitions remain unresolved. Call budgets, recoverability rules, static

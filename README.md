@@ -21,7 +21,11 @@ preflights pass. The complete 3B and 7B accuracy matrices are now preserved as
 sealed checkpoints with 5,680 rows each. Both matrices passed the score-blind
 publication-admission gate in
 `datasets/multiuav_plat/accuracy_matrix_admission_v1.json`; no hidden labels or
-study scores were accessed. A reusable accuracy CLI validates the commit, data,
+study scores were accessed before that gate. Registered deterministic scoring
+has now completed for all 11,360 admitted rows, with derived rows kept separate
+from the aggregate summary under
+`outputs/evaluations/multiuav_accuracy_scoring_v1/`. The scores are descriptive
+until the registered source-cluster bootstrap is run. A reusable accuracy CLI validates the commit, data,
 protocol, cache, and row counts before model loading, then writes durable
 resumable rows and checkpoints. The label-separated scorer is frozen and source-hashed: it
 preserves raw model behavior, derives the post-gate system disposition, applies
@@ -37,7 +41,7 @@ historical infrastructure evidence. The 7B smoke required CPU and disk
 offload on the local 4 GB GPU. A one-row local 3B feasibility attempt was
 aborted after its first call required 389.9 seconds; its raw row, logs, config,
 and protocol-deviation record are preserved and excluded from study results.
-The next gate is label-separated deterministic scoring; it has not started. See
+The next gate is the registered source-cluster bootstrap analysis. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

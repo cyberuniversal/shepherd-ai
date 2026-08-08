@@ -65,8 +65,10 @@ The complete 3B and 7B matrices passed score-blind structural admission on
 2026-08-08, as recorded in
 `datasets/multiuav_plat/accuracy_matrix_admission_v1.json`. This gate verified
 11,360 method-case rows without accessing hidden labels or computing outcomes.
-No study row has been scored. Cluster-bootstrap execution and figure generation
-still do not exist.
+Registered deterministic scoring then completed for all admitted rows, with
+derived rows separated from aggregate summaries under
+`outputs/evaluations/multiuav_accuracy_scoring_v1/`. Cluster-bootstrap execution
+and figure generation still do not exist.
 
-Admission establishes structural readiness for registered scoring. It is not
-evidence that any method performs better.
+The current descriptive scores do not establish that any method performs
+better; registered cluster-level intervals and paired contrasts remain pending.

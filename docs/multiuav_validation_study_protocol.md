@@ -398,7 +398,9 @@ their run metadata are now preserved under
 `datasets/multiuav_plat/nautilus/qwen25_7b_accuracy_complete_v1/`. The two
 5,680-row matrices passed score-blind complete-matrix admission on 2026-08-08;
 no hidden labels or study scores were accessed. Accuracy scoring has not
-started, and resource-run measurements remain absent.
+started at that boundary. Registered deterministic scoring subsequently
+completed for all 11,360 admitted rows; source-cluster bootstrap analysis and
+resource-run measurements remain absent.
 
 The first two wiring gates above were completed on 2026-07-28. Known
 Whisper-derived action and count aliases were removed from the deterministic
@@ -420,10 +422,10 @@ The following bindings or controls remain:
    thermal/warm-up controls remain.
 
 The accuracy configuration is bound to the frozen execution commit, both
-accuracy matrices are complete and structurally admitted, and the next accuracy
-gate is registered label-separated scoring. The remaining unresolved item
-blocks only the later resource run; hardware warm-up is not an accuracy-run
-requirement.
+accuracy matrices are complete and structurally admitted, and registered
+label-separated scoring is complete. The next accuracy gate is source-cluster
+bootstrap analysis. The remaining unresolved item blocks only the later
+resource run; hardware warm-up is not an accuracy-run requirement.
 
 Primary plan fidelity is frozen as static under
 `docs/multiuav_execution_scope_protocol.md`. It excludes official-server and
