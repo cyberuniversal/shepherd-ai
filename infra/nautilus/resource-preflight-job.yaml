@@ -7,7 +7,9 @@ metadata:
     app.kubernetes.io/name: shepherd-ai
     shepherd-ai/stage: resource-preflight-v1
 spec:
-  activeDeadlineSeconds: 3600
+  # Job deadlines include scheduler queue time. Keep this long enough for scarce
+  # RTX 3090 capacity while retaining a finite cleanup bound.
+  activeDeadlineSeconds: 604800
   backoffLimit: 0
   template:
     metadata:

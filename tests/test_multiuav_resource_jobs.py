@@ -6,6 +6,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class MultiUavResourceJobTests(unittest.TestCase):
+    def test_preflight_queue_deadline_allows_for_scarce_gpu_capacity(self) -> None:
+        manifest = (
+            ROOT / "infra" / "nautilus" / "resource-preflight-job.yaml"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("activeDeadlineSeconds: 604800", manifest)
+
     def test_preflight_covers_both_frozen_models(self) -> None:
         manifest = (
             ROOT / "infra" / "nautilus" / "resource-preflight-job.yaml"
