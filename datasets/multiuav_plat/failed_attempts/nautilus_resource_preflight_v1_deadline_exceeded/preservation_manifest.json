@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "artifact_status": "resource_preflight_failed_before_scheduling",
+  "preserved_at_utc": "2026-08-08T12:38:19.1127779Z",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-resource-preflight-v1",
+  "job_failure_time_utc": "2026-08-08T12:03:05Z",
+  "job_failure_reason": "DeadlineExceeded",
+  "pod_restarts": 0,
+  "assigned_node": null,
+  "assigned_gpu": null,
+  "measurement_started": false,
+  "model_loaded": false,
+  "three_b_summary_present": false,
+  "seven_b_summary_present": false,
+  "campaign_submitted": false,
+  "raw_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "files": {
+    "events.txt": {
+      "bytes": 3789,
+      "sha256": "f5ac5da85bad1e45bf07504ec80d229df30fcac1762b439d829e993834c96aeb"
+    },
+    "failure_summary.json": {
+      "bytes": 1220,
+      "sha256": "58e0848e5ef5dfe1d0e0b7b70738b1ddc3bdadcc6370209b2334eb2df5843bd1"
+    },
+    "job.yaml": {
+      "bytes": 8961,
+      "sha256": "4abcea506500428facd60f908db3f223637bdf42b6dc426c10a6019776d8019d"
+    },
+    "job_describe.txt": {
+      "bytes": 4742,
+      "sha256": "5d1e9b34adb954ec88413a32e330c3c208be802126ac2eac4072d851f6f00d8e"
+    }
+  },
+  "availability_note": "The unscheduled pod was deleted by the Job controller before preservation, so pod YAML and logs were unavailable. The Job YAML, Job description, and scheduling events are preserved. No preflight summaries were created on the durable workspace."
+}
