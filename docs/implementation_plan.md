@@ -377,8 +377,16 @@ every expected method-case row and failure is retained; analysis is clustered
 by source task; all claims trace to stored evidence; and the conclusion follows
 the observed result.
 
-Known uncertainties: M3/M4 call budgets, missing-fact recoverability,
-static-versus-live execution scope, review personnel, and hardware measurement
-controls remain unresolved. Source provenance, split registration, official
-alias authority, task eligibility, and the exclusion of the existing
-DistilBERT span tagger from the primary comparison are now frozen.
+Current status: The frozen 3B and 7B deterministic accuracy runs are complete,
+with 5,680 retained method-case rows per model. Both sealed matrices passed the
+score-blind admission gate in
+`datasets/multiuav_plat/accuracy_matrix_admission_v1.json`; no hidden labels or
+study outcomes were accessed. Registered label-separated scoring is the next
+gate and has not started.
+
+Known uncertainties: Hardware measurement controls and the later resource
+repetitions remain unresolved. Call budgets, recoverability rules, static
+execution scope, source provenance, split registration, official alias
+authority, task eligibility, reviewer provenance, and the exclusion of the
+existing DistilBERT span tagger from the primary comparison are frozen with
+their documented limitations.

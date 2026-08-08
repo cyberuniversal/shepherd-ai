@@ -61,8 +61,12 @@ and incomplete matrices. Deterministic row scoring and descriptive aggregation
 now exist in `src/shepherd_ai/multiuav_scoring.py`. The scorer distinguishes raw
 model output from post-gate system disposition, applies external grounding to
 all methods, and accesses hidden official commands only after matrix admission.
+The complete 3B and 7B matrices passed score-blind structural admission on
+2026-08-08, as recorded in
+`datasets/multiuav_plat/accuracy_matrix_admission_v1.json`. This gate verified
+11,360 method-case rows without accessing hidden labels or computing outcomes.
 No study row has been scored. Cluster-bootstrap execution and figure generation
 still do not exist.
 
-The existence of analysis code is not evidence that the study data are ready
-or that any method performs better.
+Admission establishes structural readiness for registered scoring. It is not
+evidence that any method performs better.
