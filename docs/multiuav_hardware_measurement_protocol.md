@@ -72,13 +72,23 @@ float16 with `device_map=auto` and no offload, exact runtime package versions,
 and complete method-case measurement. Model loading, warm-up, and idle waiting
 are excluded from the measured unit.
 
-Every condition process performs five idle baseline samples, one unretained
-complete method-case warm-up, and then requires 15 consecutive one-second
-samples at no more than 5% utilization and no more than 2 C above baseline or
-60 C absolute. Baseline temperature may not exceed 60 C. NVML compute-process
-enumeration must show exactly one GPU process both during the start control and
-throughout every measured case. A node/GPU UUID lock prevents incompatible
-resume.
+Every condition process waits up to 600 seconds to acquire five consecutive
+one-second idle baseline samples and retains every baseline-wait observation.
+Any busy sample resets the consecutive baseline window. The process then runs
+one unretained complete method-case warm-up and requires 15 consecutive
+one-second samples at no more than 5% utilization and no more than 2 C above
+baseline or 60 C absolute. Baseline temperature may not exceed 60 C. NVML
+compute-process enumeration must show exactly one GPU process both during the
+start control and throughout every measured case. A node/GPU UUID lock
+prevents incompatible resume.
+
+Resource campaign attempt 1 loaded the first 3B condition on an RTX 3090 but
+failed before measurement because the earlier controller rejected the first
+busy baseline sample immediately. It produced zero measured rows. The complete
+failed-attempt metadata is preserved under `datasets/multiuav_plat/failed_attempts/`.
+Attempt 2 uses the unchanged GPU-idle threshold and timeout, but implements the
+registered wait window instead of treating one transient busy sample as an
+immediate terminal failure.
 
 Every row is durably appended. Any invalid row invalidates and preserves the
 whole 150-row condition; a replacement must use a new attempt directory.

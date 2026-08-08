@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: shepherd-ai-resource-preflight-v1
+  name: shepherd-ai-resource-preflight-v2
   namespace: aiea-interns
   labels:
     app.kubernetes.io/name: shepherd-ai
-    shepherd-ai/stage: resource-preflight-v1
+    shepherd-ai/stage: resource-preflight-v2
 spec:
   # Job deadlines include scheduler queue time. Keep this long enough for scarce
   # RTX 3090 capacity while retaining a finite cleanup bound.
@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: shepherd-ai
-        shepherd-ai/stage: resource-preflight-v1
+        shepherd-ai/stage: resource-preflight-v2
     spec:
       restartPolicy: Never
       nodeSelector:
@@ -44,7 +44,7 @@ spec:
                 transformers==4.57.6 \
                 nvidia-ml-py==13.610.43 \
                 psutil==7.2.0
-              output=/workspace/results/resource-v1-preflight
+              output=/workspace/results/resource-v2-preflight
               mkdir -p "${output}"
               mkdir -p "${output}/3b" "${output}/7b"
               python "${repo}/scripts/run_multiuav_resource.py" \

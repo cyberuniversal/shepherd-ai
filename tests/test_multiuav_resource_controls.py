@@ -12,9 +12,16 @@ from shepherd_ai.multiuav_resource_protocol import build_resource_hardware_proto
 
 
 class _Telemetry:
-    def __init__(self, *, processes=(101,), recovery_temperature=42) -> None:
+    def __init__(
+        self,
+        *,
+        processes=(101,),
+        recovery_temperature=42,
+        utilization_sequence=(),
+    ) -> None:
         self.processes = processes
         self.recovery_temperature = recovery_temperature
+        self.utilization_sequence = list(utilization_sequence)
         self.closed = False
 
     def identity(self):
@@ -25,10 +32,15 @@ class _Telemetry:
         }
 
     def sample(self):
+        utilization = (
+            self.utilization_sequence.pop(0)
+            if self.utilization_sequence
+            else 0
+        )
         return {
             "power_milliwatts": 30_000,
             "board_memory_used_bytes": 15_000,
-            "gpu_utilization_percent": 0,
+            "gpu_utilization_percent": utilization,
             "temperature_celsius": self.recovery_temperature,
             "process_gpu_memory_bytes": 14_000,
         }
@@ -82,6 +94,60 @@ class MultiUavResourceControlTests(unittest.TestCase):
         self.assertEqual(len(report["baseline_samples"]), 5)
         self.assertEqual(len(report["post_warmup_samples"]), 15)
         self.assertFalse(report["measurement_started"])
+        self.assertTrue(telemetry.closed)
+
+    def test_waits_for_consecutive_idle_baseline_samples(self) -> None:
+        protocol = build_resource_hardware_protocol()
+        telemetry = _Telemetry(utilization_sequence=(30, 20, 0, 0, 0, 0, 0))
+        now = [0.0]
+
+        def clock():
+            now[0] += 1.0
+            return now[0]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            report = prepare_resource_condition(
+                telemetry=telemetry,
+                protocol=protocol,
+                protocol_sha256="a" * 64,
+                hardware_lock_path=Path(temporary) / "hardware.json",
+                node_name="node-3090",
+                warmup_operation=lambda: None,
+                sleeper=lambda _: None,
+                clock=clock,
+            )
+
+        self.assertEqual(len(report["baseline_wait_samples"]), 7)
+        self.assertEqual(len(report["baseline_samples"]), 5)
+        self.assertTrue(
+            all(
+                sample["gpu_utilization_percent"] == 0
+                for sample in report["baseline_samples"]
+            )
+        )
+
+    def test_baseline_wait_fails_closed_at_registered_timeout(self) -> None:
+        protocol = build_resource_hardware_protocol()
+        telemetry = _Telemetry(utilization_sequence=(30,) * 10)
+        now = [0.0]
+
+        def clock():
+            now[0] += 200.0
+            return now[0]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaisesRegex(TimeoutError, "baseline idle sampling"):
+                prepare_resource_condition(
+                    telemetry=telemetry,
+                    protocol=protocol,
+                    protocol_sha256="a" * 64,
+                    hardware_lock_path=Path(temporary) / "hardware.json",
+                    node_name="node-3090",
+                    warmup_operation=lambda: None,
+                    sleeper=lambda _: None,
+                    clock=clock,
+                )
+
         self.assertTrue(telemetry.closed)
 
     def test_rejects_background_gpu_process(self) -> None:

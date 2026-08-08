@@ -95,17 +95,25 @@ def prepare_resource_condition(
         protocol_sha256=protocol_sha256,
     )
     baseline_samples: list[dict[str, Any]] = []
+    baseline_wait_samples: list[dict[str, Any]] = []
     recovery_samples: list[dict[str, Any]] = []
     try:
-        for index in range(int(start["baseline_samples"])):
-            observed = _control_sample(telemetry, clock())
+        required_baseline = int(start["baseline_samples"])
+        baseline_deadline = clock() + float(start["idle_timeout_seconds"])
+        while len(baseline_samples) < required_baseline:
+            observed_at = clock()
+            if observed_at > baseline_deadline:
+                raise TimeoutError("baseline idle sampling timed out")
+            observed = _control_sample(telemetry, observed_at)
+            baseline_wait_samples.append(observed)
             _validate_process_count(observed, hardware)
-            if observed["gpu_utilization_percent"] > int(
+            if observed["gpu_utilization_percent"] <= int(
                 start["maximum_gpu_utilization_percent"]
             ):
-                raise ValueError("GPU was not idle during baseline sampling")
-            baseline_samples.append(observed)
-            if index + 1 < int(start["baseline_samples"]):
+                baseline_samples.append(observed)
+            else:
+                baseline_samples.clear()
+            if len(baseline_samples) < required_baseline:
                 sleeper(float(start["baseline_sample_interval_seconds"]))
         baseline_temperature = float(
             statistics.median(
@@ -157,6 +165,7 @@ def prepare_resource_condition(
             "output_retained": False,
             "duration_seconds": warmup_completed - warmup_started,
         },
+        "baseline_wait_samples": baseline_wait_samples,
         "baseline_samples": baseline_samples,
         "post_warmup_samples": recovery_samples,
         "measurement_started": False,
