@@ -2,11 +2,11 @@
   "accuracy_manifest_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
   "accuracy_protocol_sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
   "claim_status": "registered_execution_configs_not_resource_results",
-  "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+  "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
   "configs": [
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -27,12 +27,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "485c5e34e6951ef41a949eabe29ed8ff04155f7a8e75876ef2afac0c178d3d9d",
+      "config_hash": "45ad5cf2abf235c3481abcbef3039c65d5e9a3bcba1df5ff739f3cae0b3ad078",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -53,12 +53,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "3afe626a959e1594b10be7b985cfbd0742e563f4a547207e60403c75176dfe33",
+      "config_hash": "f0c8f5519b730fb5e9afede6772eeba636bc7f27a99a557972ae2750a150ad10",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -79,12 +79,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "c55d5358c74fc04052f3440a41b7f5fa03a1091ff98e81fe2c5195f5f223e3cb",
+      "config_hash": "547bb1e9d9778960d7d5070b1985e53809456a9d83d9dd0a95bc831c5303fd99",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -105,12 +105,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "4da44154db2200e5571b8a53178c90bb5cc4a1ecc849ac2706dfdeae2facd781",
+      "config_hash": "c98118c0d9644d95adaafba2555372040dda1fc3058540e5a2cd109ae89d367b",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -131,12 +131,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "15b881c451f0c8d7cebc0b0ec351dec83654774a2605973505db180ad0118fdd",
+      "config_hash": "91f91a83aec03beaeb8ba8c62e1b22b01fbbdd8e8264c88c1a26512ae7cf1e09",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -157,12 +157,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "13df13deacd839d27332ed2c190d70073d116a1cd89f72cd05fd057ecce2d965",
+      "config_hash": "cd56fdc038cc59802c83288e1b4dfd2ba9f15d3732caae6de877845cc77a3088",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -183,12 +183,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "feb35af47a363680aeeb2b638e2b2eba67c3dea82cdfc96f6a31149ddd4bb8d9",
+      "config_hash": "0d3a43788c4983cc9894e863dd59feb6e6535c3c7c5d26e9b85680c954556455",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -209,12 +209,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "10e0874750010eb9f991d775f5ed90ee32b6abbb64288341a68dfb030470ec7e",
+      "config_hash": "5ee4b76a1ffa2fa9331694e6fbabb825dc34a110cc7b58f426ad806944893bac",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -235,12 +235,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "b55c35e3f9bfc6a88407cd5e30c4fdcaf79b4de3b5be51b169f290692304d0fe",
+      "config_hash": "7b38d21e777e93688d8ac806c8b87b4740b3ebdffaa48f6dc66b715f64367bbf",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -261,12 +261,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "3f40a061157791270e0ce7c61b6d7fa73273a125a9f972db046eb31b7081135e",
+      "config_hash": "cab14c67cee3a2b5d81905408b6613dbe67d6dfdc7b99925c4f49aa3de253ed0",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -287,12 +287,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "a9f18f07b2eacf39a71457693227b12c2d075319df7642bf0f7ec7e6fc677519",
+      "config_hash": "ae6e771c88380740e0eee71b2a0302c5710653ea440af32c3e5c025d0ba83bd7",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -313,12 +313,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "e09ca3b15cd6f1625a73bd6c10e0cbf5f8a6caa81d5a881146efc3568cd31d2e",
+      "config_hash": "16a6dece666d4232256a358c66fa36b345760aaba5e0ed549c06833f2c4538a1",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -339,12 +339,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "859e9901f965bbce0a8dc68e453e067183e0eda8f43839998be66c3b4717a632",
+      "config_hash": "6c786b8b43641075ff2276e6dffce70d6abfd746d00e719f9b251dd42ee3fbe3",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -365,12 +365,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "b6a889f3288c42be2ed87ef3bfbe63dda0a7bc5c6316876fccdfb9ac1119e6e6",
+      "config_hash": "2b6860176749844fe384d4d46bc933d417817efff029c642b35573a497f8da5b",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -391,12 +391,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "0753915b97a5bf4296cd6d963c6427c4a0afd3a72aa328f91cc810d46b99f06c",
+      "config_hash": "d623ca27eed7e09bb8a41342a79ad951cf8e9e35005583dfb45c54a9eb60d9bd",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -417,12 +417,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "63dc854ce3aa30bb3a3128d30143345ec953a6432467c7b2634e73eaa25b84fb",
+      "config_hash": "c9970551493d9dbb5c5e539a9c3e83583a9b7757ffeeac2161824f90ab92f419",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -443,12 +443,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "c412e67d95a206b29f05f0e50b6ac84cf2f4e420ff8d9dbfb5130949a792b90a",
+      "config_hash": "383ab17a25fdb61c22e8c73214bae98119c9b6f6cdba57f6bd731a98111d7f16",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -469,12 +469,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "b26720bd9267955c25367c7dde2d5198e596d82283ded9e610a1427b2c2a02d8",
+      "config_hash": "99b53ab17ad4bc4652b0eabb8acab6afb466cdb3d1e0926e7e8cdc4c71ca0b66",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -495,12 +495,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "d7ec0144aec885caf33cc10648f79ad526c33d54712db5b44bb2f68d3a721954",
+      "config_hash": "2984d49f41670ebe08dfde8ed871b1efd7d843dcba29248cd0d297fadb10e8c4",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -521,12 +521,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "843e97d871d3a49384b9e30881b85b083b75927f30761f8cbf755c43c0d3ed01",
+      "config_hash": "4fb0ac34856039f7c86e9dcc5820d6b0abeb7281498ec4f2e635ad6b598086cb",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -547,12 +547,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "0c330c07e95a975c31360a60ceffd76822fbb78e5858a9a1e1db48e53ab24536",
+      "config_hash": "cbf80b483d12cd9ab6a3a220551e621b6efda5b85c7a3d28f9ffff8a392e42ed",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -573,12 +573,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "22dd8a11a235082d8faa925c4d2c7cbb980289bf769bcf0f63b14486999f49c5",
+      "config_hash": "09f8cec8285388830bd8bd76ded49158f2643b81e179cec86e92b0d7949c1dea",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -599,12 +599,12 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "ed1128ec09ca59a80ec9099e48e3853e7d00463f6aa23c10fa8ce7fb09057624",
+      "config_hash": "d19efcae0380fc0c3271e36a8301b788530fb696a3dd339827f98928c4d03466",
       "schema_version": 3
     },
     {
       "config": {
-        "code_commit": "376ccad12b3b0f77dc404a1875f7ca5f493191aa",
+        "code_commit": "f6c5f2d778ee4d5b73b9360b9f36e8b94b08d446",
         "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
         "decoding": {
           "do_sample": false,
@@ -625,7 +625,7 @@
         "run_kind": "resource",
         "study_id": "multiuav_validation_placement_v1"
       },
-      "config_hash": "8af8e9f9c2f70db81d49c65e01c244765433b8faa342e9bc8defe868c87454f1",
+      "config_hash": "52e3a210ce2e724a187df8b887788aa9cdfd9bebfbb960d1efcc3914806125bf",
       "schema_version": 3
     }
   ],
