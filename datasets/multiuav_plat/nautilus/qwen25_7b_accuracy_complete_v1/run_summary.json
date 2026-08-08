@@ -1,0 +1,96 @@
+{
+  "approved_cases": 1420,
+  "backend_config": {
+    "cache_dir": "/workspace/hf-cache",
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 512,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "num_beams": 1,
+    "offload_folder": null,
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "snapshot_dir": "/workspace/hf-cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+    "trust_remote_code": false,
+    "use_safetensors": true
+  },
+  "cache_audit_sha256": "7937fce5fb0c5dd6e416829a81106ec8c4e0eac05b0eee41485010c57bb1086a",
+  "cache_verification": {
+    "file_count": 14,
+    "total_bytes": 15242807270,
+    "valid": true,
+    "weight_bytes": 15231271888,
+    "weight_file_count": 4
+  },
+  "checked_at_utc": "2026-08-07T03:10:28.731184+00:00",
+  "checkpoint_zip_sha256": "797ae05ab2c6a4a029657ce739a697b23f65048f6753ac561f1a38a3d45f3072",
+  "code_commit": "456b864d6b0dd9dce5da5a5fdcb497bfc0510a37",
+  "completed_at_utc": "2026-08-08T05:17:10.079351+00:00",
+  "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+  "expected_rows": 5680,
+  "matrix": {
+    "appended_rows": 3721,
+    "checkpoint_path": "/workspace/results/qwen25-7b/results.jsonl",
+    "compact_archive": {
+      "archive_path": "/workspace/results/qwen25-7b/checkpoint.zip",
+      "archive_sha256": "797ae05ab2c6a4a029657ce739a697b23f65048f6753ac561f1a38a3d45f3072",
+      "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+      "files": {
+        "results.jsonl": {
+          "bytes": 114746978,
+          "sha256": "b651adad6a5c23453c8ec0781fd0a06c29c6d1c0a807a78739ab1d4751b1289b"
+        },
+        "run_config.json": {
+          "bytes": 1004,
+          "sha256": "c418c73df6fb50230b4d78a8cbf1768e5a519f03dd254c90b90b196b398653ef"
+        }
+      },
+      "row_count": 5680,
+      "schema_version": 3
+    },
+    "complete": true,
+    "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+    "expected_rows": 5680,
+    "model_inference_backend": "LocalQwenBackend",
+    "resource_measurement_enabled": false,
+    "resumed_rows": 1959
+  },
+  "methods": [
+    "M1_monolithic",
+    "M2_post_plan_deterministic",
+    "M3_stage_wise",
+    "M4_post_plan_compute_matched"
+  ],
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_loaded": true,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "results_sha256": "b651adad6a5c23453c8ec0781fd0a06c29c6d1c0a807a78739ab1d4751b1289b",
+  "runtime": {
+    "cpu": "x86_64",
+    "cuda_available": true,
+    "cuda_runtime": "11.8",
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA L4",
+        "total_memory_bytes": 23661248512
+      }
+    ],
+    "package_versions": {
+      "accelerate": "1.14.0",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.8.0",
+      "torch": "2.7.1+cu118",
+      "transformers": "4.57.6"
+    },
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+    "python_executable": "/opt/conda/bin/python",
+    "python_version": "3.11.13"
+  },
+  "schema_version": 1,
+  "scores_inspected": false,
+  "smoke_audit_sha256": "6fffdc4ff85f4499ef49b078d72d6e60e35f5073c1f84ec2a205bef80533153b",
+  "status": "complete_accuracy_matrix_raw_results_unscored",
+  "study_inference_started": true
+}

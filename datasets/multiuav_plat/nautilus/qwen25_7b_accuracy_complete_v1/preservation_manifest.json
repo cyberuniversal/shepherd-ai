@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "artifact_status": "complete_accuracy_matrix_raw_results_unscored",
+  "preserved_at_utc": "2026-08-08T08:25:16.8224837Z",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-accuracy-7b",
+  "final_pod_name": "shepherd-ai-accuracy-7b-ks9br",
+  "job_completion_time_utc": "2026-08-08T05:17:14Z",
+  "job_exit_code": 0,
+  "job_restarts": 0,
+  "execution_checkout_commit": "cd2ed12d30049bedd7ba07947e396c35e3d030c8",
+  "bound_execution_code_commit": "456b864d6b0dd9dce5da5a5fdcb497bfc0510a37",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+  "durable_rows": 5680,
+  "checkpoint_zip_integrity": "passed",
+  "checkpoint_embedded_rows": 5680,
+  "scores_inspected": false,
+  "raw_results_sha256": "b651adad6a5c23453c8ec0781fd0a06c29c6d1c0a807a78739ab1d4751b1289b",
+  "files": {
+    "checkpoint.zip": {
+      "bytes": 4903801,
+      "sha256": "797ae05ab2c6a4a029657ce739a697b23f65048f6753ac561f1a38a3d45f3072"
+    },
+    "job.yaml": {
+      "bytes": 8123,
+      "sha256": "d3ea142960785563b14cb264fe8c901786aa2d3f48945f6145cf7ecbc17eaef6"
+    },
+    "pod.log": {
+      "bytes": 112206,
+      "sha256": "b40077c9f63e4bb23aa591eb23536330a27ef6bbd5c2b066bc4151c431c88055"
+    },
+    "pod.yaml": {
+      "bytes": 7627,
+      "sha256": "e88ed8c6fbf7496a648806cd7457a582c61ece42e41551b4a87355d4ab319679"
+    },
+    "results.jsonl.config.json": {
+      "bytes": 1004,
+      "sha256": "c418c73df6fb50230b4d78a8cbf1768e5a519f03dd254c90b90b196b398653ef"
+    },
+    "run_summary.json": {
+      "bytes": 3388,
+      "sha256": "82c4f2a88c621da198ba955f502d7118994652345f30bc466bac152afa5ecbc3"
+    }
+  },
+  "availability_note": "The final resumed pod log and YAML were available and preserved. The earlier preempted pod had already been removed by the cluster before final preservation; its 1959 durable rows remain included in the final sealed checkpoint."
+}

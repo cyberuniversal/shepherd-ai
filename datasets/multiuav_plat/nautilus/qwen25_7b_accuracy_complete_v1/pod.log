@@ -1,0 +1,792 @@
+﻿Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+Get:8 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1616 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [92.7 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [7836 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4524 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [82.8 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.6 kB]
+Get:14 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Get:15 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [84.1 kB]
+Get:16 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [4190 kB]
+Get:17 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [7545 kB]
+Get:18 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1314 kB]
+Fetched 47.7 MB in 33s (1448 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1 libgdbm-compat4
+  libgdbm6 libldap-2.5-0 libnghttp2-14 libperl5.34 libpsl5 librtmp1 libsasl2-2
+  libsasl2-modules-db libssh-4 perl perl-base perl-modules-5.34
+Suggested packages:
+  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+  gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n perl-doc
+  libterm-readline-gnu-perl | libterm-readline-perl-perl make
+  libtap-harness-archive-perl
+Recommended packages:
+  patch less ssh-client libldap-common publicsuffix libsasl2-modules netbase
+The following NEW packages will be installed:
+  git git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1
+  libgdbm-compat4 libgdbm6 libldap-2.5-0 libnghttp2-14 libperl5.34 libpsl5
+  librtmp1 libsasl2-2 libsasl2-modules-db libssh-4 perl perl-modules-5.34
+The following packages will be upgraded:
+  ca-certificates perl-base
+2 upgraded, 18 newly installed, 0 to remove and 45 not upgraded.
+Need to get 15.5 MB of archives.
+After this operation, 72.9 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl-base amd64 5.34.0-3ubuntu1.7 [1763 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl-modules-5.34 all 5.34.0-3ubuntu1.7 [2977 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm6 amd64 1.23-1 [33.9 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm-compat4 amd64 1.23-1 [6606 B]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libperl5.34 amd64 5.34.0-3ubuntu1.7 [4817 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl amd64 5.34.0-3ubuntu1.7 [232 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 ca-certificates all 20260601~22.04.1 [141 kB]
+Get:8 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libexpat1 amd64 2.4.7-1ubuntu0.7 [92.1 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libnghttp2-14 amd64 1.43.0-1ubuntu0.4 [76.9 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy/main amd64 libpsl5 amd64 0.21.0-1.2build2 [58.4 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy/main amd64 libbrotli1 amd64 1.0.9-2build6 [315 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-modules-db amd64 2.1.27+dfsg2-3ubuntu1.2 [20.5 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsasl2-2 amd64 2.1.27+dfsg2-3ubuntu1.2 [53.8 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libldap-2.5-0 amd64 2.5.20+dfsg-0ubuntu0.22.04.1 [184 kB]
+Get:15 http://archive.ubuntu.com/ubuntu jammy/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2build4 [58.2 kB]
+Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssh-4 amd64 0.9.6-2ubuntu0.22.04.7 [187 kB]
+Get:17 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcurl3-gnutls amd64 7.81.0-1ubuntu1.25 [284 kB]
+Get:18 http://archive.ubuntu.com/ubuntu jammy/main amd64 liberror-perl all 0.17029-1 [26.5 kB]
+Get:19 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 git-man all 1:2.34.1-1ubuntu1.17 [954 kB]
+Get:20 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 git amd64 1:2.34.1-1ubuntu1.17 [3174 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 15.5 MB in 2s (6652 kB/s)
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 6651 files and directories currently installed.)
+Preparing to unpack .../perl-base_5.34.0-3ubuntu1.7_amd64.deb ...
+Unpacking perl-base (5.34.0-3ubuntu1.7) over (5.34.0-3ubuntu1.4) ...
+Setting up perl-base (5.34.0-3ubuntu1.7) ...
+Selecting previously unselected package perl-modules-5.34.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 6651 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.34_5.34.0-3ubuntu1.7_all.deb ...
+Unpacking perl-modules-5.34 (5.34.0-3ubuntu1.7) ...
+Selecting previously unselected package libgdbm6:amd64.
+Preparing to unpack .../01-libgdbm6_1.23-1_amd64.deb ...
+Unpacking libgdbm6:amd64 (1.23-1) ...
+Selecting previously unselected package libgdbm-compat4:amd64.
+Preparing to unpack .../02-libgdbm-compat4_1.23-1_amd64.deb ...
+Unpacking libgdbm-compat4:amd64 (1.23-1) ...
+Selecting previously unselected package libperl5.34:amd64.
+Preparing to unpack .../03-libperl5.34_5.34.0-3ubuntu1.7_amd64.deb ...
+Unpacking libperl5.34:amd64 (5.34.0-3ubuntu1.7) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../04-perl_5.34.0-3ubuntu1.7_amd64.deb ...
+Unpacking perl (5.34.0-3ubuntu1.7) ...
+Preparing to unpack .../05-ca-certificates_20260601~22.04.1_all.deb ...
+Unpacking ca-certificates (20260601~22.04.1) over (20240203~22.04.1) ...
+Selecting previously unselected package libexpat1:amd64.
+Preparing to unpack .../06-libexpat1_2.4.7-1ubuntu0.7_amd64.deb ...
+Unpacking libexpat1:amd64 (2.4.7-1ubuntu0.7) ...
+Selecting previously unselected package libnghttp2-14:amd64.
+Preparing to unpack .../07-libnghttp2-14_1.43.0-1ubuntu0.4_amd64.deb ...
+Unpacking libnghttp2-14:amd64 (1.43.0-1ubuntu0.4) ...
+Selecting previously unselected package libpsl5:amd64.
+Preparing to unpack .../08-libpsl5_0.21.0-1.2build2_amd64.deb ...
+Unpacking libpsl5:amd64 (0.21.0-1.2build2) ...
+Selecting previously unselected package libbrotli1:amd64.
+Preparing to unpack .../09-libbrotli1_1.0.9-2build6_amd64.deb ...
+Unpacking libbrotli1:amd64 (1.0.9-2build6) ...
+Selecting previously unselected package libsasl2-modules-db:amd64.
+Preparing to unpack .../10-libsasl2-modules-db_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+Unpacking libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libsasl2-2:amd64.
+Preparing to unpack .../11-libsasl2-2_2.1.27+dfsg2-3ubuntu1.2_amd64.deb ...
+Unpacking libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Selecting previously unselected package libldap-2.5-0:amd64.
+Preparing to unpack .../12-libldap-2.5-0_2.5.20+dfsg-0ubuntu0.22.04.1_amd64.deb ...
+Unpacking libldap-2.5-0:amd64 (2.5.20+dfsg-0ubuntu0.22.04.1) ...
+Selecting previously unselected package librtmp1:amd64.
+Preparing to unpack .../13-librtmp1_2.4+20151223.gitfa8646d.1-2build4_amd64.deb ...
+Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Selecting previously unselected package libssh-4:amd64.
+Preparing to unpack .../14-libssh-4_0.9.6-2ubuntu0.22.04.7_amd64.deb ...
+Unpacking libssh-4:amd64 (0.9.6-2ubuntu0.22.04.7) ...
+Selecting previously unselected package libcurl3-gnutls:amd64.
+Preparing to unpack .../15-libcurl3-gnutls_7.81.0-1ubuntu1.25_amd64.deb ...
+Unpacking libcurl3-gnutls:amd64 (7.81.0-1ubuntu1.25) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../16-liberror-perl_0.17029-1_all.deb ...
+Unpacking liberror-perl (0.17029-1) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../17-git-man_1%3a2.34.1-1ubuntu1.17_all.deb ...
+Unpacking git-man (1:2.34.1-1ubuntu1.17) ...
+Selecting previously unselected package git.
+Preparing to unpack .../18-git_1%3a2.34.1-1ubuntu1.17_amd64.deb ...
+Unpacking git (1:2.34.1-1ubuntu1.17) ...
+Setting up libexpat1:amd64 (2.4.7-1ubuntu0.7) ...
+Setting up libpsl5:amd64 (0.21.0-1.2build2) ...
+Setting up libbrotli1:amd64 (1.0.9-2build6) ...
+Setting up libnghttp2-14:amd64 (1.43.0-1ubuntu0.4) ...
+Setting up perl-modules-5.34 (5.34.0-3ubuntu1.7) ...
+Setting up libsasl2-modules-db:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up ca-certificates (20260601~22.04.1) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+14 added, 39 removed; done.
+Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build4) ...
+Setting up libsasl2-2:amd64 (2.1.27+dfsg2-3ubuntu1.2) ...
+Setting up libssh-4:amd64 (0.9.6-2ubuntu0.22.04.7) ...
+Setting up git-man (1:2.34.1-1ubuntu1.17) ...
+Setting up libgdbm6:amd64 (1.23-1) ...
+Setting up libldap-2.5-0:amd64 (2.5.20+dfsg-0ubuntu0.22.04.1) ...
+Setting up libgdbm-compat4:amd64 (1.23-1) ...
+Setting up libperl5.34:amd64 (5.34.0-3ubuntu1.7) ...
+Setting up libcurl3-gnutls:amd64 (7.81.0-1ubuntu1.25) ...
+Setting up perl (5.34.0-3ubuntu1.7) ...
+Setting up liberror-perl (0.17029-1) ...
+Setting up git (1:2.34.1-1ubuntu1.17) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+Processing triggers for ca-certificates (20260601~22.04.1) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+HEAD is now at cd2ed12 Add frozen 7B accuracy execution job
+Obtaining file:///workspace/repo-cd2ed12d30049bedd7ba07947e396c35e3d030c8
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Collecting folium>=0.16 (from shepherd-ai==0.1.0)
+  Downloading folium-0.20.0-py2.py3-none-any.whl.metadata (4.2 kB)
+Collecting matplotlib>=3.8 (from shepherd-ai==0.1.0)
+  Downloading matplotlib-3.11.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (80 kB)
+Requirement already satisfied: networkx>=3.0 in /opt/conda/lib/python3.11/site-packages (from shepherd-ai==0.1.0) (3.5)
+Requirement already satisfied: numpy>=1.24 in /opt/conda/lib/python3.11/site-packages (from shepherd-ai==0.1.0) (2.2.6)
+Collecting accelerate<2,>=0.33 (from shepherd-ai==0.1.0)
+  Downloading accelerate-1.14.0-py3-none-any.whl.metadata (19 kB)
+Collecting huggingface-hub<1,>=0.26 (from shepherd-ai==0.1.0)
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl.metadata (15 kB)
+Collecting nvidia-ml-py<14,>=13.595 (from shepherd-ai==0.1.0)
+  Downloading nvidia_ml_py-13.610.43-py3-none-any.whl.metadata (9.7 kB)
+Requirement already satisfied: psutil<8,>=5.9 in /opt/conda/lib/python3.11/site-packages (from shepherd-ai==0.1.0) (7.0.0)
+Collecting safetensors<1,>=0.4 (from shepherd-ai==0.1.0)
+  Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Requirement already satisfied: torch<3,>=2.2 in /opt/conda/lib/python3.11/site-packages (from shepherd-ai==0.1.0) (2.7.1+cu118)
+Collecting transformers<5,>=4.45 (from shepherd-ai==0.1.0)
+  Downloading transformers-4.57.6-py3-none-any.whl.metadata (43 kB)
+Requirement already satisfied: packaging>=20.0 in /opt/conda/lib/python3.11/site-packages (from accelerate<2,>=0.33->shepherd-ai==0.1.0) (25.0)
+Requirement already satisfied: pyyaml in /opt/conda/lib/python3.11/site-packages (from accelerate<2,>=0.33->shepherd-ai==0.1.0) (6.0.2)
+Requirement already satisfied: filelock in /opt/conda/lib/python3.11/site-packages (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (3.18.0)
+Requirement already satisfied: fsspec>=2023.5.0 in /opt/conda/lib/python3.11/site-packages (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (2025.5.1)
+Collecting hf-xet<2.0.0,>=1.1.3 (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0)
+  Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Requirement already satisfied: requests in /opt/conda/lib/python3.11/site-packages (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (2.32.3)
+Requirement already satisfied: tqdm>=4.42.1 in /opt/conda/lib/python3.11/site-packages (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (4.67.1)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /opt/conda/lib/python3.11/site-packages (from huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (4.14.0)
+Requirement already satisfied: sympy>=1.13.3 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (1.14.0)
+Requirement already satisfied: jinja2 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (3.1.6)
+Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.8.89 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.8.89)
+Requirement already satisfied: nvidia-cuda-runtime-cu11==11.8.89 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.8.89)
+Requirement already satisfied: nvidia-cuda-cupti-cu11==11.8.87 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.8.87)
+Requirement already satisfied: nvidia-cudnn-cu11==9.1.0.70 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (9.1.0.70)
+Requirement already satisfied: nvidia-cublas-cu11==11.11.3.6 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.11.3.6)
+Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (10.9.0.58)
+Requirement already satisfied: nvidia-curand-cu11==10.3.0.86 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (10.3.0.86)
+Requirement already satisfied: nvidia-cusolver-cu11==11.4.1.48 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.4.1.48)
+Requirement already satisfied: nvidia-cusparse-cu11==11.7.5.86 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.7.5.86)
+Requirement already satisfied: nvidia-nccl-cu11==2.21.5 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (2.21.5)
+Requirement already satisfied: nvidia-nvtx-cu11==11.8.86 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (11.8.86)
+Requirement already satisfied: triton==3.3.1 in /opt/conda/lib/python3.11/site-packages (from torch<3,>=2.2->shepherd-ai==0.1.0) (3.3.1)
+Requirement already satisfied: setuptools>=40.8.0 in /opt/conda/lib/python3.11/site-packages (from triton==3.3.1->torch<3,>=2.2->shepherd-ai==0.1.0) (75.8.2)
+Collecting regex!=2019.12.17 (from transformers<5,>=4.45->shepherd-ai==0.1.0)
+  Downloading regex-2026.7.19-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting tokenizers<=0.23.0,>=0.22.0 (from transformers<5,>=4.45->shepherd-ai==0.1.0)
+  Downloading tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+Collecting branca>=0.6.0 (from folium>=0.16->shepherd-ai==0.1.0)
+  Downloading branca-0.8.2-py3-none-any.whl.metadata (1.7 kB)
+Collecting xyzservices (from folium>=0.16->shepherd-ai==0.1.0)
+  Downloading xyzservices-2026.3.0-py3-none-any.whl.metadata (4.1 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in /opt/conda/lib/python3.11/site-packages (from jinja2->torch<3,>=2.2->shepherd-ai==0.1.0) (3.0.2)
+Collecting contourpy>=1.0.1 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading contourpy-1.3.3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.28.2 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading fonttools-4.63.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (118 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading kiwisolver-1.5.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.1 kB)
+Requirement already satisfied: pillow>=9 in /opt/conda/lib/python3.11/site-packages (from matplotlib>=3.8->shepherd-ai==0.1.0) (11.0.0)
+Collecting pyparsing>=3 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting python-dateutil>=2.7 (from matplotlib>=3.8->shepherd-ai==0.1.0)
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Requirement already satisfied: six>=1.5 in /opt/conda/lib/python3.11/site-packages (from python-dateutil>=2.7->matplotlib>=3.8->shepherd-ai==0.1.0) (1.17.0)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /opt/conda/lib/python3.11/site-packages (from sympy>=1.13.3->torch<3,>=2.2->shepherd-ai==0.1.0) (1.3.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /opt/conda/lib/python3.11/site-packages (from requests->huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (3.4.2)
+Requirement already satisfied: idna<4,>=2.5 in /opt/conda/lib/python3.11/site-packages (from requests->huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /opt/conda/lib/python3.11/site-packages (from requests->huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (2.4.0)
+Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/lib/python3.11/site-packages (from requests->huggingface-hub<1,>=0.26->shepherd-ai==0.1.0) (2025.4.26)
+Downloading accelerate-1.14.0-py3-none-any.whl (389 kB)
+Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 104.4 MB/s eta 0:00:00
+Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 225.3 MB/s eta 0:00:00
+Downloading nvidia_ml_py-13.610.43-py3-none-any.whl (53 kB)
+Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
+Downloading transformers-4.57.6-py3-none-any.whl (12.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 210.5 MB/s eta 0:00:00
+Downloading tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 147.0 MB/s eta 0:00:00
+Downloading folium-0.20.0-py2.py3-none-any.whl (113 kB)
+Downloading branca-0.8.2-py3-none-any.whl (26 kB)
+Downloading matplotlib-3.11.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (10.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.0/10.0 MB 263.5 MB/s eta 0:00:00
+Downloading contourpy-1.3.3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (355 kB)
+Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Downloading fonttools-4.63.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 135.9 MB/s eta 0:00:00
+Downloading kiwisolver-1.5.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 329.3 MB/s eta 0:00:00
+Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading regex-2026.7.19-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.4/801.4 kB 114.9 MB/s eta 0:00:00
+Downloading xyzservices-2026.3.0-py3-none-any.whl (94 kB)
+Building wheels for collected packages: shepherd-ai
+  Building editable for shepherd-ai (pyproject.toml): started
+  Building editable for shepherd-ai (pyproject.toml): finished with status 'done'
+  Created wheel for shepherd-ai: filename=shepherd_ai-0.1.0-0.editable-py3-none-any.whl size=21839 sha256=3b79d0abf7b77e6d8f06200ada6290bf907b8ccbed2aed0dcc90c554864bef22
+  Stored in directory: /tmp/pip-ephem-wheel-cache-w0vwclhw/wheels/8c/5c/c8/64690d65219a0c8d8c611fb792d9753edc2254013ca1a2c0b3
+Successfully built shepherd-ai
+Installing collected packages: nvidia-ml-py, xyzservices, safetensors, regex, python-dateutil, pyparsing, kiwisolver, hf-xet, fonttools, cycler, contourpy, matplotlib, huggingface-hub, branca, tokenizers, folium, accelerate, transformers, shepherd-ai
+
+Successfully installed accelerate-1.14.0 branca-0.8.2 contourpy-1.3.3 cycler-0.12.1 folium-0.20.0 fonttools-4.63.0 hf-xet-1.6.0 huggingface-hub-0.36.2 kiwisolver-1.5.0 matplotlib-3.11.1 nvidia-ml-py-13.610.43 pyparsing-3.3.2 python-dateutil-2.9.0.post0 regex-2026.7.19 safetensors-0.8.0 shepherd-ai-0.1.0 tokenizers-0.22.2 transformers-4.57.6 xyzservices-2026.3.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.90it/s]
+Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.91it/s]
+Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.96it/s]
+Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.09it/s]
+Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.03it/s]
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+{"appended_rows": 1, "case_id": "5b68cb49:restored_information_execute", "completed_rows": 1960, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 11, "case_id": "5c49de09:official_alias_execute", "completed_rows": 1970, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 21, "case_id": "5c49de09:restored_information_execute", "completed_rows": 1980, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 31, "case_id": "5c7f2bdf:official_alias_execute", "completed_rows": 1990, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 41, "case_id": "5c7f2bdf:restored_information_execute", "completed_rows": 2000, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 51, "case_id": "5cef9228:official_alias_execute", "completed_rows": 2010, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 61, "case_id": "5cef9228:restored_information_execute", "completed_rows": 2020, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 71, "case_id": "5dca000e:official_alias_execute", "completed_rows": 2030, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 81, "case_id": "5dca000e:restored_information_execute", "completed_rows": 2040, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 91, "case_id": "5e0e55f4:official_alias_execute", "completed_rows": 2050, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 101, "case_id": "5e0e55f4:restored_information_execute", "completed_rows": 2060, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 111, "case_id": "5eb474f3:official_alias_execute", "completed_rows": 2070, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 121, "case_id": "5eb474f3:restored_information_execute", "completed_rows": 2080, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 131, "case_id": "5fb86de4:official_alias_execute", "completed_rows": 2090, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 141, "case_id": "5fb86de4:restored_information_execute", "completed_rows": 2100, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 151, "case_id": "60a09dd0:official_alias_execute", "completed_rows": 2110, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 161, "case_id": "60a09dd0:restored_information_execute", "completed_rows": 2120, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 171, "case_id": "6175eb93:official_alias_execute", "completed_rows": 2130, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 181, "case_id": "6175eb93:restored_information_execute", "completed_rows": 2140, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 191, "case_id": "61d07c2b:official_alias_execute", "completed_rows": 2150, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 201, "case_id": "61d07c2b:restored_information_execute", "completed_rows": 2160, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 211, "case_id": "6264f184:official_alias_execute", "completed_rows": 2170, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 221, "case_id": "6264f184:restored_information_execute", "completed_rows": 2180, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 231, "case_id": "626c183d:official_alias_execute", "completed_rows": 2190, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 241, "case_id": "626c183d:restored_information_execute", "completed_rows": 2200, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 251, "case_id": "62e12834:official_alias_execute", "completed_rows": 2210, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 261, "case_id": "62e12834:restored_information_execute", "completed_rows": 2220, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 271, "case_id": "63491937:official_alias_execute", "completed_rows": 2230, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 281, "case_id": "63491937:restored_information_execute", "completed_rows": 2240, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 291, "case_id": "649bca01:official_alias_execute", "completed_rows": 2250, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 301, "case_id": "649bca01:restored_information_execute", "completed_rows": 2260, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 311, "case_id": "65000e82:official_alias_execute", "completed_rows": 2270, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 321, "case_id": "65000e82:restored_information_execute", "completed_rows": 2280, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 331, "case_id": "65f39bbb:official_alias_execute", "completed_rows": 2290, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 341, "case_id": "65f39bbb:restored_information_execute", "completed_rows": 2300, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 351, "case_id": "66fe2d62:official_alias_execute", "completed_rows": 2310, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 361, "case_id": "66fe2d62:restored_information_execute", "completed_rows": 2320, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 371, "case_id": "6745fb28:official_alias_execute", "completed_rows": 2330, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 381, "case_id": "6745fb28:restored_information_execute", "completed_rows": 2340, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 391, "case_id": "6847db9a:official_alias_execute", "completed_rows": 2350, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 401, "case_id": "6847db9a:restored_information_execute", "completed_rows": 2360, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 411, "case_id": "6855edc2:official_alias_execute", "completed_rows": 2370, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 421, "case_id": "6855edc2:restored_information_execute", "completed_rows": 2380, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 431, "case_id": "691c5866:official_alias_execute", "completed_rows": 2390, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 441, "case_id": "691c5866:restored_information_execute", "completed_rows": 2400, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 451, "case_id": "6bd8a6e0:official_alias_execute", "completed_rows": 2410, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 461, "case_id": "6bd8a6e0:restored_information_execute", "completed_rows": 2420, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 471, "case_id": "6c53293b:official_alias_execute", "completed_rows": 2430, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 481, "case_id": "6c53293b:restored_information_execute", "completed_rows": 2440, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 491, "case_id": "6c76c941:official_alias_execute", "completed_rows": 2450, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 501, "case_id": "6c76c941:restored_information_execute", "completed_rows": 2460, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 511, "case_id": "6ca06278:official_alias_execute", "completed_rows": 2470, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 521, "case_id": "6ca06278:restored_information_execute", "completed_rows": 2480, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 531, "case_id": "6cf8f3da:official_alias_execute", "completed_rows": 2490, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 541, "case_id": "6cf8f3da:restored_information_execute", "completed_rows": 2500, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 551, "case_id": "6d0415ee:official_alias_execute", "completed_rows": 2510, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 561, "case_id": "6d0415ee:restored_information_execute", "completed_rows": 2520, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 571, "case_id": "6e58aa29:official_alias_execute", "completed_rows": 2530, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 581, "case_id": "6e58aa29:restored_information_execute", "completed_rows": 2540, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 591, "case_id": "6fc7ec15:official_alias_execute", "completed_rows": 2550, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 601, "case_id": "6fc7ec15:restored_information_execute", "completed_rows": 2560, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 611, "case_id": "70785a8e:official_alias_execute", "completed_rows": 2570, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 621, "case_id": "70785a8e:restored_information_execute", "completed_rows": 2580, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 631, "case_id": "71e30ee2:official_alias_execute", "completed_rows": 2590, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 641, "case_id": "71e30ee2:restored_information_execute", "completed_rows": 2600, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 651, "case_id": "72140570:official_alias_execute", "completed_rows": 2610, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 661, "case_id": "72140570:restored_information_execute", "completed_rows": 2620, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 671, "case_id": "72d646a0:official_alias_execute", "completed_rows": 2630, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 681, "case_id": "72d646a0:restored_information_execute", "completed_rows": 2640, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 691, "case_id": "7305cfd4:official_alias_execute", "completed_rows": 2650, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 701, "case_id": "7305cfd4:restored_information_execute", "completed_rows": 2660, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 711, "case_id": "73887fe3:official_alias_execute", "completed_rows": 2670, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 721, "case_id": "73887fe3:restored_information_execute", "completed_rows": 2680, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 731, "case_id": "74da0d71:official_alias_execute", "completed_rows": 2690, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 741, "case_id": "74da0d71:restored_information_execute", "completed_rows": 2700, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 751, "case_id": "75525d3e:official_alias_execute", "completed_rows": 2710, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 761, "case_id": "75525d3e:restored_information_execute", "completed_rows": 2720, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 771, "case_id": "7557865e:official_alias_execute", "completed_rows": 2730, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 781, "case_id": "7557865e:restored_information_execute", "completed_rows": 2740, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 791, "case_id": "75c18b5c:official_alias_execute", "completed_rows": 2750, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 801, "case_id": "75c18b5c:restored_information_execute", "completed_rows": 2760, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 811, "case_id": "7610e9e7:official_alias_execute", "completed_rows": 2770, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 821, "case_id": "7610e9e7:restored_information_execute", "completed_rows": 2780, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 831, "case_id": "76f22284:official_alias_execute", "completed_rows": 2790, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 841, "case_id": "76f22284:restored_information_execute", "completed_rows": 2800, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 851, "case_id": "77193827:official_alias_execute", "completed_rows": 2810, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 861, "case_id": "77193827:restored_information_execute", "completed_rows": 2820, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 871, "case_id": "792d2ae0:official_alias_execute", "completed_rows": 2830, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 881, "case_id": "792d2ae0:restored_information_execute", "completed_rows": 2840, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 891, "case_id": "793c1f31:official_alias_execute", "completed_rows": 2850, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 901, "case_id": "793c1f31:restored_information_execute", "completed_rows": 2860, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 911, "case_id": "7a1b5ec7:official_alias_execute", "completed_rows": 2870, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 921, "case_id": "7a1b5ec7:restored_information_execute", "completed_rows": 2880, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 931, "case_id": "7a707c80:official_alias_execute", "completed_rows": 2890, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 941, "case_id": "7a707c80:restored_information_execute", "completed_rows": 2900, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 951, "case_id": "7c465946:official_alias_execute", "completed_rows": 2910, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 961, "case_id": "7c465946:restored_information_execute", "completed_rows": 2920, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 971, "case_id": "7e1bad5a:official_alias_execute", "completed_rows": 2930, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 981, "case_id": "7e1bad5a:restored_information_execute", "completed_rows": 2940, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 991, "case_id": "7ee48081:official_alias_execute", "completed_rows": 2950, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1001, "case_id": "7ee48081:restored_information_execute", "completed_rows": 2960, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1011, "case_id": "80c0c279:official_alias_execute", "completed_rows": 2970, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1021, "case_id": "80c0c279:restored_information_execute", "completed_rows": 2980, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1031, "case_id": "80f07cce:official_alias_execute", "completed_rows": 2990, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1041, "case_id": "80f07cce:restored_information_execute", "completed_rows": 3000, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1051, "case_id": "81160720:official_alias_execute", "completed_rows": 3010, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1061, "case_id": "81160720:restored_information_execute", "completed_rows": 3020, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1071, "case_id": "814b811e:official_alias_execute", "completed_rows": 3030, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1081, "case_id": "814b811e:restored_information_execute", "completed_rows": 3040, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1091, "case_id": "82b5413a:official_alias_execute", "completed_rows": 3050, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1101, "case_id": "82b5413a:restored_information_execute", "completed_rows": 3060, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1111, "case_id": "82d7e45c:official_alias_execute", "completed_rows": 3070, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1121, "case_id": "82d7e45c:restored_information_execute", "completed_rows": 3080, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1131, "case_id": "846bcd9e:official_alias_execute", "completed_rows": 3090, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1141, "case_id": "846bcd9e:restored_information_execute", "completed_rows": 3100, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1151, "case_id": "8780a90a:official_alias_execute", "completed_rows": 3110, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1161, "case_id": "8780a90a:restored_information_execute", "completed_rows": 3120, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1171, "case_id": "8977c14a:official_alias_execute", "completed_rows": 3130, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1181, "case_id": "8977c14a:restored_information_execute", "completed_rows": 3140, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1191, "case_id": "89a772bf:official_alias_execute", "completed_rows": 3150, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1201, "case_id": "89a772bf:restored_information_execute", "completed_rows": 3160, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1211, "case_id": "8a27ed72:official_alias_execute", "completed_rows": 3170, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1221, "case_id": "8a27ed72:restored_information_execute", "completed_rows": 3180, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1231, "case_id": "8adcc578:official_alias_execute", "completed_rows": 3190, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1241, "case_id": "8adcc578:restored_information_execute", "completed_rows": 3200, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1251, "case_id": "8ca66ec7:official_alias_execute", "completed_rows": 3210, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1261, "case_id": "8ca66ec7:restored_information_execute", "completed_rows": 3220, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1271, "case_id": "8d6471f9:official_alias_execute", "completed_rows": 3230, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1281, "case_id": "8d6471f9:restored_information_execute", "completed_rows": 3240, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1291, "case_id": "8d86e41b:official_alias_execute", "completed_rows": 3250, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1301, "case_id": "8d86e41b:restored_information_execute", "completed_rows": 3260, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1311, "case_id": "8fe0d4a8:official_alias_execute", "completed_rows": 3270, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1321, "case_id": "8fe0d4a8:restored_information_execute", "completed_rows": 3280, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1331, "case_id": "913f86e2:official_alias_execute", "completed_rows": 3290, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1341, "case_id": "913f86e2:restored_information_execute", "completed_rows": 3300, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1351, "case_id": "91595cd5:official_alias_execute", "completed_rows": 3310, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1361, "case_id": "91595cd5:restored_information_execute", "completed_rows": 3320, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1371, "case_id": "91701224:official_alias_execute", "completed_rows": 3330, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1381, "case_id": "91701224:restored_information_execute", "completed_rows": 3340, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1391, "case_id": "91d9be3f:official_alias_execute", "completed_rows": 3350, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1401, "case_id": "91d9be3f:restored_information_execute", "completed_rows": 3360, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1411, "case_id": "9308fefb:official_alias_execute", "completed_rows": 3370, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1421, "case_id": "9308fefb:restored_information_execute", "completed_rows": 3380, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1431, "case_id": "9363c225:official_alias_execute", "completed_rows": 3390, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1441, "case_id": "9363c225:restored_information_execute", "completed_rows": 3400, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1451, "case_id": "93fbcf5f:official_alias_execute", "completed_rows": 3410, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1461, "case_id": "93fbcf5f:restored_information_execute", "completed_rows": 3420, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1471, "case_id": "954e7dcb:official_alias_execute", "completed_rows": 3430, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1481, "case_id": "954e7dcb:restored_information_execute", "completed_rows": 3440, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1491, "case_id": "95b8b55f:official_alias_execute", "completed_rows": 3450, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1501, "case_id": "95b8b55f:restored_information_execute", "completed_rows": 3460, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1511, "case_id": "9b53119b:official_alias_execute", "completed_rows": 3470, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1521, "case_id": "9b53119b:restored_information_execute", "completed_rows": 3480, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1531, "case_id": "9bea760b:official_alias_execute", "completed_rows": 3490, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1541, "case_id": "9bea760b:restored_information_execute", "completed_rows": 3500, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1551, "case_id": "9cff94b0:official_alias_execute", "completed_rows": 3510, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1561, "case_id": "9cff94b0:restored_information_execute", "completed_rows": 3520, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1571, "case_id": "9f063c03:official_alias_execute", "completed_rows": 3530, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1581, "case_id": "9f063c03:restored_information_execute", "completed_rows": 3540, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1591, "case_id": "9ffcfa4c:official_alias_execute", "completed_rows": 3550, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1601, "case_id": "9ffcfa4c:restored_information_execute", "completed_rows": 3560, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1611, "case_id": "a025b625:official_alias_execute", "completed_rows": 3570, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1621, "case_id": "a025b625:restored_information_execute", "completed_rows": 3580, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1631, "case_id": "a08188ac:official_alias_execute", "completed_rows": 3590, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1641, "case_id": "a08188ac:restored_information_execute", "completed_rows": 3600, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1651, "case_id": "a166a6be:official_alias_execute", "completed_rows": 3610, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1661, "case_id": "a166a6be:restored_information_execute", "completed_rows": 3620, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1671, "case_id": "a2d6b43c:official_alias_execute", "completed_rows": 3630, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1681, "case_id": "a2d6b43c:restored_information_execute", "completed_rows": 3640, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1691, "case_id": "a37d293d:official_alias_execute", "completed_rows": 3650, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1701, "case_id": "a37d293d:restored_information_execute", "completed_rows": 3660, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1711, "case_id": "a3aa56b2:official_alias_execute", "completed_rows": 3670, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1721, "case_id": "a3aa56b2:restored_information_execute", "completed_rows": 3680, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1731, "case_id": "a3dc1b2f:official_alias_execute", "completed_rows": 3690, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1741, "case_id": "a3dc1b2f:restored_information_execute", "completed_rows": 3700, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1751, "case_id": "a3e4e384:official_alias_execute", "completed_rows": 3710, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1761, "case_id": "a3e4e384:restored_information_execute", "completed_rows": 3720, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1771, "case_id": "a5214f71:official_alias_execute", "completed_rows": 3730, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1781, "case_id": "a5214f71:restored_information_execute", "completed_rows": 3740, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1791, "case_id": "a56d4667:official_alias_execute", "completed_rows": 3750, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1801, "case_id": "a56d4667:restored_information_execute", "completed_rows": 3760, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1811, "case_id": "a573fe4a:official_alias_execute", "completed_rows": 3770, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1821, "case_id": "a573fe4a:restored_information_execute", "completed_rows": 3780, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1831, "case_id": "a6d41f67:official_alias_execute", "completed_rows": 3790, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1841, "case_id": "a6d41f67:restored_information_execute", "completed_rows": 3800, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1851, "case_id": "a917adf4:official_alias_execute", "completed_rows": 3810, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1861, "case_id": "a917adf4:restored_information_execute", "completed_rows": 3820, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1871, "case_id": "aa23c766:official_alias_execute", "completed_rows": 3830, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1881, "case_id": "aa23c766:restored_information_execute", "completed_rows": 3840, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1891, "case_id": "aa8f4481:official_alias_execute", "completed_rows": 3850, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1901, "case_id": "aa8f4481:restored_information_execute", "completed_rows": 3860, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1911, "case_id": "ab0ea02f:official_alias_execute", "completed_rows": 3870, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1921, "case_id": "ab0ea02f:restored_information_execute", "completed_rows": 3880, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1931, "case_id": "ab71c848:official_alias_execute", "completed_rows": 3890, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1941, "case_id": "ab71c848:restored_information_execute", "completed_rows": 3900, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1951, "case_id": "ab8eecfb:official_alias_execute", "completed_rows": 3910, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1961, "case_id": "ab8eecfb:restored_information_execute", "completed_rows": 3920, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1971, "case_id": "afee925c:official_alias_execute", "completed_rows": 3930, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1981, "case_id": "afee925c:restored_information_execute", "completed_rows": 3940, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 1991, "case_id": "b06a44a8:official_alias_execute", "completed_rows": 3950, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2001, "case_id": "b06a44a8:restored_information_execute", "completed_rows": 3960, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2011, "case_id": "b198c355:official_alias_execute", "completed_rows": 3970, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2021, "case_id": "b198c355:restored_information_execute", "completed_rows": 3980, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2031, "case_id": "b25fcecb:official_alias_execute", "completed_rows": 3990, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2041, "case_id": "b25fcecb:restored_information_execute", "completed_rows": 4000, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2051, "case_id": "b296c421:official_alias_execute", "completed_rows": 4010, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2061, "case_id": "b296c421:restored_information_execute", "completed_rows": 4020, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2071, "case_id": "b42a3f62:official_alias_execute", "completed_rows": 4030, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2081, "case_id": "b42a3f62:restored_information_execute", "completed_rows": 4040, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2091, "case_id": "b4c67780:official_alias_execute", "completed_rows": 4050, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2101, "case_id": "b4c67780:restored_information_execute", "completed_rows": 4060, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2111, "case_id": "b57ca94f:official_alias_execute", "completed_rows": 4070, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2121, "case_id": "b57ca94f:restored_information_execute", "completed_rows": 4080, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2131, "case_id": "b5f95876:official_alias_execute", "completed_rows": 4090, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2141, "case_id": "b5f95876:restored_information_execute", "completed_rows": 4100, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2151, "case_id": "b66cfcd8:official_alias_execute", "completed_rows": 4110, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2161, "case_id": "b66cfcd8:restored_information_execute", "completed_rows": 4120, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2171, "case_id": "b6a7b096:official_alias_execute", "completed_rows": 4130, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2181, "case_id": "b6a7b096:restored_information_execute", "completed_rows": 4140, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2191, "case_id": "b85176d9:official_alias_execute", "completed_rows": 4150, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2201, "case_id": "b85176d9:restored_information_execute", "completed_rows": 4160, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2211, "case_id": "b99ee5b0:official_alias_execute", "completed_rows": 4170, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2221, "case_id": "b99ee5b0:restored_information_execute", "completed_rows": 4180, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2231, "case_id": "bca9cefe:official_alias_execute", "completed_rows": 4190, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2241, "case_id": "bca9cefe:restored_information_execute", "completed_rows": 4200, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2251, "case_id": "bda1cbf0:official_alias_execute", "completed_rows": 4210, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2261, "case_id": "bda1cbf0:restored_information_execute", "completed_rows": 4220, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2271, "case_id": "be2ec3dd:official_alias_execute", "completed_rows": 4230, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2281, "case_id": "be2ec3dd:restored_information_execute", "completed_rows": 4240, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2291, "case_id": "bf0fda5d:official_alias_execute", "completed_rows": 4250, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2301, "case_id": "bf0fda5d:restored_information_execute", "completed_rows": 4260, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2311, "case_id": "c276f092:official_alias_execute", "completed_rows": 4270, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2321, "case_id": "c276f092:restored_information_execute", "completed_rows": 4280, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2331, "case_id": "c2a90d2a:official_alias_execute", "completed_rows": 4290, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2341, "case_id": "c2a90d2a:restored_information_execute", "completed_rows": 4300, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2351, "case_id": "c3cd68fd:official_alias_execute", "completed_rows": 4310, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2361, "case_id": "c3cd68fd:restored_information_execute", "completed_rows": 4320, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2371, "case_id": "c6f3fa6d:official_alias_execute", "completed_rows": 4330, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2381, "case_id": "c6f3fa6d:restored_information_execute", "completed_rows": 4340, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2391, "case_id": "c71b0d52:official_alias_execute", "completed_rows": 4350, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2401, "case_id": "c71b0d52:restored_information_execute", "completed_rows": 4360, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2411, "case_id": "c7a2b391:official_alias_execute", "completed_rows": 4370, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2421, "case_id": "c7a2b391:restored_information_execute", "completed_rows": 4380, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2431, "case_id": "c8147922:official_alias_execute", "completed_rows": 4390, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2441, "case_id": "c8147922:restored_information_execute", "completed_rows": 4400, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2451, "case_id": "c86452ce:official_alias_execute", "completed_rows": 4410, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2461, "case_id": "c86452ce:restored_information_execute", "completed_rows": 4420, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2471, "case_id": "c87239f4:official_alias_execute", "completed_rows": 4430, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2481, "case_id": "c87239f4:restored_information_execute", "completed_rows": 4440, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2491, "case_id": "c9934211:official_alias_execute", "completed_rows": 4450, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2501, "case_id": "c9934211:restored_information_execute", "completed_rows": 4460, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2511, "case_id": "c9c1d1d6:official_alias_execute", "completed_rows": 4470, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2521, "case_id": "c9c1d1d6:restored_information_execute", "completed_rows": 4480, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2531, "case_id": "c9db11d5:official_alias_execute", "completed_rows": 4490, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2541, "case_id": "c9db11d5:restored_information_execute", "completed_rows": 4500, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2551, "case_id": "cc0bace9:official_alias_execute", "completed_rows": 4510, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2561, "case_id": "cc0bace9:restored_information_execute", "completed_rows": 4520, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2571, "case_id": "cc32f8b8:official_alias_execute", "completed_rows": 4530, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2581, "case_id": "cc32f8b8:restored_information_execute", "completed_rows": 4540, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2591, "case_id": "cd6fa06b:official_alias_execute", "completed_rows": 4550, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2601, "case_id": "cd6fa06b:restored_information_execute", "completed_rows": 4560, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2611, "case_id": "d0c4452d:official_alias_execute", "completed_rows": 4570, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2621, "case_id": "d0c4452d:restored_information_execute", "completed_rows": 4580, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2631, "case_id": "d1177e27:official_alias_execute", "completed_rows": 4590, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2641, "case_id": "d1177e27:restored_information_execute", "completed_rows": 4600, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2651, "case_id": "d16e3e4b:official_alias_execute", "completed_rows": 4610, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2661, "case_id": "d16e3e4b:restored_information_execute", "completed_rows": 4620, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2671, "case_id": "d46027e4:official_alias_execute", "completed_rows": 4630, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2681, "case_id": "d46027e4:restored_information_execute", "completed_rows": 4640, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2691, "case_id": "d48f9114:official_alias_execute", "completed_rows": 4650, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2701, "case_id": "d48f9114:restored_information_execute", "completed_rows": 4660, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2711, "case_id": "d4e2d192:official_alias_execute", "completed_rows": 4670, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2721, "case_id": "d4e2d192:restored_information_execute", "completed_rows": 4680, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2731, "case_id": "d51602f7:official_alias_execute", "completed_rows": 4690, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2741, "case_id": "d51602f7:restored_information_execute", "completed_rows": 4700, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2751, "case_id": "d5f0bdd8:official_alias_execute", "completed_rows": 4710, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2761, "case_id": "d5f0bdd8:restored_information_execute", "completed_rows": 4720, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2771, "case_id": "d6bb7444:official_alias_execute", "completed_rows": 4730, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2781, "case_id": "d6bb7444:restored_information_execute", "completed_rows": 4740, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2791, "case_id": "d74e86c4:official_alias_execute", "completed_rows": 4750, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2801, "case_id": "d74e86c4:restored_information_execute", "completed_rows": 4760, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2811, "case_id": "d8a9fc1d:official_alias_execute", "completed_rows": 4770, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2821, "case_id": "d8a9fc1d:restored_information_execute", "completed_rows": 4780, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2831, "case_id": "d8e2c59d:official_alias_execute", "completed_rows": 4790, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2841, "case_id": "d8e2c59d:restored_information_execute", "completed_rows": 4800, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2851, "case_id": "d9c6a518:official_alias_execute", "completed_rows": 4810, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2861, "case_id": "d9c6a518:restored_information_execute", "completed_rows": 4820, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2871, "case_id": "da96c80b:official_alias_execute", "completed_rows": 4830, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2881, "case_id": "da96c80b:restored_information_execute", "completed_rows": 4840, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2891, "case_id": "dad9c0d2:official_alias_execute", "completed_rows": 4850, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2901, "case_id": "dad9c0d2:restored_information_execute", "completed_rows": 4860, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2911, "case_id": "dc7ba363:official_alias_execute", "completed_rows": 4870, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2921, "case_id": "dc7ba363:restored_information_execute", "completed_rows": 4880, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2931, "case_id": "de0e0259:official_alias_execute", "completed_rows": 4890, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2941, "case_id": "de0e0259:restored_information_execute", "completed_rows": 4900, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2951, "case_id": "de5a2434:official_alias_execute", "completed_rows": 4910, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2961, "case_id": "de5a2434:restored_information_execute", "completed_rows": 4920, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2971, "case_id": "de6bef8a:official_alias_execute", "completed_rows": 4930, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2981, "case_id": "de6bef8a:restored_information_execute", "completed_rows": 4940, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 2991, "case_id": "ded67b10:official_alias_execute", "completed_rows": 4950, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3001, "case_id": "ded67b10:restored_information_execute", "completed_rows": 4960, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3011, "case_id": "dee52bb6:official_alias_execute", "completed_rows": 4970, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3021, "case_id": "dee52bb6:restored_information_execute", "completed_rows": 4980, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3031, "case_id": "df1f6e00:official_alias_execute", "completed_rows": 4990, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3041, "case_id": "df1f6e00:restored_information_execute", "completed_rows": 5000, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3051, "case_id": "df22d657:official_alias_execute", "completed_rows": 5010, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3061, "case_id": "df22d657:restored_information_execute", "completed_rows": 5020, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3071, "case_id": "e00435b3:official_alias_execute", "completed_rows": 5030, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3081, "case_id": "e00435b3:restored_information_execute", "completed_rows": 5040, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3091, "case_id": "e086cd74:official_alias_execute", "completed_rows": 5050, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3101, "case_id": "e086cd74:restored_information_execute", "completed_rows": 5060, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3111, "case_id": "e11594d6:official_alias_execute", "completed_rows": 5070, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3121, "case_id": "e11594d6:restored_information_execute", "completed_rows": 5080, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3131, "case_id": "e2429cac:official_alias_execute", "completed_rows": 5090, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3141, "case_id": "e2429cac:restored_information_execute", "completed_rows": 5100, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3151, "case_id": "e3164f19:official_alias_execute", "completed_rows": 5110, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3161, "case_id": "e3164f19:restored_information_execute", "completed_rows": 5120, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3171, "case_id": "e3d207f7:official_alias_execute", "completed_rows": 5130, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3181, "case_id": "e3d207f7:restored_information_execute", "completed_rows": 5140, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3191, "case_id": "e42eea8a:official_alias_execute", "completed_rows": 5150, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3201, "case_id": "e42eea8a:restored_information_execute", "completed_rows": 5160, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3211, "case_id": "e4d167ac:official_alias_execute", "completed_rows": 5170, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3221, "case_id": "e4d167ac:restored_information_execute", "completed_rows": 5180, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3231, "case_id": "e6051dce:official_alias_execute", "completed_rows": 5190, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3241, "case_id": "e6051dce:restored_information_execute", "completed_rows": 5200, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3251, "case_id": "e6268123:official_alias_execute", "completed_rows": 5210, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3261, "case_id": "e6268123:restored_information_execute", "completed_rows": 5220, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3271, "case_id": "e7956d0a:official_alias_execute", "completed_rows": 5230, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3281, "case_id": "e7956d0a:restored_information_execute", "completed_rows": 5240, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3291, "case_id": "e7ec89ed:official_alias_execute", "completed_rows": 5250, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3301, "case_id": "e7ec89ed:restored_information_execute", "completed_rows": 5260, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3311, "case_id": "e943ff84:official_alias_execute", "completed_rows": 5270, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3321, "case_id": "e943ff84:restored_information_execute", "completed_rows": 5280, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3331, "case_id": "e9f1ed01:official_alias_execute", "completed_rows": 5290, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3341, "case_id": "e9f1ed01:restored_information_execute", "completed_rows": 5300, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3351, "case_id": "ea2f05d9:official_alias_execute", "completed_rows": 5310, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3361, "case_id": "ea2f05d9:restored_information_execute", "completed_rows": 5320, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3371, "case_id": "eb80ab66:official_alias_execute", "completed_rows": 5330, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3381, "case_id": "eb80ab66:restored_information_execute", "completed_rows": 5340, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3391, "case_id": "ece194cb:official_alias_execute", "completed_rows": 5350, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3401, "case_id": "ece194cb:restored_information_execute", "completed_rows": 5360, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3411, "case_id": "ececc780:official_alias_execute", "completed_rows": 5370, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3421, "case_id": "ececc780:restored_information_execute", "completed_rows": 5380, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3431, "case_id": "edbfea45:official_alias_execute", "completed_rows": 5390, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3441, "case_id": "edbfea45:restored_information_execute", "completed_rows": 5400, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3451, "case_id": "ee691195:official_alias_execute", "completed_rows": 5410, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3461, "case_id": "ee691195:restored_information_execute", "completed_rows": 5420, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3471, "case_id": "efabb634:official_alias_execute", "completed_rows": 5430, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3481, "case_id": "efabb634:restored_information_execute", "completed_rows": 5440, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3491, "case_id": "f03899cf:official_alias_execute", "completed_rows": 5450, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3501, "case_id": "f03899cf:restored_information_execute", "completed_rows": 5460, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3511, "case_id": "f15e0605:official_alias_execute", "completed_rows": 5470, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3521, "case_id": "f15e0605:restored_information_execute", "completed_rows": 5480, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3531, "case_id": "f2ee334b:official_alias_execute", "completed_rows": 5490, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3541, "case_id": "f2ee334b:restored_information_execute", "completed_rows": 5500, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3551, "case_id": "f56fcb57:official_alias_execute", "completed_rows": 5510, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3561, "case_id": "f56fcb57:restored_information_execute", "completed_rows": 5520, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3571, "case_id": "f7bfca53:official_alias_execute", "completed_rows": 5530, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3581, "case_id": "f7bfca53:restored_information_execute", "completed_rows": 5540, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3591, "case_id": "f89fbba8:official_alias_execute", "completed_rows": 5550, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3601, "case_id": "f89fbba8:restored_information_execute", "completed_rows": 5560, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3611, "case_id": "f922aa84:official_alias_execute", "completed_rows": 5570, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3621, "case_id": "f922aa84:restored_information_execute", "completed_rows": 5580, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3631, "case_id": "fbc3a880:official_alias_execute", "completed_rows": 5590, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3641, "case_id": "fbc3a880:restored_information_execute", "completed_rows": 5600, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3651, "case_id": "fbc88230:official_alias_execute", "completed_rows": 5610, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3661, "case_id": "fbc88230:restored_information_execute", "completed_rows": 5620, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3671, "case_id": "fbfee253:official_alias_execute", "completed_rows": 5630, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3681, "case_id": "fbfee253:restored_information_execute", "completed_rows": 5640, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3691, "case_id": "ff3ba6b0:official_alias_execute", "completed_rows": 5650, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3701, "case_id": "ff3ba6b0:restored_information_execute", "completed_rows": 5660, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3711, "case_id": "ff54f1c2:official_alias_execute", "completed_rows": 5670, "expected_rows": 5680, "method_id": "M2_post_plan_deterministic", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{"appended_rows": 3721, "case_id": "ff54f1c2:restored_information_execute", "completed_rows": 5680, "expected_rows": 5680, "method_id": "M4_post_plan_compute_matched", "resumed_rows": 1959, "status": "accuracy_matrix_progress"}
+{
+  "approved_cases": 1420,
+  "backend_config": {
+    "cache_dir": "/workspace/hf-cache",
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 512,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "num_beams": 1,
+    "offload_folder": null,
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "snapshot_dir": "/workspace/hf-cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+    "trust_remote_code": false,
+    "use_safetensors": true
+  },
+  "cache_audit_sha256": "7937fce5fb0c5dd6e416829a81106ec8c4e0eac05b0eee41485010c57bb1086a",
+  "cache_verification": {
+    "file_count": 14,
+    "total_bytes": 15242807270,
+    "valid": true,
+    "weight_bytes": 15231271888,
+    "weight_file_count": 4
+  },
+  "checked_at_utc": "2026-08-07T03:10:28.731184+00:00",
+  "checkpoint_zip_sha256": "797ae05ab2c6a4a029657ce739a697b23f65048f6753ac561f1a38a3d45f3072",
+  "code_commit": "456b864d6b0dd9dce5da5a5fdcb497bfc0510a37",
+  "completed_at_utc": "2026-08-08T05:17:10.079351+00:00",
+  "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+  "expected_rows": 5680,
+  "matrix": {
+    "appended_rows": 3721,
+    "checkpoint_path": "/workspace/results/qwen25-7b/results.jsonl",
+    "compact_archive": {
+      "archive_path": "/workspace/results/qwen25-7b/checkpoint.zip",
+      "archive_sha256": "797ae05ab2c6a4a029657ce739a697b23f65048f6753ac561f1a38a3d45f3072",
+      "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+      "files": {
+        "results.jsonl": {
+          "bytes": 114746978,
+          "sha256": "b651adad6a5c23453c8ec0781fd0a06c29c6d1c0a807a78739ab1d4751b1289b"
+        },
+        "run_config.json": {
+          "bytes": 1004,
+          "sha256": "c418c73df6fb50230b4d78a8cbf1768e5a519f03dd254c90b90b196b398653ef"
+        }
+      },
+      "row_count": 5680,
+      "schema_version": 3
+    },
+    "complete": true,
+    "config_hash": "15b94c487f0cc3ba9a65df2b36362a5e5bd0f8e0bd7d00205c6d463982f21b44",
+    "expected_rows": 5680,
+    "model_inference_backend": "LocalQwenBackend",
+    "resource_measurement_enabled": false,
+    "resumed_rows": 1959
+  },
+  "methods": [
+    "M1_monolithic",
+    "M2_post_plan_deterministic",
+    "M3_stage_wise",
+    "M4_post_plan_compute_matched"
+  ],
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_loaded": true,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "results_sha256": "b651adad6a5c23453c8ec0781fd0a06c29c6d1c0a807a78739ab1d4751b1289b",
+  "runtime": {
+    "cpu": "x86_64",
+    "cuda_available": true,
+    "cuda_runtime": "11.8",
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA L4",
+        "total_memory_bytes": 23661248512
+      }
+    ],
+    "package_versions": {
+      "accelerate": "1.14.0",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.8.0",
+      "torch": "2.7.1+cu118",
+      "transformers": "4.57.6"
+    },
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+    "python_executable": "/opt/conda/bin/python",
+    "python_version": "3.11.13"
+  },
+  "schema_version": 1,
+  "scores_inspected": false,
+  "smoke_audit_sha256": "6fffdc4ff85f4499ef49b078d72d6e60e35f5073c1f84ec2a205bef80533153b",
+  "status": "complete_accuracy_matrix_raw_results_unscored",
+  "study_inference_started": true
+}
