@@ -73,7 +73,7 @@ spec:
                 --preflight-only
           env:
             - name: SHEPHERD_GIT_COMMIT
-              value: 2ba2c400953906245e75572cb2901b4a23f814fa
+              value: a1de91f9cabaf9f7edd25963bef0d00c7bebb267
             - name: HF_HOME
               value: /workspace/hf-cache
             - name: HF_HUB_OFFLINE
