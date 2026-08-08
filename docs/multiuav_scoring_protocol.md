@@ -87,4 +87,4 @@ descriptive rates, not cluster-bootstrap estimates or final paper conclusions.
 The current trade-off is severe: deterministic containment reduces unsafe
 release, but most gated configurations also fail nearly all registered execute
 cases under the strict end-to-end contract. The registered source-cluster
-bootstrap must be completed before comparative claims are made.
+bootstrap is reported in `reports/multiuav_accuracy_bootstrap_v1.md`.

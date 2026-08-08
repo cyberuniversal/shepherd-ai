@@ -25,7 +25,10 @@ study scores were accessed before that gate. Registered deterministic scoring
 has now completed for all 11,360 admitted rows, with derived rows kept separate
 from the aggregate summary under
 `outputs/evaluations/multiuav_accuracy_scoring_v1/`. The scores are descriptive
-until the registered source-cluster bootstrap is run. A reusable accuracy CLI validates the commit, data,
+and must be interpreted through the registered source-cluster bootstrap. That
+bootstrap is complete for both primary outcomes and both registered contrasts,
+with raw draws kept separate under
+`outputs/evaluations/multiuav_accuracy_bootstrap_v1/`. A reusable accuracy CLI validates the commit, data,
 protocol, cache, and row counts before model loading, then writes durable
 resumable rows and checkpoints. The label-separated scorer is frozen and source-hashed: it
 preserves raw model behavior, derives the post-gate system disposition, applies
@@ -41,7 +44,8 @@ historical infrastructure evidence. The 7B smoke required CPU and disk
 offload on the local 4 GB GPU. A one-row local 3B feasibility attempt was
 aborted after its first call required 389.9 seconds; its raw row, logs, config,
 and protocol-deviation record are preserved and excluded from study results.
-The next gate is the registered source-cluster bootstrap analysis. See
+The next gates are accuracy figures and the separately registered resource
+experiment. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

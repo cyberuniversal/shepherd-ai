@@ -30,7 +30,7 @@ results.
 | CP-35 | Resolve both Qwen checkpoints to immutable 40-character commits. | implemented | `src/shepherd_ai/multiuav_model_revisions.py` pins 3B at `aa8e72537993ba99e69dfaafa59ed015b17504d1` and 7B at `a09a35458c702b33eeacc393d103063234e8bc28`. Both revision endpoints were remotely verified, cached, checksummed, and synthetically invoked in separate later artifacts. |
 | CP-36 | Separate one deterministic accuracy run from three resource repetitions on 30 clusters. | partial | `accuracy_case_manifest_v1.json` approves 284 held-out clusters and 1,420 cases. One 5,680-row matrix per frozen model is complete and score-blind admission passes for all 11,360 rows. Resource configs remain separate: `resource_schedule_candidate_v1.json` selects 30 tasks and registers 24 model-method-repetition conditions; warm-up and final hardware bindings remain resource-only blockers. |
 | CP-37 | Record the full safety, utility, fidelity, latency, token, memory, call, and GPU-energy trade-off. | partial | Accuracy scoring now records raw and post-gate unsafe proceed, decision utility, schema/endpoint/parameter/official-command fidelity, parse/backend failures, and containment for all 11,360 rows. Accuracy runs were intentionally not resource measurements; latency, memory, and GPU-energy repetitions remain pending. |
-| CP-38 | Use source-cluster bootstrap, paired differences, confidence intervals, and preregistered outcomes. | partial | `accuracy_protocol_freeze_v1.json` registers M3-minus-M1 primary and M3-minus-M4 confirmatory contrasts, two directed primary outcomes, post-gate system semantics, retained failures, 10,000 fixed-seed cluster-bootstrap draws, 95% percentile intervals, and no null-hypothesis tests. Deterministic scoring is complete, but registered bootstrap execution and intervals remain pending. |
+| CP-38 | Use source-cluster bootstrap, paired differences, confidence intervals, and preregistered outcomes. | implemented | `accuracy_protocol_freeze_v1.json` registers M3-minus-M1 primary and M3-minus-M4 confirmatory contrasts, two directed primary outcomes, post-gate system semantics, retained failures, 10,000 fixed-seed cluster-bootstrap draws, 95% percentile intervals, and no null-hypothesis tests. All eight registered model-contrast-outcome analyses are complete with deterministic evidence archives and a bounded report. |
 | CP-39 | Checkpoint every row with compatible resume and complete raw packages. | partial | Schema-v3 config-bound JSONL writes, per-row `fsync`, duplicate/config-drift rejection, zero-call resume, durable progress callbacks, matrix completeness, and deterministic compact ZIP checkpoints are implemented. The preserved 3B and 7B archives each contain all 5,680 expected rows and pass hash, ZIP, config, and admission checks. Resource packages remain pending. |
 | CP-40 | Add corruption, conflict, empty-value, partial-cluster, revision, and smoke-leak regression gates. | implemented as pre-run contracts | Alias corruption, trained-parser substitution, global-evidence leakage, task-specific resource-conflict, partial-cluster, privileged-field, deterministic reconstruction, review-packet mutation, empty-plan, blank-reference, strict-JSON, endpoint-schema, recursive-grounding, static-bound, mutable-model-revision, and publication smoke-leak gates exist. The publication gate rejects synthetic/resource/unapproved/incomplete accuracy matrices while retaining parse failures. Two stored negative controls remain synthetic contract evidence only. |
 
@@ -59,9 +59,9 @@ results.
 | DoD-56 | Verifiably connect the trained component end to end. | implemented for historical Shepherd DistilBERT wiring; revised M1-M4 models are not implemented |
 | DoD-57 | Freeze protocol before inspecting final method scores. | partial | Protocol, scorer, manifest, model configs, complete matrices, and score-blind admission were frozen before final scoring. One excluded feasibility row's raw output and parse status had been viewed earlier and remains a disclosed protocol deviation. |
 | DoD-58 | Label smoke results and exclude them from figures. | partial; current smokes are labelled and the actual complete matrices passed an admission gate that rejects synthetic and resource rows, but no final figure pipeline exists |
-| DoD-59 | Analyze accuracy and hardware repetitions at the correct unit. | not evaluated |
+| DoD-59 | Analyze accuracy and hardware repetitions at the correct unit. | partial; accuracy is analyzed at the registered source-task cluster unit, while hardware repetitions remain pending |
 | DoD-60 | Report controlled-derivative, within-Qwen, static-fidelity, process-isolation, and call-budget limitations. | partial; protocol records them, final paper does not exist |
-| DoD-61 | Derive conclusions from observed results. | not evaluated; descriptive outcomes are scored, but clustered analysis and conclusions remain pending |
+| DoD-61 | Derive conclusions from observed results. | partial; a bounded accuracy interpretation follows the registered clustered analysis, while resource evidence and the final paper conclusion remain pending |
 
 ## Immediate Gate
 
@@ -78,6 +78,7 @@ are bound to the frozen execution commit. The 3B and 7B runs produced two
 complete 5,680-row sealed matrices, and `accuracy_matrix_admission_v1.json`
 admits all 11,360 rows without pre-admission hidden-label access or scoring.
 Registered label-separated deterministic scoring is now complete, with derived
-rows separated from aggregate summaries. The exact next gate is the registered
-source-cluster bootstrap. Warm-up and thermal controls remain separate blockers
-for the later resource experiment.
+rows separated from aggregate summaries. The registered source-cluster
+bootstrap is also complete. The exact next gates are accuracy figure generation
+and the separately controlled resource experiment; warm-up and thermal controls
+remain blockers only for the resource experiment.

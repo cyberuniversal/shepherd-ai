@@ -383,8 +383,9 @@ score-blind admission gate in
 `datasets/multiuav_plat/accuracy_matrix_admission_v1.json`; no hidden labels or
 study outcomes were accessed at admission. Registered label-separated scoring
 has now completed for all 11,360 rows, with derived row archives separated from
-the aggregate summary. The registered source-cluster bootstrap is the next gate
-and has not started.
+the aggregate summary. All eight registered source-cluster bootstrap analyses
+have also completed with 10,000 fixed-seed draws each. Accuracy figure
+generation and the separate resource experiment remain pending.
 
 Known uncertainties: Hardware measurement controls and the later resource
 repetitions remain unresolved. Call budgets, recoverability rules, static

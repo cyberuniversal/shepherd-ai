@@ -67,8 +67,14 @@ The complete 3B and 7B matrices passed score-blind structural admission on
 11,360 method-case rows without accessing hidden labels or computing outcomes.
 Registered deterministic scoring then completed for all admitted rows, with
 derived rows separated from aggregate summaries under
-`outputs/evaluations/multiuav_accuracy_scoring_v1/`. Cluster-bootstrap execution
-and figure generation still do not exist.
+`outputs/evaluations/multiuav_accuracy_scoring_v1/`. The eight registered
+model-contrast-outcome source-cluster bootstrap analyses then completed with
+10,000 fixed-seed draws each. Their raw draws, per-cluster summaries, hashes,
+and aggregate intervals are separated under
+`outputs/evaluations/multiuav_accuracy_bootstrap_v1/`. Figure generation still
+does not exist.
 
-The current descriptive scores do not establish that any method performs
-better; registered cluster-level intervals and paired contrasts remain pending.
+The registered paired differences and percentile intervals are reported in
+`reports/multiuav_accuracy_bootstrap_v1.md`. No null-hypothesis test was run,
+and the observed intervals must be interpreted within the registered static,
+controlled-derivative benchmark scope.
