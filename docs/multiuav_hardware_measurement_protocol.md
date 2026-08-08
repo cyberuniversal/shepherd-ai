@@ -85,8 +85,8 @@ whole 150-row condition; a replacement must use a new attempt directory.
 Publication summaries exclude invalid conditions. The campaign keeps raw
 outputs unscored until the separate resource admission and analysis gate.
 
-The remaining pre-measurement gates are commit-bound generation of all 24 run
-configs and a no-inference RTX 3090 cluster preflight.
+All 24 run configs are commit-bound. The remaining pre-measurement gate is a
+no-inference RTX 3090 cluster preflight.
 
 ## Reproduce The Probe
 

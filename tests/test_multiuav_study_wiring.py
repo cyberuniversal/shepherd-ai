@@ -18,6 +18,9 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         configs_exist = (
             ROOT / "datasets" / "multiuav_plat" / "accuracy_run_configs_v1.json"
         ).is_file()
+        resource_configs_exist = (
+            ROOT / "datasets" / "multiuav_plat" / "resource_run_configs_v1.json"
+        ).is_file()
         excluded_attempt_exists = (
             ROOT
             / "datasets"
@@ -192,10 +195,17 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             "resource_subset_and_repetition_orchestration",
             result["blocking_gates"],
         )
-        self.assertIn(
-            "resource_run_configs_commit_binding",
-            result["blocking_gates"],
-        )
+        if resource_configs_exist:
+            self.assertNotIn(
+                "resource_run_configs_commit_binding", result["blocking_gates"]
+            )
+            self.assertIn(
+                "resource_commit_bound_run_configs", result["completed_gates"]
+            )
+        else:
+            self.assertIn(
+                "resource_run_configs_commit_binding", result["blocking_gates"]
+            )
         self.assertNotIn("execution_scope", result["blocking_gates"])
         self.assertNotIn(
             "hardware_warmup_and_thermal_controls", result["blocking_gates"]
@@ -330,6 +340,10 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["resource_final_schedule"]["exists"]
+        )
+        self.assertEqual(
+            result["artifact_bindings"]["resource_run_configs"]["exists"],
+            resource_configs_exist,
         )
         self.assertEqual(
             result["artifact_bindings"]["source_audit"]["path"],

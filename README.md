@@ -48,8 +48,8 @@ The registered accuracy figures and their source tables are now reproducible
 under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
 `outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The approved
 30-cluster resource schedule and RTX 3090 controls are now frozen without
-measurement. The next gates are commit-bound resource configs, no-inference
-cluster preflight, and then the separately registered resource experiment. See
+measurement. All 24 resource configs are commit-bound. The next gate is the
+no-inference cluster preflight, followed by the registered resource experiment. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

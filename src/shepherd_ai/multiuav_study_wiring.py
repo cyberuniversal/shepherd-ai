@@ -67,6 +67,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         metadata / "resource_hardware_protocol_v1.json"
     )
     resource_final_schedule_path = metadata / "resource_schedule_v1.json"
+    resource_run_configs_path = metadata / "resource_run_configs_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -151,6 +152,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     )
     resource_final_schedule = _read_object(
         resource_final_schedule_path, errors
+    )
+    resource_run_configs = _read_optional_object(
+        resource_run_configs_path, errors
     )
     completed_pilot_review_validation = _read_object(
         completed_pilot_review_validation_path,
@@ -433,6 +437,15 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         accuracy_run_configs_path=accuracy_run_configs_path,
         accuracy_manifest_path=accuracy_manifest_path,
         accuracy_protocol_path=accuracy_protocol_path,
+        errors=errors,
+    )
+    resource_config_ready = _validate_resource_run_configs(
+        resource_run_configs,
+        resource_run_configs_path=resource_run_configs_path,
+        resource_schedule_path=resource_final_schedule_path,
+        resource_hardware_protocol_path=resource_hardware_protocol_path,
+        accuracy_manifest_path=accuracy_manifest_path,
+        intervention_dataset_path=intervention_dataset_path,
         errors=errors,
     )
     excluded_local_attempt_registered = _validate_excluded_local_attempt(
@@ -1019,14 +1032,16 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     ]
     if excluded_local_attempt_registered:
         completed_gates.append("excluded_local_feasibility_attempt_preserved")
+    if resource_config_ready:
+        completed_gates.append("resource_commit_bound_run_configs")
     accuracy_blocking_gates = (
         [] if accuracy_config_ready else ["final_accuracy_run_config_commit_binding"]
     )
-    blocking_gates = [
-        *accuracy_blocking_gates,
-        "resource_run_configs_commit_binding",
+    resource_blocking_gates = [
+        *([] if resource_config_ready else ["resource_run_configs_commit_binding"]),
         "resource_cluster_preflight",
     ]
+    blocking_gates = [*accuracy_blocking_gates, *resource_blocking_gates]
     return {
         "study_id": STUDY_ID,
         "active_branch": ACTIVE_BRANCH,
@@ -1216,6 +1231,9 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "resource_final_schedule": _artifact_record(
                 resource_final_schedule_path, repository_root
             ),
+            "resource_run_configs": _artifact_record(
+                resource_run_configs_path, repository_root
+            ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root
             ),
@@ -1229,10 +1247,7 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "final_commit_binding_pending"
         ),
         "accuracy_blocking_gates": accuracy_blocking_gates,
-        "resource_blocking_gates": [
-            "resource_run_configs_commit_binding",
-            "resource_cluster_preflight",
-        ],
+        "resource_blocking_gates": resource_blocking_gates,
     }
 
 
@@ -1329,6 +1344,74 @@ def _validate_accuracy_run_configs(
             errors.append(f"invalid accuracy run config {index}: {error}")
     if observed_models != set(EXPECTED_MODEL_REVISIONS):
         errors.append("accuracy run configs do not cover both frozen Qwen models")
+    return len(errors) == initial_error_count
+
+
+def _validate_resource_run_configs(
+    artifact: dict[str, Any],
+    *,
+    resource_run_configs_path: Path,
+    resource_schedule_path: Path,
+    resource_hardware_protocol_path: Path,
+    accuracy_manifest_path: Path,
+    intervention_dataset_path: Path,
+    errors: list[str],
+) -> bool:
+    if not resource_run_configs_path.is_file() or not artifact:
+        return False
+    initial_error_count = len(errors)
+    if artifact.get("status") != (
+        "final_resource_configs_bound_no_measurement_started"
+    ):
+        errors.append("resource run configs are not in the final pre-measurement state")
+    bindings = (
+        ("resource_schedule_sha256", resource_schedule_path),
+        ("hardware_protocol_sha256", resource_hardware_protocol_path),
+        ("accuracy_manifest_sha256", accuracy_manifest_path),
+        ("intervention_dataset_sha256", intervention_dataset_path),
+    )
+    for key, path in bindings:
+        if path.is_file() and artifact.get(key) != _sha256(path):
+            errors.append(f"resource run configs have a mismatched binding: {key}")
+    if artifact.get("expected_conditions") != 24:
+        errors.append("resource run configs do not contain 24 conditions")
+    if artifact.get("expected_rows_total") != 3_600:
+        errors.append("resource run configs do not bind 3,600 rows")
+    code_commit = artifact.get("code_commit")
+    records = artifact.get("configs")
+    if not isinstance(records, list) or len(records) != 24:
+        errors.append("resource run configs must contain exactly 24 configs")
+        return False
+    observed: set[tuple[str, str, int]] = set()
+    for index, record in enumerate(records):
+        try:
+            if not isinstance(record, dict) or not isinstance(record.get("config"), dict):
+                raise ValueError("config record must contain an object payload")
+            payload = dict(record["config"])
+            payload["methods"] = tuple(payload["methods"])
+            config = RunConfig(**payload)
+            if config.to_dict() != record:
+                raise ValueError("stored config hash or payload is invalid")
+            if config.code_commit != code_commit or config.run_kind != "resource":
+                raise ValueError("resource config commit or run kind differs")
+            observed.add(
+                (config.model_id, config.methods[0], int(config.resource_repetition))
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            errors.append(f"invalid resource run config {index}: {error}")
+    expected = {
+        (model_id, method_id, repetition)
+        for model_id in EXPECTED_MODEL_REVISIONS
+        for method_id in (
+            "M1_monolithic",
+            "M2_post_plan_deterministic",
+            "M3_stage_wise",
+            "M4_post_plan_compute_matched",
+        )
+        for repetition in (1, 2, 3)
+    }
+    if observed != expected:
+        errors.append("resource run configs do not cover the frozen condition matrix")
     return len(errors) == initial_error_count
 
 

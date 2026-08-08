@@ -95,7 +95,8 @@ synthetic tooling probes are not resource results. In particular:
   150-case, 24-condition schedule, and
   `resource_hardware_protocol_v1.json` freezes the RTX 3090, warm-up, thermal,
   process-isolation, and invalid-row controls. Neither artifact is a run config
-  or result. Commit-bound configs, cluster preflight, and measurements remain.
+  or result. All 24 configs are commit-bound; cluster preflight and measurements
+  remain.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They
@@ -284,8 +285,8 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: commit-bound resource configs,
-  cluster preflight, resource repetitions, and the final paper
+- Currently unresolved for the active study: resource cluster preflight,
+  resource repetitions, and the final paper
   conclusion. The accuracy matrices, scoring, source-cluster analysis, and
   figures are complete; do not replace their commit-bound evidence with ad hoc
   model invocation or manually copied values.

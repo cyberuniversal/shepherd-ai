@@ -387,8 +387,8 @@ the aggregate summary. All eight registered source-cluster bootstrap analyses
 have also completed with 10,000 fixed-seed draws each. Accuracy figure
 generation is complete in both PNG and PDF formats, with exact CSV source rows
 and a source-hashed provenance manifest. The final 30-cluster resource schedule
-and RTX 3090 measurement controls are frozen; commit-bound run configs, cluster
-preflight, and all measurements remain pending.
+and RTX 3090 measurement controls are frozen, and all 24 run configs are
+commit-bound. Cluster preflight and all measurements remain pending.
 
 Known uncertainties: Resource preflight validity, GPU availability, and the
 three hardware repetitions remain unresolved. Call budgets, recoverability rules, static

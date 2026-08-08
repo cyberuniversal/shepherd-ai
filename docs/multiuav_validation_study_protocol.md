@@ -420,8 +420,8 @@ The following bindings or controls remain:
 1. **Resource execution:** The approved 30-cluster subset, 150-case orders,
    exact RTX 3090 environment, precision/offload policy, warm-up, thermal,
    foreign-process, invalid-row, and resume controls are frozen. The remaining
-   pre-measurement gates are commit-bound 24-condition configs and the
-   no-inference cluster preflight; all three resource repetitions remain
+   24-condition configs are commit-bound. The remaining pre-measurement gate is
+   the no-inference cluster preflight; all three resource repetitions remain
    unmeasured.
 
 The accuracy configuration is bound to the frozen execution commit, both
