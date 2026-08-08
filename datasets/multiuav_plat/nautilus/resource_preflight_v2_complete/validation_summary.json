@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "resource_preflight_admission_passed",
+  "validated_at_utc": "2026-08-08T15:44:04Z",
+  "job_name": "shepherd-ai-resource-preflight-v2",
+  "pod_name": "shepherd-ai-resource-preflight-v2-rnw6x",
+  "node_name": "uicnrp-fiona2.evl.uic.edu",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-c869e133-b223-f315-e727-7eba3a348543",
+  "execution_code_commit": "d414416f56c77b1ff29ee4927c2a07020e2212b2",
+  "pod_restarts": 0,
+  "pod_exit_code": 0,
+  "same_gpu_uuid_for_both_models": true,
+  "three_b": {
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "all_registered_checks_passed": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true
+  },
+  "seven_b": {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "all_registered_checks_passed": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true
+  },
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "campaign_submission_gate": "passed"
+}

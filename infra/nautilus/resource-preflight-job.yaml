@@ -86,12 +86,12 @@ spec:
                   fieldPath: spec.nodeName
           resources:
             requests:
-              cpu: "1"
-              memory: 8Gi
+              cpu: "2"
+              memory: 32Gi
               nvidia.com/gpu: "1"
             limits:
-              cpu: "1"
-              memory: 8Gi
+              cpu: "2"
+              memory: 32Gi
               nvidia.com/gpu: "1"
           volumeMounts:
             - name: workspace

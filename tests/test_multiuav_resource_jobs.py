@@ -51,6 +51,8 @@ class MultiUavResourceJobTests(unittest.TestCase):
 
         self.assertIn("name: shepherd-ai-resource-preflight-v2", preflight)
         self.assertIn("/workspace/results/resource-v2-preflight", preflight)
+        self.assertGreaterEqual(preflight.count('memory: 32Gi'), 2)
+        self.assertGreaterEqual(preflight.count('cpu: "2"'), 2)
         self.assertIn("name: shepherd-ai-resource-v1-a2", campaign)
         self.assertIn("/workspace/results/resource-v1-attempt2", campaign)
         self.assertIn("restartPolicy: Never", campaign)
