@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "artifact_status": "resource_preflight_complete_admitted",
+  "preserved_at_utc": "2026-08-08T13:39:11.3749362Z",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-resource-preflight-v1",
+  "pod_name": "shepherd-ai-resource-preflight-v1-rvclp",
+  "job_completion_time_utc": "2026-08-08T13:36:04Z",
+  "pod_exit_code": 0,
+  "pod_restarts": 0,
+  "node_name": "suncave-14",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-de3eb9fa-1fcb-60c6-9e88-ce2b5a9ad3ed",
+  "three_b_preflight_passed": true,
+  "seven_b_preflight_passed": true,
+  "measurement_started": false,
+  "model_loaded": false,
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "files": {
+    "3b_run_summary.json": {
+      "bytes": 3003,
+      "sha256": "a00d16a38466396a82f55d0497f412dc36129253c7f2cd0e721f64a44c644e8d"
+    },
+    "7b_run_summary.json": {
+      "bytes": 3020,
+      "sha256": "2a67543c04611dd192abb461fce2dd11a383bc435df2d0e41fd5995db263f0e3"
+    },
+    "events.txt": {
+      "bytes": 8792,
+      "sha256": "4cf787744769f930181663f9f82926d247a38382d50edd6407a5b9627f899bf5"
+    },
+    "job.yaml": {
+      "bytes": 9013,
+      "sha256": "33221a5635ffb72ad7ea5f983d0d60bf21ae9d8fcf1ddff7372da30a0a99ff1a"
+    },
+    "pod.log": {
+      "bytes": 36751,
+      "sha256": "b3ae20c7a6a7251332375ebd38536bec78f9936096defbd1e2b905f9d5b97045"
+    },
+    "pod.yaml": {
+      "bytes": 8198,
+      "sha256": "9cf44f354a7adf24d9db7740557a2fe25f535e3a674cee2cb1df3651dfda91f6"
+    },
+    "validation_summary.json": {
+      "bytes": 1227,
+      "sha256": "ac5f90b12faba94f51fec6b1be902fc506fe2503cc85c019974895cff7a537a4"
+    }
+  }
+}

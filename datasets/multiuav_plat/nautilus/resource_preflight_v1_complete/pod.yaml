@@ -1,0 +1,246 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 8deb1951b96223c4dde17a3f04e80af8225c582f93ca7735221e76f0635027cf
+    cni.projectcalico.org/podIP: ""
+    cni.projectcalico.org/podIPs: ""
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container resource-preflight; ephemeral-storage limit for container resource-preflight'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-08T13:28:49Z"
+  generateName: shepherd-ai-resource-preflight-v1-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: 373c1538-7ada-4269-b932-93ca3256e22a
+    batch.kubernetes.io/job-name: shepherd-ai-resource-preflight-v1
+    controller-uid: 373c1538-7ada-4269-b932-93ca3256e22a
+    job-name: shepherd-ai-resource-preflight-v1
+    shepherd-ai/stage: resource-preflight-v1
+  name: shepherd-ai-resource-preflight-v1-rvclp
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-resource-preflight-v1
+    uid: 373c1538-7ada-4269-b932-93ca3256e22a
+  resourceVersion: "14378999345"
+  uid: b49c8617-c43f-4204-8ab7-6f10d2b82030
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+      python -m pip install --no-cache-dir \
+        accelerate==1.14.0 \
+        huggingface-hub==0.36.2 \
+        safetensors==0.8.0 \
+        transformers==4.57.6 \
+        nvidia-ml-py==13.610.43 \
+        psutil==7.2.0
+      output=/workspace/results/resource-v1-preflight
+      mkdir -p "${output}"
+      mkdir -p "${output}/3b" "${output}/7b"
+      python "${repo}/scripts/run_multiuav_resource.py" \
+        --repetition 1 \
+        --condition-order 1 \
+        --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+        --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
+        --results "${output}/3b/unused-results.jsonl" \
+        --checkpoint-zip "${output}/3b/unused-checkpoint.zip" \
+        --run-summary "${output}/3b/run_summary.json" \
+        --start-control-dir "${output}/3b/start-controls" \
+        --hardware-lock "${output}/3b/unused-hardware-lock.json" \
+        --node-name "${SHEPHERD_NODE_NAME}" \
+        --preflight-only
+      python "${repo}/scripts/run_multiuav_resource.py" \
+        --repetition 1 \
+        --condition-order 3 \
+        --cache-audit /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+        --smoke-audit /workspace/artifacts/qwen25_7b_load_smoke_nautilus_v1.json \
+        --results "${output}/7b/unused-results.jsonl" \
+        --checkpoint-zip "${output}/7b/unused-checkpoint.zip" \
+        --run-summary "${output}/7b/run_summary.json" \
+        --start-control-dir "${output}/7b/start-controls" \
+        --hardware-lock "${output}/7b/unused-hardware-lock.json" \
+        --node-name "${SHEPHERD_NODE_NAME}" \
+        --preflight-only
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: SHEPHERD_GIT_COMMIT
+      value: 2ba2c400953906245e75572cb2901b4a23f814fa
+    - name: HF_HOME
+      value: /workspace/hf-cache
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    - name: SHEPHERD_NODE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.nodeName
+    image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imagePullPolicy: IfNotPresent
+    name: resource-preflight
+    resources:
+      limits:
+        cpu: "1"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "1"
+        ephemeral-storage: "0"
+        memory: 8Gi
+        nvidia.com/gpu: "1"
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-zfqx8
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: suncave-14
+  nodeSelector:
+    nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: shepherd-ai-539948
+  - name: kube-api-access-zfqx8
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-08T13:36:03Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-08T13:28:53Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-08T13:36:02Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-08T13:36:02Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-08T13:28:52Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "1"
+      ephemeral-storage: "0"
+      memory: 8Gi
+      nvidia.com/gpu: "1"
+    containerID: containerd://6648587a6736ace5c052d4339fce7b75978ca6293e4f631804b752dc7b8209d0
+    image: docker.io/pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imageID: docker.io/pytorch/pytorch@sha256:8d409f72f99e5968b5c4c9396a21f4b723982cfdf2c1a5b9cc045c5d0a7345a1
+    lastState: {}
+    name: resource-preflight
+    ready: false
+    resources:
+      limits:
+        cpu: "1"
+        ephemeral-storage: 50Gi
+        memory: 8Gi
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "1"
+        ephemeral-storage: "0"
+        memory: 8Gi
+        nvidia.com/gpu: "1"
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://6648587a6736ace5c052d4339fce7b75978ca6293e4f631804b752dc7b8209d0
+        exitCode: 0
+        finishedAt: "2026-08-08T13:36:02Z"
+        reason: Completed
+        startedAt: "2026-08-08T13:29:01Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-zfqx8
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 67.58.51.52
+  hostIPs:
+  - ip: 67.58.51.52
+  phase: Succeeded
+  podIP: 10.244.133.25
+  podIPs:
+  - ip: 10.244.133.25
+  - ip: fdf0:17b3:c3ec:1f79:10:0:e:33a
+  qosClass: Guaranteed
+  startTime: "2026-08-08T13:28:53Z"

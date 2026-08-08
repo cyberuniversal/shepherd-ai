@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "resource_preflight_admission_passed",
+  "validated_at_utc": "2026-08-08T13:36:04Z",
+  "job_name": "shepherd-ai-resource-preflight-v1",
+  "pod_name": "shepherd-ai-resource-preflight-v1-rvclp",
+  "node_name": "suncave-14",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-de3eb9fa-1fcb-60c6-9e88-ce2b5a9ad3ed",
+  "pod_restarts": 0,
+  "pod_exit_code": 0,
+  "same_gpu_uuid_for_both_models": true,
+  "three_b": {
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "status_valid": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "nvml_status_valid": true,
+    "gpu_identity_valid": true,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true,
+    "telemetry_sample_complete": true
+  },
+  "seven_b": {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "status_valid": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "nvml_status_valid": true,
+    "gpu_identity_valid": true,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true,
+    "telemetry_sample_complete": true
+  },
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "campaign_submission_gate": "passed"
+}

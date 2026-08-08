@@ -1,0 +1,153 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"resource-preflight-v1"},"name":"shepherd-ai-resource-preflight-v1","namespace":"aiea-interns"},"spec":{"activeDeadlineSeconds":604800,"backoffLimit":0,"template":{"metadata":{"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"resource-preflight-v1"}},"spec":{"containers":[{"args":["set -euo pipefail\napt-get update\napt-get install -y --no-install-recommends git ca-certificates\nrm -rf /var/lib/apt/lists/*\nrepo=\"/workspace/repo-${SHEPHERD_GIT_COMMIT}\"\nif [[ ! -d \"${repo}/.git\" ]]; then\n  git clone https://github.com/cyberuniversal/shepherd-ai.git \"${repo}\"\nfi\ngit -C \"${repo}\" fetch origin\ngit -C \"${repo}\" checkout --detach \"${SHEPHERD_GIT_COMMIT}\"\npython -m pip install --no-cache-dir -e \"${repo}[multiuav-inference]\"\npython -m pip install --no-cache-dir \\\n  accelerate==1.14.0 \\\n  huggingface-hub==0.36.2 \\\n  safetensors==0.8.0 \\\n  transformers==4.57.6 \\\n  nvidia-ml-py==13.610.43 \\\n  psutil==7.2.0\noutput=/workspace/results/resource-v1-preflight\nmkdir -p \"${output}\"\nmkdir -p \"${output}/3b\" \"${output}/7b\"\npython \"${repo}/scripts/run_multiuav_resource.py\" \\\n  --repetition 1 \\\n  --condition-order 1 \\\n  --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \\\n  --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \\\n  --results \"${output}/3b/unused-results.jsonl\" \\\n  --checkpoint-zip \"${output}/3b/unused-checkpoint.zip\" \\\n  --run-summary \"${output}/3b/run_summary.json\" \\\n  --start-control-dir \"${output}/3b/start-controls\" \\\n  --hardware-lock \"${output}/3b/unused-hardware-lock.json\" \\\n  --node-name \"${SHEPHERD_NODE_NAME}\" \\\n  --preflight-only\npython \"${repo}/scripts/run_multiuav_resource.py\" \\\n  --repetition 1 \\\n  --condition-order 3 \\\n  --cache-audit /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \\\n  --smoke-audit /workspace/artifacts/qwen25_7b_load_smoke_nautilus_v1.json \\\n  --results \"${output}/7b/unused-results.jsonl\" \\\n  --checkpoint-zip \"${output}/7b/unused-checkpoint.zip\" \\\n  --run-summary \"${output}/7b/run_summary.json\" \\\n  --start-control-dir \"${output}/7b/start-controls\" \\\n  --hardware-lock \"${output}/7b/unused-hardware-lock.json\" \\\n  --node-name \"${SHEPHERD_NODE_NAME}\" \\\n  --preflight-only\n"],"command":["/bin/bash","-lc"],"env":[{"name":"SHEPHERD_GIT_COMMIT","value":"2ba2c400953906245e75572cb2901b4a23f814fa"},{"name":"HF_HOME","value":"/workspace/hf-cache"},{"name":"HF_HUB_OFFLINE","value":"1"},{"name":"TRANSFORMERS_OFFLINE","value":"1"},{"name":"SHEPHERD_NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}}],"image":"pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime","name":"resource-preflight","resources":{"limits":{"cpu":"1","memory":"8Gi","nvidia.com/gpu":"1"},"requests":{"cpu":"1","memory":"8Gi","nvidia.com/gpu":"1"}},"volumeMounts":[{"mountPath":"/workspace","name":"workspace"}]}],"nodeSelector":{"nvidia.com/gpu.product":"NVIDIA-GeForce-RTX-3090"},"restartPolicy":"Never","volumes":[{"name":"workspace","persistentVolumeClaim":{"claimName":"shepherd-ai-539948"}}]}}}}
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-08T13:28:49Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: resource-preflight-v1
+  name: shepherd-ai-resource-preflight-v1
+  namespace: aiea-interns
+  resourceVersion: "14378999359"
+  uid: 373c1538-7ada-4269-b932-93ca3256e22a
+spec:
+  activeDeadlineSeconds: 604800
+  backoffLimit: 0
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: 373c1538-7ada-4269-b932-93ca3256e22a
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        batch.kubernetes.io/controller-uid: 373c1538-7ada-4269-b932-93ca3256e22a
+        batch.kubernetes.io/job-name: shepherd-ai-resource-preflight-v1
+        controller-uid: 373c1538-7ada-4269-b932-93ca3256e22a
+        job-name: shepherd-ai-resource-preflight-v1
+        shepherd-ai/stage: resource-preflight-v1
+    spec:
+      containers:
+      - args:
+        - |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+          rm -rf /var/lib/apt/lists/*
+          repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+          if [[ ! -d "${repo}/.git" ]]; then
+            git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+          fi
+          git -C "${repo}" fetch origin
+          git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+          python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+          python -m pip install --no-cache-dir \
+            accelerate==1.14.0 \
+            huggingface-hub==0.36.2 \
+            safetensors==0.8.0 \
+            transformers==4.57.6 \
+            nvidia-ml-py==13.610.43 \
+            psutil==7.2.0
+          output=/workspace/results/resource-v1-preflight
+          mkdir -p "${output}"
+          mkdir -p "${output}/3b" "${output}/7b"
+          python "${repo}/scripts/run_multiuav_resource.py" \
+            --repetition 1 \
+            --condition-order 1 \
+            --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+            --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
+            --results "${output}/3b/unused-results.jsonl" \
+            --checkpoint-zip "${output}/3b/unused-checkpoint.zip" \
+            --run-summary "${output}/3b/run_summary.json" \
+            --start-control-dir "${output}/3b/start-controls" \
+            --hardware-lock "${output}/3b/unused-hardware-lock.json" \
+            --node-name "${SHEPHERD_NODE_NAME}" \
+            --preflight-only
+          python "${repo}/scripts/run_multiuav_resource.py" \
+            --repetition 1 \
+            --condition-order 3 \
+            --cache-audit /workspace/artifacts/qwen25_7b_cache_audit_nautilus_v1.json \
+            --smoke-audit /workspace/artifacts/qwen25_7b_load_smoke_nautilus_v1.json \
+            --results "${output}/7b/unused-results.jsonl" \
+            --checkpoint-zip "${output}/7b/unused-checkpoint.zip" \
+            --run-summary "${output}/7b/run_summary.json" \
+            --start-control-dir "${output}/7b/start-controls" \
+            --hardware-lock "${output}/7b/unused-hardware-lock.json" \
+            --node-name "${SHEPHERD_NODE_NAME}" \
+            --preflight-only
+        command:
+        - /bin/bash
+        - -lc
+        env:
+        - name: SHEPHERD_GIT_COMMIT
+          value: 2ba2c400953906245e75572cb2901b4a23f814fa
+        - name: HF_HOME
+          value: /workspace/hf-cache
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: TRANSFORMERS_OFFLINE
+          value: "1"
+        - name: SHEPHERD_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+        imagePullPolicy: IfNotPresent
+        name: resource-preflight
+        resources:
+          limits:
+            cpu: "1"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "1"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: shepherd-ai-539948
+  ttlSecondsAfterFinished: 86400
+status:
+  completionTime: "2026-08-08T13:36:04Z"
+  conditions:
+  - lastProbeTime: "2026-08-08T13:36:04Z"
+    lastTransitionTime: "2026-08-08T13:36:04Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: SuccessCriteriaMet
+  - lastProbeTime: "2026-08-08T13:36:04Z"
+    lastTransitionTime: "2026-08-08T13:36:04Z"
+    message: Reached expected number of succeeded pods
+    reason: CompletionsReached
+    status: "True"
+    type: Complete
+  ready: 0
+  startTime: "2026-08-08T13:28:49Z"
+  succeeded: 1
+  terminating: 0
+  uncountedTerminatedPods: {}
