@@ -1,0 +1,20 @@
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.98it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.88it/s]
+Traceback (most recent call last):
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/scripts/run_multiuav_resource.py", line 364, in <module>
+    main()
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/scripts/run_multiuav_resource.py", line 191, in main
+    start_control = prepare_resource_condition(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/src/shepherd_ai/multiuav_resource_controls.py", line 106, in prepare_resource_condition
+    raise ValueError("GPU was not idle during baseline sampling")
+ValueError: GPU was not idle during baseline sampling
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.46it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.97it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.87it/s]
+Traceback (most recent call last):
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/scripts/run_multiuav_resource.py", line 364, in <module>
+    main()
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/scripts/run_multiuav_resource.py", line 191, in main
+    start_control = prepare_resource_condition(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/repo-2ba2c400953906245e75572cb2901b4a23f814fa/src/shepherd_ai/multiuav_resource_controls.py", line 106, in prepare_resource_condition
+    raise ValueError("GPU was not idle during baseline sampling")
+ValueError: GPU was not idle during baseline sampling

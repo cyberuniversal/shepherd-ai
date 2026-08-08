@@ -1,0 +1,136 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"batch/v1","kind":"Job","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"resource-v1"},"name":"shepherd-ai-resource-v1-a1","namespace":"aiea-interns"},"spec":{"activeDeadlineSeconds":1209600,"backoffLimit":0,"template":{"metadata":{"labels":{"app.kubernetes.io/name":"shepherd-ai","shepherd-ai/stage":"resource-v1"}},"spec":{"containers":[{"args":["set -euo pipefail\napt-get update\napt-get install -y --no-install-recommends git ca-certificates\nrm -rf /var/lib/apt/lists/*\nrepo=\"/workspace/repo-${SHEPHERD_GIT_COMMIT}\"\nif [[ ! -d \"${repo}/.git\" ]]; then\n  git clone https://github.com/cyberuniversal/shepherd-ai.git \"${repo}\"\nfi\ngit -C \"${repo}\" fetch origin\ngit -C \"${repo}\" checkout --detach \"${SHEPHERD_GIT_COMMIT}\"\npython -m pip install --no-cache-dir -e \"${repo}[multiuav-inference]\"\npython -m pip install --no-cache-dir \\\n  accelerate==1.14.0 \\\n  huggingface-hub==0.36.2 \\\n  safetensors==0.8.0 \\\n  transformers==4.57.6 \\\n  nvidia-ml-py==13.610.43 \\\n  psutil==7.2.0\noutput=/workspace/results/resource-v1-attempt1\nmkdir -p \"${output}\"\npython \"${repo}/scripts/run_multiuav_resource_campaign.py\" \\\n  --output-root \"${output}\" \\\n  --node-name \"${SHEPHERD_NODE_NAME}\" \\\n  --cache-audit-root /workspace/artifacts\n"],"command":["/bin/bash","-lc"],"env":[{"name":"SHEPHERD_GIT_COMMIT","value":"2ba2c400953906245e75572cb2901b4a23f814fa"},{"name":"HF_HOME","value":"/workspace/hf-cache"},{"name":"HF_HUB_OFFLINE","value":"1"},{"name":"TRANSFORMERS_OFFLINE","value":"1"},{"name":"SHEPHERD_NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}},{"name":"SHEPHERD_POD_UID","valueFrom":{"fieldRef":{"fieldPath":"metadata.uid"}}}],"image":"pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime","name":"resource-campaign","resources":{"limits":{"cpu":"2","memory":"32Gi","nvidia.com/gpu":"1"},"requests":{"cpu":"2","memory":"32Gi","nvidia.com/gpu":"1"}},"volumeMounts":[{"mountPath":"/workspace","name":"workspace"}]}],"nodeSelector":{"nvidia.com/gpu.product":"NVIDIA-GeForce-RTX-3090"},"restartPolicy":"OnFailure","terminationGracePeriodSeconds":180,"volumes":[{"name":"workspace","persistentVolumeClaim":{"claimName":"shepherd-ai-539948"}}]}}}}
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-08T13:40:13Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: resource-v1
+  name: shepherd-ai-resource-v1-a1
+  namespace: aiea-interns
+  resourceVersion: "14379080948"
+  uid: eefc4963-85b6-413f-9828-de1afdc595fc
+spec:
+  activeDeadlineSeconds: 1209600
+  backoffLimit: 0
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: eefc4963-85b6-413f-9828-de1afdc595fc
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        batch.kubernetes.io/controller-uid: eefc4963-85b6-413f-9828-de1afdc595fc
+        batch.kubernetes.io/job-name: shepherd-ai-resource-v1-a1
+        controller-uid: eefc4963-85b6-413f-9828-de1afdc595fc
+        job-name: shepherd-ai-resource-v1-a1
+        shepherd-ai/stage: resource-v1
+    spec:
+      containers:
+      - args:
+        - |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates
+          rm -rf /var/lib/apt/lists/*
+          repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+          if [[ ! -d "${repo}/.git" ]]; then
+            git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+          fi
+          git -C "${repo}" fetch origin
+          git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+          python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+          python -m pip install --no-cache-dir \
+            accelerate==1.14.0 \
+            huggingface-hub==0.36.2 \
+            safetensors==0.8.0 \
+            transformers==4.57.6 \
+            nvidia-ml-py==13.610.43 \
+            psutil==7.2.0
+          output=/workspace/results/resource-v1-attempt1
+          mkdir -p "${output}"
+          python "${repo}/scripts/run_multiuav_resource_campaign.py" \
+            --output-root "${output}" \
+            --node-name "${SHEPHERD_NODE_NAME}" \
+            --cache-audit-root /workspace/artifacts
+        command:
+        - /bin/bash
+        - -lc
+        env:
+        - name: SHEPHERD_GIT_COMMIT
+          value: 2ba2c400953906245e75572cb2901b4a23f814fa
+        - name: HF_HOME
+          value: /workspace/hf-cache
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        - name: TRANSFORMERS_OFFLINE
+          value: "1"
+        - name: SHEPHERD_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: SHEPHERD_POD_UID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+        image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+        imagePullPolicy: IfNotPresent
+        name: resource-campaign
+        resources:
+          limits:
+            cpu: "2"
+            memory: 32Gi
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "2"
+            memory: 32Gi
+            nvidia.com/gpu: "1"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
+      restartPolicy: OnFailure
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: shepherd-ai-539948
+  ttlSecondsAfterFinished: 86400
+status:
+  conditions:
+  - lastProbeTime: "2026-08-08T13:48:34Z"
+    lastTransitionTime: "2026-08-08T13:48:34Z"
+    message: Job has reached the specified backoff limit
+    reason: BackoffLimitExceeded
+    status: "True"
+    type: FailureTarget
+  - lastProbeTime: "2026-08-08T13:49:34Z"
+    lastTransitionTime: "2026-08-08T13:49:34Z"
+    message: Job has reached the specified backoff limit
+    reason: BackoffLimitExceeded
+    status: "True"
+    type: Failed
+  failed: 1
+  ready: 0
+  startTime: "2026-08-08T13:40:13Z"
+  terminating: 0
+  uncountedTerminatedPods: {}

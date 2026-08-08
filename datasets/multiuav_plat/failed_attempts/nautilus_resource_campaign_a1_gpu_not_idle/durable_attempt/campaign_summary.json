@@ -1,0 +1,16 @@
+{
+  "completed_condition_count": 0,
+  "completed_conditions": [],
+  "expected_conditions": 24,
+  "failed_condition": {
+    "condition_directory": "/workspace/results/resource-v1-attempt1/r1-o1",
+    "condition_order": 1,
+    "repetition": 1,
+    "returncode": 1
+  },
+  "raw_model_outputs_inspected": false,
+  "resource_scores_computed": false,
+  "schema_version": 1,
+  "status": "resource_campaign_failed_raw_results_preserved",
+  "updated_at_utc": "2026-08-08T13:49:33.313526+00:00"
+}

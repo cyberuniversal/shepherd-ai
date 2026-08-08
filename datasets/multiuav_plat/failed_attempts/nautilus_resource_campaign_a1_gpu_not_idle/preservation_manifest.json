@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "artifact_status": "resource_campaign_attempt_failed_before_measurement",
+  "preserved_at_utc": "2026-08-08T14:39:50.3848223Z",
+  "namespace": "aiea-interns",
+  "job_name": "shepherd-ai-resource-v1-a1",
+  "job_failure_time_utc": "2026-08-08T13:49:34Z",
+  "job_failure_reason": "BackoffLimitExceeded",
+  "condition_failure_reason": "gpu_not_idle_during_baseline_sampling",
+  "assigned_node": "suncave-1",
+  "assigned_gpu": "NVIDIA GeForce RTX 3090",
+  "assigned_gpu_uuid": "GPU-9117c03e-870e-b448-1a76-a247c5c39650",
+  "model_loaded": true,
+  "measurement_started": false,
+  "durable_rows": 0,
+  "completed_conditions": 0,
+  "checkpoint_present": false,
+  "start_control_present": false,
+  "hardware_lock_present": true,
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "files": {
+    "durable_attempt/campaign_summary.json": {
+      "bytes": 486,
+      "sha256": "202cc2110b9a65d4a113694254edc5d457963e4af1b8f27e3b7691dc8623b4f9"
+    },
+    "durable_attempt/hardware_lock.json": {
+      "bytes": 275,
+      "sha256": "d30485fcbcf216a27c75b26a15e0466998a1eea8b9b6caf4bf00f48a4c08584e"
+    },
+    "durable_attempt/r1-o1/run_summary.json": {
+      "bytes": 3424,
+      "sha256": "45084617797dd1820fcc089a394d71ee518f5a9886de2f96206650dede5975cc"
+    },
+    "durable_attempt/r1-o1/stderr.log": {
+      "bytes": 1980,
+      "sha256": "8d679f6f667dd243b54aea38136c4508a5ada9d96b0020842132fce08178f1e7"
+    },
+    "durable_attempt/r1-o1/stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "events.txt": {
+      "bytes": 15201,
+      "sha256": "b7d7295fb5b2c74d66afe176be8b979de1ac1aaa655660318a33132a4a421c15"
+    },
+    "failure_summary.json": {
+      "bytes": 1507,
+      "sha256": "e5ce872c157afc3bcb6d3c5b152c6dd873861a56f0d33d1b539d48cecc19fadf"
+    },
+    "job.yaml": {
+      "bytes": 6821,
+      "sha256": "c43ef90078c2e55930242be127acbb76df59b32cd24f20511b3280eca597e489"
+    },
+    "job_describe.txt": {
+      "bytes": 3685,
+      "sha256": "9d22861e5b14e70566b5e179ce8b8230dd88ad3da0a387fc245c5d6de3e72533"
+    }
+  },
+  "availability_note": "The failed pod was deleted by the Job controller. Durable campaign metadata, the hardware lock, condition stderr and summary, Job evidence, and events are preserved. No measured row or model output existed."
+}

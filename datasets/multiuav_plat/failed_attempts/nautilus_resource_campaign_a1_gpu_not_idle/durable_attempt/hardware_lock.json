@@ -1,0 +1,8 @@
+{
+  "driver_version": "595.71.05",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-9117c03e-870e-b448-1a76-a247c5c39650",
+  "node_name": "suncave-1",
+  "protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+  "schema_version": 1
+}
