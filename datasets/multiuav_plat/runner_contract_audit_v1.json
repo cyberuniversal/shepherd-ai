@@ -174,7 +174,7 @@
     "multiuav_publication.py": "3b4368e0db71121747cb9e9181486822f7de6bcadb7eb16a3672edfcaf1a72e9",
     "multiuav_qwen_backend.py": "a3a21b78e1b65138cf300513d107c60ae69064328beba496ca466e63355fd537",
     "multiuav_resource_schedule.py": "b947c59fa4b30247d16c808cfe235970ce99f3fcddb719aacea47846fd0bf14e",
-    "multiuav_resources.py": "25ca199447fdcc76a56edba9eb267a1bf1f1c8b8abc27b69267edaa1583c5aaa",
+    "multiuav_resources.py": "df6588281362b4bc63a86ce93f763cbf799301ebe00c3cf01cf0711dd42db1f6",
     "multiuav_runner.py": "6d3ea6305880695f91ee86405470c283a884cb873d06ede42224706d8f363756",
     "run_multiuav_accuracy.py": "ab0eb300214ab8ae741d14de8e9483c1ea5cd1c01eeddc37b1b95c7fe026c8f3"
   },

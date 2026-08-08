@@ -39,8 +39,8 @@ outputs, or negative evidence.
 The locked 3B and 7B accuracy matrices, score-blind admission, deterministic
 scoring, registered source-cluster bootstrap, and publication figures are now
 stored. Treat only those preserved accuracy artifacts as study results. The
-separate resource experiment remains proposed, and its contracts or synthetic
-tooling probes are not resource results. In particular:
+separate resource experiment remains unmeasured, and its frozen contracts or
+synthetic tooling probes are not resource results. In particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;
@@ -91,10 +91,11 @@ tooling probes are not resource results. In particular:
   hidden official command labels to model prompts.
 - treat `hardware_measurement_contract_audit_v1.json` as a synthetic tooling
   probe only. It implements method-case telemetry and is not a study energy
-  result. `resource_schedule_candidate_v1.json` separately freezes a
-  deterministic 30-task candidate and 24 condition orders, but it is not a
-  final subset, run config, or result. Warm-up, thermal controls, and final
-  resource binding remain unresolved.
+  result. `resource_schedule_v1.json` is the final approved 30-cluster,
+  150-case, 24-condition schedule, and
+  `resource_hardware_protocol_v1.json` freezes the RTX 3090, warm-up, thermal,
+  process-isolation, and invalid-row controls. Neither artifact is a run config
+  or result. Commit-bound configs, cluster preflight, and measurements remain.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They
@@ -283,8 +284,8 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: final approved resource binding,
-  hardware warm-up/thermal controls, resource repetitions, and the final paper
+- Currently unresolved for the active study: commit-bound resource configs,
+  cluster preflight, resource repetitions, and the final paper
   conclusion. The accuracy matrices, scoring, source-cluster analysis, and
   figures are complete; do not replace their commit-bound evidence with ad hoc
   model invocation or manually copied values.

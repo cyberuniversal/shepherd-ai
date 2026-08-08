@@ -417,18 +417,19 @@ DistilBERT remains excluded from M1-M4.
 
 The following bindings or controls remain:
 
-1. **Resource hardware protocol:** The GPU, NVML energy mechanism, 20 Hz fallback,
-   method-case unit, and repetition hashes are registered. A deterministic
-   30-task candidate subset and 24-condition order are recorded, but final
-   approved-cluster binding, precision/offload freeze, run configs, and
-   thermal/warm-up controls remain.
+1. **Resource execution:** The approved 30-cluster subset, 150-case orders,
+   exact RTX 3090 environment, precision/offload policy, warm-up, thermal,
+   foreign-process, invalid-row, and resume controls are frozen. The remaining
+   pre-measurement gates are commit-bound 24-condition configs and the
+   no-inference cluster preflight; all three resource repetitions remain
+   unmeasured.
 
 The accuracy configuration is bound to the frozen execution commit, both
 accuracy matrices are complete and structurally admitted, and registered
 label-separated scoring and source-cluster bootstrap analysis are complete.
 Figure generation from the frozen summaries is also complete. The remaining
-experimental gate is the resource run; its hardware warm-up and measurement
-controls do not change the completed accuracy results.
+experimental gate is the resource run. Its separately frozen controls do not
+change the completed accuracy results.
 
 Primary plan fidelity is frozen as static under
 `docs/multiuav_execution_scope_protocol.md`. It excludes official-server and

@@ -46,8 +46,10 @@ aborted after its first call required 389.9 seconds; its raw row, logs, config,
 and protocol-deviation record are preserved and excluded from study results.
 The registered accuracy figures and their source tables are now reproducible
 under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
-`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The next gate
-is the separately registered resource experiment. See
+`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The approved
+30-cluster resource schedule and RTX 3090 controls are now frozen without
+measurement. The next gates are commit-bound resource configs, no-inference
+cluster preflight, and then the separately registered resource experiment. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

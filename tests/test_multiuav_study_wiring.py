@@ -193,13 +193,21 @@ class MultiUavStudyWiringTests(unittest.TestCase):
             result["blocking_gates"],
         )
         self.assertIn(
-            "resource_subset_approval_and_final_config_binding",
+            "resource_run_configs_commit_binding",
             result["blocking_gates"],
         )
         self.assertNotIn("execution_scope", result["blocking_gates"])
+        self.assertNotIn(
+            "hardware_warmup_and_thermal_controls", result["blocking_gates"]
+        )
+        self.assertIn("resource_cluster_preflight", result["blocking_gates"])
         self.assertIn(
-            "hardware_warmup_and_thermal_controls",
-            result["blocking_gates"],
+            "resource_approved_subset_and_case_order",
+            result["completed_gates"],
+        )
+        self.assertIn(
+            "resource_hardware_warmup_thermal_and_process_controls",
+            result["completed_gates"],
         )
         self.assertEqual(
             result["primary_path"]["api_plan_parser"],
@@ -316,6 +324,12 @@ class MultiUavStudyWiringTests(unittest.TestCase):
         )
         self.assertTrue(
             result["artifact_bindings"]["resource_schedule_candidate"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["resource_hardware_protocol"]["exists"]
+        )
+        self.assertTrue(
+            result["artifact_bindings"]["resource_final_schedule"]["exists"]
         )
         self.assertEqual(
             result["artifact_bindings"]["source_audit"]["path"],

@@ -386,11 +386,12 @@ has now completed for all 11,360 rows, with derived row archives separated from
 the aggregate summary. All eight registered source-cluster bootstrap analyses
 have also completed with 10,000 fixed-seed draws each. Accuracy figure
 generation is complete in both PNG and PDF formats, with exact CSV source rows
-and a source-hashed provenance manifest. The separate resource experiment
-remains pending.
+and a source-hashed provenance manifest. The final 30-cluster resource schedule
+and RTX 3090 measurement controls are frozen; commit-bound run configs, cluster
+preflight, and all measurements remain pending.
 
-Known uncertainties: Hardware measurement controls and the later resource
-repetitions remain unresolved. Call budgets, recoverability rules, static
+Known uncertainties: Resource preflight validity, GPU availability, and the
+three hardware repetitions remain unresolved. Call budgets, recoverability rules, static
 execution scope, source provenance, split registration, official alias
 authority, task eligibility, reviewer provenance, and the exclusion of the
 existing DistilBERT span tagger from the primary comparison are frozen with

@@ -30,6 +30,7 @@ class _FakeTelemetry:
             "gpu_utilization_percent": 25,
             "temperature_celsius": 40,
             "process_gpu_memory_bytes": 1_000,
+            "compute_process_ids": (101,),
         }
 
     def total_energy_millijoules(self):
@@ -47,6 +48,7 @@ def _sample(timestamp: float, power_mw: int) -> ResourceSample:
         gpu_utilization_percent=25,
         temperature_celsius=40,
         process_gpu_memory_bytes=1_000,
+        compute_process_ids=(101,),
         process_rss_bytes=3_000,
     )
 

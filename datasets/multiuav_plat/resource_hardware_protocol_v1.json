@@ -1,0 +1,107 @@
+{
+  "analysis_policy": {
+    "accuracy_rows_mixed_with_resource_rows": false,
+    "case_metrics_aggregate_within_source_task_cluster": true,
+    "five_variants_treated_as_dependent": true,
+    "three_repetition_estimates_reported_separately": true
+  },
+  "backend": {
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 512,
+    "models": [
+      {
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1"
+      },
+      {
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "revision": "a09a35458c702b33eeacc393d103063234e8bc28"
+      }
+    ],
+    "num_beams": 1,
+    "offload_folder": null
+  },
+  "claim_status": "registered_controls_only_not_resource_results",
+  "execution": {
+    "between_case_cooldown": false,
+    "case_order": "fixed_per_repetition_shared_across_conditions",
+    "condition_process_isolation": "one_model_method_condition_per_process",
+    "conditions": 24,
+    "expected_rows": 3600,
+    "method_case_rows_per_condition": 150,
+    "methods": 4,
+    "models": 2,
+    "repetitions": 3,
+    "source_task_clusters": 30,
+    "variants_per_cluster": 5
+  },
+  "failure_policy": {
+    "condition_valid_only_if_all_150_rows_valid": true,
+    "every_resumed_process_repeats_warmup_and_idle_control": true,
+    "hardware_identity_drift_invalidates_attempt": true,
+    "invalid_condition_rerun_uses_new_attempt_directory": true,
+    "invalid_measurement_rows_preserved": true,
+    "publication_summary_excludes_invalid_conditions": true,
+    "raw_partial_rows_preserved": true,
+    "resume_requires_same_node_and_gpu_uuid": true
+  },
+  "hardware": {
+    "container_image": "pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime",
+    "cuda_runtime": "11.8",
+    "foreign_gpu_compute_processes_allowed": false,
+    "kubernetes_gpu_product": "NVIDIA-GeForce-RTX-3090",
+    "maximum_gpu_compute_processes": 1,
+    "minimum_total_memory_bytes": 24000000000,
+    "required_gpu_compute_processes": 1,
+    "required_gpu_count": 1,
+    "required_runtime_gpu_name": "NVIDIA GeForce RTX 3090",
+    "same_node_and_gpu_uuid_for_all_conditions": true
+  },
+  "limitations": [
+    "GPU-board energy is not total workstation, network, simulator, or UAV energy.",
+    "The RTX 3090 result is hardware-specific and does not establish general deployment cost.",
+    "M4 is model-call-count matched, not guaranteed latency, memory, token, or energy matched.",
+    "These controls do not make static plan fidelity equivalent to live mission success."
+  ],
+  "measurement": {
+    "energy_fallback": "nvml_power_trapezoidal_integration",
+    "energy_primary": "nvml_total_energy_counter_millijoules",
+    "energy_scope": "nvidia_gpu_board_only",
+    "idle_wait_included": false,
+    "minimum_observed_sample_hz": 15.0,
+    "model_load_included": false,
+    "sample_target_hz": 20.0,
+    "unit": "complete_method_case",
+    "warmup_included": false
+  },
+  "measurement_started": false,
+  "protocol_version": "multiuav_resource_hardware_protocol_v1",
+  "runtime_packages": {
+    "accelerate": "1.14.0",
+    "huggingface-hub": "0.36.2",
+    "nvidia-ml-py": "13.610.43",
+    "psutil": "7.2.0",
+    "python": "3.11",
+    "safetensors": "0.8.0",
+    "torch": "2.7.1+cu118",
+    "transformers": "4.57.6"
+  },
+  "schema_version": 1,
+  "start_control": {
+    "baseline_sample_interval_seconds": 1.0,
+    "baseline_samples": 5,
+    "idle_sample_interval_seconds": 1.0,
+    "idle_timeout_seconds": 600,
+    "maximum_baseline_temperature_celsius": 60,
+    "maximum_gpu_utilization_percent": 5,
+    "maximum_post_warmup_temperature_celsius": 60,
+    "maximum_temperature_above_baseline_celsius": 2,
+    "post_warmup_consecutive_idle_samples": 15,
+    "warmup_complete_method_cases_per_condition_segment": 1,
+    "warmup_output_retained": false
+  },
+  "status": "final_resource_hardware_protocol_no_measurement_started"
+}

@@ -63,6 +63,10 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         metadata / "hardware_measurement_contract_audit_v1.json"
     )
     resource_schedule_path = metadata / "resource_schedule_candidate_v1.json"
+    resource_hardware_protocol_path = (
+        metadata / "resource_hardware_protocol_v1.json"
+    )
+    resource_final_schedule_path = metadata / "resource_schedule_v1.json"
     pilot_review_path = (
         repository_root
         / "reports"
@@ -142,6 +146,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     execution_scope = _read_object(execution_scope_path, errors)
     hardware_measurement = _read_object(hardware_measurement_path, errors)
     resource_schedule = _read_object(resource_schedule_path, errors)
+    resource_hardware_protocol = _read_object(
+        resource_hardware_protocol_path, errors
+    )
+    resource_final_schedule = _read_object(
+        resource_final_schedule_path, errors
+    )
     completed_pilot_review_validation = _read_object(
         completed_pilot_review_validation_path,
         errors,
@@ -928,6 +938,51 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             errors,
             label="resource schedule",
         )
+    if resource_hardware_protocol:
+        if resource_hardware_protocol.get("status") != (
+            "final_resource_hardware_protocol_no_measurement_started"
+        ):
+            errors.append("resource hardware protocol is not final")
+        hardware = resource_hardware_protocol.get("hardware", {})
+        measurement = resource_hardware_protocol.get("measurement", {})
+        start_control = resource_hardware_protocol.get("start_control", {})
+        if hardware.get("required_runtime_gpu_name") != (
+            "NVIDIA GeForce RTX 3090"
+        ):
+            errors.append("resource hardware protocol GPU is not RTX 3090")
+        if hardware.get("required_gpu_compute_processes") != 1 or hardware.get(
+            "maximum_gpu_compute_processes"
+        ) != 1:
+            errors.append("resource GPU process isolation is not frozen")
+        if measurement.get("sample_target_hz") != 20.0:
+            errors.append("resource measurement target is not 20 Hz")
+        if start_control.get("baseline_samples") != 5 or start_control.get(
+            "post_warmup_consecutive_idle_samples"
+        ) != 15:
+            errors.append("resource warm-up and thermal controls are incomplete")
+    if resource_final_schedule:
+        expected = resource_final_schedule.get("expected", {})
+        bindings = resource_final_schedule.get("artifact_bindings", {})
+        if resource_final_schedule.get("status") != (
+            "final_resource_schedule_bound_no_measurement_started"
+        ):
+            errors.append("final resource schedule status is invalid")
+        if expected.get("conditions") != 24 or expected.get(
+            "total_method_case_rows"
+        ) != 3_600:
+            errors.append("final resource schedule dimensions are invalid")
+        if resource_hardware_protocol_path.is_file() and bindings.get(
+            "hardware_protocol_sha256"
+        ) != _sha256(resource_hardware_protocol_path):
+            errors.append("resource schedule hardware binding differs")
+        if accuracy_manifest_path.is_file() and bindings.get(
+            "accuracy_manifest_sha256"
+        ) != _sha256(accuracy_manifest_path):
+            errors.append("resource schedule manifest binding differs")
+        if intervention_dataset_path.is_file() and bindings.get(
+            "intervention_dataset_sha256"
+        ) != _sha256(intervention_dataset_path):
+            errors.append("resource schedule dataset binding differs")
 
     completed_gates = [
         "pinned_source_integrity",
@@ -958,6 +1013,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         "method_case_hardware_measurement_instrumentation",
         "resource_candidate_subset_and_condition_order",
         "resource_run_config_builder_with_approval_gate",
+        "resource_approved_subset_and_case_order",
+        "resource_hardware_warmup_thermal_and_process_controls",
         "publication_accuracy_smoke_leak_gate",
     ]
     if excluded_local_attempt_registered:
@@ -967,8 +1024,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
     )
     blocking_gates = [
         *accuracy_blocking_gates,
-        "hardware_warmup_and_thermal_controls",
-        "resource_subset_approval_and_final_config_binding",
+        "resource_run_configs_commit_binding",
+        "resource_cluster_preflight",
     ]
     return {
         "study_id": STUDY_ID,
@@ -1153,6 +1210,12 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
             "resource_schedule_candidate": _artifact_record(
                 resource_schedule_path, repository_root
             ),
+            "resource_hardware_protocol": _artifact_record(
+                resource_hardware_protocol_path, repository_root
+            ),
+            "resource_final_schedule": _artifact_record(
+                resource_final_schedule_path, repository_root
+            ),
             "historical_distilbert_wiring_smoke": _artifact_record(
                 distilbert_smoke_path, repository_root
             ),
@@ -1167,8 +1230,8 @@ def audit_primary_study_wiring(repository_root: Path) -> dict[str, Any]:
         ),
         "accuracy_blocking_gates": accuracy_blocking_gates,
         "resource_blocking_gates": [
-            "hardware_warmup_and_thermal_controls",
-            "resource_subset_approval_and_final_config_binding",
+            "resource_run_configs_commit_binding",
+            "resource_cluster_preflight",
         ],
     }
 

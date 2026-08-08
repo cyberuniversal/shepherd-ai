@@ -25,6 +25,9 @@ class GpuTelemetry(Protocol):
     def total_energy_millijoules(self) -> int | None:
         """Return the cumulative board counter or None when unsupported."""
 
+    def compute_process_ids(self) -> tuple[int, ...] | None:
+        """Return board compute PIDs, or None when unsupported."""
+
     def close(self) -> None:
         """Release the telemetry library."""
 
@@ -37,6 +40,7 @@ class ResourceSample:
     gpu_utilization_percent: int
     temperature_celsius: int
     process_gpu_memory_bytes: int | None
+    compute_process_ids: tuple[int, ...] | None
     process_rss_bytes: int
 
     def to_dict(self) -> dict[str, Any]:
@@ -47,6 +51,11 @@ class ResourceSample:
             "gpu_utilization_percent": self.gpu_utilization_percent,
             "temperature_celsius": self.temperature_celsius,
             "process_gpu_memory_bytes": self.process_gpu_memory_bytes,
+            "compute_process_ids": (
+                list(self.compute_process_ids)
+                if self.compute_process_ids is not None
+                else None
+            ),
             "process_rss_bytes": self.process_rss_bytes,
         }
 
@@ -81,6 +90,7 @@ class NvmlDeviceTelemetry:
     def sample(self) -> dict[str, Any]:
         memory = self._nvml.nvmlDeviceGetMemoryInfo(self._handle)
         utilization = self._nvml.nvmlDeviceGetUtilizationRates(self._handle)
+        process_ids, process_gpu_memory = self._process_snapshot()
         return {
             "power_milliwatts": int(
                 self._nvml.nvmlDeviceGetPowerUsage(self._handle)
@@ -93,7 +103,8 @@ class NvmlDeviceTelemetry:
                     self._nvml.NVML_TEMPERATURE_GPU,
                 )
             ),
-            "process_gpu_memory_bytes": self._process_gpu_memory_bytes(),
+            "process_gpu_memory_bytes": process_gpu_memory,
+            "compute_process_ids": process_ids,
         }
 
     def total_energy_millijoules(self) -> int | None:
@@ -104,13 +115,38 @@ class NvmlDeviceTelemetry:
         except self._nvml.NVMLError_NotSupported:
             return None
 
+    def compute_process_ids(self) -> tuple[int, ...] | None:
+        function = self._compute_process_function()
+        if function is None:
+            return None
+        try:
+            return tuple(sorted(int(process.pid) for process in function(self._handle)))
+        except self._nvml.NVMLError_NotSupported:
+            return None
+
     def close(self) -> None:
         if not self._closed:
             self._nvml.nvmlShutdown()
             self._closed = True
 
-    def _process_gpu_memory_bytes(self) -> int | None:
-        function = None
+    def _process_snapshot(self) -> tuple[tuple[int, ...] | None, int | None]:
+        function = self._compute_process_function()
+        if function is None:
+            return None, None
+        try:
+            processes = function(self._handle)
+        except self._nvml.NVMLError_NotSupported:
+            return None, None
+        process_ids = tuple(sorted(int(process.pid) for process in processes))
+        for process in processes:
+            if int(process.pid) != self._process_id:
+                continue
+            used = getattr(process, "usedGpuMemory", None)
+            memory = int(used) if isinstance(used, int) and used >= 0 else None
+            return process_ids, memory
+        return process_ids, 0
+
+    def _compute_process_function(self) -> Any | None:
         for name in (
             "nvmlDeviceGetComputeRunningProcesses_v3",
             "nvmlDeviceGetComputeRunningProcesses_v2",
@@ -118,19 +154,8 @@ class NvmlDeviceTelemetry:
         ):
             function = getattr(self._nvml, name, None)
             if function is not None:
-                break
-        if function is None:
-            return None
-        try:
-            processes = function(self._handle)
-        except self._nvml.NVMLError_NotSupported:
-            return None
-        for process in processes:
-            if int(process.pid) != self._process_id:
-                continue
-            used = getattr(process, "usedGpuMemory", None)
-            return int(used) if isinstance(used, int) and used >= 0 else None
-        return 0
+                return function
+        return None
 
 
 class NvmlResourceMonitor:
@@ -299,6 +324,14 @@ def build_resource_report(
         ),
         "temperature_celsius": _summary(
             [sample.temperature_celsius for sample in samples]
+        ),
+        "compute_process_ids_observed": sorted(
+            {
+                process_id
+                for sample in samples
+                if sample.compute_process_ids is not None
+                for process_id in sample.compute_process_ids
+            }
         ),
         "samples": [sample.to_dict() for sample in samples],
         "errors": list(errors),

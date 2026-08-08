@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: shepherd-ai-resource-preflight-v1
+  namespace: aiea-interns
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    shepherd-ai/stage: resource-preflight-v1
+spec:
+  activeDeadlineSeconds: 3600
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shepherd-ai
+        shepherd-ai/stage: resource-preflight-v1
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
+      containers:
+        - name: resource-preflight
+          image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+          command: ["/bin/bash", "-lc"]
+          args:
+            - |
+              set -euo pipefail
+              apt-get update
+              apt-get install -y --no-install-recommends git ca-certificates
+              rm -rf /var/lib/apt/lists/*
+              repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+              if [[ ! -d "${repo}/.git" ]]; then
+                git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+              fi
+              git -C "${repo}" fetch origin
+              git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+              python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+              python -m pip install --no-cache-dir \
+                accelerate==1.14.0 \
+                huggingface-hub==0.36.2 \
+                safetensors==0.8.0 \
+                transformers==4.57.6 \
+                nvidia-ml-py==13.610.43 \
+                psutil==7.2.0
+              output=/workspace/results/resource-v1-preflight
+              mkdir -p "${output}"
+              python "${repo}/scripts/run_multiuav_resource.py" \
+                --repetition 1 \
+                --condition-order 1 \
+                --cache-audit /workspace/artifacts/qwen25_3b_cache_audit_nautilus_v1.json \
+                --smoke-audit /workspace/artifacts/qwen25_3b_load_smoke_nautilus_v1.json \
+                --results "${output}/unused-results.jsonl" \
+                --checkpoint-zip "${output}/unused-checkpoint.zip" \
+                --run-summary "${output}/run_summary.json" \
+                --start-control-dir "${output}/start-controls" \
+                --hardware-lock "${output}/unused-hardware-lock.json" \
+                --node-name "${SHEPHERD_NODE_NAME}" \
+                --preflight-only
+          env:
+            - name: SHEPHERD_GIT_COMMIT
+              value: __SHEPHERD_GIT_COMMIT__
+            - name: HF_HOME
+              value: /workspace/hf-cache
+            - name: HF_HUB_OFFLINE
+              value: "1"
+            - name: TRANSFORMERS_OFFLINE
+              value: "1"
+            - name: SHEPHERD_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources:
+            requests:
+              cpu: "2"
+              memory: 16Gi
+              nvidia.com/gpu: "1"
+            limits:
+              cpu: "2"
+              memory: 16Gi
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: shepherd-ai-539948

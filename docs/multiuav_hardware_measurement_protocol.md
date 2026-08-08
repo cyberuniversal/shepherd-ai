@@ -7,15 +7,13 @@ accuracy matrix runs once per immutable checkpoint. Resource measurements use
 30 stratified source-task clusters, all five variants, and three separately
 hashed repetitions per model-method condition.
 
-`datasets/multiuav_plat/resource_schedule_candidate_v1.json` now records a
-deterministic candidate selection of two eligible held-out source tasks from
-each of the 15 scenario/difficulty strata. It also records all 24 combinations
-of two models, four methods, and three repetitions in a seeded order. This is a
-source-task and condition-order manifest only. It is not final until every
-selected source task has a complete approved five-case cluster and the final
-dataset hash is bound into run configs. The config builder exists but refuses
-any data status other than `approved_evaluation_data`. No study resource
-measurement has run.
+`datasets/multiuav_plat/resource_schedule_v1.json` binds the deterministic
+candidate selection to 30 complete, approved, held-out source-task clusters,
+all 150 dependent variant cases, and all 24 combinations of two models, four
+methods, and three repetitions. Each repetition has one frozen case order
+shared by every model-method condition. The schedule is bound to the approved
+manifest, intervention dataset, candidate schedule, and hardware protocol by
+SHA-256. No study resource measurement has run.
 
 ## Measurement Unit
 
@@ -66,19 +64,29 @@ no study case. The probe confirmed that the NVML counter is available and raw
 20 Hz-targeted telemetry is retained. Its energy value is infrastructure
 evidence only and must not enter study tables, figures, or conclusions.
 
-## Remaining Controls
+## Frozen Execution Controls
 
-Before a resource run, the following must still be frozen and tested:
+`datasets/multiuav_plat/resource_hardware_protocol_v1.json` freezes one
+NVIDIA GeForce RTX 3090, one physical node and GPU UUID for the full attempt,
+float16 with `device_map=auto` and no offload, exact runtime package versions,
+and complete method-case measurement. Model loading, warm-up, and idle waiting
+are excluded from the measured unit.
 
-- revalidation of the candidate subset against complete approved clusters;
-- final dataset, code-commit, and hardware-artifact bindings for 24 run configs;
-- warm-up procedure;
-- idle and thermal-start conditions;
-- treatment of background GPU workloads;
-- fixed precision and checkpoint-specific offload configuration; and
-- failed or invalid measurement-row handling in publication summaries.
+Every condition process performs five idle baseline samples, one unretained
+complete method-case warm-up, and then requires 15 consecutive one-second
+samples at no more than 5% utilization and no more than 2 C above baseline or
+60 C absolute. Baseline temperature may not exceed 60 C. NVML compute-process
+enumeration must show exactly one GPU process both during the start control and
+throughout every measured case. A node/GPU UUID lock prevents incompatible
+resume.
 
-These are implementation blockers, not reasons to use unreviewed cases.
+Every row is durably appended. Any invalid row invalidates and preserves the
+whole 150-row condition; a replacement must use a new attempt directory.
+Publication summaries exclude invalid conditions. The campaign keeps raw
+outputs unscored until the separate resource admission and analysis gate.
+
+The remaining pre-measurement gates are commit-bound generation of all 24 run
+configs and a no-inference RTX 3090 cluster preflight.
 
 ## Reproduce The Probe
 
@@ -93,4 +101,10 @@ Rebuild the source-task and condition-order candidate with:
 ```powershell
 python scripts/build_multiuav_resource_schedule.py `
   --output datasets/multiuav_plat/resource_schedule_candidate_v1.json
+```
+
+Rebuild the final protocol and approved schedule without model invocation:
+
+```powershell
+python scripts/freeze_multiuav_resource_protocol.py
 ```

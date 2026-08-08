@@ -28,7 +28,7 @@ results.
 | CP-33 | Enforce strict decisions and non-empty executable plans; retain `PARSE_ERROR`. | implemented | `src/shepherd_ai/multiuav_plan_contract.py` strictly parses the three decisions, enforces decision-specific question/plan invariants, rejects empty executable plans and malformed structures, and preserves raw failures as `PARSE_ERROR`. `src/shepherd_ai/multiuav_runner.py` applies the parser to every final call and retains raw output. |
 | CP-34 | Recursively ground API values and record containment stage. | implemented | `src/shepherd_ai/multiuav_grounding_validator.py` freezes 11 endpoint schemas, recursively validates waypoint leaves, grounds values against parameter-compatible AGENT-visible evidence, records per-leaf provenance, enforces static bounds, and records first containment stage. M2-M4 invoke it through the method runner. Descriptive containment outcomes are preserved in the scored-row archives; clustered comparison is pending. |
 | CP-35 | Resolve both Qwen checkpoints to immutable 40-character commits. | implemented | `src/shepherd_ai/multiuav_model_revisions.py` pins 3B at `aa8e72537993ba99e69dfaafa59ed015b17504d1` and 7B at `a09a35458c702b33eeacc393d103063234e8bc28`. Both revision endpoints were remotely verified, cached, checksummed, and synthetically invoked in separate later artifacts. |
-| CP-36 | Separate one deterministic accuracy run from three resource repetitions on 30 clusters. | partial | `accuracy_case_manifest_v1.json` approves 284 held-out clusters and 1,420 cases. One 5,680-row matrix per frozen model is complete and score-blind admission passes for all 11,360 rows. Resource configs remain separate: `resource_schedule_candidate_v1.json` selects 30 tasks and registers 24 model-method-repetition conditions; warm-up and final hardware bindings remain resource-only blockers. |
+| CP-36 | Separate one deterministic accuracy run from three resource repetitions on 30 clusters. | partial | `accuracy_case_manifest_v1.json` approves 284 held-out clusters and 1,420 cases. One 5,680-row matrix per frozen model is complete and score-blind admission passes for all 11,360 rows. `resource_schedule_v1.json` now binds 30 complete approved clusters, 150 cases, and 24 conditions to the frozen RTX 3090 protocol; commit-bound configs, preflight, and measurement remain pending. |
 | CP-37 | Record the full safety, utility, fidelity, latency, token, memory, call, and GPU-energy trade-off. | partial | Accuracy scoring now records raw and post-gate unsafe proceed, decision utility, schema/endpoint/parameter/official-command fidelity, parse/backend failures, and containment for all 11,360 rows. Accuracy runs were intentionally not resource measurements; latency, memory, and GPU-energy repetitions remain pending. |
 | CP-38 | Use source-cluster bootstrap, paired differences, confidence intervals, and preregistered outcomes. | implemented | `accuracy_protocol_freeze_v1.json` registers M3-minus-M1 primary and M3-minus-M4 confirmatory contrasts, two directed primary outcomes, post-gate system semantics, retained failures, 10,000 fixed-seed cluster-bootstrap draws, 95% percentile intervals, and no null-hypothesis tests. All eight registered model-contrast-outcome analyses are complete with deterministic evidence archives and a bounded report. |
 | CP-39 | Checkpoint every row with compatible resume and complete raw packages. | partial | Schema-v3 config-bound JSONL writes, per-row `fsync`, duplicate/config-drift rejection, zero-call resume, durable progress callbacks, matrix completeness, and deterministic compact ZIP checkpoints are implemented. The preserved 3B and 7B archives each contain all 5,680 expected rows and pass hash, ZIP, config, and admission checks. Resource packages remain pending. |
@@ -43,9 +43,9 @@ results.
 | LP-44 | Session-level 60/20/20 split. | implemented before task-level leakage exclusions |
 | LP-45 | Primary stage-wise versus monolithic contrast; compute-matched confirmation preferred. | implemented as preregistration; M3-minus-M1 is primary and M3-minus-M4 confirmatory, with no revised-study result yet |
 | LP-46 | One deterministic accuracy run per immutable checkpoint. | implemented; one complete admitted 5,680-row matrix exists for each pinned 3B and 7B checkpoint |
-| LP-47 | Thirty clusters, five variants, three resource repetitions. | partial; a separate 30-task held-out resource candidate and 24 condition orders are source-hashed, but approved five-case clusters and model/resource runs do not exist |
+| LP-47 | Thirty clusters, five variants, three resource repetitions. | partial; the final schedule contains 30 approved held-out clusters, all 150 five-variant cases, and 24 source-hashed condition orders, but no resource measurement exists |
 | LP-48 | Cached local-only weights and blocked non-loopback sockets. | partial; both pinned snapshots are cached outside Git with complete checksums and successful synthetic load/generation smokes. The 3B failed remote-lookup attempt and earlier 32-token success are preserved. The 7B smoke used explicit CPU/disk offload. No external firewall control is registered. |
-| LP-49 | Board-energy counter or 20 Hz power integration. | partial; NVML counter-first measurement and 20 Hz trapezoidal fallback are implemented and synthetically probed, but thermal controls and study repetitions remain absent |
+| LP-49 | Board-energy counter or 20 Hz power integration. | partial; NVML counter-first measurement, 20 Hz trapezoidal fallback, exact RTX 3090 binding, thermal/warm-up gates, process isolation, and invalid-row handling are frozen and tested, but study repetitions remain absent |
 | LP-50 | Static fidelity unless official-server execution occurs. | implemented; `execution_scope_audit_v1.json` freezes static API, parameter, and official-command fidelity and prohibits live mission-success claims |
 | LP-51 | Text-first primary study; speech separately evaluated. | implemented as study scope |
 
@@ -71,14 +71,14 @@ generation, sampled expert-QC audit, score-blind protocol registration, the
 scoring contract pass. The 3B and 7B cache
 preflights and synthetic load/generation smokes now pass with complete file
 checksums and no study-case use. Static fidelity is frozen, and method-case
-NVML instrumentation has a source-hashed synthetic probe. A deterministic
-30-task held-out candidate subset and all 24 model-method-repetition condition
-orders are recorded without resource-model invocation. Final accuracy configs
+NVML instrumentation has a source-hashed synthetic probe. A deterministic final
+30-task held-out subset, all 150 approved cases, all 24 conditions, and the
+RTX 3090 measurement controls are recorded without resource-model invocation. Final accuracy configs
 are bound to the frozen execution commit. The 3B and 7B runs produced two
 complete 5,680-row sealed matrices, and `accuracy_matrix_admission_v1.json`
 admits all 11,360 rows without pre-admission hidden-label access or scoring.
 Registered label-separated deterministic scoring is now complete, with derived
 rows separated from aggregate summaries. The registered source-cluster
 bootstrap and accuracy figure generation are also complete, with exact source
-tables and a provenance manifest. The exact next gate is the resource
-experiment; warm-up and thermal controls remain its blockers.
+tables and a provenance manifest. The exact next gate is generation of the
+commit-bound resource configs followed by the no-inference RTX 3090 preflight.
