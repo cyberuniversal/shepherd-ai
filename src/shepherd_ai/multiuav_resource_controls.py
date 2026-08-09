@@ -103,13 +103,17 @@ def prepare_resource_condition(
         while len(baseline_samples) < required_baseline:
             observed_at = clock()
             if observed_at > baseline_deadline:
-                raise TimeoutError("baseline idle sampling timed out")
+                raise TimeoutError("baseline idle and thermal sampling timed out")
             observed = _control_sample(telemetry, observed_at)
             baseline_wait_samples.append(observed)
             _validate_process_count(observed, hardware)
-            if observed["gpu_utilization_percent"] <= int(
+            idle = observed["gpu_utilization_percent"] <= int(
                 start["maximum_gpu_utilization_percent"]
-            ):
+            )
+            thermal = observed["temperature_celsius"] <= float(
+                start["maximum_baseline_temperature_celsius"]
+            )
+            if idle and thermal:
                 baseline_samples.append(observed)
             else:
                 baseline_samples.clear()

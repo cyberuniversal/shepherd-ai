@@ -73,9 +73,10 @@ and complete method-case measurement. Model loading, warm-up, and idle waiting
 are excluded from the measured unit.
 
 Every condition process waits up to 600 seconds to acquire five consecutive
-one-second idle baseline samples and retains every baseline-wait observation.
-Any busy sample resets the consecutive baseline window. The process then runs
-one unretained complete method-case warm-up and requires 15 consecutive
+one-second baseline samples that are both idle and at or below the frozen 60 C
+ceiling, and retains every baseline-wait observation. Any busy or hot sample
+resets the consecutive baseline window. The process then runs one unretained
+complete method-case warm-up and requires 15 consecutive
 one-second samples at no more than 5% utilization and no more than 2 C above
 baseline or 60 C absolute. Baseline temperature may not exceed 60 C. NVML
 compute-process enumeration must show exactly one GPU process both during the
@@ -93,7 +94,9 @@ then failed before condition 2 measurement because the idle GPU remained at
 68 C, above the frozen 60 C baseline ceiling. The full attempt, including the
 valid first-condition checkpoint and the second-condition failure metadata, is
 preserved under `datasets/multiuav_plat/failed_attempts/`. The partial attempt
-is not an admitted resource result.
+is not an admitted resource result. Attempt 3 retains the same 600-second
+window and 60 C ceiling but applies both constraints while acquiring the
+baseline, allowing an idle-but-hot GPU to cool instead of failing immediately.
 
 Every row is durably appended. Any invalid row invalidates and preserves the
 whole 150-row condition; a replacement must use a new attempt directory.
