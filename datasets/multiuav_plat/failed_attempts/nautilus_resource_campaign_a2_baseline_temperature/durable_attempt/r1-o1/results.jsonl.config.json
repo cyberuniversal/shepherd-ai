@@ -1,0 +1,26 @@
+{
+  "config": {
+    "code_commit": "d414416f56c77b1ff29ee4927c2a07020e2212b2",
+    "dataset_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+    "decoding": {
+      "do_sample": false,
+      "max_new_tokens": 512,
+      "num_beams": 1
+    },
+    "hardware_protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+    "methods": [
+      "M3_stage_wise"
+    ],
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "prompt_contract_version": "multiuav_prompt_contract_v1",
+    "resource_condition_order": 1,
+    "resource_repetition": 1,
+    "resource_schedule_sha256": "aa6418112cc0d2ba03bff65b18c8b2e9b483653814b3041d4cc5f3fdc0972737",
+    "run_id": "multiuav_validation_placement_v1.resource.r1.o1.Qwen2.5-3B-Instruct.M3_stage_wise",
+    "run_kind": "resource",
+    "study_id": "multiuav_validation_placement_v1"
+  },
+  "config_hash": "dfca7d42db9fbb0b92c6971b0eea164669510f5c5df0386f8ea3c030002253c2",
+  "schema_version": 3
+}

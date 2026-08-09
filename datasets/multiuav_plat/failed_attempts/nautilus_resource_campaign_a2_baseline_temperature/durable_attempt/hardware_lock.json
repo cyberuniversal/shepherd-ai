@@ -1,0 +1,8 @@
+{
+  "driver_version": "595.71.05",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-472768a9-945c-fe4e-3a3f-70d6ee5ed22b",
+  "node_name": "nautilus01.hsrn.nyu.edu",
+  "protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+  "schema_version": 1
+}

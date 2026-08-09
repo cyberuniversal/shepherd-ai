@@ -88,7 +88,12 @@ busy baseline sample immediately. It produced zero measured rows. The complete
 failed-attempt metadata is preserved under `datasets/multiuav_plat/failed_attempts/`.
 Attempt 2 uses the unchanged GPU-idle threshold and timeout, but implements the
 registered wait window instead of treating one transient busy sample as an
-immediate terminal failure.
+immediate terminal failure. It completed the first 150-row 3B/M3 condition,
+then failed before condition 2 measurement because the idle GPU remained at
+68 C, above the frozen 60 C baseline ceiling. The full attempt, including the
+valid first-condition checkpoint and the second-condition failure metadata, is
+preserved under `datasets/multiuav_plat/failed_attempts/`. The partial attempt
+is not an admitted resource result.
 
 Every row is durably appended. Any invalid row invalidates and preserves the
 whole 150-row condition; a replacement must use a new attempt directory.

@@ -39,8 +39,10 @@ outputs, or negative evidence.
 The locked 3B and 7B accuracy matrices, score-blind admission, deterministic
 scoring, registered source-cluster bootstrap, and publication figures are now
 stored. Treat only those preserved accuracy artifacts as study results. The
-separate resource experiment remains unmeasured, and its frozen contracts or
-synthetic tooling probes are not resource results. In particular:
+separate resource experiment remains incomplete and unadmitted. Attempt 2
+preserved one 150-row condition before a later condition failed its frozen
+thermal gate; neither those partial raw rows, frozen contracts, nor synthetic
+tooling probes are resource results. In particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;

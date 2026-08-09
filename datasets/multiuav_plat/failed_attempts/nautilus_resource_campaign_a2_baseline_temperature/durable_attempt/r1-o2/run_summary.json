@@ -1,0 +1,99 @@
+{
+  "approved_cases": 150,
+  "backend_config": {
+    "cache_dir": "/workspace/hf-cache",
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 512,
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "num_beams": 1,
+    "offload_folder": null,
+    "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "snapshot_dir": "/workspace/hf-cache/models--Qwen--Qwen2.5-3B-Instruct/snapshots/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "trust_remote_code": false,
+    "use_safetensors": true
+  },
+  "cache_audit_sha256": "10d37e85af2df8a0fcaf6bb5bf4cbd08864afe25bfcb2f75a135b7061e3f5dbf",
+  "cache_verification": {
+    "file_count": 12,
+    "total_bytes": 6183464935,
+    "valid": true,
+    "weight_bytes": 6171926992,
+    "weight_file_count": 2
+  },
+  "checked_at_utc": "2026-08-08T16:44:27.589727+00:00",
+  "checkpoint_zip": {
+    "path": "/workspace/results/resource-v1-attempt2/r1-o2/checkpoint.zip",
+    "present": false
+  },
+  "code_commit": "d414416f56c77b1ff29ee4927c2a07020e2212b2",
+  "condition_order": 2,
+  "config_hash": "349d1cbed72bf2514c550fdac5222c991930c7c86047644534b3b2e258faa9d0",
+  "error_message": "GPU baseline temperature exceeds the frozen maximum",
+  "error_type": "ValueError",
+  "expected_rows": 150,
+  "failed_at_utc": "2026-08-08T16:44:35.763188+00:00",
+  "hardware_protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+  "hidden_labels_inspected": false,
+  "measurement_started": false,
+  "method_id": "M1_monolithic",
+  "model_id": "Qwen/Qwen2.5-3B-Instruct",
+  "model_loaded": true,
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "node_name": "nautilus01.hsrn.nyu.edu",
+  "nvml_preflight": {
+    "compute_process_count": 0,
+    "gpu": {
+      "driver_version": "595.71.05",
+      "gpu_index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-472768a9-945c-fe4e-3a3f-70d6ee5ed22b"
+    },
+    "measurement_started": false,
+    "model_loaded": false,
+    "power_integration_fallback_available": true,
+    "sample": {
+      "board_memory_used_bytes": 475660288,
+      "gpu_utilization_percent": 0,
+      "power_milliwatts": 167680,
+      "temperature_celsius": 68
+    },
+    "status": "nvml_resource_preflight_passed_no_model_loaded",
+    "total_energy_counter_supported": true
+  },
+  "raw_model_outputs_inspected": false,
+  "repetition": 1,
+  "resource_schedule_sha256": "aa6418112cc0d2ba03bff65b18c8b2e9b483653814b3041d4cc5f3fdc0972737",
+  "results": {
+    "path": "/workspace/results/resource-v1-attempt2/r1-o2/results.jsonl",
+    "present": false
+  },
+  "runtime": {
+    "cpu": "x86_64",
+    "cuda_available": true,
+    "cuda_runtime": "11.8",
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 3090",
+        "total_memory_bytes": 25298141184
+      }
+    ],
+    "package_versions": {
+      "accelerate": "1.14.0",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.8.0",
+      "torch": "2.7.1+cu118",
+      "transformers": "4.57.6"
+    },
+    "platform": "Linux-5.15.0-181-generic-x86_64-with-glibc2.35",
+    "python_executable": "/opt/conda/bin/python",
+    "python_version": "3.11.13"
+  },
+  "schema_version": 1,
+  "segment_id": "d648a9dd-08c9-4283-a9f1-3cb556240a1a-20260808T164427589699Z",
+  "smoke_audit_sha256": "a98491b18a4f74a185ddeb36bbf171af1d1565daf9c3aa35aedbe4085f1c8c3f",
+  "status": "resource_condition_failed_raw_rows_preserved"
+}

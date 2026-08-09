@@ -1,0 +1,10 @@
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.96it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.87it/s]
+Traceback (most recent call last):
+  File "/workspace/repo-a1de91f9cabaf9f7edd25963bef0d00c7bebb267/scripts/run_multiuav_resource.py", line 364, in <module>
+    main()
+  File "/workspace/repo-a1de91f9cabaf9f7edd25963bef0d00c7bebb267/scripts/run_multiuav_resource.py", line 191, in main
+    start_control = prepare_resource_condition(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/repo-a1de91f9cabaf9f7edd25963bef0d00c7bebb267/src/shepherd_ai/multiuav_resource_controls.py", line 126, in prepare_resource_condition
+    raise ValueError("GPU baseline temperature exceeds the frozen maximum")
+ValueError: GPU baseline temperature exceeds the frozen maximum

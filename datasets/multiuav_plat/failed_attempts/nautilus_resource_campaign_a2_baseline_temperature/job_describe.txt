@@ -1,0 +1,81 @@
+﻿Name:                        shepherd-ai-resource-v1-a2
+Namespace:                   aiea-interns
+Selector:                    batch.kubernetes.io/controller-uid=289a4876-92d7-4418-a055-1f9cb323b3d9
+Labels:                      app.kubernetes.io/name=shepherd-ai
+                             shepherd-ai/stage=resource-v1
+Annotations:                 nrp.ai/username: http://cilogon.org/serverE/users/539948
+Parallelism:                 1
+Completions:                 1
+Completion Mode:             NonIndexed
+Suspend:                     false
+Backoff Limit:               0
+TTL Seconds After Finished:  86400
+Start Time:                  Sat, 08 Aug 2026 18:46:38 +0300
+Active Deadline Seconds:     1209600s
+Pods Statuses:               0 Active (0 Ready) / 0 Succeeded / 1 Failed
+Pod Template:
+  Labels:  app.kubernetes.io/name=shepherd-ai
+           batch.kubernetes.io/controller-uid=289a4876-92d7-4418-a055-1f9cb323b3d9
+           batch.kubernetes.io/job-name=shepherd-ai-resource-v1-a2
+           controller-uid=289a4876-92d7-4418-a055-1f9cb323b3d9
+           job-name=shepherd-ai-resource-v1-a2
+           shepherd-ai/stage=resource-v1
+  Containers:
+   resource-campaign:
+    Image:      pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/bash
+      -lc
+    Args:
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+      python -m pip install --no-cache-dir \
+        accelerate==1.14.0 \
+        huggingface-hub==0.36.2 \
+        safetensors==0.8.0 \
+        transformers==4.57.6 \
+        nvidia-ml-py==13.610.43 \
+        psutil==7.2.0
+      output=/workspace/results/resource-v1-attempt2
+      mkdir -p "${output}"
+      python "${repo}/scripts/run_multiuav_resource_campaign.py" \
+        --output-root "${output}" \
+        --node-name "${SHEPHERD_NODE_NAME}" \
+        --cache-audit-root /workspace/artifacts
+      
+    Limits:
+      cpu:             2
+      memory:          32Gi
+      nvidia.com/gpu:  1
+    Requests:
+      cpu:             2
+      memory:          32Gi
+      nvidia.com/gpu:  1
+    Environment:
+      SHEPHERD_GIT_COMMIT:   a1de91f9cabaf9f7edd25963bef0d00c7bebb267
+      HF_HOME:               /workspace/hf-cache
+      HF_HUB_OFFLINE:        1
+      TRANSFORMERS_OFFLINE:  1
+      SHEPHERD_NODE_NAME:     (v1:spec.nodeName)
+      SHEPHERD_POD_UID:       (v1:metadata.uid)
+    Mounts:
+      /workspace from workspace (rw)
+  Volumes:
+   workspace:
+    Type:          PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:     shepherd-ai-539948
+    ReadOnly:      false
+  Node-Selectors:  nvidia.com/gpu.product=NVIDIA-GeForce-RTX-3090
+  Tolerations:     <none>
+Events:            <none>

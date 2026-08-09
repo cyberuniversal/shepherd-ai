@@ -1,0 +1,554 @@
+{
+  "baseline_samples": [
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435717.197355278,
+      "power_milliwatts": 116968,
+      "temperature_celsius": 38
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435718.197839505,
+      "power_milliwatts": 113114,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435719.198401181,
+      "power_milliwatts": 113093,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435720.198923647,
+      "power_milliwatts": 113153,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435721.199418364,
+      "power_milliwatts": 113149,
+      "temperature_celsius": 39
+    }
+  ],
+  "baseline_temperature_celsius": 39.0,
+  "baseline_wait_samples": [
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435717.197355278,
+      "power_milliwatts": 116968,
+      "temperature_celsius": 38
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435718.197839505,
+      "power_milliwatts": 113114,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435719.198401181,
+      "power_milliwatts": 113093,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435720.198923647,
+      "power_milliwatts": 113153,
+      "temperature_celsius": 39
+    },
+    {
+      "board_memory_used_bytes": 7089356800,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435721.199418364,
+      "power_milliwatts": 113149,
+      "temperature_celsius": 39
+    }
+  ],
+  "gpu": {
+    "driver_version": "595.71.05",
+    "gpu_index": 0,
+    "name": "NVIDIA GeForce RTX 3090",
+    "uuid": "GPU-472768a9-945c-fe4e-3a3f-70d6ee5ed22b"
+  },
+  "hardware_lock": {
+    "driver_version": "595.71.05",
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "gpu_uuid": "GPU-472768a9-945c-fe4e-3a3f-70d6ee5ed22b",
+    "node_name": "nautilus01.hsrn.nyu.edu",
+    "protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+    "schema_version": 1
+  },
+  "measurement_started": false,
+  "post_warmup_samples": [
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 55,
+      "monotonic_seconds": 5435730.366587287,
+      "power_milliwatts": 248056,
+      "temperature_celsius": 49
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435731.367077434,
+      "power_milliwatts": 180173,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435732.367653438,
+      "power_milliwatts": 160297,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435733.368242082,
+      "power_milliwatts": 137755,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435734.368761196,
+      "power_milliwatts": 126773,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435735.3693144,
+      "power_milliwatts": 116192,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435736.369837555,
+      "power_milliwatts": 116206,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435737.370348349,
+      "power_milliwatts": 116147,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435738.370867983,
+      "power_milliwatts": 116274,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435739.371383728,
+      "power_milliwatts": 116379,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435740.371923582,
+      "power_milliwatts": 116331,
+      "temperature_celsius": 45
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435741.372465436,
+      "power_milliwatts": 116365,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435742.372952671,
+      "power_milliwatts": 116463,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435743.373462835,
+      "power_milliwatts": 116699,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435744.37398066,
+      "power_milliwatts": 116529,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435745.374485934,
+      "power_milliwatts": 116375,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435746.374965609,
+      "power_milliwatts": 116406,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435747.375441724,
+      "power_milliwatts": 116509,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435748.375965935,
+      "power_milliwatts": 116497,
+      "temperature_celsius": 46
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435749.376464244,
+      "power_milliwatts": 85811,
+      "temperature_celsius": 43
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435750.376999092,
+      "power_milliwatts": 42507,
+      "temperature_celsius": 43
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435751.37751948,
+      "power_milliwatts": 28441,
+      "temperature_celsius": 43
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435752.378055608,
+      "power_milliwatts": 26948,
+      "temperature_celsius": 42
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435753.378622556,
+      "power_milliwatts": 26923,
+      "temperature_celsius": 42
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435754.379177294,
+      "power_milliwatts": 27050,
+      "temperature_celsius": 42
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435755.379724772,
+      "power_milliwatts": 26779,
+      "temperature_celsius": 42
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435756.38026949,
+      "power_milliwatts": 26606,
+      "temperature_celsius": 42
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435757.380817938,
+      "power_milliwatts": 26741,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435758.381332296,
+      "power_milliwatts": 26747,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435759.381866204,
+      "power_milliwatts": 26576,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435760.382358593,
+      "power_milliwatts": 26614,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435761.382891091,
+      "power_milliwatts": 26873,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435762.383456919,
+      "power_milliwatts": 26976,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435763.383955917,
+      "power_milliwatts": 26752,
+      "temperature_celsius": 41
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435764.38447745,
+      "power_milliwatts": 26669,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435765.38498149,
+      "power_milliwatts": 26815,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435766.38546341,
+      "power_milliwatts": 26710,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435767.386026819,
+      "power_milliwatts": 26531,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435768.386606439,
+      "power_milliwatts": 26548,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435769.387149359,
+      "power_milliwatts": 26542,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435770.387670079,
+      "power_milliwatts": 26695,
+      "temperature_celsius": 40
+    },
+    {
+      "board_memory_used_bytes": 7391346688,
+      "compute_process_ids": [
+        5029
+      ],
+      "gpu_utilization_percent": 0,
+      "monotonic_seconds": 5435771.388211539,
+      "power_milliwatts": 27001,
+      "temperature_celsius": 39
+    }
+  ],
+  "protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+  "schema_version": 1,
+  "sha256": "e8ee108f88729fdc3f5fa22ab7161a3a7ee7dc7c0c6720e715fcd27a22162336",
+  "status": "resource_start_control_passed",
+  "temperature_limit_celsius": 41.0,
+  "warmup": {
+    "complete_method_cases": 1,
+    "duration_seconds": 9.166774067096412,
+    "output_retained": false
+  }
+}

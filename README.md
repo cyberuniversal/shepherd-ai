@@ -47,10 +47,13 @@ and protocol-deviation record are preserved and excluded from study results.
 The registered accuracy figures and their source tables are now reproducible
 under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
 `outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The approved
-30-cluster resource schedule and RTX 3090 controls are now frozen without
-measurement. All 24 resource configs are commit-bound. The next gate is the
-no-inference cluster preflight for both frozen models, followed by the registered
-resource experiment. See
+30-cluster resource schedule and RTX 3090 controls are frozen. Preflight v2
+passed. Resource attempt 2 completed one 150-row condition, then failed before
+condition 2 measurement because the GPU baseline was 68 C against the frozen
+60 C ceiling. The partial raw package is preserved but is not an admitted
+resource result. The next gate is a tested cooldown-aware baseline acquisition
+fix, a newly commit-bound attempt, and a repeated no-inference preflight before
+the full resource campaign. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
