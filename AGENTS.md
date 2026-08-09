@@ -98,8 +98,9 @@ tooling probes are resource results. In particular:
   `resource_hardware_protocol_v1.json` freezes the RTX 3090, warm-up, thermal,
   process-isolation, and invalid-row controls. Neither artifact is a run config
   or result. All 24 attempt-3 configs are bound to the cooldown-aware execution
-  revision; preflight v3 must verify both frozen model artifacts and exact-GPU
-  NVML capabilities before any measurement starts.
+  revision. Preflight v3 independently verified both frozen model artifacts and
+  exact-GPU NVML capabilities without loading a model or starting measurement;
+  campaign attempt 3 is the active resource gate.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They

@@ -1,0 +1,88 @@
+{
+  "approved_cases": 150,
+  "backend_config": {
+    "cache_dir": "/workspace/hf-cache",
+    "device_map": "auto",
+    "do_sample": false,
+    "dtype": "float16",
+    "local_files_only": true,
+    "max_new_tokens": 512,
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "num_beams": 1,
+    "offload_folder": null,
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "snapshot_dir": "/workspace/hf-cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+    "trust_remote_code": false,
+    "use_safetensors": true
+  },
+  "cache_audit_sha256": "7937fce5fb0c5dd6e416829a81106ec8c4e0eac05b0eee41485010c57bb1086a",
+  "cache_verification": {
+    "file_count": 14,
+    "total_bytes": 15242807270,
+    "valid": true,
+    "weight_bytes": 15231271888,
+    "weight_file_count": 4
+  },
+  "checked_at_utc": "2026-08-09T18:27:21.165944+00:00",
+  "code_commit": "6d0030094956626b17a9506d018e0fc077ca0ffd",
+  "condition_order": 3,
+  "config_hash": "90a225e4dd1896876067eb5b09839874100319cecf56dcdd3086527ed57ecd96",
+  "expected_rows": 150,
+  "hardware_protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+  "hidden_labels_inspected": false,
+  "measurement_started": false,
+  "method_id": "M4_post_plan_compute_matched",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "model_loaded": false,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "node_name": "nrp-01.laccd.edu",
+  "nvml_preflight": {
+    "compute_process_count": 0,
+    "gpu": {
+      "driver_version": "595.71.05",
+      "gpu_index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "uuid": "GPU-db2bc0f4-ebfe-63da-0f4c-f9f2b9d7ba16"
+    },
+    "measurement_started": false,
+    "model_loaded": false,
+    "power_integration_fallback_available": true,
+    "sample": {
+      "board_memory_used_bytes": 475660288,
+      "gpu_utilization_percent": 0,
+      "power_milliwatts": 29249,
+      "temperature_celsius": 31
+    },
+    "status": "nvml_resource_preflight_passed_no_model_loaded",
+    "total_energy_counter_supported": true
+  },
+  "raw_model_outputs_inspected": false,
+  "repetition": 1,
+  "resource_schedule_sha256": "aa6418112cc0d2ba03bff65b18c8b2e9b483653814b3041d4cc5f3fdc0972737",
+  "runtime": {
+    "cpu": "x86_64",
+    "cuda_available": true,
+    "cuda_runtime": "11.8",
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 3090",
+        "total_memory_bytes": 25298141184
+      }
+    ],
+    "package_versions": {
+      "accelerate": "1.14.0",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.8.0",
+      "torch": "2.7.1+cu118",
+      "transformers": "4.57.6"
+    },
+    "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.35",
+    "python_executable": "/opt/conda/bin/python",
+    "python_version": "3.11.13"
+  },
+  "schema_version": 1,
+  "segment_id": "local-20260809T182721165913Z",
+  "smoke_audit_sha256": "6fffdc4ff85f4499ef49b078d72d6e60e35f5073c1f84ec2a205bef80533153b",
+  "status": "resource_preflight_passed_no_model_loaded"
+}

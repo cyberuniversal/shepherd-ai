@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "resource_preflight_admission_passed",
+  "validated_at_utc": "2026-08-09T19:01:30.9787153Z",
+  "job_name": "shepherd-ai-resource-preflight-v3",
+  "pod_name": "shepherd-ai-resource-preflight-v3-q9svw",
+  "node_name": "nrp-01.laccd.edu",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_uuid": "GPU-db2bc0f4-ebfe-63da-0f4c-f9f2b9d7ba16",
+  "execution_code_commit": "6d0030094956626b17a9506d018e0fc077ca0ffd",
+  "pod_restarts": 0,
+  "pod_exit_code": 0,
+  "same_gpu_uuid_for_both_models": true,
+  "three_b": {
+    "model_id": "Qwen/Qwen2.5-3B-Instruct",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "all_registered_checks_passed": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true
+  },
+  "seven_b": {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "all_registered_checks_passed": true,
+    "measurement_started": false,
+    "model_loaded": false,
+    "compute_process_count": 0,
+    "energy_counter_or_fallback_available": true
+  },
+  "raw_model_outputs_inspected": false,
+  "hidden_labels_inspected": false,
+  "campaign_submission_gate": "passed"
+}
