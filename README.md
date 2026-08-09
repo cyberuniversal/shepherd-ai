@@ -51,9 +51,11 @@ under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
 passed. Resource attempt 2 completed one 150-row condition, then failed before
 condition 2 measurement because the GPU baseline was 68 C against the frozen
 60 C ceiling. The partial raw package is preserved but is not an admitted
-resource result. The next gate is a tested cooldown-aware baseline acquisition
-fix, a newly commit-bound attempt, and a repeated no-inference preflight before
-the full resource campaign. See
+resource result. The cooldown-aware baseline acquisition fix now passes its
+regression tests, and all 24 attempt-3 configs are bound to that execution
+revision. The next gate is the repeated no-inference RTX 3090 preflight v3;
+the full attempt-3 campaign must not start unless both model summaries pass.
+See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.

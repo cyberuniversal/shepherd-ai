@@ -41,7 +41,7 @@ class MultiUavResourceJobTests(unittest.TestCase):
 
         self.assertIn("activeDeadlineSeconds: 604800", manifest)
 
-    def test_attempt_two_uses_new_durable_paths_without_container_retry(self) -> None:
+    def test_attempt_three_uses_new_durable_paths_without_container_retry(self) -> None:
         preflight = (
             ROOT / "infra" / "nautilus" / "resource-preflight-job.yaml"
         ).read_text(encoding="utf-8")
@@ -49,12 +49,12 @@ class MultiUavResourceJobTests(unittest.TestCase):
             ROOT / "infra" / "nautilus" / "resource-job.yaml"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("name: shepherd-ai-resource-preflight-v2", preflight)
-        self.assertIn("/workspace/results/resource-v2-preflight", preflight)
+        self.assertIn("name: shepherd-ai-resource-preflight-v3", preflight)
+        self.assertIn("/workspace/results/resource-v3-preflight", preflight)
         self.assertGreaterEqual(preflight.count('memory: 32Gi'), 2)
         self.assertGreaterEqual(preflight.count('cpu: "2"'), 2)
-        self.assertIn("name: shepherd-ai-resource-v1-a2", campaign)
-        self.assertIn("/workspace/results/resource-v1-attempt2", campaign)
+        self.assertIn("name: shepherd-ai-resource-v1-a3", campaign)
+        self.assertIn("/workspace/results/resource-v1-attempt3", campaign)
         self.assertIn("restartPolicy: Never", campaign)
 
     def test_preflight_covers_both_frozen_models(self) -> None:
