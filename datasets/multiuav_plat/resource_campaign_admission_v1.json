@@ -1,0 +1,524 @@
+{
+  "admission_contract_version": "multiuav_resource_admission_v1",
+  "archive_integrity": {
+    "archive_sha256": "ee010d62257d8f020f6756fccb548d5f59ebe732518213111d264816a50cc2ae",
+    "hidden_labels_accessed": false,
+    "raw_model_outputs_inspected": false,
+    "resource_scores_computed": false,
+    "root": "resource-v1-attempt3",
+    "status": "complete_source_inventory_verified",
+    "verified_bytes": 512827507,
+    "verified_files": 170
+  },
+  "artifact_bindings": {
+    "accuracy_manifest_sha256": "cbbd8ca7a0886a5ed8b381c5e7911f1353ec2e9c14135f97b301b8f0410af26f",
+    "archive_sha256": "ee010d62257d8f020f6756fccb548d5f59ebe732518213111d264816a50cc2ae",
+    "hardware_protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+    "intervention_dataset_sha256": "1ba9575ff4a2b0342b2fa20afa242e052f263ff7bd3ed18734a923687a9c27d1",
+    "preservation_manifest_sha256": "64ac7258e32cc45cc5532ac7009d3c9c6dbab6b6b10570866f7b9e321695f3ac",
+    "resource_run_configs_sha256": "0098145fc10406b2fe369ebc721bc3b65fded7bee2a6d5aeb68c0509b0faef9c",
+    "resource_schedule_sha256": "aa6418112cc0d2ba03bff65b18c8b2e9b483653814b3041d4cc5f3fdc0972737",
+    "source_manifest_sha256": "4468b096fb3b115c943077f513df121694474c4437cc24cb006f0d902b4e7b93"
+  },
+  "claim_status": "resource_campaign_admitted_unscored",
+  "condition_admissions": [
+    {
+      "checkpoint_sha256": "993e69030afa82c3efa2de9112eabc3d9de7eb1025e85299cfa13ee77765bfeb",
+      "condition_order": 1,
+      "config_hash": "9b2432d6edc2849aeb222dbb95467e7a97e981acd423d8e7c2efed135bf99fec",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "f1d97621516daf338a9723e37545e64bc343c869ea3cf32823c50447307748b3",
+      "rows": 150,
+      "run_summary_sha256": "fcb045da05fdd7ce1b91d70bcd8713e2fe2778524886fb07bf2d6e801143087c",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260809T205513813837Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "aad626d6574129ea5cce8bd7e77cdc11fabd10de49cebfc13a4ad404ec7f8c46",
+      "condition_order": 2,
+      "config_hash": "eb0963284034b89877d076eb7c99fc930146c2d98d5dc64a029f6da9072d66b2",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "3dbb89d7097297234ab5559f94d30b9e2660392a75713edcbdd37b74f760b7d0",
+      "rows": 150,
+      "run_summary_sha256": "cbe08bafb477ad9b6e285744fcd09e4061fe92afb0786103399fe3b9952e8542",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260809T214129755582Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "611a1b5b0546269ece9d0a9e3b850a1f1e04b101f20b5009c32fb019dc193fe8",
+      "condition_order": 3,
+      "config_hash": "90a225e4dd1896876067eb5b09839874100319cecf56dcdd3086527ed57ecd96",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "44c279b6061cc29b44e34ea2bc181f8afb07d4604b51c8ce0488a4a71411a454",
+      "rows": 150,
+      "run_summary_sha256": "54bcaabc88e30cb0ae61207e99f7179824a8b589d90558e8a315c5389e7db2cc",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260809T220820512742Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "9ca78196d8338d92a3d110c93add523c5051cdcc57434287b2568e90ea18784e",
+      "condition_order": 4,
+      "config_hash": "e47f0f22167d7998f7b222c3b4a6fdad1d107631b599d0183d68d8d5ecfe6e65",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "da15a4a24f8997c3b24378bc228789cb57edb818374196be2d95b724068fec14",
+      "rows": 150,
+      "run_summary_sha256": "58f814cd66baafb1b86329a3a5d30e6e3e64b5c67a95a4a4151d5fd02cf3b52b",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T002951402834Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "3b59214dfe1e3013032253443fea1923a48827609bce4d52250d47e987df2c19",
+      "condition_order": 5,
+      "config_hash": "d8b5ada4f53832ee729c2375f3e100276b8a749be8265d2e0e8fcd0931674dda",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "d34ef66ce0ce46f307987984f493e873cf1aadf82d4a098347442134c88183de",
+      "rows": 150,
+      "run_summary_sha256": "4040d3fb466f087a566fbd6c10203ce04983d30bc9041c8c40b5c704ebd2b88c",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T012100903084Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "6339f79217710cab5c2c5a067d3be25c38c5ca7b94a3bd3cd4e641eedad571c8",
+      "condition_order": 6,
+      "config_hash": "4ca518c3b639a146e5b3d283aea54611352a7f353523568783b13d396b0f7d06",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "6df074dcd1a95a0f55ee53fd3ad741ec311ae11698e9be3a2aedffae64b91c08",
+      "rows": 150,
+      "run_summary_sha256": "79ccf3f5015bb612e749909795b19303a820670323f39c35c7b93780f29b9ef1",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T014319825739Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "e23bf8b6b3cd406fca8f8fcbc338cf89e101600835a22acfed15167edff5d6dc",
+      "condition_order": 7,
+      "config_hash": "c61d4f435f21866e64a25bbfcaf802bc81d3f9b457e55bee5341b752e86f6f9b",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "9d17a2cd75e1f2287bbe4da4b2c25e2f2ac55c36ef11b2072a014a10a3588aef",
+      "rows": 150,
+      "run_summary_sha256": "2b0c9d588811f33a4a4663abcb7921fa70afca02805960b7870aefb13c0044f3",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T025126853705Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "8553ff7b54ae48a9079168901e6976398487b96d69d2448cf11c22bd373339be",
+      "condition_order": 8,
+      "config_hash": "22ab00304df4342811a3ec556c2b98b4ac915296f4394a013f10cce54b4f738c",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 1,
+      "resource_scores_computed": false,
+      "results_sha256": "7b9a426fa00f4f2b6d9395b4f17e35f394b562cca5dffdfd04e8d06e46e9cb37",
+      "rows": 150,
+      "run_summary_sha256": "afa158c4cbcd9b97248985222075a8eaaf9afe369fe5d6459da59fb2e676880c",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T035813661739Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "5b06904f46e54ad2ed3d88d6b2d449778a92074f7a6746d62aa78e73c51047f0",
+      "condition_order": 1,
+      "config_hash": "d9aa522589978cff624dbfb2b6614404d36b6cdfbc7605e57a2a3bf55d13e91f",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "0668252e92872f6f597588ea6515232a50fb96dbac6e59fe2bb589ad598387d7",
+      "rows": 150,
+      "run_summary_sha256": "a704fcf24f4e1a0681a63b69bc73bcb69a3eb8f1ecc4cf6df3eae9e8a11ce872",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T044030540944Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "5cf77a33a74b1ef7707bcc218e194ca88a88e242578ff74b3f845307bc888817",
+      "condition_order": 2,
+      "config_hash": "b2f05ce2bf7677a968603b0e9427530cf29e058bb529956369686f227b116ee5",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "03844ceb484a3f92ccb4b983c698cd2bf4169a909813628e26188fefbe2a90e0",
+      "rows": 150,
+      "run_summary_sha256": "11034fb486b4e89a874cbdbf2e66ad3937f457c553e2d9b1c9daef798f7317c9",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T053023498646Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "af04a9ca620987b888b8592d5919fb1b7ee91292188e94c321f699a1f0cf1e1f",
+      "condition_order": 3,
+      "config_hash": "6f412c43581864d5f892fcb52b5833fff6bde2193e0f46eaa50eb80a21f51030",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "0a4deceb9ceb41adaa81df88ca02365469e36032847b4ceaae66b00a9314015d",
+      "rows": 150,
+      "run_summary_sha256": "a80a6957a662e6c982931161df88fbc8b7acd8f652ab0e1a30dad54b96c7fb88",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T063536038793Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "7d045f1cdbe2f351aab16c35280ff17a42e5ca05963866c0d70f480ed426cddf",
+      "condition_order": 4,
+      "config_hash": "395450eedda9195c2f015a533b53f700f3bf10f0c4424640fcb2fb60c484fc01",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "689db8252c1d7224493c335f76ddbc77ac886fb2effa4a5a93e1885a1027cdde",
+      "rows": 150,
+      "run_summary_sha256": "8ef2ee67e9911c53c9988f267f92d9fdac4f18bc20f8b8f470aa9ae0f662162c",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T071831153366Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "dfff45911452a595c59da7b3c94bcf7d50dabab9c7f22c52dec794cdf70fb3a8",
+      "condition_order": 5,
+      "config_hash": "d033c89bcf05d298a7b28392247de0be1dcbf97fc7e6dcc4c9f4e40736ab868d",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "27bffa80d73e6fc74ecc1d1462dc4bf2d2997b1df44875e978f7986fb68cb9da",
+      "rows": 150,
+      "run_summary_sha256": "1b8b1b6b20a542f2f2b4b31c809b95a50a700854fe67d9cbd55e41830f6178f1",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T080121392714Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "9ae87b5c40257f9b63da8d583132e56dd202f59cc989ac11ef9ef2120866952a",
+      "condition_order": 6,
+      "config_hash": "a911c7fefa57b34be23c09f03ab2c7b379924b18fdc1590680396a59a58e7ee2",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "d26f6f5367664c50aa2b412b0a7f73871c02ac1e1a75c5cade32ae22992f6989",
+      "rows": 150,
+      "run_summary_sha256": "82f3ae1bccff3506baa783b4760cb7fd155406bf39da5176149925a68153bd4c",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T082210451106Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "549ebbaa0b53ca14764050efe8439fe62e69aa6ad3d3b8d07321a30682d7723e",
+      "condition_order": 7,
+      "config_hash": "626bf802fa4ec451d7d5207dd3dce77e51901460029d22c2fbbc72db070aadaf",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "d836d1159cf91b17cbed99694ac936767535e4a1cb7412fd7821c811768d7f13",
+      "rows": 150,
+      "run_summary_sha256": "c4efd3a7363957c65245cd1031ee0a7df631bf0e289a50029a75ea97b17453ec",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T092900290175Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "6a54f90efe83654e5666f1607e5a061d11fd3daf8978d56649e35f10ad8efd14",
+      "condition_order": 8,
+      "config_hash": "9867ad00fe2c4140c522a067ab9fa997518b04775491c64774d97555f930d91c",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 2,
+      "resource_scores_computed": false,
+      "results_sha256": "45ac1fffe0b875c3bdb443e493fc87fb7a8bcea425500558302e59d48598b0ab",
+      "rows": 150,
+      "run_summary_sha256": "62acec14d4456c1a2a7d582a700a757d1468492e459b6e0c662ea6bcca2e3e1d",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T113755237212Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "913bde281c5c1901308976e0f07a22426d3b3a5f6f00546ce3dc123a03c24104",
+      "condition_order": 1,
+      "config_hash": "23d243402e73035da65a282d48ca1e09445c72ea2cdea3fc35e4a9e2b71493d0",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "716c3d3d67290af18705de84d83f0281e36d212b593e9056d54293647c8fcd31",
+      "rows": 150,
+      "run_summary_sha256": "d405cb868666ec7de25f4f66f5de2afd94eb10c51ab3632caff5442ba793b746",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T115836834818Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "a62e6ace71f4c10a635c315fe37624b6548532758af10084753b3ea8a388d418",
+      "condition_order": 2,
+      "config_hash": "f341ba7e46b2cb97dc5372b2b2ef06133605efc15c812fd8ed47e1d56bb4ddcc",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "ef4888e7f185df062e4edf040957e43ac574a4180ae908ea102a6d57ca8153b4",
+      "rows": 150,
+      "run_summary_sha256": "1d909b939fd12d2b6572940a07f6cabd4daae0a30e81015a390c4cf66511dd16",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T124223909089Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "df8fbd0d7f0899449149975e122e6f577c1aec173298cc5814e03f19d3252fb0",
+      "condition_order": 3,
+      "config_hash": "796d1d3f6b0f7cfd39fc420f491965ac64308f1cfbb2c37db86de9e14f781d71",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "3c452bbe517d61076d569dedee29e9ee0a342ff442568bdebf48927a7fd5957d",
+      "rows": 150,
+      "run_summary_sha256": "907b0d605944b9ce945851e3cd8705d520b6328cbc6564a607c9b4d9562c4698",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T130340465796Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "0bb8628270cba0dcf371a008c7b4ae3bc2efb91fb9e3e6c3af7592475b45df0c",
+      "condition_order": 4,
+      "config_hash": "fb52d5081f87a5e8f04ae1038254fc50cca3e943d4177aa7c606e8aeb0072c47",
+      "hidden_labels_accessed": false,
+      "method_id": "M2_post_plan_deterministic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "982bff3078c8d1f57da7e6ee111459ef7ad5e77a197c040ddbef6e7e7694fb0b",
+      "rows": 150,
+      "run_summary_sha256": "0d267a8ef588d462d26dc71ca30637d934fc1dfebe5122265eaf740edf3d0b36",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T151817279549Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "6c3ee0c02c84998920fe7ea0a71eec1412cca6fb863579f7263414ff4fd01deb",
+      "condition_order": 5,
+      "config_hash": "71d58ee6fcb81422d28cd5d5172c47e9ae281210ab61dee2dd04a8a21ae8f538",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "4e06087afbba8b04ccd7fe8bfa57e03dfbc7620babe53e1b1c12ced8dcccdf81",
+      "rows": 150,
+      "run_summary_sha256": "4a5351b70b8ea96d824f582cccddc7f9ba31adf4aebd09e3b39cff43a86023de",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T162457217062Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "15e05196f042eb1cbbb992bb38e094da1a2ee347dd64e94c0e264d14f31d30e9",
+      "condition_order": 6,
+      "config_hash": "3e7676821abe52af8531134aca9375aa0463c25c3f25d5bff00a0ac578a9ae64",
+      "hidden_labels_accessed": false,
+      "method_id": "M3_stage_wise",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct",
+      "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "3e82e81ee24ff3cece07aeba41b8c6b09189424d8ce77525c0c078a72ffd1678",
+      "rows": 150,
+      "run_summary_sha256": "3b14cc05eca8a2e2c98004ff4fd770a7611f66c0eff0149a4252d47e6fc97c3d",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T173206368164Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "5d5ecb937d4ee3f4ccb469275103abab8dccd256c53a3a232df2e692809b6522",
+      "condition_order": 7,
+      "config_hash": "8e2de193601de5f883e3961712f34d3ac62a7c3c5f92f13cc437c607177dbbeb",
+      "hidden_labels_accessed": false,
+      "method_id": "M4_post_plan_compute_matched",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "37c0135a2c5b2cf6d9b55a162174670ccca08462abdcca9297351a6c69b83562",
+      "rows": 150,
+      "run_summary_sha256": "c703530d9fef985a09d98cc627a3c8234f301309530d41ca4a67520486a8a56b",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T182159912000Z"
+      ],
+      "valid": true
+    },
+    {
+      "checkpoint_sha256": "10e1b21b0dbfcecc6754853e4f12f4429ca07963881abcb24a6288a6865528ca",
+      "condition_order": 8,
+      "config_hash": "e358dca1a2be41e7330e7bec25f6a889251695cc057a350efa46ba40fb352c4c",
+      "hidden_labels_accessed": false,
+      "method_id": "M1_monolithic",
+      "model_id": "Qwen/Qwen2.5-3B-Instruct",
+      "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "raw_model_outputs_inspected": false,
+      "repetition": 3,
+      "resource_scores_computed": false,
+      "results_sha256": "690c5c89ece8f41237ec3761096f1301e48d7bd7cd943a1b2c36ff8a85c1ee87",
+      "rows": 150,
+      "run_summary_sha256": "5851dbea3c6bf95cd152d448ec0a1d6e268b1c5748c6321264da83292a55df4e",
+      "segments": [
+        "8008877e-d5c5-4c18-bff4-cfe60460cc00-20260810T190333036136Z"
+      ],
+      "valid": true
+    }
+  ],
+  "conditions": 24,
+  "hardware_lock": {
+    "driver_version": "595.71.05",
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "gpu_uuid": "GPU-a989e248-ab91-b968-13b0-aca81524627e",
+    "node_name": "ry-gpu-02.sdsc.optiputer.net",
+    "protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+    "schema_version": 1
+  },
+  "hidden_labels_accessed": false,
+  "methods": [
+    "M1_monolithic",
+    "M2_post_plan_deterministic",
+    "M3_stage_wise",
+    "M4_post_plan_compute_matched"
+  ],
+  "models": [
+    "Qwen/Qwen2.5-3B-Instruct",
+    "Qwen/Qwen2.5-7B-Instruct"
+  ],
+  "next_gate": "registered_resource_analysis_authorized_not_started",
+  "raw_model_outputs_inspected": false,
+  "repetitions": [
+    1,
+    2,
+    3
+  ],
+  "resource_scores_computed": false,
+  "rows_total": 3600,
+  "schema_version": 1,
+  "scored_rows": 0,
+  "source_code_sha256": {
+    "admit_multiuav_resource_campaign.py": "3c51fe8058205197427670f139d8d3b0a0423e615ce93aa16a0dede20ac813ce",
+    "multiuav_checkpoints.py": "6dc19298b86e6321ab6db0186cf13f0f3d4cb31b249afd1d7e8ef70784c9a5d0",
+    "multiuav_resource_admission.py": "9caefd606e07849ab6b2dee680229d6b965d1548435ead1ea6d64c1a8fe2fbf0",
+    "multiuav_resource_controls.py": "7b18ae3342d64b29a64dfe0152e9dfde54c00d93a0ef1e539149a4606a04dd46",
+    "multiuav_resource_execution.py": "b3c43d8677f074d726b91b47e615de93cc7339867e136e96316e38c8dc823fc5",
+    "multiuav_resource_protocol.py": "07d4e94470c6d465184e46a4615fd29f0b308e8db168a7caba9972dffbec1d15",
+    "multiuav_resources.py": "df6588281362b4bc63a86ce93f763cbf799301ebe00c3cf01cf0711dd42db1f6"
+  },
+  "status": "complete_resource_campaign_admitted_for_analysis",
+  "valid": true
+}

@@ -100,13 +100,15 @@ baseline, allowing an idle-but-hot GPU to cool instead of failing immediately.
 Attempt 3 subsequently completed all 24 registered conditions and 3,600 rows
 on one locked RTX 3090 with zero pod restarts. Its full raw archive, condition
 checkpoints, start controls, logs, Kubernetes evidence, and source-file hashes
-are preserved. These raw rows remain unscored and unadmitted pending the
-separate resource-admission validator.
+are preserved. The separate score-blind resource-admission validator has now
+verified the complete campaign without output inspection, hidden-label access,
+or scoring. These raw rows remain unscored pending registered analysis.
 
 Every row is durably appended. Any invalid row invalidates and preserves the
 whole 150-row condition; a replacement must use a new attempt directory.
 Publication summaries exclude invalid conditions. The campaign keeps raw
-outputs unscored until the separate resource admission and analysis gate.
+outputs unscored until admission passes and the separate registered analysis
+begins. Admission has passed; analysis has not started.
 
 All 24 run configs are commit-bound. The remaining pre-measurement gate is a
 no-inference RTX 3090 cluster preflight that independently verifies the 3B and

@@ -56,8 +56,10 @@ regression tests, all 24 attempt-3 configs are bound to that execution revision,
 and no-inference RTX 3090 preflight v3 independently passed for both frozen
 models. Attempt 3 then completed all 24 conditions and 3,600 rows on one locked
 RTX 3090; the complete raw archive and Kubernetes evidence are hash-preserved.
-The rows remain unscored and are not resource findings until score-blind
-resource admission and the registered aggregate analysis pass. See
+The score-blind resource-admission gate now passes all 170 archived files, 24
+conditions, 3,600 rows, frozen bindings, telemetry controls, and start-control
+reports without inspecting outputs or hidden labels. The rows remain unscored
+and are not resource findings until the registered aggregate analysis passes. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
