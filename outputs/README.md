@@ -188,3 +188,31 @@ Current intentionally promoted Week 8 and Week 9 paper evidence:
   preserved in the registered archive but is not committed to Git.
 - `outputs/tables/week9_end_to_end_metrics.csv` and
   `outputs/tables/week9_runtime_stages.csv`: generated manuscript source tables.
+
+Current intentionally promoted MultiUAV validation-placement evidence:
+
+- `outputs/evaluations/multiuav_resource_analysis_v1/summary.json`: registered
+  aggregate resource summary over 3,600 admitted method-case rows.
+- `outputs/evaluations/multiuav_resource_analysis_v1/derived_resource_rows.zip`:
+  safe identifier-and-numeric metric projection with no prompts, outputs, or
+  hidden labels.
+- `outputs/evaluations/multiuav_resource_analysis_v1/bootstrap_evidence.zip`:
+  source-cluster summaries and 10,000 fixed-seed draws for each of 96
+  repetition-specific exploratory paired analyses.
+- `outputs/evaluations/multiuav_resource_reporting_v1/manifest.json`:
+  SHA-256 provenance for the exact resource tables, figures, and report.
+- `outputs/tables/multiuav_resource_descriptive_v1.csv`: 240 exact
+  repetition/model/method/metric descriptive rows.
+- `outputs/tables/multiuav_resource_contrasts_v1.csv`: 96 exact registered
+  M3-minus-M1 and M3-minus-M4 resource contrasts.
+- `outputs/evaluations/multiuav_manuscript_traceability_v1.json`: 20-check,
+  17-artifact internal audit of the active manuscript's aggregate evidence,
+  claim limits, figures, tables, and bibliography identifiers.
+
+Regenerate these artifacts with:
+
+```powershell
+python scripts/analyze_multiuav_resources.py
+python scripts/build_multiuav_resource_report.py
+python scripts/audit_multiuav_manuscript.py
+```

@@ -1,0 +1,75 @@
+{
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.3"
+  },
+  "figure_formats": [
+    "pdf",
+    "png"
+  ],
+  "figures": 2,
+  "next_gate": "manuscript_integration_pending",
+  "outputs": [
+    {
+      "bytes": 52334,
+      "path": "outputs/tables/multiuav_resource_descriptive_v1.csv",
+      "sha256": "22ce0f80d73e2c6f5d5d62c361ba2e29c0dc4f5731fe54fca1a5ec91911080f1"
+    },
+    {
+      "bytes": 41213,
+      "path": "outputs/tables/multiuav_resource_contrasts_v1.csv",
+      "sha256": "ab4030fab0e09103ad31768493be2911ae7df6938dea5e72636f6fc5bb2a767d"
+    },
+    {
+      "bytes": 409467,
+      "path": "reports/figures/multiuav_resource_m3_minus_m1_v1.png",
+      "sha256": "e2580451451b2dc3f331c08fd988419968597f871fb4380041e51ca26e7aaaf0"
+    },
+    {
+      "bytes": 30029,
+      "path": "reports/figures/multiuav_resource_m3_minus_m1_v1.pdf",
+      "sha256": "3128a5c60a1fa34380baecc737295e494d79b2d382d75c9ee304557564f5dcfd"
+    },
+    {
+      "bytes": 410978,
+      "path": "reports/figures/multiuav_resource_m3_minus_m4_v1.png",
+      "sha256": "563ee848b594cbe10679bc7ff718198b5f49b8d77da6e19a4489bab3604387af"
+    },
+    {
+      "bytes": 29369,
+      "path": "reports/figures/multiuav_resource_m3_minus_m4_v1.pdf",
+      "sha256": "d192326514761af450e67bfee9bfcf5bb7f789a4d895612166accb993cb5b269"
+    },
+    {
+      "bytes": 10822,
+      "path": "reports/multiuav_resource_results_v1.md",
+      "sha256": "ed0fb25dceb39b0612af95afffa41983d00162ea7f3a9dcb52625305899d5093"
+    }
+  ],
+  "report_data_sha256": "26828ed25443500f5b361c6d2d6734a74e1a4d76d4aa32f6b3bbc5b018a595a7",
+  "report_version": "multiuav_resource_reporting_v1",
+  "reports": 1,
+  "schema_version": 1,
+  "source_code_sha256": {
+    "build_multiuav_resource_report.py": "c235f9936ef33adddfa800eb5da8bae769f154f60e084410a8c511e37d053a7d",
+    "multiuav_resource_reporting.py": "f0679528e84ad7f8d6c98709c1710d8af9b633643b86061f450921574182c4b4"
+  },
+  "source_files": [
+    {
+      "bytes": 266866,
+      "path": "outputs/evaluations/multiuav_resource_analysis_v1/summary.json",
+      "sha256": "e7fa387ad3a3a9ac402eb31d6ae44d83500b785b92043dae48398b88998c56dd"
+    }
+  ],
+  "source_scope": {
+    "hidden_labels_accessed": false,
+    "null_hypothesis_tests_run": false,
+    "post_admission_human_raw_output_inspection_deviation_disclosed": true,
+    "raw_model_outputs_accessed": false,
+    "repetitions_pooled": false,
+    "repetitions_reported_separately": true,
+    "secondary_exploratory_results_only": true
+  },
+  "status": "resource_tables_figures_and_report_complete",
+  "tables": 2
+}

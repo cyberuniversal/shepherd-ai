@@ -386,12 +386,20 @@ has now completed for all 11,360 rows, with derived row archives separated from
 the aggregate summary. All eight registered source-cluster bootstrap analyses
 have also completed with 10,000 fixed-seed draws each. Accuracy figure
 generation is complete in both PNG and PDF formats, with exact CSV source rows
-and a source-hashed provenance manifest. The final 30-cluster resource schedule
-and RTX 3090 measurement controls are frozen, and all 24 run configs are
-commit-bound. Cluster preflight and all measurements remain pending.
+and a source-hashed provenance manifest. The final 30-cluster resource campaign
+also completed all 24 conditions and 3,600 rows on one locked RTX 3090. It
+passed score-blind admission and the registered secondary resource analysis.
+All three repetitions are reported separately; 240 descriptive summaries and
+96 exploratory paired source-cluster bootstrap analyses are preserved with
+safe derived rows, raw bootstrap evidence, exact CSV tables, two figures, and a
+provenance manifest. A current integrated manuscript draft is preserved at
+`reports/multiuav_validation_placement_manuscript_v1.md`.
 
-Known uncertainties: Resource preflight validity, GPU availability, and the
-three hardware repetitions remain unresolved. Call budgets, recoverability rules, static
+Known uncertainties: The internal 17-artifact manuscript traceability audit
+passes. External scientific/manuscript review, venue selection,
+venue-formatted bibliography, and final submission review remain unresolved.
+Resource findings are hardware-specific and exploratory, and one
+post-admission raw-output inspection deviation requires disclosure. Call budgets, recoverability rules, static
 execution scope, source provenance, split registration, official alias
 authority, task eligibility, reviewer provenance, and the exclusion of the
 existing DistilBERT span tagger from the primary comparison are frozen with

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "analysis_version": "multiuav_resource_analysis_v1",
+  "status": "post_execution_binding_of_registered_resource_policy_before_aggregate_inspection",
+  "frozen_at_utc": "2026-08-11T05:29:33.2437798Z",
+  "artifact_bindings": {
+    "accuracy_protocol_sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
+    "code_plan_sha256": "829cfa69e2a3365d0686163fbd1548e9e0c22455535a6d725cc3289a37102f63",
+    "hardware_measurement_protocol_doc_sha256": "5f12b1de97bc5d9635e735e58d7a1a8acbb7e5a45621e5281916c847b6970f74",
+    "resource_campaign_admission_sha256": "5ec8faabe126782387715abe1a20361643f115064c1326cca178acb52f307b89",
+    "resource_hardware_protocol_sha256": "e3d92f6906236cc9e38ee1244c44f4906a47e8bd6e2e5a1633fd0dbf8e962ff8",
+    "resource_schedule_sha256": "aa6418112cc0d2ba03bff65b18c8b2e9b483653814b3041d4cc5f3fdc0972737",
+    "validation_study_protocol_sha256": "c74f46e74281ce7750b0f6bb736ea0904ab5eb1bc94cbefc7729c9b1e337a387"
+  },
+  "scope": {
+    "conditions": 24,
+    "method_case_rows": 3600,
+    "models": 2,
+    "methods": 4,
+    "repetitions": 3,
+    "source_task_clusters": 30,
+    "variants_per_cluster": 5,
+    "measurement_unit": "complete_method_case",
+    "repetitions_reported_separately": true,
+    "pooled_repetition_estimate": false
+  },
+  "metrics": [
+    {
+      "metric_id": "method_case_duration_seconds",
+      "source": "result.resource_measurement.duration_seconds",
+      "unit": "seconds",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "input_tokens",
+      "source": "sum(result.calls[*].generation.input_tokens)",
+      "unit": "tokens",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "output_tokens",
+      "source": "sum(result.calls[*].generation.output_tokens)",
+      "unit": "tokens",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "model_call_count",
+      "source": "result.actual_model_call_count",
+      "unit": "calls",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "process_ram_peak_bytes",
+      "source": "result.resource_measurement.process_ram.maximum",
+      "unit": "bytes",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "board_vram_peak_bytes",
+      "source": "result.resource_measurement.board_vram.maximum",
+      "unit": "bytes",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "process_vram_peak_bytes",
+      "source": "result.resource_measurement.process_vram.maximum",
+      "unit": "bytes",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "gpu_board_energy_joules",
+      "source": "result.resource_measurement.energy.joules",
+      "unit": "joules",
+      "direction": "lower_is_less_resource_intensive",
+      "role": "secondary_resource_outcome"
+    },
+    {
+      "metric_id": "gpu_utilization_peak_percent",
+      "source": "result.resource_measurement.gpu_utilization_percent.maximum",
+      "unit": "percent",
+      "direction": "diagnostic_no_preferred_direction",
+      "role": "resource_diagnostic"
+    },
+    {
+      "metric_id": "temperature_peak_celsius",
+      "source": "result.resource_measurement.temperature_celsius.maximum",
+      "unit": "degrees_celsius",
+      "direction": "diagnostic_no_preferred_direction",
+      "role": "resource_diagnostic"
+    }
+  ],
+  "descriptive_analysis": {
+    "first_aggregation": "arithmetic_mean_across_five_variants_within_source_task_cluster",
+    "second_aggregation": "summary_across_30_source_task_cluster_means",
+    "reported_statistics": [
+      "mean",
+      "median",
+      "sample_standard_deviation",
+      "minimum",
+      "maximum"
+    ]
+  },
+  "paired_analysis": {
+    "eligible_metric_role": "secondary_resource_outcome",
+    "contrasts": [
+      {
+        "contrast_role": "registered_primary_method_contrast_secondary_resource_outcome",
+        "method_a": "M3_stage_wise",
+        "method_b": "M1_monolithic"
+      },
+      {
+        "contrast_role": "registered_confirmatory_method_contrast_secondary_resource_outcome",
+        "method_a": "M3_stage_wise",
+        "method_b": "M4_post_plan_compute_matched"
+      }
+    ],
+    "estimand": "mean_source_cluster_paired_method_a_minus_method_b_difference",
+    "bootstrap_draws": 10000,
+    "bootstrap_seed": "shepherd-multiuav-primary-bootstrap-v1",
+    "confidence_interval": "percentile_95_percent",
+    "resampling_unit": "source_task_cluster",
+    "null_hypothesis_tests": false,
+    "multiplicity_correction": null,
+    "inference_status": "exploratory_secondary_no_confirmatory_claims"
+  },
+  "output_separation": {
+    "safe_derived_metric_rows_separate_from_aggregates": true,
+    "cluster_summaries_and_raw_bootstrap_draws_separate_from_summary": true,
+    "raw_model_outputs_copied_to_analysis_outputs": false,
+    "hidden_labels_required": false
+  },
+  "inspection_state": {
+    "resource_aggregates_inspected": false,
+    "paired_resource_differences_inspected": false,
+    "hidden_labels_accessed": false,
+    "post_admission_raw_output_inspection_deviation_recorded": true,
+    "deviation_artifact": "datasets/multiuav_plat/resource_analysis_protocol_deviation_v1.json"
+  },
+  "claim_limits": [
+    "Resource outcomes are secondary and exploratory, not confirmatory.",
+    "GPU-board energy is not workstation, simulator, network, or UAV energy.",
+    "Peak memory is an absolute observed process or board value, not a baseline-subtracted allocation.",
+    "RTX 3090 measurements are hardware-specific.",
+    "M4 is matched to M3 only by model-call count, not latency, tokens, memory, or energy."
+  ]
+}

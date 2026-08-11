@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "deviation_id": "resource_analysis_post_admission_schema_inspection_v1",
+  "recorded_at_utc": "2026-08-11T05:29:33.2437798Z",
+  "stage": "post_campaign_completion_and_admission_before_resource_aggregate_analysis",
+  "event": "A diagnostic schema-inspection command intended to print token, latency, and telemetry fields also printed calls[0:2].request and calls[0:2].generation.raw_output for the first row of condition r1-o1 because the filter did not remove nested fields.",
+  "scope": {
+    "conditions_affected": 1,
+    "rows_printed": 1,
+    "condition": "r1-o1",
+    "row_position": 1,
+    "hidden_labels_printed": false,
+    "resource_aggregates_printed": false,
+    "paired_method_comparisons_printed": false
+  },
+  "timing": {
+    "campaign_complete": true,
+    "score_blind_resource_admission_complete": true,
+    "resource_analysis_specification_frozen": false,
+    "resource_aggregate_analysis_started": false
+  },
+  "impact": {
+    "execution_can_be_changed": false,
+    "admission_can_be_changed": false,
+    "resource_measurements_affected": false,
+    "hidden_label_leakage": false,
+    "requires_disclosure": true,
+    "invalidates_resource_campaign": false,
+    "rationale": "The complete campaign and score-blind admission were already immutable. No resource aggregate, method difference, hidden label, or official reference was accessed. The resource analysis remains bound to the pre-existing code-plan, study-protocol, hardware-protocol, and accuracy-protocol decisions."
+  },
+  "mitigations": [
+    "Use an explicit allowlist when deriving resource metric rows.",
+    "Reject any derived-row schema containing request, prompt, message, response, text, raw_output, or model-output fields.",
+    "Store only identifiers and numeric resource metrics in analysis outputs.",
+    "Do not claim that no human raw-output inspection occurred after resource admission."
+  ]
+}

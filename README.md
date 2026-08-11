@@ -46,21 +46,25 @@ aborted after its first call required 389.9 seconds; its raw row, logs, config,
 and protocol-deviation record are preserved and excluded from study results.
 The registered accuracy figures and their source tables are now reproducible
 under `reports/figures/` and `outputs/tables/`, with a provenance manifest at
-`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. The approved
-30-cluster resource schedule and RTX 3090 controls are frozen. Preflight v2
-passed. Resource attempt 2 completed one 150-row condition, then failed before
-condition 2 measurement because the GPU baseline was 68 C against the frozen
-60 C ceiling. The partial raw package is preserved but is not an admitted
-resource result. The cooldown-aware baseline acquisition fix passes its
-regression tests, all 24 attempt-3 configs are bound to that execution revision,
-and no-inference RTX 3090 preflight v3 independently passed for both frozen
-models. Attempt 3 then completed all 24 conditions and 3,600 rows on one locked
-RTX 3090; the complete raw archive and Kubernetes evidence are hash-preserved.
-The score-blind resource-admission gate now passes all 170 archived files, 24
-conditions, 3,600 rows, frozen bindings, telemetry controls, and start-control
-reports without inspecting outputs or hidden labels. The rows remain unscored
-and are not resource findings until the registered aggregate analysis passes. See
-`docs/multiuav_validation_study_protocol.md`.
+`outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json`. After two
+preserved failed resource attempts, attempt 3 completed all 24 conditions and
+3,600 rows on one locked RTX 3090. Score-blind admission verified all 170
+archived files without hidden-label access or scoring. The registered
+secondary analysis is now complete: repetitions remain separate, 240
+descriptive summaries and 96 paired source-cluster bootstrap analyses are
+stored, and no model or hidden label was accessed by the analysis pipeline.
+Exact resource tables, two publication figures, a bounded report, and a
+source-hashed manifest are reproducible through
+`scripts/analyze_multiuav_resources.py` and
+`scripts/build_multiuav_resource_report.py`. Resource findings are exploratory;
+GPU-board energy is not workstation or UAV energy. A one-row post-admission
+raw-output inspection deviation is explicitly preserved and disclosed. See
+`docs/multiuav_resource_analysis_protocol.md`.
+The integrated active manuscript and its 17-artifact internal traceability
+audit are at `reports/multiuav_validation_placement_manuscript_v1.md` and
+`outputs/evaluations/multiuav_manuscript_traceability_v1.json`. The internal
+audit passes; external scientific review, venue selection, reference
+formatting, and final submission review remain pending.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
 

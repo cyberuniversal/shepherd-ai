@@ -52,3 +52,17 @@ Current generated reports:
 - `figures/week9_system_architecture.mmd` and
   `figures/week9_evaluation_workflow.mmd`: Mermaid figure sources.
 - `figures/week9_stage_runtime.png`: generated warm-model stage timing figure.
+- `multiuav_resource_results_v1.md`: bounded secondary/exploratory resource
+  report with every repetition-specific registered contrast.
+- `multiuav_validation_placement_manuscript_v1.md`: active integrated working
+  manuscript using the admitted accuracy and resource results. It supersedes
+  the historical Shepherd paper draft for the active study but is not a final
+  venue-formatted submission.
+- `multiuav_manuscript_traceability_v1.md`: human-readable internal audit of
+  manuscript evidence bindings and required claim limitations. Passing this
+  audit is not peer review or venue acceptance.
+- `figures/multiuav_resource_m3_minus_m1_v1.png` and `.pdf`: primary resource
+  contrast figure with separate panels for all eight unlike-unit metrics.
+- `figures/multiuav_resource_m3_minus_m4_v1.png` and `.pdf`: call-count-matched
+  resource contrast figure. Resource repetitions remain separate in both
+  figures.

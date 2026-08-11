@@ -25,6 +25,7 @@ Before making architectural, research, dataset, evaluation, roadmap, or implemen
 - `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_statistical_analysis_protocol.md`
 - `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_execution_scope_protocol.md`
 - `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_hardware_measurement_protocol.md`
+- `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_resource_analysis_protocol.md`
 - `D:\Users\momoa\Desktop\shepherd-ai\docs\multiuav_qwen_cache_smoke.md`
 
 The user mentioned `docs/roadmap/`, but the repository currently contains `docs/roadmap.pdf`, not a `docs/roadmap/` directory. Do not silently rewrite that path in future reports; note the mismatch if it matters.
@@ -39,12 +40,13 @@ outputs, or negative evidence.
 The locked 3B and 7B accuracy matrices, score-blind admission, deterministic
 scoring, registered source-cluster bootstrap, and publication figures are now
 stored. Treat only those preserved accuracy artifacts as admitted study
-results. Resource campaign attempt 3 completed all 24 conditions and 3,600
-rows on one RTX 3090, is hash-preserved, and passed the separate score-blind
-resource-admission gate. It remains unscored until the registered resource
-analysis gate passes. Attempt 2's
-partial raw rows, frozen contracts, synthetic tooling probes, and attempt 3's
-admitted but unscored raw rows are not resource findings. In particular:
+results. Resource campaign attempt 3 completed all 24 conditions and 3,600 rows
+on one RTX 3090, passed score-blind admission, and has now completed the
+registered secondary resource analysis. Treat only the preserved summary,
+safe derived rows, bootstrap evidence, exact source tables, figures, and
+provenance manifest as resource findings. Attempt 2's partial raw rows, frozen
+contracts, and synthetic tooling probes are not resource findings. In
+particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;
@@ -102,9 +104,13 @@ admitted but unscored raw rows are not resource findings. In particular:
   or result. All 24 attempt-3 configs are bound to the cooldown-aware execution
   revision. Preflight v3 independently verified both frozen model artifacts and
   exact-GPU NVML capabilities without loading a model or starting measurement.
-  Campaign attempt 3 completed all 24 conditions, is preserved, and passed
-  score-blind resource admission without output or label access. Registered
-  aggregate resource analysis is the active gate.
+  Campaign attempt 3 completed all 24 conditions, passed score-blind resource
+  admission, and completed the registered separate-repetition aggregate
+  analysis. Resource results are secondary and exploratory. Cite them through
+  `outputs/evaluations/multiuav_resource_analysis_v1/summary.json`, the exact
+  source tables, and `docs/multiuav_resource_analysis_protocol.md`. Disclose
+  the preserved one-row post-admission raw-output inspection deviation. Do not
+  pool repetitions or reinterpret intervals as unregistered significance tests.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They
@@ -293,11 +299,12 @@ Use these labels in documentation and code comments when relevant:
 - Fact: The literature review covers multi-drone coordination, natural-language robotics, task allocation, semantic maps, behavior trees, voice control, and aerial-ground systems.
 - Planned work: notebooks/modules for setup, NLP, grounding, planning, scheduling, vision, safety, integration, evaluation, and paper writing.
 - Untested hypothesis: the planned modules can be integrated into a working end-to-end Shepherd-AI prototype with useful evaluation results.
-- Currently unresolved for the active study: resource cluster preflight,
-  resource repetitions, and the final paper
-  conclusion. The accuracy matrices, scoring, source-cluster analysis, and
-  figures are complete; do not replace their commit-bound evidence with ad hoc
-  model invocation or manually copied values.
+- Currently unresolved for the active study: external scientific/manuscript
+  review, venue selection, venue-formatted bibliography, and final submission
+  review. The accuracy and resource runs, admission gates, registered analyses,
+  source tables, figures, integrated draft, and internal traceability audit are
+  complete; do not replace their commit-bound evidence with ad hoc model
+  invocation or manually copied values.
 
 ## Known Conflicts And Caveats
 

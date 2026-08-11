@@ -1,0 +1,129 @@
+{
+  "artifact_bindings": {
+    "accuracy_admission": {
+      "bytes": 2857,
+      "path": "datasets/multiuav_plat/accuracy_matrix_admission_v1.json",
+      "sha256": "0a2653dd07511b7911f054efc85bcbcc67377301f5f0aba2dafb6acb4916dcbe"
+    },
+    "accuracy_bootstrap_summary": {
+      "bytes": 14082,
+      "path": "outputs/evaluations/multiuav_accuracy_bootstrap_v1/summary.json",
+      "sha256": "def83d931ce3b827e7f4afc6a91b71e74708ab5b4c6ac4fe6b3d1177ca54ac57"
+    },
+    "accuracy_contrast_table": {
+      "bytes": 1683,
+      "path": "outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv",
+      "sha256": "5934ade13c1d5ae529065d7b59a524237f35fae3e230c83ff474ebec32dc770e"
+    },
+    "accuracy_figure_manifest": {
+      "bytes": 2648,
+      "path": "outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json",
+      "sha256": "65141948707d42c9bef1aa05d89f3dab96681cb7dc4e722c374bb53993f39b07"
+    },
+    "accuracy_rate_table": {
+      "bytes": 2343,
+      "path": "outputs/tables/multiuav_accuracy_primary_rates_v1.csv",
+      "sha256": "df910caf840dba7d18f6fc9d42fadb19309de262abf249f259f9931912eedf14"
+    },
+    "accuracy_scoring_summary": {
+      "bytes": 34273,
+      "path": "outputs/evaluations/multiuav_accuracy_scoring_v1/summary.json",
+      "sha256": "9b800a4ab2a06ba7f4a3de2848640f19c8cfe06e58924d9d1a508d5710076b2c"
+    },
+    "bibliography": {
+      "bytes": 5505,
+      "path": "reports/week9_bibliography.md",
+      "sha256": "4bc610b02cdf0bb65da0af47622dbefb446c3c95ae2c69ffdd5b794cc969ffff"
+    },
+    "manuscript": {
+      "bytes": 13047,
+      "path": "reports/multiuav_validation_placement_manuscript_v1.md",
+      "sha256": "13ae363cce8ea908b894c4cc4d7d37446de4dc52035c687c6504997266d703ce"
+    },
+    "resource_admission": {
+      "bytes": 24106,
+      "path": "datasets/multiuav_plat/resource_campaign_admission_v1.json",
+      "sha256": "5ec8faabe126782387715abe1a20361643f115064c1326cca178acb52f307b89"
+    },
+    "resource_analysis_deviation": {
+      "bytes": 1916,
+      "path": "datasets/multiuav_plat/resource_analysis_protocol_deviation_v1.json",
+      "sha256": "caa3a04089cfbe3a346f56e65e76b66c9540ff50b33d919c79fba998dddd12f2"
+    },
+    "resource_analysis_freeze": {
+      "bytes": 6036,
+      "path": "datasets/multiuav_plat/resource_analysis_freeze_v1.json",
+      "sha256": "af6c157aabd251d10766d12fa36474688ae92369ceafa5f3346ac0dcf3752843"
+    },
+    "resource_analysis_summary": {
+      "bytes": 266866,
+      "path": "outputs/evaluations/multiuav_resource_analysis_v1/summary.json",
+      "sha256": "e7fa387ad3a3a9ac402eb31d6ae44d83500b785b92043dae48398b88998c56dd"
+    },
+    "resource_bootstrap_evidence": {
+      "bytes": 4989531,
+      "path": "outputs/evaluations/multiuav_resource_analysis_v1/bootstrap_evidence.zip",
+      "sha256": "0f63baadc7976c700a1eaaec1112a676c42f85a018670f2af4b2948928f7200b"
+    },
+    "resource_contrast_table": {
+      "bytes": 41213,
+      "path": "outputs/tables/multiuav_resource_contrasts_v1.csv",
+      "sha256": "ab4030fab0e09103ad31768493be2911ae7df6938dea5e72636f6fc5bb2a767d"
+    },
+    "resource_derived_rows": {
+      "bytes": 293406,
+      "path": "outputs/evaluations/multiuav_resource_analysis_v1/derived_resource_rows.zip",
+      "sha256": "ba0f68e85e87ff486ede673f6d92431c743c138b650202cced614b2d6f022290"
+    },
+    "resource_descriptive_table": {
+      "bytes": 52334,
+      "path": "outputs/tables/multiuav_resource_descriptive_v1.csv",
+      "sha256": "22ce0f80d73e2c6f5d5d62c361ba2e29c0dc4f5731fe54fca1a5ec91911080f1"
+    },
+    "resource_reporting_manifest": {
+      "bytes": 2599,
+      "path": "outputs/evaluations/multiuav_resource_reporting_v1/manifest.json",
+      "sha256": "066a9e8ef322a390017ddc71e6a5d7a0d3cc5b1c596c0b5a46a06cbd3a91864e"
+    }
+  },
+  "audit_version": "multiuav_manuscript_traceability_v1",
+  "checks": {
+    "accuracy_admission_valid": true,
+    "accuracy_bootstrap_valid": true,
+    "accuracy_figure_manifest_valid": true,
+    "accuracy_scoring_valid": true,
+    "accuracy_values_traced": true,
+    "all_required_artifacts_present": true,
+    "call_count_match_limit_disclosed": true,
+    "controlled_derivative_limit_disclosed": true,
+    "gpu_board_energy_scope_disclosed": true,
+    "negative_result_disclosed": true,
+    "required_literature_resolves": true,
+    "resource_admission_valid": true,
+    "resource_analysis_valid": true,
+    "resource_deviation_disclosed": true,
+    "resource_repetitions_separate_disclosed": true,
+    "resource_reporting_manifest_valid": true,
+    "resource_secondary_exploratory_disclosed": true,
+    "resource_values_traced": true,
+    "static_fidelity_limit_disclosed": true,
+    "within_qwen_limit_disclosed": true
+  },
+  "failed_checks": [],
+  "final_submission_ready": false,
+  "hidden_labels_accessed": false,
+  "next_gate": "external_review_and_venue_formatting_pending",
+  "raw_model_outputs_accessed": false,
+  "remaining_gates": [
+    "external scientific and manuscript review",
+    "venue selection and venue-specific formatting",
+    "final reference-format and citation audit"
+  ],
+  "schema_version": 1,
+  "source_code_sha256": {
+    "audit_multiuav_manuscript.py": "8a0f853a7ede52120bb5d320ca97ca884bd6e2aafdb00dfd59936baa2465bd61",
+    "multiuav_manuscript_audit.py": "6ed0d39523de472c6e55bbca4678266d0828bb65017f01de397e9899b498a840"
+  },
+  "status": "manuscript_internal_traceability_passed_external_review_pending",
+  "valid": true
+}
