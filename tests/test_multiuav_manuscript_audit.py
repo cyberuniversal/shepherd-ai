@@ -1,9 +1,13 @@
+import hashlib
 import json
 from pathlib import Path
 import tempfile
 import unittest
 
-from shepherd_ai.multiuav_manuscript_audit import audit_multiuav_manuscript
+from shepherd_ai.multiuav_manuscript_audit import (
+    audit_multiuav_manuscript,
+    render_manuscript_audit,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,8 +26,33 @@ class MultiUavManuscriptAuditTests(unittest.TestCase):
         self.assertFalse(audit["final_submission_ready"])
         self.assertFalse(audit["raw_model_outputs_accessed"])
         self.assertFalse(audit["hidden_labels_accessed"])
-        self.assertGreaterEqual(len(audit["artifact_bindings"]), 12)
+        self.assertGreaterEqual(len(audit["artifact_bindings"]), 22)
         self.assertEqual(audit["failed_checks"], [])
+        self.assertTrue(audit["checks"]["abstract_within_250_words"])
+        self.assertTrue(audit["checks"]["standalone_references_complete"])
+        self.assertTrue(audit["checks"]["embedded_figures_valid"])
+        self.assertTrue(audit["checks"]["external_review_protocol_present"])
+        text_binding = audit["artifact_bindings"]["accuracy_contrast_table"]
+        figure_binding = audit["artifact_bindings"]["accuracy_primary_figure"]
+        contrast_path = (
+            ROOT
+            / "outputs"
+            / "tables"
+            / "multiuav_accuracy_registered_contrasts_v1.csv"
+        )
+        canonical_contrast = contrast_path.read_text(
+            encoding="utf-8-sig"
+        ).encode("utf-8")
+        self.assertEqual(text_binding["hash_basis"], "utf8_lf_normalized")
+        self.assertEqual(
+            text_binding["sha256"],
+            hashlib.sha256(canonical_contrast).hexdigest(),
+        )
+        self.assertEqual(figure_binding["hash_basis"], "raw_bytes")
+        rendered = render_manuscript_audit(audit)
+        self.assertIn("## Manuscript Metrics", rendered)
+        self.assertIn("## Artifact Bindings", rendered)
+        self.assertIn("`manuscript`", rendered)
 
     def test_missing_claim_limit_fails_audit(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

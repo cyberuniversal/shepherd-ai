@@ -61,6 +61,10 @@ Current generated reports:
 - `multiuav_manuscript_traceability_v1.md`: human-readable internal audit of
   manuscript evidence bindings and required claim limitations. Passing this
   audit is not peer review or venue acceptance.
+- `multiuav_external_review_packet_v1.md`: self-contained manuscript handoff
+  with 12 SHA-256-bound evidence artifacts, review protocol, and response
+  fields. It is explicitly unreviewed until a real reviewer response is
+  preserved and audited.
 - `figures/multiuav_resource_m3_minus_m1_v1.png` and `.pdf`: primary resource
   contrast figure with separate panels for all eight unlike-unit metrics.
 - `figures/multiuav_resource_m3_minus_m4_v1.png` and `.pdf`: call-count-matched

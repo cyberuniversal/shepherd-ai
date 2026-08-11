@@ -60,11 +60,15 @@ source-hashed manifest are reproducible through
 GPU-board energy is not workstation or UAV energy. A one-row post-admission
 raw-output inspection deviation is explicitly preserved and disclosed. See
 `docs/multiuav_resource_analysis_protocol.md`.
-The integrated active manuscript and its 17-artifact internal traceability
-audit are at `reports/multiuav_validation_placement_manuscript_v1.md` and
-`outputs/evaluations/multiuav_manuscript_traceability_v1.json`. The internal
-audit passes; external scientific review, venue selection, reference
-formatting, and final submission review remain pending.
+The integrated active manuscript and its 25-check, 22-artifact internal
+traceability audit are at
+`reports/multiuav_validation_placement_manuscript_v1.md` and
+`outputs/evaluations/multiuav_manuscript_traceability_v1.json`. The manuscript
+has a 250-word abstract, seven matched citation/reference identifiers, and four
+embedded registered figures. The audit passes, and a hash-bound unreviewed
+handoff is preserved at `reports/multiuav_external_review_packet_v1.md`.
+External scientific review has not been received; venue selection,
+venue-specific formatting, and final submission review remain pending.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
 

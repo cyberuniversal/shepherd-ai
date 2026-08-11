@@ -99,6 +99,9 @@ fixed-seed source-cluster bootstrap draws per paired analysis, deterministic
 safe-derived and bootstrap-evidence archives, exact source tables, two figures,
 and a provenance manifest. One post-admission raw-output inspection deviation
 is preserved and disclosed. The integrated working manuscript passes a
-20-check, 17-artifact internal traceability audit. The exact next gate is
-external scientific/manuscript review, venue selection, reference formatting,
-and final submission review.
+25-check, 22-artifact internal traceability audit. Its 250-word abstract,
+seven matched citation/reference identifiers, and four embedded registered
+figures are machine-checked. A hash-bound external-review packet is ready but
+has not been reviewed. The exact next gate is external scientific/manuscript
+review, followed by venue selection, venue-specific formatting, and final
+submission review.

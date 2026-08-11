@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any, Mapping
 
 
 AUDIT_VERSION = "multiuav_manuscript_traceability_v1"
+TEXT_SUFFIXES = {".csv", ".json", ".md", ".txt"}
 
 
 def audit_multiuav_manuscript(
@@ -64,6 +66,15 @@ def audit_multiuav_manuscript(
         / "outputs/tables/multiuav_resource_contrasts_v1.csv",
         "manuscript": manuscript_path,
         "bibliography": root / "reports/week9_bibliography.md",
+        "external_review_protocol": root / "docs/multiuav_external_review_protocol.md",
+        "accuracy_primary_figure": root
+        / "reports/figures/multiuav_accuracy_primary_outcomes_v1.png",
+        "accuracy_contrast_figure": root
+        / "reports/figures/multiuav_accuracy_registered_contrasts_v1.png",
+        "resource_primary_figure": root
+        / "reports/figures/multiuav_resource_m3_minus_m1_v1.png",
+        "resource_matched_figure": root
+        / "reports/figures/multiuav_resource_m3_minus_m4_v1.png",
     }
     checks: dict[str, bool] = {
         "all_required_artifacts_present": all(path.is_file() for path in paths.values())
@@ -85,6 +96,18 @@ def audit_multiuav_manuscript(
     resource_manifest = _read_object(paths["resource_reporting_manifest"])
     manuscript = paths["manuscript"].read_text(encoding="utf-8-sig")
     bibliography = paths["bibliography"].read_text(encoding="utf-8-sig")
+    abstract_words = _abstract_word_count(manuscript)
+    citation_ids = _body_citation_ids(manuscript)
+    reference_ids = _reference_ids(manuscript)
+    embedded_figures = set(
+        re.findall(r"!\[[^\]]+\]\(([^)]+)\)", manuscript)
+    )
+    expected_figures = {
+        "figures/multiuav_accuracy_primary_outcomes_v1.png",
+        "figures/multiuav_accuracy_registered_contrasts_v1.png",
+        "figures/multiuav_resource_m3_minus_m1_v1.png",
+        "figures/multiuav_resource_m3_minus_m4_v1.png",
+    }
 
     checks.update(
         {
@@ -144,8 +167,8 @@ def audit_multiuav_manuscript(
                 "matched to M3 only by model-call count" in manuscript
             ),
             "resource_secondary_exploratory_disclosed": (
-                "secondary exploratory" in manuscript
-                and "carry no confirmatory claim" in manuscript
+                "### 4.2 Secondary Resource Results" in manuscript
+                and "exploratory and carry no confirmatory claim" in manuscript
             ),
             "resource_repetitions_separate_disclosed": (
                 "Repetitions are reported separately" in manuscript
@@ -173,9 +196,37 @@ def audit_multiuav_manuscript(
                     "[E3]",
                 )
             ),
+            "abstract_within_250_words": 1 <= abstract_words <= 250,
+            "standalone_references_complete": (
+                citation_ids == reference_ids
+                and citation_ids
+                == {"L1", "L2", "L7", "L8", "E1", "E2", "E3"}
+            ),
+            "embedded_figures_valid": (
+                embedded_figures == expected_figures
+                and all(
+                    (manuscript_path.parent / figure).is_file()
+                    for figure in embedded_figures
+                )
+            ),
+            "external_review_protocol_present": paths[
+                "external_review_protocol"
+            ].is_file(),
+            "no_unresolved_manuscript_placeholders": not re.search(
+                r"\b(?:TODO|TBD|FIXME)\b|\?\?\?|\[citation needed\]",
+                manuscript,
+                flags=re.IGNORECASE,
+            ),
         }
     )
-    return _result(checks=checks, bindings=bindings)
+    result = _result(checks=checks, bindings=bindings)
+    result["manuscript_metrics"] = {
+        "abstract_words": abstract_words,
+        "body_citation_ids": sorted(citation_ids),
+        "reference_ids": sorted(reference_ids),
+        "embedded_figure_count": len(embedded_figures),
+    }
+    return result
 
 
 def render_manuscript_audit(audit: Mapping[str, Any]) -> str:
@@ -195,6 +246,39 @@ def render_manuscript_audit(audit: Mapping[str, Any]) -> str:
     ]
     for name, passed in audit["checks"].items():
         lines.append(f"- `{name}`: `{'pass' if passed else 'fail'}`")
+    metrics = audit.get("manuscript_metrics")
+    if isinstance(metrics, Mapping):
+        lines.extend(
+            [
+                "",
+                "## Manuscript Metrics",
+                "",
+                f"- Abstract words: `{metrics.get('abstract_words')}`",
+                "- Body citation identifiers: "
+                + ", ".join(
+                    f"`{item}`" for item in metrics.get("body_citation_ids", [])
+                ),
+                "- Reference identifiers: "
+                + ", ".join(
+                    f"`{item}`" for item in metrics.get("reference_ids", [])
+                ),
+                "- Embedded figures: "
+                + f"`{metrics.get('embedded_figure_count')}`",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "## Artifact Bindings",
+            "",
+            "| Artifact | Path | SHA-256 |",
+            "|---|---|---|",
+        ]
+    )
+    for name, record in audit["artifact_bindings"].items():
+        lines.append(
+            f"| `{name}` | `{record['path']}` | `{record['sha256']}` |"
+        )
     lines.extend(["", "## Remaining Gates", ""])
     lines.extend(f"- {item}" for item in audit["remaining_gates"])
     lines.extend(
@@ -256,6 +340,31 @@ def _manifest_valid(
     return True
 
 
+def _abstract_word_count(manuscript: str) -> int:
+    match = re.search(
+        r"^## Abstract\s+(.*?)(?=^## \d+\.)",
+        manuscript,
+        flags=re.DOTALL | re.MULTILINE,
+    )
+    if match is None:
+        return 0
+    return len(re.findall(r"\b[\w'-]+\b", match.group(1)))
+
+
+def _body_citation_ids(manuscript: str) -> set[str]:
+    body = manuscript.split("## References", maxsplit=1)[0]
+    return set(re.findall(r"\[((?:L|E)\d+)\]", body))
+
+
+def _reference_ids(manuscript: str) -> set[str]:
+    if "## References" not in manuscript:
+        return set()
+    references = manuscript.split("## References", maxsplit=1)[1]
+    return set(
+        re.findall(r"^\*\*\[((?:L|E)\d+)\]\*\*", references, flags=re.MULTILINE)
+    )
+
+
 def _read_object(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8-sig"))
@@ -271,11 +380,20 @@ def _file_record(root: Path, path: Path) -> dict[str, Any]:
         rendered = path.resolve().relative_to(root).as_posix()
     except ValueError:
         rendered = path.resolve().as_posix()
+    data, hash_basis = _binding_bytes(path)
     return {
         "path": rendered,
-        "bytes": path.stat().st_size,
-        "sha256": _sha256_file(path),
+        "bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+        "hash_basis": hash_basis,
     }
+
+
+def _binding_bytes(path: Path) -> tuple[bytes, str]:
+    if path.suffix.lower() in TEXT_SUFFIXES:
+        text = path.read_text(encoding="utf-8-sig")
+        return text.encode("utf-8"), "utf8_lf_normalized"
+    return path.read_bytes(), "raw_bytes"
 
 
 def _sha256_file(path: Path) -> str:

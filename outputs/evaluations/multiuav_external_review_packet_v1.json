@@ -1,0 +1,96 @@
+{
+  "artifact_bindings": {
+    "accuracy_contrast_figure": {
+      "bytes": 136037,
+      "hash_basis": "raw_bytes",
+      "path": "reports/figures/multiuav_accuracy_registered_contrasts_v1.png",
+      "sha256": "c3f547a7b35d33d286ad7b34e1cfa8affb69d6b6ac26ea3d841d4b5392ccf35b"
+    },
+    "accuracy_contrast_table": {
+      "bytes": 1674,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv",
+      "sha256": "66e543328cba2f1e259ecb9e4df872ea0c80b17cd08b2fe55c3b368e60bdf5c3"
+    },
+    "accuracy_figure_manifest": {
+      "bytes": 2574,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json",
+      "sha256": "6089a24f0f38107fc7d8f01ee733972ed4a92be913f565926812cb7288a53dec"
+    },
+    "accuracy_primary_figure": {
+      "bytes": 132344,
+      "hash_basis": "raw_bytes",
+      "path": "reports/figures/multiuav_accuracy_primary_outcomes_v1.png",
+      "sha256": "c1f4868f4b1bed336b8ee1e7c07a717d5b7161b3bb752c37a31042042c481f4b"
+    },
+    "bibliography": {
+      "bytes": 5505,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "reports/week9_bibliography.md",
+      "sha256": "4bc610b02cdf0bb65da0af47622dbefb446c3c95ae2c69ffdd5b794cc969ffff"
+    },
+    "external_review_protocol": {
+      "bytes": 3302,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "docs/multiuav_external_review_protocol.md",
+      "sha256": "2871936cd3ef9e76c1618b78ab54f9c6b19438a1fb3b1e265637a19f07840985"
+    },
+    "internal_traceability_audit": {
+      "bytes": 7920,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/evaluations/multiuav_manuscript_traceability_v1.json",
+      "sha256": "5c6a0efb366b67ea652c85e3e40fd139b75bed3c428c0ad6225fb0199e8c3f8f"
+    },
+    "manuscript": {
+      "bytes": 14939,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "reports/multiuav_validation_placement_manuscript_v1.md",
+      "sha256": "98fb23b121c40ae43ee47a493c96325413ce9f139b3d072b9f67804d969362d4"
+    },
+    "resource_contrast_table": {
+      "bytes": 41213,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/tables/multiuav_resource_contrasts_v1.csv",
+      "sha256": "ab4030fab0e09103ad31768493be2911ae7df6938dea5e72636f6fc5bb2a767d"
+    },
+    "resource_matched_figure": {
+      "bytes": 410978,
+      "hash_basis": "raw_bytes",
+      "path": "reports/figures/multiuav_resource_m3_minus_m4_v1.png",
+      "sha256": "563ee848b594cbe10679bc7ff718198b5f49b8d77da6e19a4489bab3604387af"
+    },
+    "resource_primary_figure": {
+      "bytes": 409467,
+      "hash_basis": "raw_bytes",
+      "path": "reports/figures/multiuav_resource_m3_minus_m1_v1.png",
+      "sha256": "e2580451451b2dc3f331c08fd988419968597f871fb4380041e51ca26e7aaaf0"
+    },
+    "resource_reporting_manifest": {
+      "bytes": 2599,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/evaluations/multiuav_resource_reporting_v1/manifest.json",
+      "sha256": "066a9e8ef322a390017ddc71e6a5d7a0d3cc5b1c596c0b5a46a06cbd3a91864e"
+    }
+  },
+  "external_review_received": false,
+  "hidden_labels_accessed": false,
+  "next_gate": "external_scientific_review_pending",
+  "packet": {
+    "bytes": 21044,
+    "hash_basis": "utf8_lf_normalized",
+    "path": "reports/multiuav_external_review_packet_v1.md",
+    "sha256": "60ede62dbc4297eaa32a5380384b8ea82169864f782e288b5ffdbbf277c8c356"
+  },
+  "packet_sha256": "60ede62dbc4297eaa32a5380384b8ea82169864f782e288b5ffdbbf277c8c356",
+  "packet_version": "multiuav_external_review_packet_v1",
+  "raw_model_outputs_accessed": false,
+  "review_artifact": null,
+  "reviewer_id": null,
+  "schema_version": 1,
+  "source_code_sha256": {
+    "build_multiuav_external_review_packet.py": "a5a82f8731b22c0d9bd8b01e49efc3f200b211a918ed4b351495bc054fe81879",
+    "multiuav_external_review.py": "fe9a2589988f289ab9ac9869d31647b62e228da425d82b4b3fd3473a545b9284"
+  },
+  "status": "external_review_packet_ready_review_not_received"
+}

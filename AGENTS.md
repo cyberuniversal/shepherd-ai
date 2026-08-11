@@ -302,9 +302,11 @@ Use these labels in documentation and code comments when relevant:
 - Currently unresolved for the active study: external scientific/manuscript
   review, venue selection, venue-formatted bibliography, and final submission
   review. The accuracy and resource runs, admission gates, registered analyses,
-  source tables, figures, integrated draft, and internal traceability audit are
-  complete; do not replace their commit-bound evidence with ad hoc model
-  invocation or manually copied values.
+  source tables, figures, integrated draft, 25-check/22-artifact internal
+  traceability audit, and hash-bound unreviewed external-review packet are
+  complete. No external review has been received. Do not replace commit-bound
+  evidence with ad hoc model invocation or manually copied values, and do not
+  mark the review packet approved without a real reviewer response.
 
 ## Known Conflicts And Caveats
 

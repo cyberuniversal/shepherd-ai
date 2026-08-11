@@ -205,9 +205,13 @@ Current intentionally promoted MultiUAV validation-placement evidence:
   repetition/model/method/metric descriptive rows.
 - `outputs/tables/multiuav_resource_contrasts_v1.csv`: 96 exact registered
   M3-minus-M1 and M3-minus-M4 resource contrasts.
-- `outputs/evaluations/multiuav_manuscript_traceability_v1.json`: 20-check,
-  17-artifact internal audit of the active manuscript's aggregate evidence,
-  claim limits, figures, tables, and bibliography identifiers.
+- `outputs/evaluations/multiuav_manuscript_traceability_v1.json`: 25-check,
+  22-artifact internal audit of the active manuscript's aggregate evidence,
+  250-word abstract, matched citations and references, claim limits, figures,
+  tables, and bibliography identifiers.
+- `outputs/evaluations/multiuav_external_review_packet_v1.json`: manifest for
+  the 12-artifact hash-bound external-review packet. Its status explicitly
+  records that no external review has been received.
 
 Regenerate these artifacts with:
 
@@ -215,4 +219,5 @@ Regenerate these artifacts with:
 python scripts/analyze_multiuav_resources.py
 python scripts/build_multiuav_resource_report.py
 python scripts/audit_multiuav_manuscript.py
+python scripts/build_multiuav_external_review_packet.py
 ```

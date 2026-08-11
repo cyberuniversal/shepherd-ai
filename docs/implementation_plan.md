@@ -395,9 +395,11 @@ safe derived rows, raw bootstrap evidence, exact CSV tables, two figures, and a
 provenance manifest. A current integrated manuscript draft is preserved at
 `reports/multiuav_validation_placement_manuscript_v1.md`.
 
-Known uncertainties: The internal 17-artifact manuscript traceability audit
-passes. External scientific/manuscript review, venue selection,
-venue-formatted bibliography, and final submission review remain unresolved.
+Known uncertainties: The internal 25-check, 22-artifact manuscript
+traceability audit passes, and the hash-bound review packet is ready but
+explicitly unreviewed. External scientific/manuscript review, venue selection,
+venue-specific bibliography formatting, and final submission review remain
+unresolved.
 Resource findings are hardware-specific and exploratory, and one
 post-admission raw-output inspection deviation requires disclosure. Call budgets, recoverability rules, static
 execution scope, source provenance, split registration, official alias
