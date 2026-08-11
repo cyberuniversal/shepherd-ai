@@ -97,6 +97,11 @@ preserved under `datasets/multiuav_plat/failed_attempts/`. The partial attempt
 is not an admitted resource result. Attempt 3 retains the same 600-second
 window and 60 C ceiling but applies both constraints while acquiring the
 baseline, allowing an idle-but-hot GPU to cool instead of failing immediately.
+Attempt 3 subsequently completed all 24 registered conditions and 3,600 rows
+on one locked RTX 3090 with zero pod restarts. Its full raw archive, condition
+checkpoints, start controls, logs, Kubernetes evidence, and source-file hashes
+are preserved. These raw rows remain unscored and unadmitted pending the
+separate resource-admission validator.
 
 Every row is durably appended. Any invalid row invalidates and preserves the
 whole 150-row condition; a replacement must use a new attempt directory.

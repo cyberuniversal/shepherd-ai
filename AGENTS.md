@@ -38,11 +38,12 @@ outputs, or negative evidence.
 
 The locked 3B and 7B accuracy matrices, score-blind admission, deterministic
 scoring, registered source-cluster bootstrap, and publication figures are now
-stored. Treat only those preserved accuracy artifacts as study results. The
-separate resource experiment remains incomplete and unadmitted. Attempt 2
-preserved one 150-row condition before a later condition failed its frozen
-thermal gate; neither those partial raw rows, frozen contracts, nor synthetic
-tooling probes are resource results. In particular:
+stored. Treat only those preserved accuracy artifacts as admitted study
+results. Resource campaign attempt 3 completed all 24 conditions and 3,600
+rows on one RTX 3090 and is hash-preserved, but remains unadmitted and unscored
+until the separate resource-admission and analysis gates pass. Attempt 2's
+partial raw rows, frozen contracts, synthetic tooling probes, and attempt 3's
+unadmitted raw rows are not resource findings. In particular:
 
 - cite the locally reproduced 75 sessions, 1,500 tasks, and 9,396 checks only
   through `datasets/multiuav_plat/source_audit_v1.json`;
@@ -99,8 +100,9 @@ tooling probes are resource results. In particular:
   process-isolation, and invalid-row controls. Neither artifact is a run config
   or result. All 24 attempt-3 configs are bound to the cooldown-aware execution
   revision. Preflight v3 independently verified both frozen model artifacts and
-  exact-GPU NVML capabilities without loading a model or starting measurement;
-  campaign attempt 3 is the active resource gate.
+  exact-GPU NVML capabilities without loading a model or starting measurement.
+  Campaign attempt 3 completed all 24 conditions and is preserved; score-blind
+  resource admission is the active gate.
 
 The old `reports/shepherd_ai_paper_draft.md`, 38-case diagnostic, Qwen
 diagnostic, and fresh-human benchmark tooling are historical artifacts. They

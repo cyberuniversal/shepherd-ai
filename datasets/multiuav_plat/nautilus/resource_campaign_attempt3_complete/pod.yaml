@@ -1,0 +1,230 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: d31bd4bc379d1ac98e27bd15c86fe897da4a05bfe79da77c0e033e2b622d9220
+    cni.projectcalico.org/podIP: ""
+    cni.projectcalico.org/podIPs: ""
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: ephemeral-storage request
+      for container resource-campaign; ephemeral-storage limit for container resource-campaign'
+    nrp.ai/username: http://cilogon.org/serverE/users/539948
+  creationTimestamp: "2026-08-09T19:03:36Z"
+  generateName: shepherd-ai-resource-v1-a3-
+  generation: 1
+  labels:
+    app.kubernetes.io/name: shepherd-ai
+    batch.kubernetes.io/controller-uid: 7bb9e481-f8fd-4ca8-a63d-fada23eba76f
+    batch.kubernetes.io/job-name: shepherd-ai-resource-v1-a3
+    controller-uid: 7bb9e481-f8fd-4ca8-a63d-fada23eba76f
+    job-name: shepherd-ai-resource-v1-a3
+    shepherd-ai/stage: resource-v1
+  name: shepherd-ai-resource-v1-a3-sszxb
+  namespace: aiea-interns
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: shepherd-ai-resource-v1-a3
+    uid: 7bb9e481-f8fd-4ca8-a63d-fada23eba76f
+  resourceVersion: "14399708522"
+  uid: 8008877e-d5c5-4c18-bff4-cfe60460cc00
+spec:
+  containers:
+  - args:
+    - |
+      set -euo pipefail
+      apt-get update
+      apt-get install -y --no-install-recommends git ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      repo="/workspace/repo-${SHEPHERD_GIT_COMMIT}"
+      if [[ ! -d "${repo}/.git" ]]; then
+        git clone https://github.com/cyberuniversal/shepherd-ai.git "${repo}"
+      fi
+      git -C "${repo}" fetch origin
+      git -C "${repo}" checkout --detach "${SHEPHERD_GIT_COMMIT}"
+      python -m pip install --no-cache-dir -e "${repo}[multiuav-inference]"
+      python -m pip install --no-cache-dir \
+        accelerate==1.14.0 \
+        huggingface-hub==0.36.2 \
+        safetensors==0.8.0 \
+        transformers==4.57.6 \
+        nvidia-ml-py==13.610.43 \
+        psutil==7.2.0
+      output=/workspace/results/resource-v1-attempt3
+      mkdir -p "${output}"
+      python "${repo}/scripts/run_multiuav_resource_campaign.py" \
+        --output-root "${output}" \
+        --node-name "${SHEPHERD_NODE_NAME}" \
+        --cache-audit-root /workspace/artifacts
+    command:
+    - /bin/bash
+    - -lc
+    env:
+    - name: SHEPHERD_GIT_COMMIT
+      value: abb9a46afed2131e18911aa88ed252747ebb9011
+    - name: HF_HOME
+      value: /workspace/hf-cache
+    - name: HF_HUB_OFFLINE
+      value: "1"
+    - name: TRANSFORMERS_OFFLINE
+      value: "1"
+    - name: SHEPHERD_NODE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.nodeName
+    - name: SHEPHERD_POD_UID
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.uid
+    image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imagePullPolicy: IfNotPresent
+    name: resource-campaign
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 32Gi
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 32Gi
+        nvidia.com/gpu: "1"
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-bhth7
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: ry-gpu-02.sdsc.optiputer.net
+  nodeSelector:
+    nvidia.com/gpu.product: NVIDIA-GeForce-RTX-3090
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 180
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: PreferNoSchedule
+    key: nvidia.com/gpu
+    operator: Exists
+  volumes:
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: shepherd-ai-539948
+  - name: kube-api-access-bhth7
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-10T19:24:25Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-09T20:51:31Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-10T19:24:23Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-10T19:24:23Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-08-09T20:51:31Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "2"
+      ephemeral-storage: "0"
+      memory: 32Gi
+      nvidia.com/gpu: "1"
+    containerID: containerd://43d2d3ecabefad8fa417503ec270b4ada568a60eb9816a5d0e4ae4469cdced64
+    image: docker.io/pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+    imageID: docker.io/pytorch/pytorch@sha256:8d409f72f99e5968b5c4c9396a21f4b723982cfdf2c1a5b9cc045c5d0a7345a1
+    lastState: {}
+    name: resource-campaign
+    ready: false
+    resources:
+      limits:
+        cpu: "2"
+        ephemeral-storage: 50Gi
+        memory: 32Gi
+        nvidia.com/gpu: "1"
+      requests:
+        cpu: "2"
+        ephemeral-storage: "0"
+        memory: 32Gi
+        nvidia.com/gpu: "1"
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://43d2d3ecabefad8fa417503ec270b4ada568a60eb9816a5d0e4ae4469cdced64
+        exitCode: 0
+        finishedAt: "2026-08-10T19:24:22Z"
+        reason: Completed
+        startedAt: "2026-08-09T20:52:49Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /workspace
+      name: workspace
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-bhth7
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 132.249.212.134
+  hostIPs:
+  - ip: 132.249.212.134
+  phase: Succeeded
+  podIP: 10.244.248.1
+  podIPs:
+  - ip: 10.244.248.1
+  - ip: fdf0:17b3:c3ec:1f79:10:0:b:be25
+  qosClass: Guaranteed
+  startTime: "2026-08-09T20:51:31Z"

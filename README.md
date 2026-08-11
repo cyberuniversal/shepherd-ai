@@ -54,8 +54,10 @@ condition 2 measurement because the GPU baseline was 68 C against the frozen
 resource result. The cooldown-aware baseline acquisition fix passes its
 regression tests, all 24 attempt-3 configs are bound to that execution revision,
 and no-inference RTX 3090 preflight v3 independently passed for both frozen
-models. The next gate is the full attempt-3 resource campaign; its raw rows
-remain unscored until complete resource admission. See
+models. Attempt 3 then completed all 24 conditions and 3,600 rows on one locked
+RTX 3090; the complete raw archive and Kubernetes evidence are hash-preserved.
+The rows remain unscored and are not resource findings until score-blind
+resource admission and the registered aggregate analysis pass. See
 `docs/multiuav_validation_study_protocol.md`.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
