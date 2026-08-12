@@ -3,6 +3,10 @@
 Shepherd-AI is a Python research prototype for natural-language multi-drone
 mission planning and coordination in software simulation.
 
+The final mentor submission entry point is `MENTOR_HANDOFF.md`. It maps every
+requested deliverable to the exact source, raw evidence, analysis, manuscript,
+and presentation artifact included in the final ZIP.
+
 ## Final Study Scope
 
 The final reported study is the frozen, text-first MultiUAV-Plat validation
