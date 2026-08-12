@@ -91,9 +91,11 @@ python -m pytest -q
 python -m ruff check scripts/analyze_multiuav_accuracy.py scripts/build_final_manuscript.py src/shepherd_ai/multiuav_study_analysis.py src/shepherd_ai/multiuav_manuscript_audit.py src/shepherd_ai/multiuav_external_review.py tests/test_multiuav_study_analysis.py tests/test_multiuav_manuscript_audit.py
 ```
 
-The PDF build uses ReportLab and writes both
-`reports/final/shepherd_ai_manuscript.tex` and
+The manuscript build writes IEEE conference-format
+`reports/final/shepherd_ai_manuscript.tex` and an IEEE-style, two-column
 `reports/final/shepherd_ai_manuscript.pdf` from the audited Markdown source.
+The PDF is generated with ReportLab so the package remains reproducible on a
+machine without a local TeX distribution.
 The editable deck is generated with the bundled `@oai/artifact-tool` runtime:
 
 ```javascript

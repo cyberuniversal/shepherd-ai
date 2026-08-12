@@ -18,8 +18,8 @@ claims.
 ## Primary Deliverables
 
 - Markdown manuscript: `reports/multiuav_validation_placement_manuscript_v1.md`
-- LaTeX manuscript: `reports/final/shepherd_ai_manuscript.tex`
-- PDF manuscript: `reports/final/shepherd_ai_manuscript.pdf`
+- IEEE conference-format LaTeX manuscript: `reports/final/shepherd_ai_manuscript.tex`
+- IEEE-style two-column PDF manuscript: `reports/final/shepherd_ai_manuscript.pdf`
 - Presentation: `reports/final/shepherd_ai_presentation.pptx`
 - Presentation preview: `reports/final/shepherd_ai_presentation_montage.webp`
 - Final architecture: `docs/final_pipeline_architecture.md`
