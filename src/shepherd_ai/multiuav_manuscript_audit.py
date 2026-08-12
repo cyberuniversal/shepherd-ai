@@ -47,6 +47,12 @@ def audit_multiuav_manuscript(
         / "outputs/tables/multiuav_accuracy_primary_rates_v1.csv",
         "accuracy_contrast_table": root
         / "outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv",
+        "accuracy_session_table": root
+        / "outputs/tables/multiuav_accuracy_session_statistics_v1.csv",
+        "accuracy_failure_analysis": root
+        / "outputs/evaluations/multiuav_accuracy_failure_analysis_v1.json",
+        "accuracy_failure_cases": root
+        / "outputs/evaluations/multiuav_accuracy_failure_cases_v1.zip",
         "resource_admission": root
         / "datasets/multiuav_plat/resource_campaign_admission_v1.json",
         "resource_analysis_freeze": root
@@ -66,7 +72,8 @@ def audit_multiuav_manuscript(
         / "outputs/tables/multiuav_resource_contrasts_v1.csv",
         "manuscript": manuscript_path,
         "bibliography": root / "reports/week9_bibliography.md",
-        "external_review_protocol": root / "docs/multiuav_external_review_protocol.md",
+        "final_architecture": root / "docs/final_pipeline_architecture.md",
+        "review_resolution": root / "docs/multiuav_review_resolution_final.md",
         "accuracy_primary_figure": root
         / "reports/figures/multiuav_accuracy_primary_outcomes_v1.png",
         "accuracy_contrast_figure": root
@@ -163,6 +170,13 @@ def audit_multiuav_manuscript(
                 "two scales in one model family" in manuscript
             ),
             "static_fidelity_limit_disclosed": "Plan fidelity is static" in manuscript,
+            "zero_executable_static_fidelity_disclosed": (
+                "zero static plan fidelity" in manuscript
+            ),
+            "legacy_components_excluded": all(
+                name in manuscript
+                for name in ("Whisper", "DistilBERT", "vision")
+            ),
             "call_count_match_limit_disclosed": (
                 "matched to M3 only by model-call count" in manuscript
             ),
@@ -194,13 +208,14 @@ def audit_multiuav_manuscript(
                     "[E1]",
                     "[E2]",
                     "[E3]",
+                    "[E4]",
                 )
             ),
             "abstract_within_250_words": 1 <= abstract_words <= 250,
             "standalone_references_complete": (
                 citation_ids == reference_ids
                 and citation_ids
-                == {"L1", "L2", "L7", "L8", "E1", "E2", "E3"}
+                == {"L1", "L2", "L7", "L8", "E1", "E2", "E3", "E4"}
             ),
             "embedded_figures_valid": (
                 embedded_figures == expected_figures
@@ -209,8 +224,8 @@ def audit_multiuav_manuscript(
                     for figure in embedded_figures
                 )
             ),
-            "external_review_protocol_present": paths[
-                "external_review_protocol"
+            "review_resolution_present": paths[
+                "review_resolution"
             ].is_file(),
             "no_unresolved_manuscript_placeholders": not re.search(
                 r"\b(?:TODO|TBD|FIXME)\b|\?\?\?|\[citation needed\]",
@@ -300,7 +315,7 @@ def _result(
         "schema_version": 1,
         "audit_version": AUDIT_VERSION,
         "status": (
-            "manuscript_internal_traceability_passed_external_review_pending"
+            "manuscript_internal_traceability_passed_final_package_pending"
             if valid
             else "manuscript_internal_traceability_failed"
         ),
@@ -314,12 +329,12 @@ def _result(
         "raw_model_outputs_accessed": False,
         "hidden_labels_accessed": False,
         "final_submission_ready": False,
+        "mentor_review_ready": valid,
         "remaining_gates": [
-            "external scientific and manuscript review",
-            "venue selection and venue-specific formatting",
-            "final reference-format and citation audit",
+            "final package assembly and checksum validation",
+            "concluding mentor review",
         ],
-        "next_gate": "external_review_and_venue_formatting_pending",
+        "next_gate": "final_package_assembly_pending",
     }
 
 

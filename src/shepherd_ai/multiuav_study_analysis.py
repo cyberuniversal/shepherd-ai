@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import statistics
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
@@ -33,6 +34,7 @@ def analyze_scored_study(
     repository_root: Path,
     scoring_summary_path: Path,
     protocol_path: Path,
+    intervention_dataset_path: Path,
     output_dir: Path,
 ) -> dict[str, Any]:
     """Run every registered model, contrast, and primary-outcome analysis."""
@@ -40,15 +42,20 @@ def analyze_scored_study(
     repository_root = repository_root.resolve()
     scoring_summary_path = scoring_summary_path.resolve()
     protocol_path = protocol_path.resolve()
+    intervention_dataset_path = intervention_dataset_path.resolve()
     output_dir = output_dir.resolve()
     scoring_summary = _read_object(scoring_summary_path)
     protocol = _read_object(protocol_path)
     _validate_scoring_boundary(scoring_summary, repository_root, protocol_path)
     analysis_spec = _analysis_spec(protocol)
+    session_by_cluster = _load_session_bindings(intervention_dataset_path)
 
     model_reports: list[dict[str, Any]] = []
     cluster_evidence: list[dict[str, Any]] = []
     draw_evidence: list[dict[str, Any]] = []
+    session_statistics: list[dict[str, Any]] = []
+    failure_reports: list[dict[str, Any]] = []
+    failure_cases: list[dict[str, Any]] = []
     matrices = scoring_summary.get("matrices")
     if not isinstance(matrices, list) or not matrices:
         raise ValueError("scoring summary matrix records are absent")
@@ -76,6 +83,19 @@ def analyze_scored_study(
         )
         cluster_evidence.extend(clusters)
         draw_evidence.extend(draws)
+        model_session_statistics = summarize_scored_rows_by_session(
+            rows=rows,
+            session_by_cluster=session_by_cluster,
+            model_id=model_id,
+        )
+        session_statistics.extend(model_session_statistics)
+        failure_report, model_failure_cases = summarize_scored_failures(
+            rows=rows,
+            session_by_cluster=session_by_cluster,
+            model_id=model_id,
+        )
+        failure_reports.extend(failure_report)
+        failure_cases.extend(model_failure_cases)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     evidence_path = output_dir / "bootstrap_evidence.zip"
@@ -88,6 +108,9 @@ def analyze_scored_study(
             "analysis_run_version": ANALYSIS_RUN_VERSION,
             "scoring_summary_sha256": _sha256_file(scoring_summary_path),
             "accuracy_protocol_sha256": _sha256_file(protocol_path),
+            "intervention_dataset_sha256": _sha256_file(
+                intervention_dataset_path
+            ),
             **analysis_spec,
         },
     )
@@ -104,6 +127,9 @@ def analyze_scored_study(
         "artifact_bindings": {
             "scoring_summary_sha256": _sha256_file(scoring_summary_path),
             "accuracy_protocol_sha256": _sha256_file(protocol_path),
+            "intervention_dataset_sha256": _sha256_file(
+                intervention_dataset_path
+            ),
         },
         "source_code_sha256": _analysis_source_hashes(repository_root),
         "analysis_spec": analysis_spec,
@@ -112,11 +138,241 @@ def analyze_scored_study(
             len(model["analyses"]) for model in model_reports
         ),
         "model_results": model_reports,
+        "descriptive_session_statistics": {
+            "analysis_status": "post_hoc_descriptive_no_inference",
+            "session_rows": session_statistics,
+            "aggregate_rows": aggregate_session_statistics(session_statistics),
+        },
+        "descriptive_failure_analysis": {
+            "analysis_status": "post_hoc_descriptive_no_inference",
+            "method_rows": failure_reports,
+            "failure_case_rows": failure_cases,
+        },
         "bootstrap_evidence_archive": evidence_record,
         "null_hypothesis_tests_run": False,
         "resource_analysis_included": False,
         "next_gate": "accuracy_figures_and_resource_experiment_pending",
     }
+
+
+def summarize_scored_rows_by_session(
+    *,
+    rows: Iterable[Mapping[str, Any]],
+    session_by_cluster: Mapping[str, str],
+    model_id: str,
+) -> list[dict[str, Any]]:
+    """Return transparent per-session descriptive rates for each frozen method."""
+
+    grouped: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for source in rows:
+        row = dict(source)
+        cluster_id = str(row.get("cluster_id", ""))
+        try:
+            session_id = session_by_cluster[cluster_id]
+        except KeyError as error:
+            raise ValueError(f"session binding is absent: {cluster_id}") from error
+        method_id = str(row.get("method_id", ""))
+        if not method_id:
+            raise ValueError("scored row method id is absent")
+        grouped.setdefault((session_id, method_id), []).append(row)
+
+    summaries: list[dict[str, Any]] = []
+    nonexecution_variants = {
+        "missing_information_clarify",
+        "resource_conflict_block",
+    }
+    for (session_id, method_id), group in sorted(grouped.items()):
+        nonexecution = [
+            row for row in group if row.get("variant") in nonexecution_variants
+        ]
+        executable = [
+            row for row in group if row.get("variant") not in nonexecution_variants
+        ]
+        unsafe = sum(bool(row.get("unsafe_proceed")) for row in nonexecution)
+        strict_success = sum(bool(row.get("end_to_end_success")) for row in group)
+        static_fidelity = sum(
+            bool(row.get("static_plan_fidelity")) for row in executable
+        )
+        summaries.append(
+            {
+                "model_id": model_id,
+                "method_id": method_id,
+                "method_label": _method_label(method_id),
+                "session_id": session_id,
+                "clusters": len({str(row["cluster_id"]) for row in group}),
+                "cases": len(group),
+                "nonexecution_cases": len(nonexecution),
+                "unsafe_proceed_nonexecution": unsafe,
+                "unsafe_proceed_rate_nonexecution": _rate(
+                    unsafe, len(nonexecution)
+                ),
+                "all_nonexecution_contained": unsafe == 0,
+                "executable_cases": len(executable),
+                "static_plan_fidelity_execute": static_fidelity,
+                "static_plan_fidelity_rate_execute": _rate(
+                    static_fidelity, len(executable)
+                ),
+                "false_nonexecution_execute": sum(
+                    bool(row.get("false_nonexecution")) for row in executable
+                ),
+                "parse_errors": sum(bool(row.get("parse_error")) for row in group),
+                "strict_success_cases": strict_success,
+                "strict_success_rate": _rate(strict_success, len(group)),
+            }
+        )
+    return summaries
+
+
+def aggregate_session_statistics(
+    session_rows: Iterable[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Aggregate session rows without treating sessions as inferential replicates."""
+
+    grouped: dict[tuple[str, str], list[Mapping[str, Any]]] = {}
+    for row in session_rows:
+        key = (str(row["model_id"]), str(row["method_id"]))
+        grouped.setdefault(key, []).append(row)
+    aggregates = []
+    for (model_id, method_id), group in sorted(grouped.items()):
+        aggregates.append(
+            {
+                "model_id": model_id,
+                "method_id": method_id,
+                "method_label": _method_label(method_id),
+                "sessions": len(group),
+                "clusters": sum(int(row["clusters"]) for row in group),
+                "cases": sum(int(row["cases"]) for row in group),
+                "mean_session_unsafe_proceed_rate_nonexecution": statistics.fmean(
+                    float(row["unsafe_proceed_rate_nonexecution"]) for row in group
+                ),
+                "sessions_with_any_unsafe_proceed": sum(
+                    int(row["unsafe_proceed_nonexecution"]) > 0 for row in group
+                ),
+                "sessions_with_all_nonexecution_contained": sum(
+                    bool(row["all_nonexecution_contained"]) for row in group
+                ),
+                "mean_session_static_plan_fidelity_rate_execute": statistics.fmean(
+                    float(row["static_plan_fidelity_rate_execute"]) for row in group
+                ),
+                "mean_session_strict_success_rate": statistics.fmean(
+                    float(row["strict_success_rate"]) for row in group
+                ),
+                "sessions_with_any_strict_success": sum(
+                    int(row["strict_success_cases"]) > 0 for row in group
+                ),
+            }
+        )
+    return aggregates
+
+
+def summarize_scored_failures(
+    *,
+    rows: Iterable[Mapping[str, Any]],
+    session_by_cluster: Mapping[str, str],
+    model_id: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Describe scored failure modes and return non-sensitive failure-case rows."""
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    failures: list[dict[str, Any]] = []
+    nonexecution_variants = {
+        "missing_information_clarify",
+        "resource_conflict_block",
+    }
+    for source in rows:
+        row = dict(source)
+        cluster_id = str(row.get("cluster_id", ""))
+        if cluster_id not in session_by_cluster:
+            raise ValueError(f"session binding is absent: {cluster_id}")
+        method_id = str(row.get("method_id", ""))
+        grouped.setdefault(method_id, []).append(row)
+        if not bool(row.get("end_to_end_success")) or bool(row.get("unsafe_proceed")):
+            failures.append(
+                {
+                    "model_id": model_id,
+                    "method_id": method_id,
+                    "method_label": _method_label(method_id),
+                    "session_id": session_by_cluster[cluster_id],
+                    "cluster_id": cluster_id,
+                    "source_task_id": str(row.get("source_task_id", "")),
+                    "case_id": str(row.get("case_id", "")),
+                    "variant": str(row.get("variant", "")),
+                    "containment_stage": str(row.get("containment_stage", "")),
+                    "parse_error": bool(row.get("parse_error")),
+                    "backend_error": bool(row.get("backend_error")),
+                    "false_nonexecution": bool(row.get("false_nonexecution")),
+                    "unsafe_proceed": bool(row.get("unsafe_proceed")),
+                    "endpoint_fidelity": bool(row.get("endpoint_fidelity")),
+                    "parameter_grounding_fidelity": bool(
+                        row.get("parameter_grounding_fidelity")
+                    ),
+                    "official_command_fidelity": bool(
+                        row.get("official_command_fidelity")
+                    ),
+                    "static_plan_fidelity": bool(row.get("static_plan_fidelity")),
+                    "end_to_end_success": bool(row.get("end_to_end_success")),
+                }
+            )
+
+    reports = []
+    for method_id, group in sorted(grouped.items()):
+        executable = [
+            row for row in group if row.get("variant") not in nonexecution_variants
+        ]
+        nonexecution = [
+            row for row in group if row.get("variant") in nonexecution_variants
+        ]
+        stages: dict[str, int] = {}
+        for row in group:
+            stage = str(row.get("containment_stage", "not_stated"))
+            stages[stage] = stages.get(stage, 0) + 1
+        reports.append(
+            {
+                "model_id": model_id,
+                "method_id": method_id,
+                "method_label": _method_label(method_id),
+                "cases": len(group),
+                "executable_cases": len(executable),
+                "nonexecution_cases": len(nonexecution),
+                "strict_success_failures": sum(
+                    not bool(row.get("end_to_end_success")) for row in group
+                ),
+                "parse_errors": sum(bool(row.get("parse_error")) for row in group),
+                "backend_errors": sum(
+                    bool(row.get("backend_error")) for row in group
+                ),
+                "false_nonexecution_execute": sum(
+                    bool(row.get("false_nonexecution")) for row in executable
+                ),
+                "unsafe_proceed_nonexecution": sum(
+                    bool(row.get("unsafe_proceed")) for row in nonexecution
+                ),
+                "endpoint_fidelity_failures_execute": sum(
+                    not bool(row.get("endpoint_fidelity")) for row in executable
+                ),
+                "parameter_grounding_fidelity_failures_execute": sum(
+                    not bool(row.get("parameter_grounding_fidelity"))
+                    for row in executable
+                ),
+                "official_command_fidelity_failures_execute": sum(
+                    not bool(row.get("official_command_fidelity"))
+                    for row in executable
+                ),
+                "static_plan_fidelity_failures_execute": sum(
+                    not bool(row.get("static_plan_fidelity")) for row in executable
+                ),
+                "containment_stage_counts": dict(sorted(stages.items())),
+            }
+        )
+    return reports, sorted(
+        failures,
+        key=lambda row: (
+            row["model_id"],
+            row["method_id"],
+            row["session_id"],
+            row["case_id"],
+        ),
+    )
 
 
 def analyze_scored_rows(
@@ -364,6 +620,37 @@ def _load_scored_rows(
     if len(rows) != archive_record.get("row_count"):
         raise ValueError("scored-row archive count mismatch")
     return rows
+
+
+def _load_session_bindings(path: Path) -> dict[str, str]:
+    payload = _read_object(path)
+    clusters = payload.get("clusters")
+    if not isinstance(clusters, list) or not clusters:
+        raise ValueError("intervention dataset clusters are absent")
+    bindings: dict[str, str] = {}
+    for index, cluster in enumerate(clusters):
+        if not isinstance(cluster, Mapping):
+            raise ValueError(f"intervention cluster {index} is malformed")
+        cluster_id = str(cluster.get("cluster_id", ""))
+        session_id = str(cluster.get("session_id", ""))
+        if not cluster_id or not session_id:
+            raise ValueError(f"intervention cluster {index} has no session binding")
+        if cluster_id in bindings and bindings[cluster_id] != session_id:
+            raise ValueError(f"conflicting session binding: {cluster_id}")
+        bindings[cluster_id] = session_id
+    return bindings
+
+
+def _rate(numerator: int, denominator: int) -> float:
+    if denominator <= 0:
+        raise ValueError("descriptive rate denominator must be positive")
+    return numerator / denominator
+
+
+def _method_label(method_id: str) -> str:
+    if method_id == "M4_post_plan_compute_matched":
+        return "M4 model-call-count-matched post-plan"
+    return method_id
 
 
 def _analysis_source_hashes(repository_root: Path) -> dict[str, str]:

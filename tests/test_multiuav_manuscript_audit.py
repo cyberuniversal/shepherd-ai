@@ -21,7 +21,7 @@ class MultiUavManuscriptAuditTests(unittest.TestCase):
         self.assertTrue(audit["valid"])
         self.assertEqual(
             audit["status"],
-            "manuscript_internal_traceability_passed_external_review_pending",
+            "manuscript_internal_traceability_passed_final_package_pending",
         )
         self.assertFalse(audit["final_submission_ready"])
         self.assertFalse(audit["raw_model_outputs_accessed"])
@@ -31,7 +31,8 @@ class MultiUavManuscriptAuditTests(unittest.TestCase):
         self.assertTrue(audit["checks"]["abstract_within_250_words"])
         self.assertTrue(audit["checks"]["standalone_references_complete"])
         self.assertTrue(audit["checks"]["embedded_figures_valid"])
-        self.assertTrue(audit["checks"]["external_review_protocol_present"])
+        self.assertTrue(audit["mentor_review_ready"])
+        self.assertTrue(audit["checks"]["review_resolution_present"])
         text_binding = audit["artifact_bindings"]["accuracy_contrast_table"]
         figure_binding = audit["artifact_bindings"]["accuracy_primary_figure"]
         contrast_path = (

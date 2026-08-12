@@ -105,8 +105,9 @@ earlier work was useless.
 
 `notebooks/Notebook9_Evaluation.ipynb` checks out
 `codex/multiuav-validation-study`, audits the completed source, QC, protocol,
-and case-manifest gates, and reports the blocker before model inference. It does not
-invoke the legacy diagnostic runner or a model.
+and case-manifest gates. It does not invoke the legacy diagnostic runner or a
+model. The authoritative completed-run evidence is preserved in the Nautilus
+checkpoint and resource archives rather than notebook output.
 
 The executable wiring audit is:
 
@@ -125,18 +126,15 @@ tables, figures, or comparative claims.
 
 ## Current Stop Condition
 
-The pilot expert-QC packet, full-dataset generation, score-blind protocol,
-held-out accuracy manifest, and label-separated scoring contract are complete.
-Final accuracy configurations now bind the execution code, protocol, manifest,
-model revisions, decoding, methods, and row counts. Both complete cache/runtime
-preflights pass without loading a model, and the wiring audit reports no
-accuracy blocker. Hardware warm-up and thermal controls apply only to the later
-resource experiment. A deterministic 30-task
-candidate subset, 24 condition orders, and an approval-gated resource-config
-builder now exist. Static fidelity and method-case NVML instrumentation are
-implemented, but neither model smoke nor the telemetry probe has produced a
-revised-study result.
+The scope is frozen and all registered execution is complete. The admitted 3B
+and 7B accuracy matrices contain 11,360 rows total. Registered scoring,
+source-cluster bootstrap analysis, figures, and the post-hoc descriptive
+session/failure analysis are complete. Resource campaign attempt 3 completed
+all 24 conditions and 3,600 method-case rows on one RTX 3090; admission,
+analysis, tables, and figures are complete. Failed attempts remain preserved.
 
-The locked accuracy matrix is being moved to Nautilus A100 execution because
-the local 4 GB GPU required CPU/disk offload and was not operationally viable.
-Cluster manifests and storage protocol are under `infra/nautilus/`.
+No further model inference, baseline, module, or research direction is needed
+for the final handoff. The remaining gate is packaging the frozen code and
+evidence with the audited manuscript, LaTeX/PDF, presentation, exact commands,
+and checksums for concluding mentor review. The authoritative final claim
+boundary is `docs/final_pipeline_architecture.md`.

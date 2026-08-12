@@ -3,10 +3,26 @@
 Shepherd-AI is a Python research prototype for natural-language multi-drone
 mission planning and coordination in software simulation.
 
+## Final Study Scope
+
+The final reported study is the frozen, text-first MultiUAV-Plat validation
+placement experiment. It compares M1 monolithic planning, M2 deterministic
+post-plan validation, M3 stage-wise validation, and M4 model-call-count-matched
+post-plan validation using pinned Qwen2.5 3B and 7B checkpoints. Reported plan
+quality is **static plan fidelity** under deterministic schema, endpoint,
+command, and grounding validators. No official MultiUAV server, robotics
+simulator, or physical drone executed the generated plans.
+
+Whisper speech recognition, the historical DistilBERT span tagger, and Week 6
+vision experiments are preserved preliminary roadmap work. They are not in the
+final M1-M4 execution path and are not evidence for the final paper's primary
+claims. The authoritative final architecture is documented in
+`docs/final_pipeline_architecture.md`.
+
 Current research direction: the original ten-week prototype and its results are
 preserved, but the active paper is now a proposed systems-and-measurement study
 of validation placement on paired MultiUAV-Plat source tasks. The study compares
-monolithic, deterministic post-plan, stage-wise, and compute-matched post-plan
+monolithic, deterministic post-plan, stage-wise, and model-call-count-matched post-plan
 configurations while jointly measuring safety, utility, failure containment,
 and local inference cost. Source acquisition, split, strict output parsing, and
 standalone recursive grounding validation are implemented. The corrected
@@ -60,15 +76,15 @@ source-hashed manifest are reproducible through
 GPU-board energy is not workstation or UAV energy. A one-row post-admission
 raw-output inspection deviation is explicitly preserved and disclosed. See
 `docs/multiuav_resource_analysis_protocol.md`.
-The integrated active manuscript and its 25-check, 22-artifact internal
+The integrated active manuscript and its internal
 traceability audit are at
 `reports/multiuav_validation_placement_manuscript_v1.md` and
 `outputs/evaluations/multiuav_manuscript_traceability_v1.json`. The manuscript
-has a 250-word abstract, seven matched citation/reference identifiers, and four
+has a 250-word abstract, verified citation/reference identifiers, and four
 embedded registered figures. The audit passes, and a hash-bound unreviewed
 handoff is preserved at `reports/multiuav_external_review_packet_v1.md`.
-External scientific review has not been received; venue selection,
-venue-specific formatting, and final submission review remain pending.
+The concluding mentor review is intentionally performed on the final package;
+no additional external review gate is required before that handoff.
 The requirement-by-requirement implementation ledger is
 `docs/code_plan_compliance.md`.
 

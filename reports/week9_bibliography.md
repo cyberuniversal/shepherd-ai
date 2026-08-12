@@ -111,3 +111,8 @@ Gopalakrishnan, James Harrison, Brian Ichter, Anuj Mahajan, and Hamsa
 Balakrishnan. "LLaMAR: Long-Horizon Planning for Multi-Agent Robots in
 Partially Observable Environments." arXiv:2407.10031, 2024.
 <https://arxiv.org/abs/2407.10031>
+## Final Study Dataset Source
+
+**[E4]** Sheng Zhang, Qinglin Li, Yuechao Zang, Xueqin Huang, Yijia Fu, and
+Cheng Zhu. "MultiUAV-Plat: An LLM-Oriented Platform, Benchmark and Framework
+for Multi-UAV Collaborative Task Planning." arXiv:2606.31073, 2026.

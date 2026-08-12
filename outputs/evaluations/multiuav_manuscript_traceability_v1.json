@@ -7,10 +7,10 @@
       "sha256": "de85d511d1342a1b53f600d404e8a9e5a9c6fee306137a234dec06bf28f9a2f8"
     },
     "accuracy_bootstrap_summary": {
-      "bytes": 13759,
+      "bytes": 26647,
       "hash_basis": "utf8_lf_normalized",
       "path": "outputs/evaluations/multiuav_accuracy_bootstrap_v1/summary.json",
-      "sha256": "bd873bfad11a3de3ce74ad3b56444ec085ca20fdc778817f950f0242c8fb1ec3"
+      "sha256": "5c96ffd319ce5f88b0085589e397440078b5924f9f086b5b26d0a68678e0127f"
     },
     "accuracy_contrast_figure": {
       "bytes": 136037,
@@ -23,6 +23,18 @@
       "hash_basis": "utf8_lf_normalized",
       "path": "outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv",
       "sha256": "66e543328cba2f1e259ecb9e4df872ea0c80b17cd08b2fe55c3b368e60bdf5c3"
+    },
+    "accuracy_failure_analysis": {
+      "bytes": 6975,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/evaluations/multiuav_accuracy_failure_analysis_v1.json",
+      "sha256": "dfbb8798957fb0df0749725bbe396c8ead0c08ce6c34d7d45b03f68a7855a600"
+    },
+    "accuracy_failure_cases": {
+      "bytes": 161627,
+      "hash_basis": "raw_bytes",
+      "path": "outputs/evaluations/multiuav_accuracy_failure_cases_v1.zip",
+      "sha256": "5b0f621f3d1902084d5de796937c0397185fc73f789ef1951164c298b419f458"
     },
     "accuracy_figure_manifest": {
       "bytes": 2574,
@@ -48,23 +60,29 @@
       "path": "outputs/evaluations/multiuav_accuracy_scoring_v1/summary.json",
       "sha256": "1b3d89655617cae3b1400afb0cd0dfb2d7321a04bb42495b93fb546fcd83f880"
     },
+    "accuracy_session_table": {
+      "bytes": 15663,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "outputs/tables/multiuav_accuracy_session_statistics_v1.csv",
+      "sha256": "a35d242c5a80b1b3abb84abed3a56fedea9b4896cf00ef753289567cb0cc6fc3"
+    },
     "bibliography": {
-      "bytes": 5505,
+      "bytes": 5757,
       "hash_basis": "utf8_lf_normalized",
       "path": "reports/week9_bibliography.md",
-      "sha256": "4bc610b02cdf0bb65da0af47622dbefb446c3c95ae2c69ffdd5b794cc969ffff"
+      "sha256": "8df96032877631c51d213a3528570c1acafabef016112296bb97c3837ead32bd"
     },
-    "external_review_protocol": {
-      "bytes": 3302,
+    "final_architecture": {
+      "bytes": 4077,
       "hash_basis": "utf8_lf_normalized",
-      "path": "docs/multiuav_external_review_protocol.md",
-      "sha256": "2871936cd3ef9e76c1618b78ab54f9c6b19438a1fb3b1e265637a19f07840985"
+      "path": "docs/final_pipeline_architecture.md",
+      "sha256": "89766f1641ef261a33aa7456e2a2b6b9690996adebceccc0508e54bf48497657"
     },
     "manuscript": {
-      "bytes": 14939,
+      "bytes": 16622,
       "hash_basis": "utf8_lf_normalized",
       "path": "reports/multiuav_validation_placement_manuscript_v1.md",
-      "sha256": "98fb23b121c40ae43ee47a493c96325413ce9f139b3d072b9f67804d969362d4"
+      "sha256": "dbddbc8623fa05c8c6bba828b4031b4459c7ceb9a4a18a96b33fdf11be7cc281"
     },
     "resource_admission": {
       "bytes": 23582,
@@ -131,6 +149,12 @@
       "hash_basis": "utf8_lf_normalized",
       "path": "outputs/evaluations/multiuav_resource_reporting_v1/manifest.json",
       "sha256": "066a9e8ef322a390017ddc71e6a5d7a0d3cc5b1c596c0b5a46a06cbd3a91864e"
+    },
+    "review_resolution": {
+      "bytes": 1724,
+      "hash_basis": "utf8_lf_normalized",
+      "path": "docs/multiuav_review_resolution_final.md",
+      "sha256": "5598fd9b4968ee84699c4fc1a621cb06fd2289f98d1ff2ea8263e5ce76a9a386"
     }
   },
   "audit_version": "multiuav_manuscript_traceability_v1",
@@ -145,8 +169,8 @@
     "call_count_match_limit_disclosed": true,
     "controlled_derivative_limit_disclosed": true,
     "embedded_figures_valid": true,
-    "external_review_protocol_present": true,
     "gpu_board_energy_scope_disclosed": true,
+    "legacy_components_excluded": true,
     "negative_result_disclosed": true,
     "no_unresolved_manuscript_placeholders": true,
     "required_literature_resolves": true,
@@ -157,9 +181,11 @@
     "resource_reporting_manifest_valid": true,
     "resource_secondary_exploratory_disclosed": true,
     "resource_values_traced": true,
+    "review_resolution_present": true,
     "standalone_references_complete": true,
     "static_fidelity_limit_disclosed": true,
-    "within_qwen_limit_disclosed": true
+    "within_qwen_limit_disclosed": true,
+    "zero_executable_static_fidelity_disclosed": true
   },
   "failed_checks": [],
   "final_submission_ready": false,
@@ -170,6 +196,7 @@
       "E1",
       "E2",
       "E3",
+      "E4",
       "L1",
       "L2",
       "L7",
@@ -180,24 +207,25 @@
       "E1",
       "E2",
       "E3",
+      "E4",
       "L1",
       "L2",
       "L7",
       "L8"
     ]
   },
-  "next_gate": "external_review_and_venue_formatting_pending",
+  "mentor_review_ready": true,
+  "next_gate": "final_package_assembly_pending",
   "raw_model_outputs_accessed": false,
   "remaining_gates": [
-    "external scientific and manuscript review",
-    "venue selection and venue-specific formatting",
-    "final reference-format and citation audit"
+    "final package assembly and checksum validation",
+    "concluding mentor review"
   ],
   "schema_version": 1,
   "source_code_sha256": {
     "audit_multiuav_manuscript.py": "8a0f853a7ede52120bb5d320ca97ca884bd6e2aafdb00dfd59936baa2465bd61",
-    "multiuav_manuscript_audit.py": "9abf3db2a602624437074bea89499916e1762841f180f49f1d26c2ae94944fd9"
+    "multiuav_manuscript_audit.py": "808b3eec5119fc8637a3db9d657e54985df980d60e67fb860a482b125ba7be53"
   },
-  "status": "manuscript_internal_traceability_passed_external_review_pending",
+  "status": "manuscript_internal_traceability_passed_final_package_pending",
   "valid": true
 }

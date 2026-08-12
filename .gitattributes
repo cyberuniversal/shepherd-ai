@@ -20,6 +20,11 @@ reports/multiuav_external_review_packet_v1.md text eol=lf
 reports/multiuav_resource_results_v1.md text eol=lf
 reports/multiuav_validation_placement_manuscript_v1.md text eol=lf
 reports/multiuav_manuscript_traceability_v1.md text eol=lf
+reports/final/*.pdf -text -diff
+reports/final/*.pptx -text -diff
+reports/final/*.webp -text -diff
+outputs/evaluations/multiuav_accuracy_bootstrap_v1/*.zip -text -diff
+outputs/evaluations/multiuav_accuracy_failure_cases_v1.zip -text -diff
 scripts/analyze_multiuav_resources.py text eol=lf
 scripts/build_multiuav_external_review_packet.py text eol=lf
 scripts/build_multiuav_resource_report.py text eol=lf

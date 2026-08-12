@@ -1,0 +1,7 @@
+# Core package and frozen-study inference dependencies.
+-e .[multiuav-inference]
+
+# Verification tools used by the final reproduction commands.
+pytest>=8,<9
+ruff>=0.9,<1
+reportlab>=4,<5

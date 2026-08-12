@@ -10,7 +10,7 @@ from typing import Any, Mapping
 
 PACKET_VERSION = "multiuav_external_review_packet_v1"
 EXPECTED_AUDIT_STATUS = (
-    "manuscript_internal_traceability_passed_external_review_pending"
+    "manuscript_internal_traceability_passed_final_package_pending"
 )
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".txt"}
 

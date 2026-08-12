@@ -1,0 +1,121 @@
+model_id,method_id,method_label,session_id,clusters,cases,nonexecution_cases,unsafe_proceed_nonexecution,unsafe_proceed_rate_nonexecution,all_nonexecution_contained,executable_cases,static_plan_fidelity_execute,static_plan_fidelity_rate_execute,false_nonexecution_execute,parse_errors,strict_success_cases,strict_success_rate
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,09aae7d9,19,95,38,29,0.7631578947368421,False,57,0,0.0,20,29,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,57,29,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,57,39,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,56,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,0cec9497,20,100,40,33,0.825,False,60,0,0.0,14,21,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,0cec9497,20,100,40,0,0.0,True,60,0,0.0,60,21,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,0cec9497,20,100,40,0,0.0,True,60,0,0.0,60,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,0cec9497,20,100,40,0,0.0,True,60,0,0.0,60,20,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,1a9c1abc,18,90,36,26,0.7222222222222222,False,54,0,0.0,14,24,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,24,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,36,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,4aa67fd7,19,95,38,25,0.6578947368421053,False,57,0,0.0,19,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,640b66d4,19,95,38,27,0.7105263157894737,False,57,0,0.0,25,36,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,640b66d4,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,36,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,640b66d4,19,95,38,0,0.0,True,57,0,0.0,57,34,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,640b66d4,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,76802002,19,95,38,35,0.9210526315789473,False,57,0,0.0,9,12,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,76802002,19,95,38,0,0.0,True,57,0,0.0,57,12,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,76802002,19,95,38,0,0.0,True,57,0,0.0,57,25,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,76802002,19,95,38,0,0.0,True,57,0,0.0,57,15,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,83533bc1,19,95,38,30,0.7894736842105263,False,57,0,0.0,26,34,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,83533bc1,19,95,38,0,0.0,True,57,0,0.0,57,34,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,83533bc1,19,95,38,0,0.0,True,57,0,0.0,57,48,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,83533bc1,19,95,38,0,0.0,True,57,0,0.0,57,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,9d4d90ca,19,95,38,31,0.8157894736842105,False,57,0,0.0,18,25,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,9d4d90ca,19,95,38,0,0.0,True,57,0,0.0,56,25,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,9d4d90ca,19,95,38,0,0.0,True,57,0,0.0,57,32,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,9d4d90ca,19,95,38,0,0.0,True,57,0,0.0,57,31,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,9ddae16c,18,90,36,31,0.8611111111111112,False,54,0,0.0,14,19,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,19,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,37,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,18,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,a2931e29,19,95,38,29,0.7631578947368421,False,57,0,0.0,17,26,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,a2931e29,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,26,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,a2931e29,19,95,38,0,0.0,True,57,0,0.0,57,36,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,a2931e29,19,95,38,0,0.0,True,57,0,0.0,56,26,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,be5d648b,18,90,36,28,0.7777777777777778,False,54,0,0.0,18,26,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,26,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,37,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,21,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,c5fb45ca,19,95,38,28,0.7368421052631579,False,57,0,0.0,13,23,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,c5fb45ca,19,95,38,0,0.0,True,57,0,0.0,57,23,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,c5fb45ca,19,95,38,0,0.0,True,57,0,0.0,57,37,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,c5fb45ca,19,95,38,0,0.0,True,57,0,0.0,57,15,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,c67bc3cd,19,95,38,29,0.7631578947368421,False,57,0,0.0,7,16,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,16,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,43,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,16,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,dc6b1d11,19,95,38,31,0.8157894736842105,False,57,0,0.0,23,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,dc6b1d11,19,95,38,0,0.0,True,57,0,0.0,57,30,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,dc6b1d11,19,95,38,0,0.0,True,57,0,0.0,57,35,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,dc6b1d11,19,95,38,0,0.0,True,57,0,0.0,57,31,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M1_monolithic,M1_monolithic,ec1f47f4,20,100,40,37,0.925,False,60,0,0.0,12,15,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,ec1f47f4,20,100,40,0,0.0,True,60,0,0.0,60,15,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M3_stage_wise,M3_stage_wise,ec1f47f4,20,100,40,0,0.0,True,60,0,0.0,60,43,0,0.0
+Qwen/Qwen2.5-3B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,ec1f47f4,20,100,40,0,0.0,True,60,0,0.0,58,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,09aae7d9,19,95,38,27,0.7105263157894737,False,57,0,0.0,23,32,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,57,32,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,57,15,16,0.16842105263157894
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,09aae7d9,19,95,38,0,0.0,True,57,0,0.0,57,29,1,0.010526315789473684
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,0cec9497,20,100,40,30,0.75,False,60,0,0.0,16,25,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,0cec9497,20,100,40,1,0.025,False,60,0,0.0,60,25,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,0cec9497,20,100,40,0,0.0,True,60,0,0.0,60,17,18,0.18
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,0cec9497,20,100,40,1,0.025,False,60,0,0.0,60,21,1,0.01
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,1a9c1abc,18,90,36,24,0.6666666666666666,False,54,0,0.0,21,33,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,33,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,22,14,0.15555555555555556
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,1a9c1abc,18,90,36,0,0.0,True,54,0,0.0,54,33,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,4aa67fd7,19,95,38,17,0.4473684210526316,False,57,0,0.0,26,45,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,45,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,30,11,0.11578947368421053
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,4aa67fd7,19,95,38,0,0.0,True,57,0,0.0,57,37,2,0.021052631578947368
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,640b66d4,19,95,38,26,0.6842105263157895,False,57,0,0.0,19,31,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,640b66d4,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,31,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,640b66d4,19,95,38,0,0.0,True,57,0,0.0,57,24,17,0.17894736842105263
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,640b66d4,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,30,2,0.021052631578947368
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,76802002,19,95,38,28,0.7368421052631579,False,57,0,0.0,12,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,76802002,19,95,38,0,0.0,True,57,0,0.0,57,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,76802002,19,95,38,0,0.0,True,57,0,0.0,57,23,13,0.1368421052631579
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,76802002,19,95,38,0,0.0,True,57,0,0.0,57,20,1,0.010526315789473684
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,83533bc1,19,95,38,25,0.6578947368421053,False,57,0,0.0,18,29,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,83533bc1,19,95,38,4,0.10526315789473684,False,57,0,0.0,56,29,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,83533bc1,19,95,38,0,0.0,True,57,0,0.0,57,19,16,0.16842105263157894
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,83533bc1,19,95,38,5,0.13157894736842105,False,57,0,0.0,56,23,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,9d4d90ca,19,95,38,25,0.6578947368421053,False,57,0,0.0,20,33,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,9d4d90ca,19,95,38,2,0.05263157894736842,False,57,0,0.0,57,33,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,9d4d90ca,19,95,38,0,0.0,True,57,0,0.0,57,16,15,0.15789473684210525
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,9d4d90ca,19,95,38,2,0.05263157894736842,False,57,0,0.0,57,28,2,0.021052631578947368
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,9ddae16c,18,90,36,23,0.6388888888888888,False,54,0,0.0,12,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,7,15,0.16666666666666666
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,9ddae16c,18,90,36,0,0.0,True,54,0,0.0,54,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,a2931e29,19,95,38,26,0.6842105263157895,False,57,0,0.0,13,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,a2931e29,19,95,38,0,0.0,True,57,0,0.0,57,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,a2931e29,19,95,38,0,0.0,True,57,0,0.0,57,15,18,0.18947368421052632
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,a2931e29,19,95,38,0,0.0,True,57,0,0.0,57,22,1,0.010526315789473684
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,be5d648b,18,90,36,24,0.6666666666666666,False,54,0,0.0,18,27,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,27,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,15,14,0.15555555555555556
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,be5d648b,18,90,36,0,0.0,True,54,0,0.0,54,26,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,c5fb45ca,19,95,38,31,0.8157894736842105,False,57,0,0.0,14,19,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,c5fb45ca,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,19,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,c5fb45ca,19,95,38,0,0.0,True,57,0,0.0,57,20,14,0.14736842105263157
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,c5fb45ca,19,95,38,1,0.02631578947368421,False,57,0,0.0,57,19,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,c67bc3cd,19,95,38,29,0.7631578947368421,False,57,0,0.0,14,23,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,23,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,22,15,0.15789473684210525
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,c67bc3cd,19,95,38,0,0.0,True,57,0,0.0,57,22,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,dc6b1d11,19,95,38,29,0.7631578947368421,False,57,0,0.0,10,19,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,dc6b1d11,19,95,38,1,0.02631578947368421,False,57,0,0.0,56,19,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,dc6b1d11,19,95,38,0,0.0,True,57,0,0.0,57,12,16,0.16842105263157894
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,dc6b1d11,19,95,38,1,0.02631578947368421,False,57,0,0.0,56,18,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M1_monolithic,M1_monolithic,ec1f47f4,20,100,40,24,0.6,False,60,0,0.0,31,47,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M2_post_plan_deterministic,M2_post_plan_deterministic,ec1f47f4,20,100,40,3,0.075,False,60,0,0.0,60,47,0,0.0
+Qwen/Qwen2.5-7B-Instruct,M3_stage_wise,M3_stage_wise,ec1f47f4,20,100,40,0,0.0,True,60,0,0.0,60,16,16,0.16
+Qwen/Qwen2.5-7B-Instruct,M4_post_plan_compute_matched,M4 model-call-count-matched post-plan,ec1f47f4,20,100,40,4,0.1,False,60,0,0.0,60,42,2,0.02

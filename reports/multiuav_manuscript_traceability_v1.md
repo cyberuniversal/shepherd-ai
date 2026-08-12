@@ -1,6 +1,6 @@
 # MultiUAV Manuscript Traceability Audit
 
-- Status: `manuscript_internal_traceability_passed_external_review_pending`
+- Status: `manuscript_internal_traceability_passed_final_package_pending`
 - Valid: `true`
 - Final submission ready: `false`
 - Raw model outputs accessed: `false`
@@ -18,8 +18,8 @@
 - `call_count_match_limit_disclosed`: `pass`
 - `controlled_derivative_limit_disclosed`: `pass`
 - `embedded_figures_valid`: `pass`
-- `external_review_protocol_present`: `pass`
 - `gpu_board_energy_scope_disclosed`: `pass`
+- `legacy_components_excluded`: `pass`
 - `negative_result_disclosed`: `pass`
 - `no_unresolved_manuscript_placeholders`: `pass`
 - `required_literature_resolves`: `pass`
@@ -30,15 +30,17 @@
 - `resource_reporting_manifest_valid`: `pass`
 - `resource_secondary_exploratory_disclosed`: `pass`
 - `resource_values_traced`: `pass`
+- `review_resolution_present`: `pass`
 - `standalone_references_complete`: `pass`
 - `static_fidelity_limit_disclosed`: `pass`
 - `within_qwen_limit_disclosed`: `pass`
+- `zero_executable_static_fidelity_disclosed`: `pass`
 
 ## Manuscript Metrics
 
 - Abstract words: `250`
-- Body citation identifiers: `E1`, `E2`, `E3`, `L1`, `L2`, `L7`, `L8`
-- Reference identifiers: `E1`, `E2`, `E3`, `L1`, `L2`, `L7`, `L8`
+- Body citation identifiers: `E1`, `E2`, `E3`, `E4`, `L1`, `L2`, `L7`, `L8`
+- Reference identifiers: `E1`, `E2`, `E3`, `E4`, `L1`, `L2`, `L7`, `L8`
 - Embedded figures: `4`
 
 ## Artifact Bindings
@@ -46,16 +48,19 @@
 | Artifact | Path | SHA-256 |
 |---|---|---|
 | `accuracy_admission` | `datasets/multiuav_plat/accuracy_matrix_admission_v1.json` | `de85d511d1342a1b53f600d404e8a9e5a9c6fee306137a234dec06bf28f9a2f8` |
-| `accuracy_bootstrap_summary` | `outputs/evaluations/multiuav_accuracy_bootstrap_v1/summary.json` | `bd873bfad11a3de3ce74ad3b56444ec085ca20fdc778817f950f0242c8fb1ec3` |
+| `accuracy_bootstrap_summary` | `outputs/evaluations/multiuav_accuracy_bootstrap_v1/summary.json` | `5c96ffd319ce5f88b0085589e397440078b5924f9f086b5b26d0a68678e0127f` |
 | `accuracy_contrast_figure` | `reports/figures/multiuav_accuracy_registered_contrasts_v1.png` | `c3f547a7b35d33d286ad7b34e1cfa8affb69d6b6ac26ea3d841d4b5392ccf35b` |
 | `accuracy_contrast_table` | `outputs/tables/multiuav_accuracy_registered_contrasts_v1.csv` | `66e543328cba2f1e259ecb9e4df872ea0c80b17cd08b2fe55c3b368e60bdf5c3` |
+| `accuracy_failure_analysis` | `outputs/evaluations/multiuav_accuracy_failure_analysis_v1.json` | `dfbb8798957fb0df0749725bbe396c8ead0c08ce6c34d7d45b03f68a7855a600` |
+| `accuracy_failure_cases` | `outputs/evaluations/multiuav_accuracy_failure_cases_v1.zip` | `5b0f621f3d1902084d5de796937c0397185fc73f789ef1951164c298b419f458` |
 | `accuracy_figure_manifest` | `outputs/evaluations/multiuav_accuracy_figures_v1/manifest.json` | `6089a24f0f38107fc7d8f01ee733972ed4a92be913f565926812cb7288a53dec` |
 | `accuracy_primary_figure` | `reports/figures/multiuav_accuracy_primary_outcomes_v1.png` | `c1f4868f4b1bed336b8ee1e7c07a717d5b7161b3bb752c37a31042042c481f4b` |
 | `accuracy_rate_table` | `outputs/tables/multiuav_accuracy_primary_rates_v1.csv` | `fba8daf7fcfc0f7a672594fa75dca2a72d9d84d3585fac20bbaa9d4410318ee5` |
 | `accuracy_scoring_summary` | `outputs/evaluations/multiuav_accuracy_scoring_v1/summary.json` | `1b3d89655617cae3b1400afb0cd0dfb2d7321a04bb42495b93fb546fcd83f880` |
-| `bibliography` | `reports/week9_bibliography.md` | `4bc610b02cdf0bb65da0af47622dbefb446c3c95ae2c69ffdd5b794cc969ffff` |
-| `external_review_protocol` | `docs/multiuav_external_review_protocol.md` | `2871936cd3ef9e76c1618b78ab54f9c6b19438a1fb3b1e265637a19f07840985` |
-| `manuscript` | `reports/multiuav_validation_placement_manuscript_v1.md` | `98fb23b121c40ae43ee47a493c96325413ce9f139b3d072b9f67804d969362d4` |
+| `accuracy_session_table` | `outputs/tables/multiuav_accuracy_session_statistics_v1.csv` | `a35d242c5a80b1b3abb84abed3a56fedea9b4896cf00ef753289567cb0cc6fc3` |
+| `bibliography` | `reports/week9_bibliography.md` | `8df96032877631c51d213a3528570c1acafabef016112296bb97c3837ead32bd` |
+| `final_architecture` | `docs/final_pipeline_architecture.md` | `89766f1641ef261a33aa7456e2a2b6b9690996adebceccc0508e54bf48497657` |
+| `manuscript` | `reports/multiuav_validation_placement_manuscript_v1.md` | `dbddbc8623fa05c8c6bba828b4031b4459c7ceb9a4a18a96b33fdf11be7cc281` |
 | `resource_admission` | `datasets/multiuav_plat/resource_campaign_admission_v1.json` | `577cd104de3f1c502477246e612979b92deb11bb7fb73abc5ea7dab7105a1ebd` |
 | `resource_analysis_deviation` | `datasets/multiuav_plat/resource_analysis_protocol_deviation_v1.json` | `caa3a04089cfbe3a346f56e65e76b66c9540ff50b33d919c79fba998dddd12f2` |
 | `resource_analysis_freeze` | `datasets/multiuav_plat/resource_analysis_freeze_v1.json` | `af6c157aabd251d10766d12fa36474688ae92369ceafa5f3346ac0dcf3752843` |
@@ -67,11 +72,11 @@
 | `resource_matched_figure` | `reports/figures/multiuav_resource_m3_minus_m4_v1.png` | `563ee848b594cbe10679bc7ff718198b5f49b8d77da6e19a4489bab3604387af` |
 | `resource_primary_figure` | `reports/figures/multiuav_resource_m3_minus_m1_v1.png` | `e2580451451b2dc3f331c08fd988419968597f871fb4380041e51ca26e7aaaf0` |
 | `resource_reporting_manifest` | `outputs/evaluations/multiuav_resource_reporting_v1/manifest.json` | `066a9e8ef322a390017ddc71e6a5d7a0d3cc5b1c596c0b5a46a06cbd3a91864e` |
+| `review_resolution` | `docs/multiuav_review_resolution_final.md` | `5598fd9b4968ee84699c4fc1a621cb06fd2289f98d1ff2ea8263e5ce76a9a386` |
 
 ## Remaining Gates
 
-- external scientific and manuscript review
-- venue selection and venue-specific formatting
-- final reference-format and citation audit
+- final package assembly and checksum validation
+- concluding mentor review
 
 This is an internal evidence and claim-boundary audit. It is not peer review, venue acceptance, or independent replication.

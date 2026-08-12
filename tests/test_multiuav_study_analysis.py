@@ -5,7 +5,10 @@ import unittest
 from zipfile import ZipFile
 
 from shepherd_ai.multiuav_study_analysis import (
+    aggregate_session_statistics,
     analyze_scored_rows,
+    summarize_scored_failures,
+    summarize_scored_rows_by_session,
     write_bootstrap_evidence_archive,
 )
 
@@ -75,6 +78,16 @@ def _rows() -> list[dict]:
                         "unsafe_proceed": nonexecute
                         and method == "M1_monolithic",
                         "end_to_end_success": method == "M3_stage_wise",
+                        "source_task_id": cluster,
+                        "case_id": f"{cluster}:{variant}",
+                        "containment_stage": "accepted",
+                        "parse_error": False,
+                        "backend_error": False,
+                        "false_nonexecution": False,
+                        "endpoint_fidelity": method == "M3_stage_wise",
+                        "parameter_grounding_fidelity": method == "M3_stage_wise",
+                        "official_command_fidelity": method == "M3_stage_wise",
+                        "static_plan_fidelity": method == "M3_stage_wise",
                     }
                 )
     return rows
@@ -153,6 +166,45 @@ class MultiUavStudyAnalysisTests(unittest.TestCase):
                 manifest = json.loads(archive.read("manifest.json"))
             self.assertEqual(manifest["analysis_count"], 4)
             self.assertEqual(manifest["cluster_summary_rows"], 8)
+
+    def test_session_statistics_preserve_session_identifiers(self) -> None:
+        bindings = {"cluster-1": "session-a", "cluster-2": "session-b"}
+        rows = summarize_scored_rows_by_session(
+            rows=_rows(),
+            session_by_cluster=bindings,
+            model_id="synthetic-model",
+        )
+        aggregates = aggregate_session_statistics(rows)
+
+        self.assertEqual(len(rows), 8)
+        self.assertEqual({row["session_id"] for row in rows}, {"session-a", "session-b"})
+        m3 = next(row for row in aggregates if row["method_id"] == "M3_stage_wise")
+        self.assertEqual(m3["sessions"], 2)
+        self.assertEqual(m3["sessions_with_all_nonexecution_contained"], 2)
+        self.assertEqual(m3["mean_session_strict_success_rate"], 1.0)
+        m4 = next(row for row in rows if row["method_id"] == "M4_post_plan_compute_matched")
+        self.assertIn("model-call-count-matched", m4["method_label"])
+
+    def test_failure_summary_excludes_raw_model_text(self) -> None:
+        bindings = {"cluster-1": "session-a", "cluster-2": "session-b"}
+        reports, failures = summarize_scored_failures(
+            rows=_rows(),
+            session_by_cluster=bindings,
+            model_id="synthetic-model",
+        )
+
+        self.assertEqual(len(reports), 4)
+        self.assertTrue(failures)
+        self.assertNotIn("raw_model_output", failures[0])
+        self.assertIn("session_id", failures[0])
+
+    def test_session_statistics_reject_missing_binding(self) -> None:
+        with self.assertRaisesRegex(ValueError, "session binding is absent"):
+            summarize_scored_rows_by_session(
+                rows=_rows(),
+                session_by_cluster={"cluster-1": "session-a"},
+                model_id="synthetic-model",
+            )
 
 
 if __name__ == "__main__":

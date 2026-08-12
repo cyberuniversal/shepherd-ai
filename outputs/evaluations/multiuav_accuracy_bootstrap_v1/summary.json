@@ -36,18 +36,351 @@
   },
   "artifact_bindings": {
     "accuracy_protocol_sha256": "063efec5948c1ccd4a2009379a3ae86164042c85cf4cf40a043f01a520c5fc16",
+    "intervention_dataset_sha256": "1ba9575ff4a2b0342b2fa20afa242e052f263ff7bd3ed18734a923687a9c27d1",
     "scoring_summary_sha256": "9b800a4ab2a06ba7f4a3de2848640f19c8cfe06e58924d9d1a508d5710076b2c"
   },
   "bootstrap_evidence_archive": {
     "analysis_count": 8,
     "bootstrap_draws_sha256": "ba713465dfda536cd55de692745113b7c2a1470fa74ab72037f16ad295900112",
-    "bytes": 99035,
+    "bytes": 99094,
     "cluster_summaries_sha256": "039a3e4299750c1b7ba57341d16ab4b274cb64b34e172fd2eb3049f14c5e38ab",
     "cluster_summary_rows": 2272,
     "path": "outputs/evaluations/multiuav_accuracy_bootstrap_v1/bootstrap_evidence.zip",
-    "sha256": "49568f91712cc0f75a2e326c7f013c56d97004115517b9db7a68fe645fbd61c2"
+    "sha256": "6f7deef92570cc23527e9af53af4556cf0ea2e14d8d1ad4dbe9e960a95dd850a"
   },
   "claim_status": "registered_paired_intervals_computed_reporting_pending",
+  "descriptive_failure_analysis": {
+    "analysis_status": "post_hoc_descriptive_no_inference",
+    "failure_analysis": {
+      "bytes": 7174,
+      "path": "outputs/evaluations/multiuav_accuracy_failure_analysis_v1.json",
+      "sha256": "37124853e0cf3fa03f327dd097469d1538eee822b24414d4dac688697a9d041c"
+    },
+    "failure_cases_archive": {
+      "bytes": 161627,
+      "failure_rows": 11120,
+      "path": "outputs/evaluations/multiuav_accuracy_failure_cases_v1.zip",
+      "sha256": "5b0f621f3d1902084d5de796937c0397185fc73f789ef1951164c298b419f458"
+    },
+    "method_rows": [
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 1052,
+          "final_output_parse": 368
+        },
+        "endpoint_fidelity_failures_execute": 848,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 249,
+        "method_id": "M1_monolithic",
+        "method_label": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 715,
+        "parameter_grounding_fidelity_failures_execute": 850,
+        "parse_errors": 368,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 449
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 3,
+          "final_output_parse": 368,
+          "post_plan_endpoint_schema": 1042,
+          "post_plan_identifier_grounding": 4,
+          "post_plan_parameter_grounding": 2,
+          "post_plan_safety_bounds": 1
+        },
+        "endpoint_fidelity_failures_execute": 851,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 851,
+        "method_id": "M2_post_plan_deterministic",
+        "method_label": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 851,
+        "parse_errors": 368,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 2
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "final_output_parse": 445,
+          "model_nonexecution": 1,
+          "pre_plan_accepted": 3,
+          "pre_plan_evidence_provenance": 872,
+          "pre_plan_ledger_parse": 99
+        },
+        "endpoint_fidelity_failures_execute": 852,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 852,
+        "method_id": "M3_stage_wise",
+        "method_label": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 852,
+        "parse_errors": 544,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 0
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 5,
+          "final_output_parse": 369,
+          "post_plan_endpoint_schema": 1039,
+          "post_plan_identifier_grounding": 5,
+          "post_plan_parameter_grounding": 1,
+          "post_plan_safety_bounds": 1
+        },
+        "endpoint_fidelity_failures_execute": 848,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 848,
+        "method_id": "M4_post_plan_compute_matched",
+        "method_label": "M4 model-call-count-matched post-plan",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 848,
+        "parse_errors": 369,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 1
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 973,
+          "final_output_parse": 429,
+          "model_nonexecution": 18
+        },
+        "endpoint_fidelity_failures_execute": 845,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 267,
+        "method_id": "M1_monolithic",
+        "method_label": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 567,
+        "parameter_grounding_fidelity_failures_execute": 849,
+        "parse_errors": 429,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 388
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 15,
+          "final_output_parse": 429,
+          "model_nonexecution": 18,
+          "post_plan_endpoint_schema": 940,
+          "post_plan_identifier_grounding": 3,
+          "post_plan_parameter_grounding": 9,
+          "post_plan_safety_bounds": 6
+        },
+        "endpoint_fidelity_failures_execute": 850,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 850,
+        "method_id": "M2_post_plan_deterministic",
+        "method_label": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 850,
+        "parse_errors": 429,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1420,
+        "unsafe_proceed_nonexecution": 13
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "final_output_parse": 267,
+          "model_nonexecution": 1115,
+          "pre_plan_accepted": 1,
+          "pre_plan_evidence_provenance": 31,
+          "pre_plan_ledger_parse": 6
+        },
+        "endpoint_fidelity_failures_execute": 852,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 852,
+        "method_id": "M3_stage_wise",
+        "method_label": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 852,
+        "parse_errors": 273,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1192,
+        "unsafe_proceed_nonexecution": 0
+      },
+      {
+        "backend_errors": 0,
+        "cases": 1420,
+        "containment_stage_counts": {
+          "accepted": 17,
+          "final_output_parse": 392,
+          "model_nonexecution": 91,
+          "post_plan_endpoint_schema": 904,
+          "post_plan_identifier_grounding": 2,
+          "post_plan_parameter_grounding": 7,
+          "post_plan_safety_bounds": 7
+        },
+        "endpoint_fidelity_failures_execute": 850,
+        "executable_cases": 852,
+        "false_nonexecution_execute": 850,
+        "method_id": "M4_post_plan_compute_matched",
+        "method_label": "M4 model-call-count-matched post-plan",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "nonexecution_cases": 568,
+        "official_command_fidelity_failures_execute": 852,
+        "parameter_grounding_fidelity_failures_execute": 850,
+        "parse_errors": 392,
+        "static_plan_fidelity_failures_execute": 852,
+        "strict_success_failures": 1408,
+        "unsafe_proceed_nonexecution": 15
+      }
+    ],
+    "schema_version": 1
+  },
+  "descriptive_session_statistics": {
+    "aggregate_rows": [
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.7898635477582846,
+        "method_id": "M1_monolithic",
+        "method_label": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 0,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 15
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.003508771929824561,
+        "method_id": "M2_post_plan_deterministic",
+        "method_label": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 13,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 2
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.0,
+        "method_id": "M3_stage_wise",
+        "method_label": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 15,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 0
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.0017543859649122805,
+        "method_id": "M4_post_plan_compute_matched",
+        "method_label": "M4 model-call-count-matched post-plan",
+        "model_id": "Qwen/Qwen2.5-3B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 14,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 1
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.6828849902534113,
+        "method_id": "M1_monolithic",
+        "method_label": "M1_monolithic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 0,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 15
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.0,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.02245614035087719,
+        "method_id": "M2_post_plan_deterministic",
+        "method_label": "M2_post_plan_deterministic",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 8,
+        "sessions_with_any_strict_success": 0,
+        "sessions_with_any_unsafe_proceed": 7
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.16048343079922028,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.0,
+        "method_id": "M3_stage_wise",
+        "method_label": "M3_stage_wise",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 15,
+        "sessions_with_any_strict_success": 15,
+        "sessions_with_any_unsafe_proceed": 0
+      },
+      {
+        "cases": 1420,
+        "clusters": 284,
+        "mean_session_static_plan_fidelity_rate_execute": 0.0,
+        "mean_session_strict_success_rate": 0.00831578947368421,
+        "mean_session_unsafe_proceed_rate_nonexecution": 0.02587719298245614,
+        "method_id": "M4_post_plan_compute_matched",
+        "method_label": "M4 model-call-count-matched post-plan",
+        "model_id": "Qwen/Qwen2.5-7B-Instruct",
+        "sessions": 15,
+        "sessions_with_all_nonexecution_contained": 8,
+        "sessions_with_any_strict_success": 8,
+        "sessions_with_any_unsafe_proceed": 7
+      }
+    ],
+    "analysis_status": "post_hoc_descriptive_no_inference",
+    "session_table": {
+      "bytes": 15784,
+      "path": "outputs/tables/multiuav_accuracy_session_statistics_v1.csv",
+      "sha256": "cff0bc05db32a1edc7d85f27e44109684d72394dce2f12589542d8dbb49d2434"
+    }
+  },
   "model_results": [
     {
       "analyses": [
@@ -315,9 +648,9 @@
   "resource_analysis_included": false,
   "schema_version": 1,
   "source_code_sha256": {
-    "analyze_multiuav_accuracy.py": "58b8f5ccdcb3f9a9e257db55247ff2209c4ce1c9bb1cb798594c47ebbcd9b929",
+    "analyze_multiuav_accuracy.py": "a864047c5344286b334dff1cc887df712e076cb5b63a9aee9b499155276b3966",
     "multiuav_statistics.py": "a8cb6f427fc1d302e95b87d67913b7ca2c5302cc9d8c2c5b5bd5d1b158cd1119",
-    "multiuav_study_analysis.py": "9aca2acdd6ea9c2b0beeab75240db92efac887ceba5ecbfecf7485de72207f16"
+    "multiuav_study_analysis.py": "225b0da6ee051819e0216566ab72d3d80b317ae76284f2971ec6950290a4ffd1"
   },
   "status": "accuracy_cluster_bootstrap_complete_figures_pending"
 }
