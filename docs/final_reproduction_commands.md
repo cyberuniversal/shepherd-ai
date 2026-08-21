@@ -9,7 +9,7 @@ manifests used for GPU inference.
 ```powershell
 python -m pip install -r requirements.txt
 python -m pytest -q
-python -m ruff check scripts/analyze_multiuav_accuracy.py scripts/build_final_manuscript.py src/shepherd_ai/multiuav_study_analysis.py src/shepherd_ai/multiuav_manuscript_audit.py src/shepherd_ai/multiuav_external_review.py tests/test_multiuav_study_analysis.py tests/test_multiuav_manuscript_audit.py
+python -m ruff check src scripts tests paper/build_resource_figure.py
 ```
 
 ## Dataset And Contract Reconstruction
@@ -86,27 +86,22 @@ campaign evidence.
 
 ```powershell
 python scripts/audit_multiuav_manuscript.py
-python scripts/build_final_manuscript.py
 python -m pytest -q
-python -m ruff check scripts/analyze_multiuav_accuracy.py scripts/build_final_manuscript.py src/shepherd_ai/multiuav_study_analysis.py src/shepherd_ai/multiuav_manuscript_audit.py src/shepherd_ai/multiuav_external_review.py tests/test_multiuav_study_analysis.py tests/test_multiuav_manuscript_audit.py
+python -m ruff check src scripts tests paper/build_resource_figure.py
+Set-Location paper
+python build_resource_figure.py
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-The manuscript build writes IEEE conference-format
-`reports/final/shepherd_ai_manuscript.tex` and an IEEE-style, two-column
-`reports/final/shepherd_ai_manuscript.pdf` from the audited Markdown source.
-The PDF is generated with ReportLab so the package remains reproducible on a
-machine without a local TeX distribution.
+The final IEEE conference manuscript is `paper/main.tex`; the compiled copy is
+`paper/main.pdf`. The compact resource figure is regenerated from the frozen
+CSV under `paper/data/`. A TeX distribution providing `IEEEtran` is required.
 The editable deck is generated with the bundled `@oai/artifact-tool` runtime:
 
-```javascript
-await import("file:///D:/Users/momoa/Desktop/shepherd-ai/scripts/build_final_presentation.mjs?run=3")
+```powershell
+node scripts/build_final_presentation.mjs
 ```
 
-Before that import, add the bundled workspace `node_modules` directory to the
-Codex Node REPL module search path. The script writes the PPTX, slide previews,
-layout records, inspection output, and montage under `reports/final/`.
-
-The scoped Ruff command covers every Python file changed by the final closeout.
-`python -m ruff check .` is not a passing historical-repository gate: it reports
-40 pre-existing findings in earlier notebooks, roadmap scripts, modules, and
-tests. Those unrelated files remain unchanged under the frozen-scope rule.
+The script writes the committed presentation, preview images, inspection
+record, and montage under `presentation/`.

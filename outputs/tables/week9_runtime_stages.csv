@@ -1,6 +1,0 @@
-stage,seconds
-asr_inference_seconds,2.708679788999973
-intent_inference_seconds,0.2536591900000076
-preparation_seconds,0.010645294999903854
-simulation_seconds,0.01574459200014644
-vision_inference_seconds,28.345538954000403

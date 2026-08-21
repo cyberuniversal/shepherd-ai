@@ -1,8 +1,5 @@
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-.Python
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -14,56 +11,31 @@ htmlcov/
 venv/
 env/
 external/
-
 *.egg-info/
 build/
 dist/
-
-# Historical local artifacts from the discontinued Week 8 Gazebo experiment.
-simulation/ros2_ws/build/
-simulation/ros2_ws/install/
-simulation/ros2_ws/log/
-/log/
-
 .ipynb_checkpoints/
 
-# Keep small, documented samples in the repository. Do not commit private data,
-# model weights, downloaded public datasets, or large generated artifacts.
-datasets/aerial_images/*
-!datasets/aerial_images/README.md
+# Pre-split roadmap-system artifacts are retained locally in shepherd-ai-isef.
 datasets/sample_audio/**/*.wav
-datasets/sample_audio/**/*.mp3
-datasets/sample_audio/**/*.flac
-datasets/sample_audio/**/*.m4a
-datasets/sample_audio/**/*.ogg
-datasets/sample_audio/**/*.webm
+outputs/**
+reports/**
+simulation/
+web/
+log/
+fill_postdev_packet.py
+
+# Downloaded model weights and private environment data.
 models/
-outputs/model_artifacts/hf_token_classifier*/
 *.pt
 *.pth
 *.onnx
 *.safetensors
-
-# Generated experiment outputs and reports stay local by default. Force-add a
-# specific artifact only when it is intentionally part of the research record.
-outputs/**
-!outputs/
-!outputs/README.md
-output/
-tmp/
-reports/**
-!reports/
-!reports/README.md
-!reports/multiuav_intervention_pilot_review_v1.csv
-!reports/multiuav_intervention_pilot_review_v2.csv
-!reports/multiuav_intervention_pilot_review_completed_v2.csv
-!reports/multiuav_intervention_review_v1.csv
-
-# One-off local helpers and backups.
-fill_postdev_packet.py
-*.backup.jsonl
-*.bak
-*.bak-*
-
 *.env
 .env*
+
+# Scratch output. Promoted study evidence is already tracked explicitly.
+output/
+tmp/
+*.bak
+*.bak-*

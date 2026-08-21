@@ -1,10 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Presentation, PresentationFile } from "@oai/artifact-tool";
 import sharp from "sharp";
 
-const ROOT = "D:/Users/momoa/Desktop/shepherd-ai";
-const OUT = path.join(ROOT, "reports", "final");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const OUT = path.join(ROOT, "presentation");
 const PREVIEW = path.join(OUT, "presentation_preview");
 const W = 1280;
 const H = 720;
@@ -263,9 +264,9 @@ const montageTiles = await Promise.all(previewPaths.map((previewPath, index) =>
 await sharp({ create: { width: 1200, height: 900, channels: 3, background: "#D7DEDF" } })
   .composite(montageTiles)
   .webp({ quality: 88 })
-  .toFile(path.join(OUT, "shepherd_ai_presentation_montage.webp"));
+  .toFile(path.join(OUT, "validation_placement_presentation_montage.webp"));
 const pptx = await PresentationFile.exportPptx(deck);
-await pptx.save(path.join(OUT, "shepherd_ai_presentation.pptx"));
+await pptx.save(path.join(OUT, "validation_placement_presentation.pptx"));
 const inspect = await deck.inspect({ kind: "slide,textbox,shape,image", maxChars: 100000 });
 await fs.writeFile(path.join(PREVIEW, "deck-inspect.ndjson"), inspect.ndjson);
 
