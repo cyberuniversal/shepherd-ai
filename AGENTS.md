@@ -1,7 +1,7 @@
 # Repository Instructions
 
 This repository contains the frozen validation-placement publication study. It
-does not contain the roadmap-based Shepherd-AI ISEF system.
+does not contain the Grounded Before Flight Shepherd-AI ISEF continuation.
 
 ## Source Of Truth
 

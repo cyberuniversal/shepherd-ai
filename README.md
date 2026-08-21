@@ -38,7 +38,8 @@ memory, or energy.
 | `presentation/` | Final research presentation and preview montage |
 
 The complete pre-split Shepherd-AI development tree remains available through
-the `archive/full-shepherd-ai-history` tag. The roadmap-based ISEF system is in
+the `archive/full-shepherd-ai-history` tag. The Grounded Before Flight ISEF
+continuation workspace is in
 [`shepherd-ai-isef`](https://github.com/cyberuniversal/shepherd-ai-isef).
 
 ## Setup
