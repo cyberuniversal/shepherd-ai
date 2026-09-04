@@ -730,6 +730,9 @@ Apache-2.0. Their exact immutable model revisions appear in
 Table~\ref{tab:reproducibility}. Model weights and the upstream benchmark are
 not included in the manuscript package.
 
-\input{checklist}
+\ifdefined\ShepherdOmitChecklist
+\else
+  \input{checklist}
+\fi
 
 \end{document}
