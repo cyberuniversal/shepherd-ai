@@ -23,6 +23,9 @@ reports/multiuav_manuscript_traceability_v1.md text eol=lf
 paper/*.pdf -text -diff
 paper/figures/*.pdf -text -diff
 paper/figures/*.png -text -diff
+paper/neurips_2026_anonymous/*.pdf -text -diff
+paper/neurips_2026_anonymous/figures/*.pdf -text -diff
+paper/neurips_2026_anonymous/figures/*.png -text -diff
 presentation/*.pptx -text -diff
 presentation/*.webp -text -diff
 outputs/evaluations/multiuav_accuracy_bootstrap_v1/*.zip -text -diff

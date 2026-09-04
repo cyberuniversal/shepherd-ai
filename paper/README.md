@@ -20,3 +20,7 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 The manuscript reports static plan fidelity. It does not report official
 simulator execution or physical-flight results.
 
+The separate anonymous NeurIPS 2026 package is under
+`neurips_2026_anonymous/`. It uses the official annual style and includes the
+required checklist without changing the frozen scientific results.
+
